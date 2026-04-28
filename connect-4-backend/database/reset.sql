@@ -1,0 +1,20 @@
+DROP TABLE IF EXISTS User;
+DROP TABLE IF EXISTS Lobby;
+DROP TABLE IF EXISTS LobbyMembers;
+CREATE TABLE Users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT
+);
+
+CREATE TABLE Lobby (
+    code TEXT PRIMARY KEY,
+    member_count INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE LobbyMembers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lobby_code TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    UNIQUE (lobby_code, user_id),
+    FOREIGN KEY (lobby_code) REFERENCES Lobby(code) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
