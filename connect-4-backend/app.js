@@ -6,12 +6,20 @@ import logger from 'morgan';
 
 import indexRouter from './routes/index.ts';
 import usersRouter from './routes/users.ts';
-import { setupDatabase } from './database/database.ts';
 import lobbyRouter from './routes/lobby.ts';
 
-var app = express();
+import { createClient } from 'redis';
 
-setupDatabase();
+// Set up Redis database;
+export const redis = createClient({
+  url: "redis://localhost:6379",
+});
+
+redis.on("error", (err) => console.error("Redis error:", err));
+
+await redis.connect();
+
+var app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -36,7 +44,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send(err.message);
 });
 
 app.listen('8080')
