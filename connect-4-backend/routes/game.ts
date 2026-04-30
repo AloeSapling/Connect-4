@@ -2,12 +2,12 @@ import * as GameRedis from "../database-redis/game.ts";
 import { Router } from "express";
 import { createLobby, getAllLobbies, getSpecificLobby } from "../database-sqllite/lobby.ts";
 import { CodedError } from "../lib/types.ts";
-import { validateLobbyCode } from "../lib/lib.ts";
+import { addRouteWithMethod, validateLobbyCode } from "../lib/lib.ts";
 import { Lobby } from "../database-sqllite/models.ts";
 
 const router = Router();
 
-router.get('/create', async (req, res) => {
+addRouteWithMethod(router, '/create', async (req, res) => {
 	try {
 		if (req.query.code) {
 
@@ -23,9 +23,9 @@ router.get('/create', async (req, res) => {
 	} catch {
 		res.status(500).send(new CodedError("ServerError"));
 	}
-})
+}, ["POST", "PUT"])
 
-router.get('/', async (req, res) => {
+addRouteWithMethod(router, '/', async (req, res) => {
 	try {
 		if (req.query.code) {
 
@@ -42,6 +42,6 @@ router.get('/', async (req, res) => {
 	} catch {
 		res.status(500).send(new CodedError("ServerError"));
 	}
-})
+}, ["GET"])
 
 export default router;

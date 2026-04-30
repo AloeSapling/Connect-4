@@ -13,6 +13,8 @@ export type GameState = {
 
 export type UserRequest = { user: User } & Request
 
+export type Methods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
 class CodedError {
 	constructor(_code: ErrorCodes, _error?: Error) {
 		this.code = _code;
