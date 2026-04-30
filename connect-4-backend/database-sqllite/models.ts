@@ -15,6 +15,8 @@ User.init(
 		},
 		sessionID: {
 			type: DataTypes.STRING,
+			unique: true,
+			allowNull: false,
 		}
 	},
 	{

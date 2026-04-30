@@ -1,23 +1,18 @@
 import { Router } from "express";
 import { createLobby, getAllLobbies, getSpecificLobby } from "../database-sqllite/lobby.ts";
 import { CodedError } from "../lib/types.ts";
-import { addRouteWithMethod, validateLobbyCode } from "../lib/lib.ts";
+import { addRouteWithMethods, isValidLobbyCode, } from "../lib/lib.ts";
 import { Lobby } from "../database-sqllite/models.ts";
 
 const router = Router();
 
-addRouteWithMethod(router, '/', async (req, res) => {
+addRouteWithMethods(router, '/', async (req, res) => {
 	// Search params can include the code (to get a specific lobby) or include filters for the list of lobbies
 	if (req.query.code) {
-		if (!validateLobbyCode(req.query.code.toString())) {
-			res.status(400).json(new CodedError("BadLobbyCode"));
-			return;
-		}
-
 		try {
 			res.json(await getSpecificLobby(req.query.code.toString()));
 		} catch {
-			res.status(500).json(new CodedError("ServerError"));
+			res.status(400).json(new CodedError("BadLobbyCode"));
 		}
 	}
 
@@ -31,7 +26,7 @@ addRouteWithMethod(router, '/', async (req, res) => {
 	}
 }, ["GET"])
 
-addRouteWithMethod(router, '/create/', async (req, res) => {
+addRouteWithMethods(router, '/create/', async (req, res) => {
 	// Create a new lobby and return the associated code
 	try {
 		const code = await createLobby();

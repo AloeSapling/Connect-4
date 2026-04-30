@@ -1,12 +1,13 @@
 import { randomInt } from "crypto";
 import type { Request, RequestHandler, Response, Router } from "express";
 import type { Methods } from "./types.ts";
-
-const ALL_CODE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789" as const;
-const CODE_LENGTH = 8 as const;
+import { ALL_CODE_CHARS, CODE_LENGTH } from "../config.ts";
 
 const noAuth: RequestHandler = (req, res, next) => next();
 
+/** Creates a random lobby code
+* @returns The generated code
+* */
 function createLobbyCode(): string {
 	let code = "";
 	for (let i = 0; i < CODE_LENGTH; i++)
@@ -14,7 +15,8 @@ function createLobbyCode(): string {
 	return code;
 }
 
-function validateLobbyCode(code: string): boolean {
+/** Checks if the provided code matches the structure defined in the lobby code generation algorithm */
+function isValidLobbyCode(code: string): boolean {
 	if (code.length !== CODE_LENGTH) return false;
 	// for(let i=0; i<CODE_LENGTH;i++){
 	//     // Check if the code is comprised of only valid characters
@@ -24,8 +26,13 @@ function validateLobbyCode(code: string): boolean {
 	return true;
 }
 
-function addRouteWithMethod(router: Router, path: string, fn: RequestHandler, allowedMethods: Methods[] = ["GET"], _auth?: RequestHandler) {
+/** A helper function that allows you to set a route / endpoint that only accepts the methods provided
+* @param path The path for the endpoint
+* @param fn The callback called when fetching the endpoint
+* */
+function addRouteWithMethods(router: Router, path: string, fn: RequestHandler, allowedMethods: Methods[] = ["GET"], _auth?: RequestHandler) {
 	const auth = _auth ?? noAuth;
+
 	allowedMethods.forEach((method) => {
 		switch (method) {
 			case "GET":
@@ -39,10 +46,11 @@ function addRouteWithMethod(router: Router, path: string, fn: RequestHandler, al
 			case "DELETE":
 				router.delete(path, auth, fn);
 		}
+		// Return 405 for methods outside of allowedMethods array
 		router.all(path, auth, (req: Request, res: Response) => {
 			res.status(405).json({ message: 'Method Not Allowed' });
 		});
 	})
 }
 
-export { createLobbyCode, validateLobbyCode, addRouteWithMethod };
+export { createLobbyCode, isValidLobbyCode, addRouteWithMethods };

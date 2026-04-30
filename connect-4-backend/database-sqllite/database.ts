@@ -6,6 +6,7 @@ export const sequelize = new Sequelize({
 	storage: "sqlite.db",
 });
 
+/** Update the database to match the models defined in models.ts */
 export async function setupDatabase() {
 	await sequelize.sync({ alter: true });
 }
