@@ -14,7 +14,7 @@ import { createClient } from 'redis';
 import { AuthUser } from './lib/auth.ts';
 import { setupDatabase } from './database-sqllite/database.ts';
 
-// Set up Redis database;
+// Set up Redis database
 export const redis = createClient({
 	url: "redis://localhost:6379",
 });
@@ -22,8 +22,11 @@ export const redis = createClient({
 redis.on("error", (err) => console.error("Redis error:", err));
 
 await redis.connect();
+
+// Set up SQL database
 await setupDatabase();
 
+// Set up the express server
 var app = express();
 
 // Middlewares
@@ -59,14 +62,14 @@ app.use('/lobby', AuthUser, lobbyRouter);
 
 app.use('/game', gameRouter);
 
-// catch 404 and forward to error handler
+// Forward 404 errors to the error handler
 app.use(function(req, res, next) {
 	next(createError(404));
 });
 
-// error handler
+// Error handler middleware
 app.use(function(err: HttpError, req: Request, res: Response, next: NextFunction) {
-	// set locals, only providing error in development
+	// Set locals, only providing error in development
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};
 

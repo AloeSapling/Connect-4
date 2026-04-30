@@ -1,9 +1,13 @@
 import type { NextFunction, Request, Response } from "express";
 import { User } from "../database-sqllite/models.ts";
-import { CodedError, type SessionRequest } from "./types.ts";
+import { CodedError, type UserRequest } from "./types.ts";
 
-function AuthUser(req: unknown, res: Response, next: NextFunction) {
-	const sessionID = (req as SessionRequest).session.id;
+/** Check if there exists a user tied to the client's sessionID 
+*
+* Sets the request's user to the user tied to the client's sessionID
+* */
+function AuthUser(req: Request, res: Response, next: NextFunction) {
+	const sessionID = req.session.id;
 	console.log(sessionID);
 	User.findOne({
 		where: {
@@ -14,7 +18,7 @@ function AuthUser(req: unknown, res: Response, next: NextFunction) {
 			res.status(401).json(new CodedError("Unauthorised"));
 			return;
 		}
-		(req as SessionRequest).user = user;
+		(req as UserRequest).user = user;
 		next();
 	}).catch(err => console.log(err));
 }
