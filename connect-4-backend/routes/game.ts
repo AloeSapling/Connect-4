@@ -3,7 +3,7 @@ import { Router } from "express";
 import { createLobby, getAllLobbies, getSpecificLobby } from "../database-sqllite/lobby.ts";
 import { CodedError } from "../lib/types.ts";
 import { Lobby } from "../database-sqllite/models.ts";
-import { addRouteWithMethods, isValidLobbyCode } from "../lib/lib.ts";
+import { addRouteWithMethods } from "../lib/lib.ts";
 
 const router = Router();
 

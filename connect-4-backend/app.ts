@@ -13,6 +13,7 @@ import lobbyRouter from './routes/lobby.ts';
 import { createClient } from 'redis';
 import { AuthUser } from './lib/auth.ts';
 import { setupDatabase } from './database-sqllite/database.ts';
+import { SERVER_PORT } from './config.ts';
 
 // Set up Redis database
 export const redis = createClient({
@@ -78,6 +79,6 @@ app.use(function(err: HttpError, req: Request, res: Response, next: NextFunction
 	res.send(err.message);
 });
 
-app.listen('8080')
+app.listen(SERVER_PORT);
 
 export default app;

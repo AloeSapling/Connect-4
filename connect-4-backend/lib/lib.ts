@@ -15,17 +15,6 @@ function createLobbyCode(): string {
 	return code;
 }
 
-/** Checks if the provided code matches the structure defined in the lobby code generation algorithm */
-function isValidLobbyCode(code: string): boolean {
-	if (code.length !== CODE_LENGTH) return false;
-	// for(let i=0; i<CODE_LENGTH;i++){
-	//     // Check if the code is comprised of only valid characters
-	//     if(!ALL_CODE_CHARS.includes(code[i]))
-	//         return false;
-	// }
-	return true;
-}
-
 /** A helper function that allows you to set a route / endpoint that only accepts the methods provided
 * @param path The path for the endpoint
 * @param fn The callback called when fetching the endpoint
@@ -53,4 +42,4 @@ function addRouteWithMethods(router: Router, path: string, fn: RequestHandler, a
 	})
 }
 
-export { createLobbyCode, isValidLobbyCode, addRouteWithMethods };
+export { createLobbyCode, addRouteWithMethods };
