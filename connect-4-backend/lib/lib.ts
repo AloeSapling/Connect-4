@@ -5,6 +5,8 @@ import type { Methods } from "./types.ts";
 const ALL_CODE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789" as const;
 const CODE_LENGTH = 8 as const;
 
+const noAuth: RequestHandler = (req, res, next) => next();
+
 function createLobbyCode(): string {
 	let code = "";
 	for (let i = 0; i < CODE_LENGTH; i++)
@@ -22,21 +24,22 @@ function validateLobbyCode(code: string): boolean {
 	return true;
 }
 
-function addRouteWithMethod(router: Router, path: string, fn: RequestHandler, allowedMethods: Methods[] = ["GET"]) {
+function addRouteWithMethod(router: Router, path: string, fn: RequestHandler, allowedMethods: Methods[] = ["GET"], _auth?: RequestHandler) {
+	const auth = _auth ?? noAuth;
 	allowedMethods.forEach((method) => {
 		switch (method) {
 			case "GET":
-				router.get(path, fn);
+				router.get(path, auth, fn);
 			case "POST":
-				router.post(path, fn);
+				router.post(path, auth, fn);
 			case "PUT":
-				router.put(path, fn);
+				router.put(path, auth, fn);
 			case "PATCH":
-				router.patch(path, fn);
+				router.patch(path, auth, fn);
 			case "DELETE":
-				router.delete(path, fn);
+				router.delete(path, auth, fn);
 		}
-		router.all(path, (req: Request, res: Response) => {
+		router.all(path, auth, (req: Request, res: Response) => {
 			res.status(405).json({ message: 'Method Not Allowed' });
 		});
 	})
