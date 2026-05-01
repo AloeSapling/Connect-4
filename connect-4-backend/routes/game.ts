@@ -1,6 +1,6 @@
 import * as GameRedis from "../database-redis/game.ts";
 import { Router } from "express";
-import { createLobby, getAllLobbies, getLobby } from "../database-sqllite/lobby.ts";
+import { createLobby, getAllLobbies, getSpecificLobby } from "../database-sqllite/lobby.ts";
 import { CodedError } from "../lib/types.ts";
 import { Lobby } from "../database-sqllite/models.ts";
 import { addRouteWithMethods } from "../lib/lib.ts";
@@ -12,7 +12,7 @@ addRouteWithMethods(router, '/create', async (req, res) => {
 	try {
 		if (req.query.code) {
 			// Make sure a lobby exists with the provided code
-			if (await getLobby(req.query.code.toString()) === null) {
+			if (await Lobby.findOne({ where: { code: req.query.code.toString() } }) === null) {
 				res.status(400).json(new CodedError("BadLobbyCode"));
 				return;
 			}
@@ -31,7 +31,7 @@ addRouteWithMethods(router, '/', async (req, res) => {
 	try {
 		if (req.query.code) {
 			// Make sure a lobby exists with the provided code
-			if (await getLobby(req.query.code.toString()) === null) {
+			if (await Lobby.findOne({ where: { code: req.query.code.toString() } }) === null) {
 				res.status(400).json(new CodedError("BadLobbyCode"));
 				return;
 			}
