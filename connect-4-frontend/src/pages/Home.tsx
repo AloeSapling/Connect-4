@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import ButtonMenuContainer from '../Components/ButtonMenuContainer';
 
-function HomePage() {
+function Home() {
     return (
         <>
             <ButtonMenuContainer
@@ -32,4 +32,4 @@ function HomePage() {
     );
 }
 
-export default HomePage;
+export default Home;

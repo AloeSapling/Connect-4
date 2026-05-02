@@ -5,10 +5,10 @@ import './App.css'
 
 // Pages
 const BasePage = lazy(() => import("./pages/BasePage.tsx"));
-const HomePage = lazy(() => import("./pages/HomePage.tsx"));
-const SettingsPage = lazy(() => import("./pages/SettingsPage.tsx"));
-const GamePage = lazy(() => import("./pages/GamePage.tsx"));
-const ErrorPage = lazy(() => import("./pages/ErrorPage.tsx"));
+const Home = lazy(() => import("./pages/Home.tsx"));
+const Settings = lazy(() => import("./pages/Settings.tsx"));
+const Game = lazy(() => import("./pages/Game.tsx"));
+const Error = lazy(() => import("./pages/Error.tsx"));
 
 function App() {
   return (
@@ -19,14 +19,14 @@ function App() {
           <Routes>
             <Route path="/" element={<BasePage />}>
               {/* Base path */}
-              <Route index element={<HomePage />} />
+              <Route index element={<Home />} />
 
-              <Route path="settings" element={<SettingsPage />} />
+              <Route path="settings" element={<Settings />} />
 
-              <Route path="game" element={<GamePage />} />
+              <Route path="game" element={<Game />} />
 
               {/* 404 */}
-              <Route path="*" element={<ErrorPage />} />
+              <Route path="*" element={<Error />} />
             </Route>
           </Routes>
         </Suspense>
