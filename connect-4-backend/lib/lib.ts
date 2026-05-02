@@ -26,14 +26,19 @@ function addRouteWithMethods(router: Router, path: string, fn: RequestHandler, a
 		switch (method) {
 			case "GET":
 				router.get(path, auth, fn);
+				break;
 			case "POST":
 				router.post(path, auth, fn);
+				break;
 			case "PUT":
 				router.put(path, auth, fn);
+				break;
 			case "PATCH":
 				router.patch(path, auth, fn);
+				break;
 			case "DELETE":
 				router.delete(path, auth, fn);
+				break;
 		}
 		// Return 405 for methods outside of allowedMethods array
 		router.all(path, auth, (req: Request, res: Response) => {
