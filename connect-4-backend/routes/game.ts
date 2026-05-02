@@ -10,14 +10,19 @@ const router = Router();
 addRouteWithMethods(router, '/create', async (req, res) => {
 	// Create a new game using the provided code
 	try {
-		if (req.query.code) {
+		if (req.body.code) {
 			// Make sure a lobby exists with the provided code
-			if (await getLobby(req.query.code.toString()) === null) {
+			if (await getLobby(req.body.code) === null) {
 				res.status(400).json(new CodedError("BadLobbyCode"));
 				return;
 			}
-			await GameRedis.createGame(req.query.code.toString());
-			res.status(204).json();
+			try {
+				await GameRedis.createGame(req.body.code);
+				res.status(204).json();
+			}
+			catch (err) {
+				res.status(400).json(err);
+			}
 		} else {
 			res.status(400).json(new CodedError("BadLobbyCode"));
 		}
@@ -29,15 +34,19 @@ addRouteWithMethods(router, '/create', async (req, res) => {
 addRouteWithMethods(router, '/', async (req, res) => {
 	// Get the gameState of the game associated with the provided code
 	try {
-		if (req.query.code) {
+		if (req.body.code) {
 			// Make sure a lobby exists with the provided code
-			if (await getLobby(req.query.code.toString()) === null) {
+			if (await getLobby(req.body.code) === null) {
 				res.status(400).json(new CodedError("BadLobbyCode"));
 				return;
 			}
-			const gameState = await GameRedis.getGameState(req.query.code.toString());
-			console.log(gameState);
-			res.status(200).json(gameState);
+			try {
+				const gameState = await GameRedis.getGameState(req.body.code);
+				console.log(gameState);
+				res.status(200).json(gameState);
+			} catch (err) {
+				res.status(400).json(err);
+			}
 		} else {
 			res.status(400).json(new CodedError("BadLobbyCode"));
 		}
