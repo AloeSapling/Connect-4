@@ -57,15 +57,19 @@ export async function getGameState(
  *
  * Automatically calculates which cell it will fall into
  * @param playerID The identifier of the player who performed the move
+ * @throws Error code "BadData" if the column provided is invalid
+ * @throws Error code "BadTurn" if it's not this player's turn
+ * @throws Error code "GameExpired" if there was an error getting the game's state
+ * @throws Error code "GameLocked"
+ * @throws Error code "ServerError"
  * */
 export async function updateGameState(
 	lobbyCode: string,
 	playerID: TPlayerIDs,
 	column: number,
 ) {
-	if (column < 0 || column > GAME_COLUMNS - 1) return;
-	// Exit early if the game isn't allowed to be updated
-	if (await redis.exists(`GameState_${lobbyCode}:lock`)) return;
+	if (column < 0 || column > GAME_COLUMNS - 1) throw new CodedError("BadData");
+	if (await redis.exists(`GameState_${lobbyCode}:lock`)) throw new CodedError("GameLocked");
 
 	const board = await redis.get(`GameState_${lobbyCode}:board`);
 	const turn = (await redis.get(
@@ -73,7 +77,8 @@ export async function updateGameState(
 	)) as TPlayerIDs | null;
 
 	// Exit early if there was an error getting the board or turn or if it's not this player's turn
-	if (!board || !turn || turn !== playerID) return;
+	if (!board || !turn) throw new CodedError("GameExpired");
+	if (turn !== playerID) throw new CodedError("BadTurn");
 
 	// Lock the game from being updated until the turn calculations finish
 	await redis.set(`GameState_${lobbyCode}:lock`, "1", {
@@ -89,7 +94,7 @@ export async function updateGameState(
 		}
 		// i === 0 means that there are no empty cells in this column,
 		// This means an invalid input was given, so just exit early
-		if (i === 0 || !boardData.at(i - 1)) return;
+		if (i === 0 || !boardData.at(i - 1)) throw new CodedError("BadData");
 
 		// Update the cell
 		(boardData.at(i - 1) as Array<CellState>)[column] = playerID;
@@ -103,6 +108,7 @@ export async function updateGameState(
 			EX: GAME_EXPIRY_TIME
 		});
 	} catch {
+		throw new CodedError("ServerError");
 	} finally {
 		// Unlock the game / allow the game's state to be updated again
 		await redis.del(`GameState_${lobbyCode}:lock`);
