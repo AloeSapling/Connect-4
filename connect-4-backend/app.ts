@@ -14,10 +14,6 @@ import { createClient } from 'redis';
 import { AuthUser } from './lib/auth.ts';
 import { setupDatabase } from './database-sqllite/database.ts';
 import { SERVER_PORT } from './config.ts';
-import { createServer } from 'http';
-import { WebSocketServer } from 'ws';
-import { setupGameWSServer } from './routes/ws/game.ts';
-import type { WSRoutes } from './lib/types.ts';
 
 // Set up Redis database
 export const redis = createClient({
@@ -33,7 +29,6 @@ await setupDatabase();
 
 // Set up the express server
 var app = express();
-const server = createServer(app);
 
 // Middlewares
 app.use(logger('dev'));
@@ -68,26 +63,6 @@ app.use('/lobby', AuthUser, lobbyRouter);
 
 app.use('/game', gameRouter);
 
-// Websockets
-const wsRoutes: WSRoutes = {
-	"/game": new WebSocketServer({ noServer: true })
-}
-
-// Setup each websocket route
-setupGameWSServer(wsRoutes["/game"]);
-
-// Handle connections to each websocket route
-server.on("upgrade", (req, socket, head) => {
-	const { pathname } = new URL(req.url || "", `http://${req.headers.host}`);
-	if (pathname in wsRoutes) {
-		wsRoutes[pathname as keyof WSRoutes].handleUpgrade(req, socket, head, (ws) => {
-			wsRoutes[pathname as keyof WSRoutes].emit("connection", ws, req);
-		});
-	} else {
-		socket.destroy();
-	}
-});
-
 // Forward 404 errors to the error handler
 app.use(function(req, res, next) {
 	next(createError(404));
@@ -104,6 +79,6 @@ app.use(function(err: HttpError, req: Request, res: Response, next: NextFunction
 	res.send(err.message);
 });
 
-server.listen(SERVER_PORT, () => "Server running");
+app.listen(SERVER_PORT);
 
 export default app;

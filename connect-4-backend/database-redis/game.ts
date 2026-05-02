@@ -1,7 +1,7 @@
 import { col } from "sequelize";
 import { redis } from "../app.ts";
-import { GAME_COLUMNS, GAME_EXPIRY_TIME, GAME_ROWS } from "../config.ts";
-import { CodedError, PlayerIDs, type CellState, type GameBoard, type GameState, type TPlayerIDs } from "../lib/types.ts";
+import { GAME_COLUMNS, GAME_ROWS } from "../config.ts";
+import { PlayerIDs, type CellState, type GameBoard, type GameState, type TPlayerIDs } from "../lib/types.ts";
 
 /** The game state used when creating a new game */
 const initialGameState: GameState = {
@@ -9,38 +9,28 @@ const initialGameState: GameState = {
 	turn: "PLAYER1",
 };
 
-/** Create a new game using the provided lobby code
-* @throws Error code "GameAlreadyExists" 
-* */
+/** Create a new game using the provided lobby code */
 export async function createGame(lobbyCode: string) {
-	// Don't accidentally overwrite an existing game
-	if (await redis.exists(`GameState_${lobbyCode}:board`) || await redis.exists(`GameState_${lobbyCode}:turn`))
-		throw new CodedError("GameAlreadyExists");
-
 	await redis.set(
 		`GameState_${lobbyCode}:board`,
 		JSON.stringify(initialGameState.board), // Set initial board state
-		{
-			EX: GAME_EXPIRY_TIME // In seconds
-		},
+		{ NX: true },
 	);
 	await redis.set(`GameState_${lobbyCode}:turn`, initialGameState.turn, {
-		EX: GAME_EXPIRY_TIME, // In seconds
+		NX: true,
 	});
 }
 
-/** @returns The game's state 
- * @throws Error code "GameExpired" if game wasn't found
- * @throws Error code "ServerError"
+/** Gets the game's state
+ * @returns The game's state or null if the game's state wasn't found
  * */
 export async function getGameState(
 	lobbyCode: string,
-): Promise<GameState> {
+): Promise<GameState | null> {
 	const board = await redis.get(`GameState_${lobbyCode}:board`);
 	const turn = await redis.get(`GameState_${lobbyCode}:turn`);
 
-	if (!board || !turn)
-		throw new CodedError("GameExpired");
+	if (!board || !turn) return null;
 
 	try {
 		const boardJSON = await JSON.parse(board);
@@ -49,7 +39,7 @@ export async function getGameState(
 			turn: turn as TPlayerIDs,
 		};
 	} catch {
-		throw new CodedError("ServerError");
+		return null;
 	}
 }
 
@@ -82,6 +72,7 @@ export async function updateGameState(
 
 	// Lock the game from being updated until the turn calculations finish
 	await redis.set(`GameState_${lobbyCode}:lock`, "1", {
+		NX: true,
 		EX: 5, // Expires in 5 seconds
 	});
 
@@ -99,14 +90,10 @@ export async function updateGameState(
 		// Update the cell
 		(boardData.at(i - 1) as Array<CellState>)[column] = playerID;
 
-		await redis.set(`GameState_${lobbyCode}:board`, JSON.stringify(boardData), {
-			EX: GAME_EXPIRY_TIME
-		});
+		await redis.set(`GameState_${lobbyCode}:board`, JSON.stringify(boardData));
 		// Set the next player's turn
 		// Sets it to the next playerID in the list of playerIDs. The fallback if something goes wrong is the first element
-		await redis.set(`GameState_${lobbyCode}:turn`, PlayerIDs.at((PlayerIDs.findIndex((elem) => elem === playerID) + 1) % PlayerIDs.length) ?? PlayerIDs[0], {
-			EX: GAME_EXPIRY_TIME
-		});
+		await redis.set(`GameState_${lobbyCode}:turn`, PlayerIDs.at((PlayerIDs.findIndex((elem) => elem === playerID) + 1) % PlayerIDs.length) ?? PlayerIDs[0]);
 	} catch {
 		throw new CodedError("ServerError");
 	} finally {

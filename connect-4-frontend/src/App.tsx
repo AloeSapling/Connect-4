@@ -1,40 +1,36 @@
-import { useState } from 'react'
-import { Menus } from './scripts/types.tsx'
+import { Suspense, lazy } from "react";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { MenuProvider } from './Components/MenuContext.tsx'
-import ButtonContainer from './Components/ButtonContainer.tsx'
 import './App.css'
 
-function App() {
-  const [currentMenu, setCurrentMenu] = useState<Menus>(Menus.TitleScreen);
+// Pages
+const BasePage = lazy(() => import("./pages/BasePage.tsx"));
+const HomePage = lazy(() => import("./pages/HomePage.tsx"));
+const SettingsPage = lazy(() => import("./pages/SettingsPage.tsx"));
+const GamePage = lazy(() => import("./pages/GamePage.tsx"));
+const ErrorPage = lazy(() => import("./pages/ErrorPage.tsx"));
 
+function App() {
   return (
     <>
-      {/* sets menu context for the entire app, thus allowing global usage of `currentMenu` and `setCurrentMenu` */}
-      <MenuProvider value={{ currentMenu, setCurrentMenu }}>
-        <header>
-          <div id='websiteLogo'>
-            ZSEL KidZ
-          </div>
-          <nav>
-            <a href='#'>cool</a>
-            <a href='#'>cooler</a>
-            <a href='#'>coolest</a>
-          </nav>
-        </header>
+      <BrowserRouter>
+        <Suspense fallback={<div>Loading...</div>}>
+          {/* All routes are to be defined here so that child routes can also use them */}
+          <Routes>
+            <Route path="/" element={<BasePage />}>
+              {/* Base path */}
+              <Route index element={<HomePage />} />
 
-        <div id='gameContainer'>
-            <ButtonContainer />
+              <Route path="settings" element={<SettingsPage />} />
 
-          <canvas id='gameCanvas' onClick={() => console.log(currentMenu)}>
-            Your browser does not support canvas. Sorry! :(
-          </canvas>
-        </div>
+              <Route path="game" element={<GamePage />} />
 
-        <footer>
-          MAW 2026
-        </footer>
-      </MenuProvider>
+              {/* 404 */}
+              <Route path="*" element={<ErrorPage />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
     </>
   )
 }

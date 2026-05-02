@@ -37,10 +37,9 @@ async function getAllLobbies(): Promise<Lobby[]> {
 }
 
 /** Gets the lobby associated with the provided code
- * @returns The lobby
- * @returns Null if the lobby wasn't found
+ * @returns The lobby or null if the lobby wasn't found
  * */
-async function getLobby(code: string): Promise<Lobby | null> {
+async function getSpecificLobby(code: string): Promise<Lobby | null> {
 	return await Lobby.findOne({
 		where: {
 			code: code,
@@ -48,4 +47,4 @@ async function getLobby(code: string): Promise<Lobby | null> {
 	});
 }
 
-export { createLobby, deleteLobby, getAllLobbies, getLobby };
+export { createLobby, deleteLobby, getAllLobbies, getSpecificLobby };
