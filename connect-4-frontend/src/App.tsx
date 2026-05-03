@@ -21,15 +21,15 @@ function App() {
 					<Routes>
 						<Route path="/" element={<BasePage />}>
 							{/* Base path */}
-							<Route index element={<HomePage />} />
+							<Route index element={<Home />} />
 
-							<Route path="settings" element={<SettingsPage />} />
+							<Route path="settings" element={<Settings />} />
 
-							<Route path="game" element={<GamePage />} />
+							<Route path="game" element={<Game />} />
 							<Route path="test" element={<BackendTest />} />
 
 							{/* 404 */}
-							<Route path="*" element={<ErrorPage />} />
+							<Route path="*" element={<Error />} />
 						</Route>
 					</Routes>
 				</Suspense>
