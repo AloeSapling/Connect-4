@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import ButtonMenuContainer from '../Components/ButtonMenuContainer';
 
-function SettingsPage() {
+function Error() {
     return (
         <>
+            <div>
+                Error 404: Page Not Found
+            </div>
             <ButtonMenuContainer
             buttons = {
                 <>
@@ -20,4 +23,4 @@ function SettingsPage() {
     );
 }
 
-export default SettingsPage;
+export default Error;

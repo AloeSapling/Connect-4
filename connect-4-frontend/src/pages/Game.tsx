@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import ButtonMenuContainer from "../Components/ButtonMenuContainer";
 
-function GamePage() {
+function Game() {
     return (
         <>
             <ButtonMenuContainer
@@ -26,4 +26,4 @@ function GamePage() {
     );
 }
 
-export default GamePage;
+export default Game;
