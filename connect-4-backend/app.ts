@@ -18,7 +18,7 @@ import { SERVER_PORT } from './config.ts';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { setupGameWSServer } from './routes/ws/game.ts';
-import { CodedError, type WSRoutes } from './lib/types.ts';
+import { CodedError, type UserRequest, type WSRoutes } from './lib/types.ts';
 
 // Set up Redis database
 export const redis = createClient({
@@ -84,14 +84,16 @@ const wsRoutes: WSRoutes = {
 setupGameWSServer(wsRoutes["/game"]);
 
 // Handle connections to each websocket route
-server.on("upgrade", (req, socket, head) => {
+server.on("upgrade", async (req, socket, head) => {
 	const { pathname } = new URL(req.url || "", `http://${req.headers.host}`);
 
-	if (!WSAuthUser(req)) {
+	if (!await WSAuthUser(req as Request)) {
 		socket.write(JSON.stringify(new CodedError("Unauthorised")));
 		socket.destroy();
 		return;
 	}
+
+	console.log((req as UserRequest).user);
 
 	if (pathname in wsRoutes) {
 		wsRoutes[pathname as keyof WSRoutes].handleUpgrade(req, socket, head, (ws) => {

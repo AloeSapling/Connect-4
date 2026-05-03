@@ -1,6 +1,6 @@
 import { randomInt } from "crypto";
 import type { Request, RequestHandler, Response, Router } from "express";
-import type { Methods } from "./types.ts";
+import type { Methods, Room } from "./types.ts";
 import { ALL_CODE_CHARS, CODE_LENGTH } from "../config.ts";
 
 const noAuth: RequestHandler = (req, res, next) => next();
@@ -51,4 +51,11 @@ function addRouteWithMethods(router: Router, path: string, fn: RequestHandler, a
 	})
 }
 
-export { createLobbyCode, addRouteWithMethods };
+/** Send a message to all users connected to a websocket room */
+function broadcastToRoom(room: Room, message: string) {
+	room.forEach((ws) => {
+		ws.send(message);
+	});
+}
+
+export { createLobbyCode, addRouteWithMethods, broadcastToRoom };

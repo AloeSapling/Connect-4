@@ -1,7 +1,6 @@
-import { col } from "sequelize";
 import { redis } from "../app.ts";
 import { GAME_COLUMNS, GAME_EXPIRY_TIME, GAME_ROWS } from "../config.ts";
-import { CodedError, PlayerTypes, type CellState, type GameBoard, type GameState, type TPlayerTypes } from "../lib/types.ts";
+import { CodedError, PlayerTypes, type CellState, type GameBoard, type GameRow, type GameState, type TPlayerTypes } from "../lib/types.ts";
 
 /** The game state used when creating a new game */
 const initialGameState: GameState = {
@@ -27,6 +26,12 @@ export async function createGame(lobbyCode: string) {
 	await redis.set(`GameState_${lobbyCode}:turn`, initialGameState.turn, {
 		EX: GAME_EXPIRY_TIME, // In seconds
 	});
+}
+
+/** Deletes all data associated with the game in the redis storage */
+export async function deleteGame(lobbyCode: string) {
+	await redis.del(`GameState_${lobbyCode}:board`);
+	await redis.del(`GameState_${lobbyCode}:turn)`);
 }
 
 /** @returns The game's state 
@@ -56,6 +61,7 @@ export async function getGameState(
  *
  * Automatically calculates which cell it will fall into
  * @param playerID The identifier of the player who performed the move
+ * @returns The row where the tile ended up
  * @throws Error code "BadData" if the column provided is invalid
  * @throws Error code "BadTurn" if it's not this player's turn
  * @throws Error code "GameExpired" if there was an error getting the game's state
@@ -66,7 +72,7 @@ export async function updateGameState(
 	lobbyCode: string,
 	playerID: TPlayerTypes,
 	column: number,
-) {
+): Promise<number> {
 	if (column < 0 || column > GAME_COLUMNS - 1) throw new CodedError("BadData");
 	if (await redis.exists(`GameState_${lobbyCode}:lock`)) throw new CodedError("GameLocked");
 
@@ -77,7 +83,7 @@ export async function updateGameState(
 
 	// Exit early if there was an error getting the board or turn or if it's not this player's turn
 	if (!board || !turn) throw new CodedError("GameExpired");
-	if (turn !== playerID) throw new CodedError("BadTurn");
+	// if (turn !== playerID) throw new CodedError("BadTurn");
 
 	// Lock the game from being updated until the turn calculations finish
 	await redis.set(`GameState_${lobbyCode}:lock`, "1", {
@@ -87,22 +93,25 @@ export async function updateGameState(
 
 	try {
 		const boardData = (await JSON.parse(board)) as GameBoard;
-		let i = 0;
+		let i = boardData.length - 1;
 		// Find the height of the lowest open cell in this column
-		while (boardData.at(i) && (boardData.at(i) as Array<CellState>).at(column) === "EMPTY") {
-			i++;
+		while (i >= 0 && (boardData[i] as GameRow)[column] === "EMPTY") {
+			i--;
 		}
-		// i === 0 means that there are no empty cells in this column,
+		i++; // i is the highest *non*-empty position. Shift it up to the lowest *empty* position
+		// i === boardData.length means that there are no empty cells in this column,
 		// This means an invalid input was given, so just exit early
-		if (i === 0 || !boardData.at(i - 1)) throw new CodedError("BadData");
+		if (i === boardData.length || !boardData[i]) throw new CodedError("BadData");
 
 		// Update the cell
-		(boardData.at(i - 1) as Array<CellState>)[column] = playerID;
+		(boardData[i] as Array<CellState>)[column] = playerID;
 
 		await redis.set(`GameState_${lobbyCode}:board`, JSON.stringify(boardData));
 		// Set the next player's turn
 		// Sets it to the next playerID in the list of playerIDs. The fallback if something goes wrong is the first element
 		await redis.set(`GameState_${lobbyCode}:turn`, PlayerTypes.at((PlayerTypes.findIndex((elem) => elem === playerID) + 1) % PlayerTypes.length) ?? PlayerTypes[0]);
+
+		return i;
 	} catch {
 		throw new CodedError("ServerError");
 	} finally {
