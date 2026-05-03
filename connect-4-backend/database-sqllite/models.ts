@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "./database.ts";
+import { PlayerTypes, type TPlayerTypes } from "../lib/types.ts";
 
 export class User extends Model {
 	declare id: number;
@@ -57,6 +58,8 @@ export class LobbyMember extends Model {
 	declare id: number;
 	declare lobby_code: string;
 	declare user_id: number;
+	declare host: boolean;
+	declare player_type: TPlayerTypes;
 }
 
 LobbyMember.init(
@@ -73,6 +76,14 @@ LobbyMember.init(
 		user_id: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
+		},
+		host: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false,
+		},
+		player_type: {
+			type: DataTypes.ENUM(...PlayerTypes),
+			defaultValue: null,
 		},
 	},
 	{

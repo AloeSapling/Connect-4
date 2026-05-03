@@ -47,4 +47,9 @@ async function getLobby(code: string): Promise<Lobby | null> {
 	});
 }
 
-export { createLobby, deleteLobby, getAllLobbies, getLobby };
+/** Checks if a lobby associated with the specified code exists */
+async function lobbyExists(code: string): Promise<boolean> {
+	return await Lobby.count({ where: { code: code } }) > 0;
+}
+
+export { createLobby, deleteLobby, getAllLobbies, getLobby, lobbyExists };

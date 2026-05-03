@@ -1,4 +1,4 @@
-export const ERROR_CODES = ["ServerError", "BadLobbyCode", "BadData", "BadTurn", "LobbyCreateFail", "Unauthorised", "GameAlreadyExists", "GameLocked", "GameExpired"] as const;
+export const ERROR_CODES = ["ServerError", "BadLobbyCode", "BadData", "BadTurn", "LobbyCreateFail", "Unauthorised", "NotAMember", "GameAlreadyExists", "GameLocked", "GameExpired"] as const;
 export type ErrorCodes = typeof ERROR_CODES[number];
 
 /* Error Codes documentation:

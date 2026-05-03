@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { createLobby, getAllLobbies, getSpecificLobby } from "../database-sqllite/lobby.ts";
-import { CodedError } from "../lib/types.ts";
+import { createLobby, getAllLobbies, getLobby, lobbyExists } from "../database-sqllite/lobby.ts";
+import { CodedError, type UserRequest } from "../lib/types.ts";
 import { addRouteWithMethods } from "../lib/lib.ts";
-import { Lobby } from "../database-sqllite/models.ts";
+import { assignPlayerType, becomeHost, joinLobby } from "../database-sqllite/lobbyMembers.ts";
 
 const router = Router();
 
@@ -10,7 +10,7 @@ addRouteWithMethods(router, '/', async (req, res) => {
 	// Search params can include the code (to get a specific lobby) or include filters for the list of lobbies
 	if (req.query.code) {
 		try {
-			res.json(await getSpecificLobby(req.query.code.toString()));
+			res.json(await getLobby(req.query.code.toString()));
 		} catch {
 			res.status(400).json(new CodedError("BadLobbyCode"));
 		}
@@ -31,10 +31,28 @@ addRouteWithMethods(router, '/create/', async (req, res) => {
 	try {
 		const code = await createLobby();
 		console.log(code);
-		res.send(code);
+		await joinLobby(code, (req as UserRequest).user.id);
+		await becomeHost(code, (req as UserRequest).user.id);
+		await assignPlayerType(code, (req as UserRequest).user.id, "PLAYER1");
+		res.json(code);
 	} catch {
 		res.status(500).json(new CodedError("ServerError"));
 	}
 }, ["POST", "PUT"]);
 
+addRouteWithMethods(router, '/join', async (req, res) => {
+	const code = req.body.code;
+	try {
+		if (!code || !(await lobbyExists(code))) {
+			res.status(400).json(new CodedError("BadLobbyCode"));
+			return;
+		}
+
+		await joinLobby(code, (req as UserRequest).user.id);
+		await assignPlayerType(code, (req as UserRequest).user.id, "PLAYER2");
+		res.status(200).json();
+	} catch {
+		res.status(500).json(new CodedError("ServerError"));
+	}
+}, ["POST"])
 export default router;

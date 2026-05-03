@@ -1,16 +1,17 @@
 import { Router, type Request, type Response } from "express";
 import { User } from "../database-sqllite/models.ts";
-import { where } from "sequelize";
 import { addRouteWithMethods } from "../lib/lib.ts";
 import { CodedError } from "../lib/types.ts";
+import { createUser } from "../database-sqllite/user.ts";
 
 const router = Router();
 
 addRouteWithMethods(router, '/create', async function(req: Request, res: Response) {
 	// Create a new user and tie it with the session id
 	const sessionID = req.session.id;
+	console.log(sessionID);
 	try {
-		await User.create({ sessionID: sessionID });
+		await createUser(sessionID);
 		res.status(204).json("Created successfully");
 	} catch {
 		res.status(500).json(new CodedError("ServerError"));
