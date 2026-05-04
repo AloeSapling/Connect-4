@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 function Header() {
     return (
         <header>
@@ -5,7 +7,9 @@ function Header() {
                 ZSEL KidZ
             </div>
             <nav>
-                <a href='#'>cool</a>
+                <Link to="/">
+                    Home
+                </Link>
                 <a href='#'>cooler</a>
                 <a href='#'>coolest</a>
             </nav>

@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import ButtonMenuContainer from '../Components/ButtonMenuContainer';
 
 function Error() {
     return (
@@ -7,18 +6,11 @@ function Error() {
             <div>
                 Error 404: Page Not Found
             </div>
-            <ButtonMenuContainer
-            buttons = {
-                <>
-                    <Link to="/">
-                        <button>
-                            Home
-                        </button>
-                    </Link>
-                </>
-            }
-            display
-            />
+            <Link to="/">
+                <button>
+                    Home
+                </button>
+            </Link>
         </>
     );
 }
