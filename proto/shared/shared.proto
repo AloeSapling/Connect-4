@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package shared;
+
+enum ErrorCodes {
+  ERROR_CODES_UNSPECIFIED = 0;
+  ERROR_CODES_SERVER_ERROR = 1;
+  ERROR_CODES_BAD_LOBBY_CODE = 2;
+  ERROR_CODES_BAD_DATA = 3;
+  ERROR_CODES_BAD_TURN = 4;
+  ERROR_CODES_LOBBY_CREATE_FAIL = 5;
+  ERROR_CODES_UNAUTHORISED = 6;
+  ERROR_CODES_NOT_A_MEMBER = 7;
+  ERROR_CODES_GAME_ALREADY_EXISTS = 8;
+  ERROR_CODES_GAME_LOCKED = 9;
+  ERROR_CODES_GAME_EXPIRED = 10;
+  ERROR_CODES_ALREADY_JOINED = 11;
+}
+
+message CodedError {
+  ErrorCodes code = 1;
+  optional string error = 2;
+}
+
+enum PlayerTypes {
+  PLAYER_TYPES_UNSPECIFIED = 0;
+  PLAYER_TYPES_PLAYER = 1;
+  PLAYER_TYPES_SPECTATOR = 2;
+}
+
+enum PlayerIDs {
+  PLAYER_IDS_UNSPECIFIED = 0;
+  PLAYER_IDS_PLAYER1 = 1;
+  PLAYER_IDS_PLAYER2 = 2;
+}
+
+message GameRow {
+  repeated PlayerIDs columns = 1;
+}
+
+message GameBoard {
+  repeated GameRow rows = 1;
+}

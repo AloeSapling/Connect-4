@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package routes;
+
+import "models/models.proto";
+
+message GetLobbiesResponse {
+  repeated models.Lobby lobbies = 1;
+}
+
+message GetLobbyResponse {
+  optional models.Lobby lobby = 1;
+}
+
+message CreateLobbyResponse {
+  string code = 1;
+}
+
+message JoinLobbyRequest {
+  string code = 1;
+}

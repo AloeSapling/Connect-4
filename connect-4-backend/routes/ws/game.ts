@@ -1,164 +1,179 @@
 import WebSocket, { WebSocketServer } from "ws";
-import type { WSPacket, WSReturnPacket } from "../../../packets.ts";
 import * as gameRedis from "../../database-redis/game.ts";
-import { CodedError, type Room, type TPlayerTypes, type UserRequest } from "../../lib/types.ts";
-import { getPlayerType } from "../../database-sqllite/lobbyMembers.ts";
+import { type PlayerIDs, type Room, type UserRequest } from "../../lib/types.ts";
+import { getPlayerID } from "../../database-sqllite/lobbyMembers.ts";
 import { broadcastToRoom } from "../../lib/lib.ts";
 import { TileChecker } from "../../lib/game.ts";
-import { GAME_ROWS } from "../../config.ts";
+import * as proto from "../../lib/proto.js";
 
-type GameWebSocket = WebSocket & { "lobbyCode"?: string; "playerType"?: TPlayerTypes };
+type GameWebSocket = WebSocket & { "lobbyCode"?: string; "playerID"?: PlayerIDs };
 
 const rooms: Record<string, Room> = {};
 
 /** JSON stringify wrapper to ensure the sent packages match the schema */
-const wsStringify = (packet: WSReturnPacket) => JSON.stringify(packet);
+const wsStringify = (packet: proto.ws.WSGameResponsePacket) => JSON.stringify(packet);
 
 function setupGameWSServer(WSServer: WebSocketServer) {
-	WSServer.on("connection", async (ws: GameWebSocket, req) => {
-		console.log("New connection: ", req.socket.remoteAddress);
-		ws.on("message", async (data) => {
-			console.log(data.toString());
+        WSServer.on("connection", async (ws: GameWebSocket, req) => {
+                console.log("New connection: ", req.socket.remoteAddress);
+                ws.on("message", async (data) => {
+                        console.log(data.toString());
 
-			console.log(ws["lobbyCode"], ws["playerType"]);
-			const packet = JSON.parse(data.toString()) as WSPacket;
+                        console.log(ws["lobbyCode"], ws["playerID"]);
+                        const packet = JSON.parse(data.toString()) as proto.ws.WSGamePacket;
 
-			if (!(req as UserRequest).user) {
-				ws.send(wsStringify({
-					result: "error",
-					data: new CodedError("Unauthorised")
-				}));
-				return;
-			}
+                        const reqUser = (req as UserRequest).user;
+                        const wsLobbyCode = ws["lobbyCode"] || "";
+                        const wsPlayerID = ws["playerID"];
 
-			if (packet.action !== "init") {
-				if (!ws["lobbyCode"]) {
-					ws.send(wsStringify({
-						result: "error",
-						data: new CodedError("BadData")
-					}));
-					return;
-				}
-				if (!rooms[ws["lobbyCode"]]) {
-					ws.send(wsStringify({
-						result: "error",
-						data: new CodedError("NotAMember")
-					}));
-					return;
-				}
-			}
+                        if (!reqUser) {
+                                ws.send(wsStringify(proto.ws.WSGameResponsePacket.create({
+                                        response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
+                                        error: proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_UNAUTHORISED })
+                                })));
+                                return;
+                        }
 
-			switch (packet.action) {
-				case "insertTile":
-					if (!ws["playerType"]) {
-						ws.send(wsStringify({
-							result: "error",
-							data: new CodedError("BadData")
-						}));
-						break;
-					}
+                        if (packet.action !== proto.ws.WSGameActions.WS_GAME_ACTIONS_INIT) {
+                                if (!wsLobbyCode) {
+                                        ws.send(wsStringify(proto.ws.WSGameResponsePacket.create({
+                                                response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
+                                                error: proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_DATA })
+                                        })));
+                                        return;
+                                }
+                                if (!rooms[wsLobbyCode]) {
+                                        ws.send(wsStringify(proto.ws.WSGameResponsePacket.create({
+                                                response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
+                                                error: proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_NOT_A_MEMBER })
+                                        })));
+                                        return;
+                                }
+                        }
 
-					try {
-						const column = packet.data["column"];
-						const row = await gameRedis.updateGameState((ws["lobbyCode"] as string), ws["playerType"], column);
+                        switch (packet.action) {
+                                case proto.ws.WSGameActions.WS_GAME_ACTIONS_INSERT_TILE:
+                                        if (!wsPlayerID || packet.insertTile?.column === null || packet.insertTile?.column === undefined) {
+                                                ws.send(wsStringify(proto.ws.WSGameResponsePacket.create({
+                                                        response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
+                                                        error: proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_DATA }),
+                                                })));
+                                                ws.send(wsStringify(proto.ws.WSGameResponsePacket.create({
+                                                        response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
+                                                        error: proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_DATA })
+                                                })));
+                                                break;
+                                        }
 
-						const gameState = await gameRedis.getGameState((ws["lobbyCode"] as string));
+                                        try {
+                                                const column = packet.insertTile!.column;
+                                                const row = await gameRedis.updateGameState(wsLobbyCode, wsPlayerID, column);
 
-						const tileChecker = new TileChecker(gameState.board, column, row);
+                                                const gameState = await gameRedis.getGameState(wsLobbyCode);
 
-						if (tileChecker.checkForWin()) {
-							await gameRedis.deleteGame(ws["lobbyCode"] as string);
-							broadcastToRoom((rooms[(ws["lobbyCode"] as string)] as Room), wsStringify({
-								result: "gameEnd",
-								data: {
-									"winner": {
-										id: (req as UserRequest).user.id,
-									}
-								}
-							}))
-							break;
-						}
-						if (TileChecker.checkForDraw(gameState.board)) {
-							broadcastToRoom((rooms[(ws["lobbyCode"] as string)] as Room), wsStringify({
-								result: "gameEnd",
-								data: {
-									"winner": "draw",
-								}
-							}))
-							break;
-						}
+                                                const tileChecker = new TileChecker(gameState.board, column, row);
 
-						broadcastToRoom((rooms[(ws["lobbyCode"] as string)] as Room), wsStringify({
-							result: "move",
-							data: {
-								"gameState": await gameRedis.getGameState((ws["lobbyCode"] as string))
-							}
-						}));
-					} catch (err) {
-						ws.send(wsStringify({
-							result: "error",
-							data: err as CodedError
-						}));
-					}
-					break;
-				case "init": {
-					if (ws["lobbyCode"]) {
-						ws.send(wsStringify({
-							result: "error",
-							data: new CodedError("AlreadyJoined")
-						}));
-						break;
-					}
+                                                // Check for a win
+                                                if (tileChecker.checkForWin()) {
+                                                        await gameRedis.deleteGame(wsLobbyCode);
+                                                        broadcastToRoom((rooms[wsLobbyCode] as Room), wsStringify(
+                                                                proto.ws.WSGameResponsePacket.create({
+                                                                        response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_END,
+                                                                        end: {
+                                                                                "user": {
+                                                                                        "username": reqUser.id.toString(),
+                                                                                }
+                                                                        }
+                                                                })))
 
-					const lobbyCode = packet.data["lobbyCode"];
+                                                        break;
+                                                }
+                                                // Check for draws
+                                                if (TileChecker.checkForDraw(gameState.board)) {
+                                                        broadcastToRoom((rooms[wsLobbyCode] as Room), wsStringify(
+                                                                proto.ws.WSGameResponsePacket.create({
+                                                                        response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_END,
+                                                                        end: {
+                                                                                "draw": true,
+                                                                        }
+                                                                })))
+                                                        break;
+                                                }
 
-					try {
-						if (!lobbyCode) {
-							ws.send(wsStringify({
-								result: "error",
-								data: new CodedError("BadLobbyCode")
-							}));
-							break;
-						}
+                                                broadcastToRoom((rooms[wsLobbyCode] as Room), wsStringify(proto.ws.WSGameResponsePacket.create({
+                                                        response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_MOVE,
+                                                        move: {
+                                                                "board": gameState.board,
+                                                                "column": column,
+                                                                "row": row,
+                                                                "turn": gameState.turn,
+                                                        }
+                                                })))
+                                        } catch (err) {
+                                                ws.send(wsStringify(proto.ws.WSGameResponsePacket.create({
+                                                        response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
+                                                        error: err as proto.shared.CodedError,
+                                                })));
+                                        }
+                                        break;
+                                case proto.ws.WSGameActions.WS_GAME_ACTIONS_INIT: {
+                                        if (wsLobbyCode) {
+                                                ws.send(wsStringify(proto.ws.WSGameResponsePacket.create({
+                                                        response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
+                                                        error: proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_ALREADY_JOINED })
+                                                })));
+                                                break;
+                                        }
 
-						const pType = await getPlayerType(lobbyCode, (req as UserRequest).user.id);
+                                        const lobbyCode = packet.init?.lobbyCode;
 
-						if (pType === null) {
-							ws.send(wsStringify({
-								result: "error",
-								data: new CodedError("NotAMember")
-							}));
-							break;
-						}
+                                        try {
+                                                if (!lobbyCode) {
+                                                        ws.send(wsStringify(proto.ws.WSGameResponsePacket.create({
+                                                                response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
+                                                                error: proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE })
+                                                        })));
+                                                        break;
+                                                }
 
-						ws["playerType"] = pType;
+                                                const pType = await getPlayerID(lobbyCode, reqUser.id);
 
-						// Add players from the same game to the same room
-						if (rooms[lobbyCode])
-							rooms[lobbyCode] = [...(rooms[lobbyCode] as Room), ws];
-						else
-							rooms[lobbyCode] = [ws];
+                                                if (pType === null) {
+                                                        ws.send(wsStringify(proto.ws.WSGameResponsePacket.create({
+                                                                response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
+                                                                error: proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_NOT_A_MEMBER })
+                                                        })));
+                                                        break;
+                                                }
 
-						ws["lobbyCode"] = packet.data["lobbyCode"];
-					}
-					catch {
-						ws.send(wsStringify({
-							result: "error",
-							data: new CodedError("ServerError")
-						}));
-					}
-					console.log(packet.data, ws["lobbyCode"], ws["playerType"]);
-					break;
-				}
-			}
-		});
-		ws.on("close", () => {
-			// Remove the disconnected player from the room
-			if (ws["lobbyCode"] && rooms[ws["lobbyCode"]])
-				rooms[ws["lobbyCode"]] = (rooms[ws["lobbyCode"]] as Room).filter(elem => elem !== ws);
-			console.log("connection closed")
-		});
-	});
+                                                ws["playerID"] = pType;
+
+                                                // Add players from the same game to the same room
+                                                if (rooms[lobbyCode])
+                                                        rooms[lobbyCode] = [...(rooms[lobbyCode] as Room), ws];
+                                                else
+                                                        rooms[lobbyCode] = [ws];
+
+                                                ws["lobbyCode"] = lobbyCode;
+                                        }
+                                        catch {
+                                                ws.send(wsStringify(proto.ws.WSGameResponsePacket.create({
+                                                        response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
+                                                        error: proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR })
+                                                })));
+                                        }
+                                        console.log(packet.data, ws["lobbyCode"], ws["playerID"]);
+                                        break;
+                                }
+                        }
+                });
+                ws.on("close", () => {
+                        // Remove the disconnected player from the room
+                        if (ws["lobbyCode"] && rooms[ws["lobbyCode"]])
+                                rooms[ws["lobbyCode"]] = (rooms[ws["lobbyCode"]] as Room).filter(elem => elem !== ws);
+                        console.log("connection closed")
+                });
+        });
 }
 
 export { setupGameWSServer };
