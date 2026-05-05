@@ -6,21 +6,21 @@ import { createUser } from "../database-sqllite/user.ts";
 
 const router = Router();
 
-addRouteWithMethods(router, '/create', async function(req: Request, res: Response) {
-	// Create a new user and tie it with the session id
-	const sessionID = req.session.id;
-	console.log(sessionID);
-	try {
-		await createUser(sessionID);
-		res.status(204).json("Created successfully");
-	} catch {
-		res.status(500).json(new CodedError("ServerError"));
-	}
+addRouteWithMethods(router, '/create', async function (req: Request, res: Response) {
+        // Create a new user and tie it with the session id
+        const sessionID = req.session.id;
+
+        try {
+                await createUser(sessionID);
+                res.status(201).json("Created successfully");
+        } catch {
+                res.status(500).json(new CodedError("ServerError"));
+        }
 }, ["POST", "PUT"]);
 
 // Meant for the dev environment only - REMOVE IN PRODUCTION!!
-router.get('/getAll', async function(req, res) {
-	res.status(200).send(JSON.stringify(await User.findAll()));
+router.get('/getAll', async function (req, res) {
+        res.status(200).send(JSON.stringify(await User.findAll()));
 });
 
 
