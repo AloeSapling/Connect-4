@@ -9,7 +9,7 @@ const router = Router();
 
 addRouteWithMethods(router, '/create', async (req, res) => {
         // Create a new game using the provided code
-        const body = req.body as proto.routes.CreateGameRequest;
+        const body = proto.routes.CreateGameRequest.decode(req.body);
 
         const code = body.code;
         try {
@@ -17,46 +17,48 @@ addRouteWithMethods(router, '/create', async (req, res) => {
                 if (code) {
                         // Make sure a lobby exists with the provided code
                         if (!(await lobbyExists(code))) {
-                                res.status(400).json(new CodedError("BadLobbyCode"));
+                                res.status(400).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE }).finish());
                                 return;
                         }
                         try {
                                 await GameRedis.createGame(code);
-                                res.status(204).json();
+                                res.status(204).send();
                         }
                         catch (err) {
-                                res.status(400).json(err);
+                                const formattedError = { code: (err as CodedError).code, error: (err as CodedError).error.toString() };
+                                res.status(400).send(proto.shared.CodedError.encode(formattedError).finish());
                         }
                 } else {
-                        res.status(400).json(new CodedError("BadLobbyCode"));
+                        res.status(400).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE }).finish());
                 }
         } catch {
-                res.status(500).json(new CodedError("ServerError"));
+                res.status(500).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR }).finish());
         }
 }, ["POST", "PUT"])
 
 addRouteWithMethods(router, '/', async (req, res) => {
         // Get the gameState of the game associated with the provided code
-        const body = req.body as proto.routes.GetGameRequest;
+        const body = proto.routes.CreateGameRequest.decode(req.body);
 
         const code = body.code;
         try {
                 if (code) {
                         // Make sure a lobby exists with the provided code
                         if (await lobbyExists(code)) {
-                                res.status(400).json(new CodedError("BadLobbyCode"));
+                                res.status(400).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE }).finish());
                                 return;
                         }
                         try {
-                                res.status(200).json(proto.routes.GetGameResponse.create({ game: await GameRedis.getGameState(code) }));
+                                res.status(200).send(proto.routes.GetGameResponse.encode({ game: await GameRedis.getGameState(code) }).finish());
                         } catch (err) {
-                                res.status(400).json(err);
+                                const formattedError = { code: (err as CodedError).code, error: (err as CodedError).error.toString() };
+                                res.status(400).send(proto.shared.CodedError.encode(formattedError).finish());
                         }
                 } else {
-                        res.status(400).json(new CodedError("BadLobbyCode"));
+                        res.status(400).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE }).finish());
                 }
         } catch {
-                res.status(500).json(new CodedError("ServerError"));
+                res.status(500).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR }).finish());
         }
 }, ["GET"])
 

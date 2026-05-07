@@ -1,8 +1,8 @@
 import { Router, type Request, type Response } from "express";
 import { User } from "../database-sqllite/models.ts";
 import { addRouteWithMethods } from "../lib/lib.ts";
-import { CodedError } from "../lib/types.ts";
 import { createUser } from "../database-sqllite/user.ts";
+import * as proto from '../lib/proto.js';
 
 const router = Router();
 
@@ -12,9 +12,9 @@ addRouteWithMethods(router, '/create', async function (req: Request, res: Respon
 
         try {
                 await createUser(sessionID);
-                res.status(201).json("Created successfully");
+                res.status(201).send();
         } catch {
-                res.status(500).json(new CodedError("ServerError"));
+                res.status(500).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR }).finish());
         }
 }, ["POST", "PUT"]);
 

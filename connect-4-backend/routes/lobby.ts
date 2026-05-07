@@ -11,18 +11,18 @@ addRouteWithMethods(router, '/', async (req, res) => {
         // Search params can include the code (to get a specific lobby) or include filters for the list of lobbies
         if (req.query.code) {
                 try {
-                        res.status(200).json(proto.routes.GetLobbyResponse.create({ lobby: await getLobby(req.query.code.toString()) }));
+                        res.status(200).send(proto.routes.GetLobbyResponse.encode({ lobby: await getLobby(req.query.code.toString()) }).finish());
                 } catch {
-                        res.status(400).json(proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE }));
+                        res.status(400).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE }).finish());
                 }
         }
 
-        // If no code was provTypeided, return all lobbies
+        // If no code was provType00ided, return all lobbies
         else {
                 try {
-                        res.status(200).json(proto.routes.GetLobbiesResponse.create({ lobbies: await getAllLobbies() }));
+                        res.status(200).send(proto.routes.GetLobbiesResponse.encode({ lobbies: await getAllLobbies() }).finish());
                 } catch {
-                        res.status(500).json(proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR }));
+                        res.status(500).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR }).finish());
                 }
         }
 }, ["GET"])
@@ -38,9 +38,9 @@ addRouteWithMethods(router, '/create/', async (req, res) => {
 
                 await assignPlayerID(code, (req as UserRequest).user.id, proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1);
 
-                res.status(201).json(proto.routes.CreateLobbyResponse.create({ code: code }));
+                res.status(201).send(proto.routes.CreateLobbyResponse.encode({ code: code }).finish());
         } catch {
-                res.status(500).json(proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR }));
+                res.status(500).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR }).finish());
         }
 }, ["POST", "PUT"]);
 
@@ -51,15 +51,15 @@ addRouteWithMethods(router, '/join', async (req, res) => {
 
         try {
                 if (!code || !(await lobbyExists(code))) {
-                        res.status(400).json(proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE }));
+                        res.status(400).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE }).finish());
                         return;
                 }
 
                 await joinLobby(code, (req as UserRequest).user.id);
                 await assignPlayerID(code, (req as UserRequest).user.id, proto.shared.PlayerIDs.PLAYER_IDS_PLAYER2);
-                res.status(200).json();
+                res.status(200).send();
         } catch {
-                res.status(500).json(proto.shared.CodedError.create({ code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR }));
+                res.status(500).send(proto.shared.CodedError.encode({ code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR }).finish());
         }
 }, ["POST"])
 export default router;
