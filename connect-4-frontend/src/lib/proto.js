@@ -7,769 +7,6 @@ const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.
 // Exported root namespace
 const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
-export const models = $root.models = (() => {
-
-    /**
-     * Namespace models.
-     * @exports models
-     * @namespace
-     */
-    const models = {};
-
-    models.Lobby = (function() {
-
-        /**
-         * Properties of a Lobby.
-         * @memberof models
-         * @interface ILobby
-         * @property {string|null} [code] Lobby code
-         */
-
-        /**
-         * Constructs a new Lobby.
-         * @memberof models
-         * @classdesc Represents a Lobby.
-         * @implements ILobby
-         * @constructor
-         * @param {models.ILobby=} [properties] Properties to set
-         */
-        function Lobby(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * Lobby code.
-         * @member {string} code
-         * @memberof models.Lobby
-         * @instance
-         */
-        Lobby.prototype.code = "";
-
-        /**
-         * Creates a new Lobby instance using the specified properties.
-         * @function create
-         * @memberof models.Lobby
-         * @static
-         * @param {models.ILobby=} [properties] Properties to set
-         * @returns {models.Lobby} Lobby instance
-         */
-        Lobby.create = function create(properties) {
-            return new Lobby(properties);
-        };
-
-        /**
-         * Encodes the specified Lobby message. Does not implicitly {@link models.Lobby.verify|verify} messages.
-         * @function encode
-         * @memberof models.Lobby
-         * @static
-         * @param {models.ILobby} message Lobby message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        Lobby.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.code);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified Lobby message, length delimited. Does not implicitly {@link models.Lobby.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof models.Lobby
-         * @static
-         * @param {models.ILobby} message Lobby message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        Lobby.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a Lobby message from the specified reader or buffer.
-         * @function decode
-         * @memberof models.Lobby
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {models.Lobby} Lobby
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        Lobby.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.Lobby();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.code = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a Lobby message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof models.Lobby
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {models.Lobby} Lobby
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        Lobby.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a Lobby message.
-         * @function verify
-         * @memberof models.Lobby
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        Lobby.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.code != null && message.hasOwnProperty("code"))
-                if (!$util.isString(message.code))
-                    return "code: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a Lobby message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof models.Lobby
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {models.Lobby} Lobby
-         */
-        Lobby.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.models.Lobby)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.models.Lobby();
-            if (object.code != null)
-                message.code = String(object.code);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a Lobby message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof models.Lobby
-         * @static
-         * @param {models.Lobby} message Lobby
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        Lobby.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults)
-                object.code = "";
-            if (message.code != null && message.hasOwnProperty("code"))
-                object.code = message.code;
-            return object;
-        };
-
-        /**
-         * Converts this Lobby to JSON.
-         * @function toJSON
-         * @memberof models.Lobby
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        Lobby.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for Lobby
-         * @function getTypeUrl
-         * @memberof models.Lobby
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        Lobby.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/models.Lobby";
-        };
-
-        return Lobby;
-    })();
-
-    models.User = (function() {
-
-        /**
-         * Properties of a User.
-         * @memberof models
-         * @interface IUser
-         * @property {string|null} [id] User id
-         * @property {string|null} [sessionId] User sessionId
-         * @property {string|null} [username] User username
-         */
-
-        /**
-         * Constructs a new User.
-         * @memberof models
-         * @classdesc Represents a User.
-         * @implements IUser
-         * @constructor
-         * @param {models.IUser=} [properties] Properties to set
-         */
-        function User(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * User id.
-         * @member {string} id
-         * @memberof models.User
-         * @instance
-         */
-        User.prototype.id = "";
-
-        /**
-         * User sessionId.
-         * @member {string} sessionId
-         * @memberof models.User
-         * @instance
-         */
-        User.prototype.sessionId = "";
-
-        /**
-         * User username.
-         * @member {string} username
-         * @memberof models.User
-         * @instance
-         */
-        User.prototype.username = "";
-
-        /**
-         * Creates a new User instance using the specified properties.
-         * @function create
-         * @memberof models.User
-         * @static
-         * @param {models.IUser=} [properties] Properties to set
-         * @returns {models.User} User instance
-         */
-        User.create = function create(properties) {
-            return new User(properties);
-        };
-
-        /**
-         * Encodes the specified User message. Does not implicitly {@link models.User.verify|verify} messages.
-         * @function encode
-         * @memberof models.User
-         * @static
-         * @param {models.IUser} message User message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        User.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
-            if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.sessionId);
-            if (message.username != null && Object.hasOwnProperty.call(message, "username"))
-                writer.uint32(/* id 3, wireType 2 =*/26).string(message.username);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified User message, length delimited. Does not implicitly {@link models.User.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof models.User
-         * @static
-         * @param {models.IUser} message User message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        User.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a User message from the specified reader or buffer.
-         * @function decode
-         * @memberof models.User
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {models.User} User
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        User.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.User();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.id = reader.string();
-                        break;
-                    }
-                case 2: {
-                        message.sessionId = reader.string();
-                        break;
-                    }
-                case 3: {
-                        message.username = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a User message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof models.User
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {models.User} User
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        User.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a User message.
-         * @function verify
-         * @memberof models.User
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        User.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.id != null && message.hasOwnProperty("id"))
-                if (!$util.isString(message.id))
-                    return "id: string expected";
-            if (message.sessionId != null && message.hasOwnProperty("sessionId"))
-                if (!$util.isString(message.sessionId))
-                    return "sessionId: string expected";
-            if (message.username != null && message.hasOwnProperty("username"))
-                if (!$util.isString(message.username))
-                    return "username: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a User message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof models.User
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {models.User} User
-         */
-        User.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.models.User)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.models.User();
-            if (object.id != null)
-                message.id = String(object.id);
-            if (object.sessionId != null)
-                message.sessionId = String(object.sessionId);
-            if (object.username != null)
-                message.username = String(object.username);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a User message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof models.User
-         * @static
-         * @param {models.User} message User
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        User.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults) {
-                object.id = "";
-                object.sessionId = "";
-                object.username = "";
-            }
-            if (message.id != null && message.hasOwnProperty("id"))
-                object.id = message.id;
-            if (message.sessionId != null && message.hasOwnProperty("sessionId"))
-                object.sessionId = message.sessionId;
-            if (message.username != null && message.hasOwnProperty("username"))
-                object.username = message.username;
-            return object;
-        };
-
-        /**
-         * Converts this User to JSON.
-         * @function toJSON
-         * @memberof models.User
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        User.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for User
-         * @function getTypeUrl
-         * @memberof models.User
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        User.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/models.User";
-        };
-
-        return User;
-    })();
-
-    models.Game = (function() {
-
-        /**
-         * Properties of a Game.
-         * @memberof models
-         * @interface IGame
-         * @property {shared.PlayerIDs|null} [turn] Game turn
-         * @property {shared.IGameBoard|null} [board] Game board
-         */
-
-        /**
-         * Constructs a new Game.
-         * @memberof models
-         * @classdesc Represents a Game.
-         * @implements IGame
-         * @constructor
-         * @param {models.IGame=} [properties] Properties to set
-         */
-        function Game(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * Game turn.
-         * @member {shared.PlayerIDs} turn
-         * @memberof models.Game
-         * @instance
-         */
-        Game.prototype.turn = 0;
-
-        /**
-         * Game board.
-         * @member {shared.IGameBoard|null|undefined} board
-         * @memberof models.Game
-         * @instance
-         */
-        Game.prototype.board = null;
-
-        /**
-         * Creates a new Game instance using the specified properties.
-         * @function create
-         * @memberof models.Game
-         * @static
-         * @param {models.IGame=} [properties] Properties to set
-         * @returns {models.Game} Game instance
-         */
-        Game.create = function create(properties) {
-            return new Game(properties);
-        };
-
-        /**
-         * Encodes the specified Game message. Does not implicitly {@link models.Game.verify|verify} messages.
-         * @function encode
-         * @memberof models.Game
-         * @static
-         * @param {models.IGame} message Game message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        Game.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.turn != null && Object.hasOwnProperty.call(message, "turn"))
-                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.turn);
-            if (message.board != null && Object.hasOwnProperty.call(message, "board"))
-                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-            return writer;
-        };
-
-        /**
-         * Encodes the specified Game message, length delimited. Does not implicitly {@link models.Game.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof models.Game
-         * @static
-         * @param {models.IGame} message Game message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        Game.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a Game message from the specified reader or buffer.
-         * @function decode
-         * @memberof models.Game
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {models.Game} Game
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        Game.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.Game();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.turn = reader.int32();
-                        break;
-                    }
-                case 2: {
-                        message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a Game message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof models.Game
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {models.Game} Game
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        Game.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a Game message.
-         * @function verify
-         * @memberof models.Game
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        Game.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.turn != null && message.hasOwnProperty("turn"))
-                switch (message.turn) {
-                default:
-                    return "turn: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                    break;
-                }
-            if (message.board != null && message.hasOwnProperty("board")) {
-                let error = $root.shared.GameBoard.verify(message.board, long + 1);
-                if (error)
-                    return "board." + error;
-            }
-            return null;
-        };
-
-        /**
-         * Creates a Game message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof models.Game
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {models.Game} Game
-         */
-        Game.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.models.Game)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.models.Game();
-            switch (object.turn) {
-            default:
-                if (typeof object.turn === "number") {
-                    message.turn = object.turn;
-                    break;
-                }
-                break;
-            case "PLAYER_IDS_UNSPECIFIED":
-            case 0:
-                message.turn = 0;
-                break;
-            case "PLAYER_IDS_PLAYER1":
-            case 1:
-                message.turn = 1;
-                break;
-            case "PLAYER_IDS_PLAYER2":
-            case 2:
-                message.turn = 2;
-                break;
-            }
-            if (object.board != null) {
-                if (typeof object.board !== "object")
-                    throw TypeError(".models.Game.board: object expected");
-                message.board = $root.shared.GameBoard.fromObject(object.board, long + 1);
-            }
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a Game message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof models.Game
-         * @static
-         * @param {models.Game} message Game
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        Game.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults) {
-                object.turn = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
-                object.board = null;
-            }
-            if (message.turn != null && message.hasOwnProperty("turn"))
-                object.turn = options.enums === String ? $root.shared.PlayerIDs[message.turn] === undefined ? message.turn : $root.shared.PlayerIDs[message.turn] : message.turn;
-            if (message.board != null && message.hasOwnProperty("board"))
-                object.board = $root.shared.GameBoard.toObject(message.board, options);
-            return object;
-        };
-
-        /**
-         * Converts this Game to JSON.
-         * @function toJSON
-         * @memberof models.Game
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        Game.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for Game
-         * @function getTypeUrl
-         * @memberof models.Game
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        Game.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/models.Game";
-        };
-
-        return Game;
-    })();
-
-    return models;
-})();
-
 export const shared = $root.shared = (() => {
 
     /**
@@ -1672,1582 +909,6 @@ export const shared = $root.shared = (() => {
     })();
 
     return shared;
-})();
-
-export const routes = $root.routes = (() => {
-
-    /**
-     * Namespace routes.
-     * @exports routes
-     * @namespace
-     */
-    const routes = {};
-
-    routes.GetGameResponse = (function() {
-
-        /**
-         * Properties of a GetGameResponse.
-         * @memberof routes
-         * @interface IGetGameResponse
-         * @property {models.IGame|null} [game] GetGameResponse game
-         */
-
-        /**
-         * Constructs a new GetGameResponse.
-         * @memberof routes
-         * @classdesc Represents a GetGameResponse.
-         * @implements IGetGameResponse
-         * @constructor
-         * @param {routes.IGetGameResponse=} [properties] Properties to set
-         */
-        function GetGameResponse(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * GetGameResponse game.
-         * @member {models.IGame|null|undefined} game
-         * @memberof routes.GetGameResponse
-         * @instance
-         */
-        GetGameResponse.prototype.game = null;
-
-        /**
-         * Creates a new GetGameResponse instance using the specified properties.
-         * @function create
-         * @memberof routes.GetGameResponse
-         * @static
-         * @param {routes.IGetGameResponse=} [properties] Properties to set
-         * @returns {routes.GetGameResponse} GetGameResponse instance
-         */
-        GetGameResponse.create = function create(properties) {
-            return new GetGameResponse(properties);
-        };
-
-        /**
-         * Encodes the specified GetGameResponse message. Does not implicitly {@link routes.GetGameResponse.verify|verify} messages.
-         * @function encode
-         * @memberof routes.GetGameResponse
-         * @static
-         * @param {routes.IGetGameResponse} message GetGameResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GetGameResponse.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.game != null && Object.hasOwnProperty.call(message, "game"))
-                $root.models.Game.encode(message.game, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            return writer;
-        };
-
-        /**
-         * Encodes the specified GetGameResponse message, length delimited. Does not implicitly {@link routes.GetGameResponse.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof routes.GetGameResponse
-         * @static
-         * @param {routes.IGetGameResponse} message GetGameResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GetGameResponse.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a GetGameResponse message from the specified reader or buffer.
-         * @function decode
-         * @memberof routes.GetGameResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {routes.GetGameResponse} GetGameResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GetGameResponse.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.GetGameResponse();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.game = $root.models.Game.decode(reader, reader.uint32(), undefined, long + 1);
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a GetGameResponse message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof routes.GetGameResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {routes.GetGameResponse} GetGameResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GetGameResponse.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a GetGameResponse message.
-         * @function verify
-         * @memberof routes.GetGameResponse
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        GetGameResponse.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.game != null && message.hasOwnProperty("game")) {
-                let error = $root.models.Game.verify(message.game, long + 1);
-                if (error)
-                    return "game." + error;
-            }
-            return null;
-        };
-
-        /**
-         * Creates a GetGameResponse message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof routes.GetGameResponse
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {routes.GetGameResponse} GetGameResponse
-         */
-        GetGameResponse.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.routes.GetGameResponse)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.routes.GetGameResponse();
-            if (object.game != null) {
-                if (typeof object.game !== "object")
-                    throw TypeError(".routes.GetGameResponse.game: object expected");
-                message.game = $root.models.Game.fromObject(object.game, long + 1);
-            }
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a GetGameResponse message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof routes.GetGameResponse
-         * @static
-         * @param {routes.GetGameResponse} message GetGameResponse
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        GetGameResponse.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults)
-                object.game = null;
-            if (message.game != null && message.hasOwnProperty("game"))
-                object.game = $root.models.Game.toObject(message.game, options);
-            return object;
-        };
-
-        /**
-         * Converts this GetGameResponse to JSON.
-         * @function toJSON
-         * @memberof routes.GetGameResponse
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        GetGameResponse.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for GetGameResponse
-         * @function getTypeUrl
-         * @memberof routes.GetGameResponse
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        GetGameResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/routes.GetGameResponse";
-        };
-
-        return GetGameResponse;
-    })();
-
-    routes.GetGameRequest = (function() {
-
-        /**
-         * Properties of a GetGameRequest.
-         * @memberof routes
-         * @interface IGetGameRequest
-         * @property {string|null} [code] GetGameRequest code
-         */
-
-        /**
-         * Constructs a new GetGameRequest.
-         * @memberof routes
-         * @classdesc Represents a GetGameRequest.
-         * @implements IGetGameRequest
-         * @constructor
-         * @param {routes.IGetGameRequest=} [properties] Properties to set
-         */
-        function GetGameRequest(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * GetGameRequest code.
-         * @member {string} code
-         * @memberof routes.GetGameRequest
-         * @instance
-         */
-        GetGameRequest.prototype.code = "";
-
-        /**
-         * Creates a new GetGameRequest instance using the specified properties.
-         * @function create
-         * @memberof routes.GetGameRequest
-         * @static
-         * @param {routes.IGetGameRequest=} [properties] Properties to set
-         * @returns {routes.GetGameRequest} GetGameRequest instance
-         */
-        GetGameRequest.create = function create(properties) {
-            return new GetGameRequest(properties);
-        };
-
-        /**
-         * Encodes the specified GetGameRequest message. Does not implicitly {@link routes.GetGameRequest.verify|verify} messages.
-         * @function encode
-         * @memberof routes.GetGameRequest
-         * @static
-         * @param {routes.IGetGameRequest} message GetGameRequest message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GetGameRequest.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.code);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified GetGameRequest message, length delimited. Does not implicitly {@link routes.GetGameRequest.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof routes.GetGameRequest
-         * @static
-         * @param {routes.IGetGameRequest} message GetGameRequest message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GetGameRequest.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a GetGameRequest message from the specified reader or buffer.
-         * @function decode
-         * @memberof routes.GetGameRequest
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {routes.GetGameRequest} GetGameRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GetGameRequest.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.GetGameRequest();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.code = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a GetGameRequest message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof routes.GetGameRequest
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {routes.GetGameRequest} GetGameRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GetGameRequest.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a GetGameRequest message.
-         * @function verify
-         * @memberof routes.GetGameRequest
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        GetGameRequest.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.code != null && message.hasOwnProperty("code"))
-                if (!$util.isString(message.code))
-                    return "code: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a GetGameRequest message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof routes.GetGameRequest
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {routes.GetGameRequest} GetGameRequest
-         */
-        GetGameRequest.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.routes.GetGameRequest)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.routes.GetGameRequest();
-            if (object.code != null)
-                message.code = String(object.code);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a GetGameRequest message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof routes.GetGameRequest
-         * @static
-         * @param {routes.GetGameRequest} message GetGameRequest
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        GetGameRequest.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults)
-                object.code = "";
-            if (message.code != null && message.hasOwnProperty("code"))
-                object.code = message.code;
-            return object;
-        };
-
-        /**
-         * Converts this GetGameRequest to JSON.
-         * @function toJSON
-         * @memberof routes.GetGameRequest
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        GetGameRequest.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for GetGameRequest
-         * @function getTypeUrl
-         * @memberof routes.GetGameRequest
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        GetGameRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/routes.GetGameRequest";
-        };
-
-        return GetGameRequest;
-    })();
-
-    routes.CreateGameRequest = (function() {
-
-        /**
-         * Properties of a CreateGameRequest.
-         * @memberof routes
-         * @interface ICreateGameRequest
-         * @property {string|null} [code] CreateGameRequest code
-         */
-
-        /**
-         * Constructs a new CreateGameRequest.
-         * @memberof routes
-         * @classdesc Represents a CreateGameRequest.
-         * @implements ICreateGameRequest
-         * @constructor
-         * @param {routes.ICreateGameRequest=} [properties] Properties to set
-         */
-        function CreateGameRequest(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * CreateGameRequest code.
-         * @member {string} code
-         * @memberof routes.CreateGameRequest
-         * @instance
-         */
-        CreateGameRequest.prototype.code = "";
-
-        /**
-         * Creates a new CreateGameRequest instance using the specified properties.
-         * @function create
-         * @memberof routes.CreateGameRequest
-         * @static
-         * @param {routes.ICreateGameRequest=} [properties] Properties to set
-         * @returns {routes.CreateGameRequest} CreateGameRequest instance
-         */
-        CreateGameRequest.create = function create(properties) {
-            return new CreateGameRequest(properties);
-        };
-
-        /**
-         * Encodes the specified CreateGameRequest message. Does not implicitly {@link routes.CreateGameRequest.verify|verify} messages.
-         * @function encode
-         * @memberof routes.CreateGameRequest
-         * @static
-         * @param {routes.ICreateGameRequest} message CreateGameRequest message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        CreateGameRequest.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.code);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified CreateGameRequest message, length delimited. Does not implicitly {@link routes.CreateGameRequest.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof routes.CreateGameRequest
-         * @static
-         * @param {routes.ICreateGameRequest} message CreateGameRequest message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        CreateGameRequest.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a CreateGameRequest message from the specified reader or buffer.
-         * @function decode
-         * @memberof routes.CreateGameRequest
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {routes.CreateGameRequest} CreateGameRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        CreateGameRequest.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.CreateGameRequest();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.code = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a CreateGameRequest message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof routes.CreateGameRequest
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {routes.CreateGameRequest} CreateGameRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        CreateGameRequest.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a CreateGameRequest message.
-         * @function verify
-         * @memberof routes.CreateGameRequest
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        CreateGameRequest.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.code != null && message.hasOwnProperty("code"))
-                if (!$util.isString(message.code))
-                    return "code: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a CreateGameRequest message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof routes.CreateGameRequest
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {routes.CreateGameRequest} CreateGameRequest
-         */
-        CreateGameRequest.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.routes.CreateGameRequest)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.routes.CreateGameRequest();
-            if (object.code != null)
-                message.code = String(object.code);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a CreateGameRequest message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof routes.CreateGameRequest
-         * @static
-         * @param {routes.CreateGameRequest} message CreateGameRequest
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        CreateGameRequest.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults)
-                object.code = "";
-            if (message.code != null && message.hasOwnProperty("code"))
-                object.code = message.code;
-            return object;
-        };
-
-        /**
-         * Converts this CreateGameRequest to JSON.
-         * @function toJSON
-         * @memberof routes.CreateGameRequest
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        CreateGameRequest.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for CreateGameRequest
-         * @function getTypeUrl
-         * @memberof routes.CreateGameRequest
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        CreateGameRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/routes.CreateGameRequest";
-        };
-
-        return CreateGameRequest;
-    })();
-
-    routes.GetLobbiesResponse = (function() {
-
-        /**
-         * Properties of a GetLobbiesResponse.
-         * @memberof routes
-         * @interface IGetLobbiesResponse
-         * @property {Array.<models.ILobby>|null} [lobbies] GetLobbiesResponse lobbies
-         */
-
-        /**
-         * Constructs a new GetLobbiesResponse.
-         * @memberof routes
-         * @classdesc Represents a GetLobbiesResponse.
-         * @implements IGetLobbiesResponse
-         * @constructor
-         * @param {routes.IGetLobbiesResponse=} [properties] Properties to set
-         */
-        function GetLobbiesResponse(properties) {
-            this.lobbies = [];
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * GetLobbiesResponse lobbies.
-         * @member {Array.<models.ILobby>} lobbies
-         * @memberof routes.GetLobbiesResponse
-         * @instance
-         */
-        GetLobbiesResponse.prototype.lobbies = $util.emptyArray;
-
-        /**
-         * Creates a new GetLobbiesResponse instance using the specified properties.
-         * @function create
-         * @memberof routes.GetLobbiesResponse
-         * @static
-         * @param {routes.IGetLobbiesResponse=} [properties] Properties to set
-         * @returns {routes.GetLobbiesResponse} GetLobbiesResponse instance
-         */
-        GetLobbiesResponse.create = function create(properties) {
-            return new GetLobbiesResponse(properties);
-        };
-
-        /**
-         * Encodes the specified GetLobbiesResponse message. Does not implicitly {@link routes.GetLobbiesResponse.verify|verify} messages.
-         * @function encode
-         * @memberof routes.GetLobbiesResponse
-         * @static
-         * @param {routes.IGetLobbiesResponse} message GetLobbiesResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GetLobbiesResponse.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.lobbies != null && message.lobbies.length)
-                for (let i = 0; i < message.lobbies.length; ++i)
-                    $root.models.Lobby.encode(message.lobbies[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            return writer;
-        };
-
-        /**
-         * Encodes the specified GetLobbiesResponse message, length delimited. Does not implicitly {@link routes.GetLobbiesResponse.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof routes.GetLobbiesResponse
-         * @static
-         * @param {routes.IGetLobbiesResponse} message GetLobbiesResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GetLobbiesResponse.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a GetLobbiesResponse message from the specified reader or buffer.
-         * @function decode
-         * @memberof routes.GetLobbiesResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {routes.GetLobbiesResponse} GetLobbiesResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GetLobbiesResponse.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.GetLobbiesResponse();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        if (!(message.lobbies && message.lobbies.length))
-                            message.lobbies = [];
-                        message.lobbies.push($root.models.Lobby.decode(reader, reader.uint32(), undefined, long + 1));
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a GetLobbiesResponse message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof routes.GetLobbiesResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {routes.GetLobbiesResponse} GetLobbiesResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GetLobbiesResponse.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a GetLobbiesResponse message.
-         * @function verify
-         * @memberof routes.GetLobbiesResponse
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        GetLobbiesResponse.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.lobbies != null && message.hasOwnProperty("lobbies")) {
-                if (!Array.isArray(message.lobbies))
-                    return "lobbies: array expected";
-                for (let i = 0; i < message.lobbies.length; ++i) {
-                    let error = $root.models.Lobby.verify(message.lobbies[i], long + 1);
-                    if (error)
-                        return "lobbies." + error;
-                }
-            }
-            return null;
-        };
-
-        /**
-         * Creates a GetLobbiesResponse message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof routes.GetLobbiesResponse
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {routes.GetLobbiesResponse} GetLobbiesResponse
-         */
-        GetLobbiesResponse.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.routes.GetLobbiesResponse)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.routes.GetLobbiesResponse();
-            if (object.lobbies) {
-                if (!Array.isArray(object.lobbies))
-                    throw TypeError(".routes.GetLobbiesResponse.lobbies: array expected");
-                message.lobbies = [];
-                for (let i = 0; i < object.lobbies.length; ++i) {
-                    if (typeof object.lobbies[i] !== "object")
-                        throw TypeError(".routes.GetLobbiesResponse.lobbies: object expected");
-                    message.lobbies[i] = $root.models.Lobby.fromObject(object.lobbies[i], long + 1);
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a GetLobbiesResponse message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof routes.GetLobbiesResponse
-         * @static
-         * @param {routes.GetLobbiesResponse} message GetLobbiesResponse
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        GetLobbiesResponse.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.arrays || options.defaults)
-                object.lobbies = [];
-            if (message.lobbies && message.lobbies.length) {
-                object.lobbies = [];
-                for (let j = 0; j < message.lobbies.length; ++j)
-                    object.lobbies[j] = $root.models.Lobby.toObject(message.lobbies[j], options);
-            }
-            return object;
-        };
-
-        /**
-         * Converts this GetLobbiesResponse to JSON.
-         * @function toJSON
-         * @memberof routes.GetLobbiesResponse
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        GetLobbiesResponse.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for GetLobbiesResponse
-         * @function getTypeUrl
-         * @memberof routes.GetLobbiesResponse
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        GetLobbiesResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/routes.GetLobbiesResponse";
-        };
-
-        return GetLobbiesResponse;
-    })();
-
-    routes.GetLobbyResponse = (function() {
-
-        /**
-         * Properties of a GetLobbyResponse.
-         * @memberof routes
-         * @interface IGetLobbyResponse
-         * @property {models.ILobby|null} [lobby] GetLobbyResponse lobby
-         */
-
-        /**
-         * Constructs a new GetLobbyResponse.
-         * @memberof routes
-         * @classdesc Represents a GetLobbyResponse.
-         * @implements IGetLobbyResponse
-         * @constructor
-         * @param {routes.IGetLobbyResponse=} [properties] Properties to set
-         */
-        function GetLobbyResponse(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * GetLobbyResponse lobby.
-         * @member {models.ILobby|null|undefined} lobby
-         * @memberof routes.GetLobbyResponse
-         * @instance
-         */
-        GetLobbyResponse.prototype.lobby = null;
-
-        // OneOf field names bound to virtual getters and setters
-        let $oneOfFields;
-
-        // Virtual OneOf for proto3 optional field
-        Object.defineProperty(GetLobbyResponse.prototype, "_lobby", {
-            get: $util.oneOfGetter($oneOfFields = ["lobby"]),
-            set: $util.oneOfSetter($oneOfFields)
-        });
-
-        /**
-         * Creates a new GetLobbyResponse instance using the specified properties.
-         * @function create
-         * @memberof routes.GetLobbyResponse
-         * @static
-         * @param {routes.IGetLobbyResponse=} [properties] Properties to set
-         * @returns {routes.GetLobbyResponse} GetLobbyResponse instance
-         */
-        GetLobbyResponse.create = function create(properties) {
-            return new GetLobbyResponse(properties);
-        };
-
-        /**
-         * Encodes the specified GetLobbyResponse message. Does not implicitly {@link routes.GetLobbyResponse.verify|verify} messages.
-         * @function encode
-         * @memberof routes.GetLobbyResponse
-         * @static
-         * @param {routes.IGetLobbyResponse} message GetLobbyResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GetLobbyResponse.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.lobby != null && Object.hasOwnProperty.call(message, "lobby"))
-                $root.models.Lobby.encode(message.lobby, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            return writer;
-        };
-
-        /**
-         * Encodes the specified GetLobbyResponse message, length delimited. Does not implicitly {@link routes.GetLobbyResponse.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof routes.GetLobbyResponse
-         * @static
-         * @param {routes.IGetLobbyResponse} message GetLobbyResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GetLobbyResponse.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a GetLobbyResponse message from the specified reader or buffer.
-         * @function decode
-         * @memberof routes.GetLobbyResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {routes.GetLobbyResponse} GetLobbyResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GetLobbyResponse.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.GetLobbyResponse();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.lobby = $root.models.Lobby.decode(reader, reader.uint32(), undefined, long + 1);
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a GetLobbyResponse message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof routes.GetLobbyResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {routes.GetLobbyResponse} GetLobbyResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GetLobbyResponse.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a GetLobbyResponse message.
-         * @function verify
-         * @memberof routes.GetLobbyResponse
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        GetLobbyResponse.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            let properties = {};
-            if (message.lobby != null && message.hasOwnProperty("lobby")) {
-                properties._lobby = 1;
-                {
-                    let error = $root.models.Lobby.verify(message.lobby, long + 1);
-                    if (error)
-                        return "lobby." + error;
-                }
-            }
-            return null;
-        };
-
-        /**
-         * Creates a GetLobbyResponse message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof routes.GetLobbyResponse
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {routes.GetLobbyResponse} GetLobbyResponse
-         */
-        GetLobbyResponse.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.routes.GetLobbyResponse)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.routes.GetLobbyResponse();
-            if (object.lobby != null) {
-                if (typeof object.lobby !== "object")
-                    throw TypeError(".routes.GetLobbyResponse.lobby: object expected");
-                message.lobby = $root.models.Lobby.fromObject(object.lobby, long + 1);
-            }
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a GetLobbyResponse message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof routes.GetLobbyResponse
-         * @static
-         * @param {routes.GetLobbyResponse} message GetLobbyResponse
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        GetLobbyResponse.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (message.lobby != null && message.hasOwnProperty("lobby")) {
-                object.lobby = $root.models.Lobby.toObject(message.lobby, options);
-                if (options.oneofs)
-                    object._lobby = "lobby";
-            }
-            return object;
-        };
-
-        /**
-         * Converts this GetLobbyResponse to JSON.
-         * @function toJSON
-         * @memberof routes.GetLobbyResponse
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        GetLobbyResponse.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for GetLobbyResponse
-         * @function getTypeUrl
-         * @memberof routes.GetLobbyResponse
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        GetLobbyResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/routes.GetLobbyResponse";
-        };
-
-        return GetLobbyResponse;
-    })();
-
-    routes.CreateLobbyResponse = (function() {
-
-        /**
-         * Properties of a CreateLobbyResponse.
-         * @memberof routes
-         * @interface ICreateLobbyResponse
-         * @property {string|null} [code] CreateLobbyResponse code
-         */
-
-        /**
-         * Constructs a new CreateLobbyResponse.
-         * @memberof routes
-         * @classdesc Represents a CreateLobbyResponse.
-         * @implements ICreateLobbyResponse
-         * @constructor
-         * @param {routes.ICreateLobbyResponse=} [properties] Properties to set
-         */
-        function CreateLobbyResponse(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * CreateLobbyResponse code.
-         * @member {string} code
-         * @memberof routes.CreateLobbyResponse
-         * @instance
-         */
-        CreateLobbyResponse.prototype.code = "";
-
-        /**
-         * Creates a new CreateLobbyResponse instance using the specified properties.
-         * @function create
-         * @memberof routes.CreateLobbyResponse
-         * @static
-         * @param {routes.ICreateLobbyResponse=} [properties] Properties to set
-         * @returns {routes.CreateLobbyResponse} CreateLobbyResponse instance
-         */
-        CreateLobbyResponse.create = function create(properties) {
-            return new CreateLobbyResponse(properties);
-        };
-
-        /**
-         * Encodes the specified CreateLobbyResponse message. Does not implicitly {@link routes.CreateLobbyResponse.verify|verify} messages.
-         * @function encode
-         * @memberof routes.CreateLobbyResponse
-         * @static
-         * @param {routes.ICreateLobbyResponse} message CreateLobbyResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        CreateLobbyResponse.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.code);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified CreateLobbyResponse message, length delimited. Does not implicitly {@link routes.CreateLobbyResponse.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof routes.CreateLobbyResponse
-         * @static
-         * @param {routes.ICreateLobbyResponse} message CreateLobbyResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        CreateLobbyResponse.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a CreateLobbyResponse message from the specified reader or buffer.
-         * @function decode
-         * @memberof routes.CreateLobbyResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {routes.CreateLobbyResponse} CreateLobbyResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        CreateLobbyResponse.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.CreateLobbyResponse();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.code = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a CreateLobbyResponse message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof routes.CreateLobbyResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {routes.CreateLobbyResponse} CreateLobbyResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        CreateLobbyResponse.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a CreateLobbyResponse message.
-         * @function verify
-         * @memberof routes.CreateLobbyResponse
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        CreateLobbyResponse.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.code != null && message.hasOwnProperty("code"))
-                if (!$util.isString(message.code))
-                    return "code: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a CreateLobbyResponse message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof routes.CreateLobbyResponse
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {routes.CreateLobbyResponse} CreateLobbyResponse
-         */
-        CreateLobbyResponse.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.routes.CreateLobbyResponse)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.routes.CreateLobbyResponse();
-            if (object.code != null)
-                message.code = String(object.code);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a CreateLobbyResponse message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof routes.CreateLobbyResponse
-         * @static
-         * @param {routes.CreateLobbyResponse} message CreateLobbyResponse
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        CreateLobbyResponse.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults)
-                object.code = "";
-            if (message.code != null && message.hasOwnProperty("code"))
-                object.code = message.code;
-            return object;
-        };
-
-        /**
-         * Converts this CreateLobbyResponse to JSON.
-         * @function toJSON
-         * @memberof routes.CreateLobbyResponse
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        CreateLobbyResponse.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for CreateLobbyResponse
-         * @function getTypeUrl
-         * @memberof routes.CreateLobbyResponse
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        CreateLobbyResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/routes.CreateLobbyResponse";
-        };
-
-        return CreateLobbyResponse;
-    })();
-
-    routes.JoinLobbyRequest = (function() {
-
-        /**
-         * Properties of a JoinLobbyRequest.
-         * @memberof routes
-         * @interface IJoinLobbyRequest
-         * @property {string|null} [code] JoinLobbyRequest code
-         */
-
-        /**
-         * Constructs a new JoinLobbyRequest.
-         * @memberof routes
-         * @classdesc Represents a JoinLobbyRequest.
-         * @implements IJoinLobbyRequest
-         * @constructor
-         * @param {routes.IJoinLobbyRequest=} [properties] Properties to set
-         */
-        function JoinLobbyRequest(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * JoinLobbyRequest code.
-         * @member {string} code
-         * @memberof routes.JoinLobbyRequest
-         * @instance
-         */
-        JoinLobbyRequest.prototype.code = "";
-
-        /**
-         * Creates a new JoinLobbyRequest instance using the specified properties.
-         * @function create
-         * @memberof routes.JoinLobbyRequest
-         * @static
-         * @param {routes.IJoinLobbyRequest=} [properties] Properties to set
-         * @returns {routes.JoinLobbyRequest} JoinLobbyRequest instance
-         */
-        JoinLobbyRequest.create = function create(properties) {
-            return new JoinLobbyRequest(properties);
-        };
-
-        /**
-         * Encodes the specified JoinLobbyRequest message. Does not implicitly {@link routes.JoinLobbyRequest.verify|verify} messages.
-         * @function encode
-         * @memberof routes.JoinLobbyRequest
-         * @static
-         * @param {routes.IJoinLobbyRequest} message JoinLobbyRequest message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        JoinLobbyRequest.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.code);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified JoinLobbyRequest message, length delimited. Does not implicitly {@link routes.JoinLobbyRequest.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof routes.JoinLobbyRequest
-         * @static
-         * @param {routes.IJoinLobbyRequest} message JoinLobbyRequest message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        JoinLobbyRequest.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a JoinLobbyRequest message from the specified reader or buffer.
-         * @function decode
-         * @memberof routes.JoinLobbyRequest
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {routes.JoinLobbyRequest} JoinLobbyRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        JoinLobbyRequest.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.JoinLobbyRequest();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.code = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a JoinLobbyRequest message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof routes.JoinLobbyRequest
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {routes.JoinLobbyRequest} JoinLobbyRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        JoinLobbyRequest.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a JoinLobbyRequest message.
-         * @function verify
-         * @memberof routes.JoinLobbyRequest
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        JoinLobbyRequest.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.code != null && message.hasOwnProperty("code"))
-                if (!$util.isString(message.code))
-                    return "code: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a JoinLobbyRequest message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof routes.JoinLobbyRequest
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {routes.JoinLobbyRequest} JoinLobbyRequest
-         */
-        JoinLobbyRequest.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.routes.JoinLobbyRequest)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.routes.JoinLobbyRequest();
-            if (object.code != null)
-                message.code = String(object.code);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a JoinLobbyRequest message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof routes.JoinLobbyRequest
-         * @static
-         * @param {routes.JoinLobbyRequest} message JoinLobbyRequest
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        JoinLobbyRequest.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults)
-                object.code = "";
-            if (message.code != null && message.hasOwnProperty("code"))
-                object.code = message.code;
-            return object;
-        };
-
-        /**
-         * Converts this JoinLobbyRequest to JSON.
-         * @function toJSON
-         * @memberof routes.JoinLobbyRequest
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        JoinLobbyRequest.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for JoinLobbyRequest
-         * @function getTypeUrl
-         * @memberof routes.JoinLobbyRequest
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        JoinLobbyRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/routes.JoinLobbyRequest";
-        };
-
-        return JoinLobbyRequest;
-    })();
-
-    return routes;
 })();
 
 export const ws = $root.ws = (() => {
@@ -5219,6 +2880,3516 @@ export const ws = $root.ws = (() => {
     })();
 
     return ws;
+})();
+
+export const routes = $root.routes = (() => {
+
+    /**
+     * Namespace routes.
+     * @exports routes
+     * @namespace
+     */
+    const routes = {};
+
+    routes.GetLobbiesResponse = (function() {
+
+        /**
+         * Properties of a GetLobbiesResponse.
+         * @memberof routes
+         * @interface IGetLobbiesResponse
+         * @property {Array.<models.ILobby>|null} [lobbies] GetLobbiesResponse lobbies
+         */
+
+        /**
+         * Constructs a new GetLobbiesResponse.
+         * @memberof routes
+         * @classdesc Represents a GetLobbiesResponse.
+         * @implements IGetLobbiesResponse
+         * @constructor
+         * @param {routes.IGetLobbiesResponse=} [properties] Properties to set
+         */
+        function GetLobbiesResponse(properties) {
+            this.lobbies = [];
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * GetLobbiesResponse lobbies.
+         * @member {Array.<models.ILobby>} lobbies
+         * @memberof routes.GetLobbiesResponse
+         * @instance
+         */
+        GetLobbiesResponse.prototype.lobbies = $util.emptyArray;
+
+        /**
+         * Creates a new GetLobbiesResponse instance using the specified properties.
+         * @function create
+         * @memberof routes.GetLobbiesResponse
+         * @static
+         * @param {routes.IGetLobbiesResponse=} [properties] Properties to set
+         * @returns {routes.GetLobbiesResponse} GetLobbiesResponse instance
+         */
+        GetLobbiesResponse.create = function create(properties) {
+            return new GetLobbiesResponse(properties);
+        };
+
+        /**
+         * Encodes the specified GetLobbiesResponse message. Does not implicitly {@link routes.GetLobbiesResponse.verify|verify} messages.
+         * @function encode
+         * @memberof routes.GetLobbiesResponse
+         * @static
+         * @param {routes.IGetLobbiesResponse} message GetLobbiesResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetLobbiesResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.lobbies != null && message.lobbies.length)
+                for (let i = 0; i < message.lobbies.length; ++i)
+                    $root.models.Lobby.encode(message.lobbies[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified GetLobbiesResponse message, length delimited. Does not implicitly {@link routes.GetLobbiesResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.GetLobbiesResponse
+         * @static
+         * @param {routes.IGetLobbiesResponse} message GetLobbiesResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetLobbiesResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a GetLobbiesResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.GetLobbiesResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.GetLobbiesResponse} GetLobbiesResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetLobbiesResponse.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.GetLobbiesResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        if (!(message.lobbies && message.lobbies.length))
+                            message.lobbies = [];
+                        message.lobbies.push($root.models.Lobby.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a GetLobbiesResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.GetLobbiesResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.GetLobbiesResponse} GetLobbiesResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetLobbiesResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a GetLobbiesResponse message.
+         * @function verify
+         * @memberof routes.GetLobbiesResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        GetLobbiesResponse.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.lobbies != null && message.hasOwnProperty("lobbies")) {
+                if (!Array.isArray(message.lobbies))
+                    return "lobbies: array expected";
+                for (let i = 0; i < message.lobbies.length; ++i) {
+                    let error = $root.models.Lobby.verify(message.lobbies[i], long + 1);
+                    if (error)
+                        return "lobbies." + error;
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a GetLobbiesResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.GetLobbiesResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.GetLobbiesResponse} GetLobbiesResponse
+         */
+        GetLobbiesResponse.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.GetLobbiesResponse)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.GetLobbiesResponse();
+            if (object.lobbies) {
+                if (!Array.isArray(object.lobbies))
+                    throw TypeError(".routes.GetLobbiesResponse.lobbies: array expected");
+                message.lobbies = [];
+                for (let i = 0; i < object.lobbies.length; ++i) {
+                    if (typeof object.lobbies[i] !== "object")
+                        throw TypeError(".routes.GetLobbiesResponse.lobbies: object expected");
+                    message.lobbies[i] = $root.models.Lobby.fromObject(object.lobbies[i], long + 1);
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a GetLobbiesResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.GetLobbiesResponse
+         * @static
+         * @param {routes.GetLobbiesResponse} message GetLobbiesResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        GetLobbiesResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.arrays || options.defaults)
+                object.lobbies = [];
+            if (message.lobbies && message.lobbies.length) {
+                object.lobbies = [];
+                for (let j = 0; j < message.lobbies.length; ++j)
+                    object.lobbies[j] = $root.models.Lobby.toObject(message.lobbies[j], options);
+            }
+            return object;
+        };
+
+        /**
+         * Converts this GetLobbiesResponse to JSON.
+         * @function toJSON
+         * @memberof routes.GetLobbiesResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        GetLobbiesResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for GetLobbiesResponse
+         * @function getTypeUrl
+         * @memberof routes.GetLobbiesResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        GetLobbiesResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.GetLobbiesResponse";
+        };
+
+        return GetLobbiesResponse;
+    })();
+
+    routes.GetLobbyResponse = (function() {
+
+        /**
+         * Properties of a GetLobbyResponse.
+         * @memberof routes
+         * @interface IGetLobbyResponse
+         * @property {models.ILobby|null} [lobby] GetLobbyResponse lobby
+         */
+
+        /**
+         * Constructs a new GetLobbyResponse.
+         * @memberof routes
+         * @classdesc Represents a GetLobbyResponse.
+         * @implements IGetLobbyResponse
+         * @constructor
+         * @param {routes.IGetLobbyResponse=} [properties] Properties to set
+         */
+        function GetLobbyResponse(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * GetLobbyResponse lobby.
+         * @member {models.ILobby|null|undefined} lobby
+         * @memberof routes.GetLobbyResponse
+         * @instance
+         */
+        GetLobbyResponse.prototype.lobby = null;
+
+        // OneOf field names bound to virtual getters and setters
+        let $oneOfFields;
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(GetLobbyResponse.prototype, "_lobby", {
+            get: $util.oneOfGetter($oneOfFields = ["lobby"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new GetLobbyResponse instance using the specified properties.
+         * @function create
+         * @memberof routes.GetLobbyResponse
+         * @static
+         * @param {routes.IGetLobbyResponse=} [properties] Properties to set
+         * @returns {routes.GetLobbyResponse} GetLobbyResponse instance
+         */
+        GetLobbyResponse.create = function create(properties) {
+            return new GetLobbyResponse(properties);
+        };
+
+        /**
+         * Encodes the specified GetLobbyResponse message. Does not implicitly {@link routes.GetLobbyResponse.verify|verify} messages.
+         * @function encode
+         * @memberof routes.GetLobbyResponse
+         * @static
+         * @param {routes.IGetLobbyResponse} message GetLobbyResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetLobbyResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.lobby != null && Object.hasOwnProperty.call(message, "lobby"))
+                $root.models.Lobby.encode(message.lobby, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified GetLobbyResponse message, length delimited. Does not implicitly {@link routes.GetLobbyResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.GetLobbyResponse
+         * @static
+         * @param {routes.IGetLobbyResponse} message GetLobbyResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetLobbyResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a GetLobbyResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.GetLobbyResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.GetLobbyResponse} GetLobbyResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetLobbyResponse.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.GetLobbyResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.lobby = $root.models.Lobby.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a GetLobbyResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.GetLobbyResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.GetLobbyResponse} GetLobbyResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetLobbyResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a GetLobbyResponse message.
+         * @function verify
+         * @memberof routes.GetLobbyResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        GetLobbyResponse.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            let properties = {};
+            if (message.lobby != null && message.hasOwnProperty("lobby")) {
+                properties._lobby = 1;
+                {
+                    let error = $root.models.Lobby.verify(message.lobby, long + 1);
+                    if (error)
+                        return "lobby." + error;
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a GetLobbyResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.GetLobbyResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.GetLobbyResponse} GetLobbyResponse
+         */
+        GetLobbyResponse.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.GetLobbyResponse)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.GetLobbyResponse();
+            if (object.lobby != null) {
+                if (typeof object.lobby !== "object")
+                    throw TypeError(".routes.GetLobbyResponse.lobby: object expected");
+                message.lobby = $root.models.Lobby.fromObject(object.lobby, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a GetLobbyResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.GetLobbyResponse
+         * @static
+         * @param {routes.GetLobbyResponse} message GetLobbyResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        GetLobbyResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (message.lobby != null && message.hasOwnProperty("lobby")) {
+                object.lobby = $root.models.Lobby.toObject(message.lobby, options);
+                if (options.oneofs)
+                    object._lobby = "lobby";
+            }
+            return object;
+        };
+
+        /**
+         * Converts this GetLobbyResponse to JSON.
+         * @function toJSON
+         * @memberof routes.GetLobbyResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        GetLobbyResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for GetLobbyResponse
+         * @function getTypeUrl
+         * @memberof routes.GetLobbyResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        GetLobbyResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.GetLobbyResponse";
+        };
+
+        return GetLobbyResponse;
+    })();
+
+    routes.CreateLobbyResponse = (function() {
+
+        /**
+         * Properties of a CreateLobbyResponse.
+         * @memberof routes
+         * @interface ICreateLobbyResponse
+         * @property {string|null} [code] CreateLobbyResponse code
+         */
+
+        /**
+         * Constructs a new CreateLobbyResponse.
+         * @memberof routes
+         * @classdesc Represents a CreateLobbyResponse.
+         * @implements ICreateLobbyResponse
+         * @constructor
+         * @param {routes.ICreateLobbyResponse=} [properties] Properties to set
+         */
+        function CreateLobbyResponse(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * CreateLobbyResponse code.
+         * @member {string} code
+         * @memberof routes.CreateLobbyResponse
+         * @instance
+         */
+        CreateLobbyResponse.prototype.code = "";
+
+        /**
+         * Creates a new CreateLobbyResponse instance using the specified properties.
+         * @function create
+         * @memberof routes.CreateLobbyResponse
+         * @static
+         * @param {routes.ICreateLobbyResponse=} [properties] Properties to set
+         * @returns {routes.CreateLobbyResponse} CreateLobbyResponse instance
+         */
+        CreateLobbyResponse.create = function create(properties) {
+            return new CreateLobbyResponse(properties);
+        };
+
+        /**
+         * Encodes the specified CreateLobbyResponse message. Does not implicitly {@link routes.CreateLobbyResponse.verify|verify} messages.
+         * @function encode
+         * @memberof routes.CreateLobbyResponse
+         * @static
+         * @param {routes.ICreateLobbyResponse} message CreateLobbyResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        CreateLobbyResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.code);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified CreateLobbyResponse message, length delimited. Does not implicitly {@link routes.CreateLobbyResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.CreateLobbyResponse
+         * @static
+         * @param {routes.ICreateLobbyResponse} message CreateLobbyResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        CreateLobbyResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a CreateLobbyResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.CreateLobbyResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.CreateLobbyResponse} CreateLobbyResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        CreateLobbyResponse.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.CreateLobbyResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.code = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a CreateLobbyResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.CreateLobbyResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.CreateLobbyResponse} CreateLobbyResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        CreateLobbyResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a CreateLobbyResponse message.
+         * @function verify
+         * @memberof routes.CreateLobbyResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        CreateLobbyResponse.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.code != null && message.hasOwnProperty("code"))
+                if (!$util.isString(message.code))
+                    return "code: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a CreateLobbyResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.CreateLobbyResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.CreateLobbyResponse} CreateLobbyResponse
+         */
+        CreateLobbyResponse.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.CreateLobbyResponse)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.CreateLobbyResponse();
+            if (object.code != null)
+                message.code = String(object.code);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a CreateLobbyResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.CreateLobbyResponse
+         * @static
+         * @param {routes.CreateLobbyResponse} message CreateLobbyResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        CreateLobbyResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.code = "";
+            if (message.code != null && message.hasOwnProperty("code"))
+                object.code = message.code;
+            return object;
+        };
+
+        /**
+         * Converts this CreateLobbyResponse to JSON.
+         * @function toJSON
+         * @memberof routes.CreateLobbyResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        CreateLobbyResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for CreateLobbyResponse
+         * @function getTypeUrl
+         * @memberof routes.CreateLobbyResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        CreateLobbyResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.CreateLobbyResponse";
+        };
+
+        return CreateLobbyResponse;
+    })();
+
+    routes.JoinLobbyRequest = (function() {
+
+        /**
+         * Properties of a JoinLobbyRequest.
+         * @memberof routes
+         * @interface IJoinLobbyRequest
+         * @property {string|null} [code] JoinLobbyRequest code
+         */
+
+        /**
+         * Constructs a new JoinLobbyRequest.
+         * @memberof routes
+         * @classdesc Represents a JoinLobbyRequest.
+         * @implements IJoinLobbyRequest
+         * @constructor
+         * @param {routes.IJoinLobbyRequest=} [properties] Properties to set
+         */
+        function JoinLobbyRequest(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * JoinLobbyRequest code.
+         * @member {string} code
+         * @memberof routes.JoinLobbyRequest
+         * @instance
+         */
+        JoinLobbyRequest.prototype.code = "";
+
+        /**
+         * Creates a new JoinLobbyRequest instance using the specified properties.
+         * @function create
+         * @memberof routes.JoinLobbyRequest
+         * @static
+         * @param {routes.IJoinLobbyRequest=} [properties] Properties to set
+         * @returns {routes.JoinLobbyRequest} JoinLobbyRequest instance
+         */
+        JoinLobbyRequest.create = function create(properties) {
+            return new JoinLobbyRequest(properties);
+        };
+
+        /**
+         * Encodes the specified JoinLobbyRequest message. Does not implicitly {@link routes.JoinLobbyRequest.verify|verify} messages.
+         * @function encode
+         * @memberof routes.JoinLobbyRequest
+         * @static
+         * @param {routes.IJoinLobbyRequest} message JoinLobbyRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        JoinLobbyRequest.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.code);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified JoinLobbyRequest message, length delimited. Does not implicitly {@link routes.JoinLobbyRequest.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.JoinLobbyRequest
+         * @static
+         * @param {routes.IJoinLobbyRequest} message JoinLobbyRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        JoinLobbyRequest.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a JoinLobbyRequest message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.JoinLobbyRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.JoinLobbyRequest} JoinLobbyRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        JoinLobbyRequest.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.JoinLobbyRequest();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.code = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a JoinLobbyRequest message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.JoinLobbyRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.JoinLobbyRequest} JoinLobbyRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        JoinLobbyRequest.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a JoinLobbyRequest message.
+         * @function verify
+         * @memberof routes.JoinLobbyRequest
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        JoinLobbyRequest.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.code != null && message.hasOwnProperty("code"))
+                if (!$util.isString(message.code))
+                    return "code: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a JoinLobbyRequest message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.JoinLobbyRequest
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.JoinLobbyRequest} JoinLobbyRequest
+         */
+        JoinLobbyRequest.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.JoinLobbyRequest)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.JoinLobbyRequest();
+            if (object.code != null)
+                message.code = String(object.code);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a JoinLobbyRequest message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.JoinLobbyRequest
+         * @static
+         * @param {routes.JoinLobbyRequest} message JoinLobbyRequest
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        JoinLobbyRequest.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.code = "";
+            if (message.code != null && message.hasOwnProperty("code"))
+                object.code = message.code;
+            return object;
+        };
+
+        /**
+         * Converts this JoinLobbyRequest to JSON.
+         * @function toJSON
+         * @memberof routes.JoinLobbyRequest
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        JoinLobbyRequest.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for JoinLobbyRequest
+         * @function getTypeUrl
+         * @memberof routes.JoinLobbyRequest
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        JoinLobbyRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.JoinLobbyRequest";
+        };
+
+        return JoinLobbyRequest;
+    })();
+
+    routes.ResponseLobbyMember = (function() {
+
+        /**
+         * Properties of a ResponseLobbyMember.
+         * @memberof routes
+         * @interface IResponseLobbyMember
+         * @property {string|null} [id] ResponseLobbyMember id
+         * @property {string|null} [userId] ResponseLobbyMember userId
+         * @property {string|null} [username] ResponseLobbyMember username
+         * @property {shared.PlayerTypes|null} [playerType] ResponseLobbyMember playerType
+         * @property {shared.PlayerIDs|null} [playerId] ResponseLobbyMember playerId
+         */
+
+        /**
+         * Constructs a new ResponseLobbyMember.
+         * @memberof routes
+         * @classdesc Represents a ResponseLobbyMember.
+         * @implements IResponseLobbyMember
+         * @constructor
+         * @param {routes.IResponseLobbyMember=} [properties] Properties to set
+         */
+        function ResponseLobbyMember(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * ResponseLobbyMember id.
+         * @member {string} id
+         * @memberof routes.ResponseLobbyMember
+         * @instance
+         */
+        ResponseLobbyMember.prototype.id = "";
+
+        /**
+         * ResponseLobbyMember userId.
+         * @member {string} userId
+         * @memberof routes.ResponseLobbyMember
+         * @instance
+         */
+        ResponseLobbyMember.prototype.userId = "";
+
+        /**
+         * ResponseLobbyMember username.
+         * @member {string} username
+         * @memberof routes.ResponseLobbyMember
+         * @instance
+         */
+        ResponseLobbyMember.prototype.username = "";
+
+        /**
+         * ResponseLobbyMember playerType.
+         * @member {shared.PlayerTypes} playerType
+         * @memberof routes.ResponseLobbyMember
+         * @instance
+         */
+        ResponseLobbyMember.prototype.playerType = 0;
+
+        /**
+         * ResponseLobbyMember playerId.
+         * @member {shared.PlayerIDs} playerId
+         * @memberof routes.ResponseLobbyMember
+         * @instance
+         */
+        ResponseLobbyMember.prototype.playerId = 0;
+
+        /**
+         * Creates a new ResponseLobbyMember instance using the specified properties.
+         * @function create
+         * @memberof routes.ResponseLobbyMember
+         * @static
+         * @param {routes.IResponseLobbyMember=} [properties] Properties to set
+         * @returns {routes.ResponseLobbyMember} ResponseLobbyMember instance
+         */
+        ResponseLobbyMember.create = function create(properties) {
+            return new ResponseLobbyMember(properties);
+        };
+
+        /**
+         * Encodes the specified ResponseLobbyMember message. Does not implicitly {@link routes.ResponseLobbyMember.verify|verify} messages.
+         * @function encode
+         * @memberof routes.ResponseLobbyMember
+         * @static
+         * @param {routes.IResponseLobbyMember} message ResponseLobbyMember message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ResponseLobbyMember.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+            if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.userId);
+            if (message.username != null && Object.hasOwnProperty.call(message, "username"))
+                writer.uint32(/* id 3, wireType 2 =*/26).string(message.username);
+            if (message.playerType != null && Object.hasOwnProperty.call(message, "playerType"))
+                writer.uint32(/* id 4, wireType 0 =*/32).int32(message.playerType);
+            if (message.playerId != null && Object.hasOwnProperty.call(message, "playerId"))
+                writer.uint32(/* id 5, wireType 0 =*/40).int32(message.playerId);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified ResponseLobbyMember message, length delimited. Does not implicitly {@link routes.ResponseLobbyMember.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.ResponseLobbyMember
+         * @static
+         * @param {routes.IResponseLobbyMember} message ResponseLobbyMember message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ResponseLobbyMember.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a ResponseLobbyMember message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.ResponseLobbyMember
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.ResponseLobbyMember} ResponseLobbyMember
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ResponseLobbyMember.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.ResponseLobbyMember();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.id = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.userId = reader.string();
+                        break;
+                    }
+                case 3: {
+                        message.username = reader.string();
+                        break;
+                    }
+                case 4: {
+                        message.playerType = reader.int32();
+                        break;
+                    }
+                case 5: {
+                        message.playerId = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a ResponseLobbyMember message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.ResponseLobbyMember
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.ResponseLobbyMember} ResponseLobbyMember
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ResponseLobbyMember.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a ResponseLobbyMember message.
+         * @function verify
+         * @memberof routes.ResponseLobbyMember
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        ResponseLobbyMember.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.id != null && message.hasOwnProperty("id"))
+                if (!$util.isString(message.id))
+                    return "id: string expected";
+            if (message.userId != null && message.hasOwnProperty("userId"))
+                if (!$util.isString(message.userId))
+                    return "userId: string expected";
+            if (message.username != null && message.hasOwnProperty("username"))
+                if (!$util.isString(message.username))
+                    return "username: string expected";
+            if (message.playerType != null && message.hasOwnProperty("playerType"))
+                switch (message.playerType) {
+                default:
+                    return "playerType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                    break;
+                }
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                switch (message.playerId) {
+                default:
+                    return "playerId: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                    break;
+                }
+            return null;
+        };
+
+        /**
+         * Creates a ResponseLobbyMember message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.ResponseLobbyMember
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.ResponseLobbyMember} ResponseLobbyMember
+         */
+        ResponseLobbyMember.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.ResponseLobbyMember)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.ResponseLobbyMember();
+            if (object.id != null)
+                message.id = String(object.id);
+            if (object.userId != null)
+                message.userId = String(object.userId);
+            if (object.username != null)
+                message.username = String(object.username);
+            switch (object.playerType) {
+            default:
+                if (typeof object.playerType === "number") {
+                    message.playerType = object.playerType;
+                    break;
+                }
+                break;
+            case "PLAYER_TYPES_UNSPECIFIED":
+            case 0:
+                message.playerType = 0;
+                break;
+            case "PLAYER_TYPES_PLAYER":
+            case 1:
+                message.playerType = 1;
+                break;
+            case "PLAYER_TYPES_SPECTATOR":
+            case 2:
+                message.playerType = 2;
+                break;
+            }
+            switch (object.playerId) {
+            default:
+                if (typeof object.playerId === "number") {
+                    message.playerId = object.playerId;
+                    break;
+                }
+                break;
+            case "PLAYER_IDS_UNSPECIFIED":
+            case 0:
+                message.playerId = 0;
+                break;
+            case "PLAYER_IDS_PLAYER1":
+            case 1:
+                message.playerId = 1;
+                break;
+            case "PLAYER_IDS_PLAYER2":
+            case 2:
+                message.playerId = 2;
+                break;
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a ResponseLobbyMember message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.ResponseLobbyMember
+         * @static
+         * @param {routes.ResponseLobbyMember} message ResponseLobbyMember
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        ResponseLobbyMember.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.id = "";
+                object.userId = "";
+                object.username = "";
+                object.playerType = options.enums === String ? "PLAYER_TYPES_UNSPECIFIED" : 0;
+                object.playerId = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
+            }
+            if (message.id != null && message.hasOwnProperty("id"))
+                object.id = message.id;
+            if (message.userId != null && message.hasOwnProperty("userId"))
+                object.userId = message.userId;
+            if (message.username != null && message.hasOwnProperty("username"))
+                object.username = message.username;
+            if (message.playerType != null && message.hasOwnProperty("playerType"))
+                object.playerType = options.enums === String ? $root.shared.PlayerTypes[message.playerType] === undefined ? message.playerType : $root.shared.PlayerTypes[message.playerType] : message.playerType;
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                object.playerId = options.enums === String ? $root.shared.PlayerIDs[message.playerId] === undefined ? message.playerId : $root.shared.PlayerIDs[message.playerId] : message.playerId;
+            return object;
+        };
+
+        /**
+         * Converts this ResponseLobbyMember to JSON.
+         * @function toJSON
+         * @memberof routes.ResponseLobbyMember
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        ResponseLobbyMember.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for ResponseLobbyMember
+         * @function getTypeUrl
+         * @memberof routes.ResponseLobbyMember
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        ResponseLobbyMember.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.ResponseLobbyMember";
+        };
+
+        return ResponseLobbyMember;
+    })();
+
+    routes.GetLobbyMembersRequest = (function() {
+
+        /**
+         * Properties of a GetLobbyMembersRequest.
+         * @memberof routes
+         * @interface IGetLobbyMembersRequest
+         * @property {string|null} [code] GetLobbyMembersRequest code
+         */
+
+        /**
+         * Constructs a new GetLobbyMembersRequest.
+         * @memberof routes
+         * @classdesc Represents a GetLobbyMembersRequest.
+         * @implements IGetLobbyMembersRequest
+         * @constructor
+         * @param {routes.IGetLobbyMembersRequest=} [properties] Properties to set
+         */
+        function GetLobbyMembersRequest(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * GetLobbyMembersRequest code.
+         * @member {string} code
+         * @memberof routes.GetLobbyMembersRequest
+         * @instance
+         */
+        GetLobbyMembersRequest.prototype.code = "";
+
+        /**
+         * Creates a new GetLobbyMembersRequest instance using the specified properties.
+         * @function create
+         * @memberof routes.GetLobbyMembersRequest
+         * @static
+         * @param {routes.IGetLobbyMembersRequest=} [properties] Properties to set
+         * @returns {routes.GetLobbyMembersRequest} GetLobbyMembersRequest instance
+         */
+        GetLobbyMembersRequest.create = function create(properties) {
+            return new GetLobbyMembersRequest(properties);
+        };
+
+        /**
+         * Encodes the specified GetLobbyMembersRequest message. Does not implicitly {@link routes.GetLobbyMembersRequest.verify|verify} messages.
+         * @function encode
+         * @memberof routes.GetLobbyMembersRequest
+         * @static
+         * @param {routes.IGetLobbyMembersRequest} message GetLobbyMembersRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetLobbyMembersRequest.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.code);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified GetLobbyMembersRequest message, length delimited. Does not implicitly {@link routes.GetLobbyMembersRequest.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.GetLobbyMembersRequest
+         * @static
+         * @param {routes.IGetLobbyMembersRequest} message GetLobbyMembersRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetLobbyMembersRequest.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a GetLobbyMembersRequest message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.GetLobbyMembersRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.GetLobbyMembersRequest} GetLobbyMembersRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetLobbyMembersRequest.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.GetLobbyMembersRequest();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.code = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a GetLobbyMembersRequest message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.GetLobbyMembersRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.GetLobbyMembersRequest} GetLobbyMembersRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetLobbyMembersRequest.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a GetLobbyMembersRequest message.
+         * @function verify
+         * @memberof routes.GetLobbyMembersRequest
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        GetLobbyMembersRequest.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.code != null && message.hasOwnProperty("code"))
+                if (!$util.isString(message.code))
+                    return "code: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a GetLobbyMembersRequest message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.GetLobbyMembersRequest
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.GetLobbyMembersRequest} GetLobbyMembersRequest
+         */
+        GetLobbyMembersRequest.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.GetLobbyMembersRequest)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.GetLobbyMembersRequest();
+            if (object.code != null)
+                message.code = String(object.code);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a GetLobbyMembersRequest message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.GetLobbyMembersRequest
+         * @static
+         * @param {routes.GetLobbyMembersRequest} message GetLobbyMembersRequest
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        GetLobbyMembersRequest.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.code = "";
+            if (message.code != null && message.hasOwnProperty("code"))
+                object.code = message.code;
+            return object;
+        };
+
+        /**
+         * Converts this GetLobbyMembersRequest to JSON.
+         * @function toJSON
+         * @memberof routes.GetLobbyMembersRequest
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        GetLobbyMembersRequest.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for GetLobbyMembersRequest
+         * @function getTypeUrl
+         * @memberof routes.GetLobbyMembersRequest
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        GetLobbyMembersRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.GetLobbyMembersRequest";
+        };
+
+        return GetLobbyMembersRequest;
+    })();
+
+    routes.GetLobbyMembersResponse = (function() {
+
+        /**
+         * Properties of a GetLobbyMembersResponse.
+         * @memberof routes
+         * @interface IGetLobbyMembersResponse
+         * @property {Array.<routes.IResponseLobbyMember>|null} [members] GetLobbyMembersResponse members
+         */
+
+        /**
+         * Constructs a new GetLobbyMembersResponse.
+         * @memberof routes
+         * @classdesc Represents a GetLobbyMembersResponse.
+         * @implements IGetLobbyMembersResponse
+         * @constructor
+         * @param {routes.IGetLobbyMembersResponse=} [properties] Properties to set
+         */
+        function GetLobbyMembersResponse(properties) {
+            this.members = [];
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * GetLobbyMembersResponse members.
+         * @member {Array.<routes.IResponseLobbyMember>} members
+         * @memberof routes.GetLobbyMembersResponse
+         * @instance
+         */
+        GetLobbyMembersResponse.prototype.members = $util.emptyArray;
+
+        /**
+         * Creates a new GetLobbyMembersResponse instance using the specified properties.
+         * @function create
+         * @memberof routes.GetLobbyMembersResponse
+         * @static
+         * @param {routes.IGetLobbyMembersResponse=} [properties] Properties to set
+         * @returns {routes.GetLobbyMembersResponse} GetLobbyMembersResponse instance
+         */
+        GetLobbyMembersResponse.create = function create(properties) {
+            return new GetLobbyMembersResponse(properties);
+        };
+
+        /**
+         * Encodes the specified GetLobbyMembersResponse message. Does not implicitly {@link routes.GetLobbyMembersResponse.verify|verify} messages.
+         * @function encode
+         * @memberof routes.GetLobbyMembersResponse
+         * @static
+         * @param {routes.IGetLobbyMembersResponse} message GetLobbyMembersResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetLobbyMembersResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.members != null && message.members.length)
+                for (let i = 0; i < message.members.length; ++i)
+                    $root.routes.ResponseLobbyMember.encode(message.members[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified GetLobbyMembersResponse message, length delimited. Does not implicitly {@link routes.GetLobbyMembersResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.GetLobbyMembersResponse
+         * @static
+         * @param {routes.IGetLobbyMembersResponse} message GetLobbyMembersResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetLobbyMembersResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a GetLobbyMembersResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.GetLobbyMembersResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.GetLobbyMembersResponse} GetLobbyMembersResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetLobbyMembersResponse.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.GetLobbyMembersResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        if (!(message.members && message.members.length))
+                            message.members = [];
+                        message.members.push($root.routes.ResponseLobbyMember.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a GetLobbyMembersResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.GetLobbyMembersResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.GetLobbyMembersResponse} GetLobbyMembersResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetLobbyMembersResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a GetLobbyMembersResponse message.
+         * @function verify
+         * @memberof routes.GetLobbyMembersResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        GetLobbyMembersResponse.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.members != null && message.hasOwnProperty("members")) {
+                if (!Array.isArray(message.members))
+                    return "members: array expected";
+                for (let i = 0; i < message.members.length; ++i) {
+                    let error = $root.routes.ResponseLobbyMember.verify(message.members[i], long + 1);
+                    if (error)
+                        return "members." + error;
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a GetLobbyMembersResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.GetLobbyMembersResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.GetLobbyMembersResponse} GetLobbyMembersResponse
+         */
+        GetLobbyMembersResponse.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.GetLobbyMembersResponse)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.GetLobbyMembersResponse();
+            if (object.members) {
+                if (!Array.isArray(object.members))
+                    throw TypeError(".routes.GetLobbyMembersResponse.members: array expected");
+                message.members = [];
+                for (let i = 0; i < object.members.length; ++i) {
+                    if (typeof object.members[i] !== "object")
+                        throw TypeError(".routes.GetLobbyMembersResponse.members: object expected");
+                    message.members[i] = $root.routes.ResponseLobbyMember.fromObject(object.members[i], long + 1);
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a GetLobbyMembersResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.GetLobbyMembersResponse
+         * @static
+         * @param {routes.GetLobbyMembersResponse} message GetLobbyMembersResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        GetLobbyMembersResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.arrays || options.defaults)
+                object.members = [];
+            if (message.members && message.members.length) {
+                object.members = [];
+                for (let j = 0; j < message.members.length; ++j)
+                    object.members[j] = $root.routes.ResponseLobbyMember.toObject(message.members[j], options);
+            }
+            return object;
+        };
+
+        /**
+         * Converts this GetLobbyMembersResponse to JSON.
+         * @function toJSON
+         * @memberof routes.GetLobbyMembersResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        GetLobbyMembersResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for GetLobbyMembersResponse
+         * @function getTypeUrl
+         * @memberof routes.GetLobbyMembersResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        GetLobbyMembersResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.GetLobbyMembersResponse";
+        };
+
+        return GetLobbyMembersResponse;
+    })();
+
+    routes.GetGameResponse = (function() {
+
+        /**
+         * Properties of a GetGameResponse.
+         * @memberof routes
+         * @interface IGetGameResponse
+         * @property {models.IGame|null} [game] GetGameResponse game
+         */
+
+        /**
+         * Constructs a new GetGameResponse.
+         * @memberof routes
+         * @classdesc Represents a GetGameResponse.
+         * @implements IGetGameResponse
+         * @constructor
+         * @param {routes.IGetGameResponse=} [properties] Properties to set
+         */
+        function GetGameResponse(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * GetGameResponse game.
+         * @member {models.IGame|null|undefined} game
+         * @memberof routes.GetGameResponse
+         * @instance
+         */
+        GetGameResponse.prototype.game = null;
+
+        /**
+         * Creates a new GetGameResponse instance using the specified properties.
+         * @function create
+         * @memberof routes.GetGameResponse
+         * @static
+         * @param {routes.IGetGameResponse=} [properties] Properties to set
+         * @returns {routes.GetGameResponse} GetGameResponse instance
+         */
+        GetGameResponse.create = function create(properties) {
+            return new GetGameResponse(properties);
+        };
+
+        /**
+         * Encodes the specified GetGameResponse message. Does not implicitly {@link routes.GetGameResponse.verify|verify} messages.
+         * @function encode
+         * @memberof routes.GetGameResponse
+         * @static
+         * @param {routes.IGetGameResponse} message GetGameResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetGameResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.game != null && Object.hasOwnProperty.call(message, "game"))
+                $root.models.Game.encode(message.game, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified GetGameResponse message, length delimited. Does not implicitly {@link routes.GetGameResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.GetGameResponse
+         * @static
+         * @param {routes.IGetGameResponse} message GetGameResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetGameResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a GetGameResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.GetGameResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.GetGameResponse} GetGameResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetGameResponse.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.GetGameResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.game = $root.models.Game.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a GetGameResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.GetGameResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.GetGameResponse} GetGameResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetGameResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a GetGameResponse message.
+         * @function verify
+         * @memberof routes.GetGameResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        GetGameResponse.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.game != null && message.hasOwnProperty("game")) {
+                let error = $root.models.Game.verify(message.game, long + 1);
+                if (error)
+                    return "game." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates a GetGameResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.GetGameResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.GetGameResponse} GetGameResponse
+         */
+        GetGameResponse.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.GetGameResponse)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.GetGameResponse();
+            if (object.game != null) {
+                if (typeof object.game !== "object")
+                    throw TypeError(".routes.GetGameResponse.game: object expected");
+                message.game = $root.models.Game.fromObject(object.game, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a GetGameResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.GetGameResponse
+         * @static
+         * @param {routes.GetGameResponse} message GetGameResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        GetGameResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.game = null;
+            if (message.game != null && message.hasOwnProperty("game"))
+                object.game = $root.models.Game.toObject(message.game, options);
+            return object;
+        };
+
+        /**
+         * Converts this GetGameResponse to JSON.
+         * @function toJSON
+         * @memberof routes.GetGameResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        GetGameResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for GetGameResponse
+         * @function getTypeUrl
+         * @memberof routes.GetGameResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        GetGameResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.GetGameResponse";
+        };
+
+        return GetGameResponse;
+    })();
+
+    routes.GetGameRequest = (function() {
+
+        /**
+         * Properties of a GetGameRequest.
+         * @memberof routes
+         * @interface IGetGameRequest
+         * @property {string|null} [code] GetGameRequest code
+         */
+
+        /**
+         * Constructs a new GetGameRequest.
+         * @memberof routes
+         * @classdesc Represents a GetGameRequest.
+         * @implements IGetGameRequest
+         * @constructor
+         * @param {routes.IGetGameRequest=} [properties] Properties to set
+         */
+        function GetGameRequest(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * GetGameRequest code.
+         * @member {string} code
+         * @memberof routes.GetGameRequest
+         * @instance
+         */
+        GetGameRequest.prototype.code = "";
+
+        /**
+         * Creates a new GetGameRequest instance using the specified properties.
+         * @function create
+         * @memberof routes.GetGameRequest
+         * @static
+         * @param {routes.IGetGameRequest=} [properties] Properties to set
+         * @returns {routes.GetGameRequest} GetGameRequest instance
+         */
+        GetGameRequest.create = function create(properties) {
+            return new GetGameRequest(properties);
+        };
+
+        /**
+         * Encodes the specified GetGameRequest message. Does not implicitly {@link routes.GetGameRequest.verify|verify} messages.
+         * @function encode
+         * @memberof routes.GetGameRequest
+         * @static
+         * @param {routes.IGetGameRequest} message GetGameRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetGameRequest.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.code);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified GetGameRequest message, length delimited. Does not implicitly {@link routes.GetGameRequest.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.GetGameRequest
+         * @static
+         * @param {routes.IGetGameRequest} message GetGameRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GetGameRequest.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a GetGameRequest message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.GetGameRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.GetGameRequest} GetGameRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetGameRequest.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.GetGameRequest();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.code = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a GetGameRequest message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.GetGameRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.GetGameRequest} GetGameRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GetGameRequest.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a GetGameRequest message.
+         * @function verify
+         * @memberof routes.GetGameRequest
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        GetGameRequest.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.code != null && message.hasOwnProperty("code"))
+                if (!$util.isString(message.code))
+                    return "code: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a GetGameRequest message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.GetGameRequest
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.GetGameRequest} GetGameRequest
+         */
+        GetGameRequest.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.GetGameRequest)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.GetGameRequest();
+            if (object.code != null)
+                message.code = String(object.code);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a GetGameRequest message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.GetGameRequest
+         * @static
+         * @param {routes.GetGameRequest} message GetGameRequest
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        GetGameRequest.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.code = "";
+            if (message.code != null && message.hasOwnProperty("code"))
+                object.code = message.code;
+            return object;
+        };
+
+        /**
+         * Converts this GetGameRequest to JSON.
+         * @function toJSON
+         * @memberof routes.GetGameRequest
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        GetGameRequest.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for GetGameRequest
+         * @function getTypeUrl
+         * @memberof routes.GetGameRequest
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        GetGameRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.GetGameRequest";
+        };
+
+        return GetGameRequest;
+    })();
+
+    routes.CreateGameRequest = (function() {
+
+        /**
+         * Properties of a CreateGameRequest.
+         * @memberof routes
+         * @interface ICreateGameRequest
+         * @property {string|null} [code] CreateGameRequest code
+         */
+
+        /**
+         * Constructs a new CreateGameRequest.
+         * @memberof routes
+         * @classdesc Represents a CreateGameRequest.
+         * @implements ICreateGameRequest
+         * @constructor
+         * @param {routes.ICreateGameRequest=} [properties] Properties to set
+         */
+        function CreateGameRequest(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * CreateGameRequest code.
+         * @member {string} code
+         * @memberof routes.CreateGameRequest
+         * @instance
+         */
+        CreateGameRequest.prototype.code = "";
+
+        /**
+         * Creates a new CreateGameRequest instance using the specified properties.
+         * @function create
+         * @memberof routes.CreateGameRequest
+         * @static
+         * @param {routes.ICreateGameRequest=} [properties] Properties to set
+         * @returns {routes.CreateGameRequest} CreateGameRequest instance
+         */
+        CreateGameRequest.create = function create(properties) {
+            return new CreateGameRequest(properties);
+        };
+
+        /**
+         * Encodes the specified CreateGameRequest message. Does not implicitly {@link routes.CreateGameRequest.verify|verify} messages.
+         * @function encode
+         * @memberof routes.CreateGameRequest
+         * @static
+         * @param {routes.ICreateGameRequest} message CreateGameRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        CreateGameRequest.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.code);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified CreateGameRequest message, length delimited. Does not implicitly {@link routes.CreateGameRequest.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.CreateGameRequest
+         * @static
+         * @param {routes.ICreateGameRequest} message CreateGameRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        CreateGameRequest.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a CreateGameRequest message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.CreateGameRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.CreateGameRequest} CreateGameRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        CreateGameRequest.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.CreateGameRequest();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.code = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a CreateGameRequest message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.CreateGameRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.CreateGameRequest} CreateGameRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        CreateGameRequest.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a CreateGameRequest message.
+         * @function verify
+         * @memberof routes.CreateGameRequest
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        CreateGameRequest.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.code != null && message.hasOwnProperty("code"))
+                if (!$util.isString(message.code))
+                    return "code: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a CreateGameRequest message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.CreateGameRequest
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.CreateGameRequest} CreateGameRequest
+         */
+        CreateGameRequest.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.CreateGameRequest)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.CreateGameRequest();
+            if (object.code != null)
+                message.code = String(object.code);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a CreateGameRequest message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.CreateGameRequest
+         * @static
+         * @param {routes.CreateGameRequest} message CreateGameRequest
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        CreateGameRequest.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.code = "";
+            if (message.code != null && message.hasOwnProperty("code"))
+                object.code = message.code;
+            return object;
+        };
+
+        /**
+         * Converts this CreateGameRequest to JSON.
+         * @function toJSON
+         * @memberof routes.CreateGameRequest
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        CreateGameRequest.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for CreateGameRequest
+         * @function getTypeUrl
+         * @memberof routes.CreateGameRequest
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        CreateGameRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.CreateGameRequest";
+        };
+
+        return CreateGameRequest;
+    })();
+
+    return routes;
+})();
+
+export const models = $root.models = (() => {
+
+    /**
+     * Namespace models.
+     * @exports models
+     * @namespace
+     */
+    const models = {};
+
+    models.Lobby = (function() {
+
+        /**
+         * Properties of a Lobby.
+         * @memberof models
+         * @interface ILobby
+         * @property {string|null} [code] Lobby code
+         */
+
+        /**
+         * Constructs a new Lobby.
+         * @memberof models
+         * @classdesc Represents a Lobby.
+         * @implements ILobby
+         * @constructor
+         * @param {models.ILobby=} [properties] Properties to set
+         */
+        function Lobby(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * Lobby code.
+         * @member {string} code
+         * @memberof models.Lobby
+         * @instance
+         */
+        Lobby.prototype.code = "";
+
+        /**
+         * Creates a new Lobby instance using the specified properties.
+         * @function create
+         * @memberof models.Lobby
+         * @static
+         * @param {models.ILobby=} [properties] Properties to set
+         * @returns {models.Lobby} Lobby instance
+         */
+        Lobby.create = function create(properties) {
+            return new Lobby(properties);
+        };
+
+        /**
+         * Encodes the specified Lobby message. Does not implicitly {@link models.Lobby.verify|verify} messages.
+         * @function encode
+         * @memberof models.Lobby
+         * @static
+         * @param {models.ILobby} message Lobby message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Lobby.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.code);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified Lobby message, length delimited. Does not implicitly {@link models.Lobby.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.Lobby
+         * @static
+         * @param {models.ILobby} message Lobby message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Lobby.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a Lobby message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.Lobby
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.Lobby} Lobby
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Lobby.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.Lobby();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.code = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a Lobby message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.Lobby
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.Lobby} Lobby
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Lobby.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a Lobby message.
+         * @function verify
+         * @memberof models.Lobby
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        Lobby.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.code != null && message.hasOwnProperty("code"))
+                if (!$util.isString(message.code))
+                    return "code: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a Lobby message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.Lobby
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.Lobby} Lobby
+         */
+        Lobby.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.Lobby)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.Lobby();
+            if (object.code != null)
+                message.code = String(object.code);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a Lobby message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.Lobby
+         * @static
+         * @param {models.Lobby} message Lobby
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        Lobby.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.code = "";
+            if (message.code != null && message.hasOwnProperty("code"))
+                object.code = message.code;
+            return object;
+        };
+
+        /**
+         * Converts this Lobby to JSON.
+         * @function toJSON
+         * @memberof models.Lobby
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        Lobby.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Lobby
+         * @function getTypeUrl
+         * @memberof models.Lobby
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Lobby.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.Lobby";
+        };
+
+        return Lobby;
+    })();
+
+    models.User = (function() {
+
+        /**
+         * Properties of a User.
+         * @memberof models
+         * @interface IUser
+         * @property {string|null} [id] User id
+         * @property {string|null} [sessionId] User sessionId
+         * @property {string|null} [username] User username
+         */
+
+        /**
+         * Constructs a new User.
+         * @memberof models
+         * @classdesc Represents a User.
+         * @implements IUser
+         * @constructor
+         * @param {models.IUser=} [properties] Properties to set
+         */
+        function User(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * User id.
+         * @member {string} id
+         * @memberof models.User
+         * @instance
+         */
+        User.prototype.id = "";
+
+        /**
+         * User sessionId.
+         * @member {string} sessionId
+         * @memberof models.User
+         * @instance
+         */
+        User.prototype.sessionId = "";
+
+        /**
+         * User username.
+         * @member {string} username
+         * @memberof models.User
+         * @instance
+         */
+        User.prototype.username = "";
+
+        /**
+         * Creates a new User instance using the specified properties.
+         * @function create
+         * @memberof models.User
+         * @static
+         * @param {models.IUser=} [properties] Properties to set
+         * @returns {models.User} User instance
+         */
+        User.create = function create(properties) {
+            return new User(properties);
+        };
+
+        /**
+         * Encodes the specified User message. Does not implicitly {@link models.User.verify|verify} messages.
+         * @function encode
+         * @memberof models.User
+         * @static
+         * @param {models.IUser} message User message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        User.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+            if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.sessionId);
+            if (message.username != null && Object.hasOwnProperty.call(message, "username"))
+                writer.uint32(/* id 3, wireType 2 =*/26).string(message.username);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified User message, length delimited. Does not implicitly {@link models.User.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.User
+         * @static
+         * @param {models.IUser} message User message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        User.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a User message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.User
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.User} User
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        User.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.User();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.id = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.sessionId = reader.string();
+                        break;
+                    }
+                case 3: {
+                        message.username = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a User message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.User
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.User} User
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        User.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a User message.
+         * @function verify
+         * @memberof models.User
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        User.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.id != null && message.hasOwnProperty("id"))
+                if (!$util.isString(message.id))
+                    return "id: string expected";
+            if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                if (!$util.isString(message.sessionId))
+                    return "sessionId: string expected";
+            if (message.username != null && message.hasOwnProperty("username"))
+                if (!$util.isString(message.username))
+                    return "username: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a User message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.User
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.User} User
+         */
+        User.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.User)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.User();
+            if (object.id != null)
+                message.id = String(object.id);
+            if (object.sessionId != null)
+                message.sessionId = String(object.sessionId);
+            if (object.username != null)
+                message.username = String(object.username);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a User message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.User
+         * @static
+         * @param {models.User} message User
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        User.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.id = "";
+                object.sessionId = "";
+                object.username = "";
+            }
+            if (message.id != null && message.hasOwnProperty("id"))
+                object.id = message.id;
+            if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                object.sessionId = message.sessionId;
+            if (message.username != null && message.hasOwnProperty("username"))
+                object.username = message.username;
+            return object;
+        };
+
+        /**
+         * Converts this User to JSON.
+         * @function toJSON
+         * @memberof models.User
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        User.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for User
+         * @function getTypeUrl
+         * @memberof models.User
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        User.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.User";
+        };
+
+        return User;
+    })();
+
+    models.LobbyMember = (function() {
+
+        /**
+         * Properties of a LobbyMember.
+         * @memberof models
+         * @interface ILobbyMember
+         * @property {string|null} [id] LobbyMember id
+         * @property {string|null} [userId] LobbyMember userId
+         * @property {string|null} [lobbyCode] LobbyMember lobbyCode
+         * @property {shared.PlayerTypes|null} [playerType] LobbyMember playerType
+         * @property {shared.PlayerIDs|null} [playerId] LobbyMember playerId
+         */
+
+        /**
+         * Constructs a new LobbyMember.
+         * @memberof models
+         * @classdesc Represents a LobbyMember.
+         * @implements ILobbyMember
+         * @constructor
+         * @param {models.ILobbyMember=} [properties] Properties to set
+         */
+        function LobbyMember(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * LobbyMember id.
+         * @member {string} id
+         * @memberof models.LobbyMember
+         * @instance
+         */
+        LobbyMember.prototype.id = "";
+
+        /**
+         * LobbyMember userId.
+         * @member {string} userId
+         * @memberof models.LobbyMember
+         * @instance
+         */
+        LobbyMember.prototype.userId = "";
+
+        /**
+         * LobbyMember lobbyCode.
+         * @member {string} lobbyCode
+         * @memberof models.LobbyMember
+         * @instance
+         */
+        LobbyMember.prototype.lobbyCode = "";
+
+        /**
+         * LobbyMember playerType.
+         * @member {shared.PlayerTypes} playerType
+         * @memberof models.LobbyMember
+         * @instance
+         */
+        LobbyMember.prototype.playerType = 0;
+
+        /**
+         * LobbyMember playerId.
+         * @member {shared.PlayerIDs} playerId
+         * @memberof models.LobbyMember
+         * @instance
+         */
+        LobbyMember.prototype.playerId = 0;
+
+        /**
+         * Creates a new LobbyMember instance using the specified properties.
+         * @function create
+         * @memberof models.LobbyMember
+         * @static
+         * @param {models.ILobbyMember=} [properties] Properties to set
+         * @returns {models.LobbyMember} LobbyMember instance
+         */
+        LobbyMember.create = function create(properties) {
+            return new LobbyMember(properties);
+        };
+
+        /**
+         * Encodes the specified LobbyMember message. Does not implicitly {@link models.LobbyMember.verify|verify} messages.
+         * @function encode
+         * @memberof models.LobbyMember
+         * @static
+         * @param {models.ILobbyMember} message LobbyMember message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbyMember.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+            if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.userId);
+            if (message.lobbyCode != null && Object.hasOwnProperty.call(message, "lobbyCode"))
+                writer.uint32(/* id 3, wireType 2 =*/26).string(message.lobbyCode);
+            if (message.playerType != null && Object.hasOwnProperty.call(message, "playerType"))
+                writer.uint32(/* id 4, wireType 0 =*/32).int32(message.playerType);
+            if (message.playerId != null && Object.hasOwnProperty.call(message, "playerId"))
+                writer.uint32(/* id 5, wireType 0 =*/40).int32(message.playerId);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified LobbyMember message, length delimited. Does not implicitly {@link models.LobbyMember.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.LobbyMember
+         * @static
+         * @param {models.ILobbyMember} message LobbyMember message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbyMember.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a LobbyMember message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.LobbyMember
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.LobbyMember} LobbyMember
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbyMember.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.LobbyMember();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.id = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.userId = reader.string();
+                        break;
+                    }
+                case 3: {
+                        message.lobbyCode = reader.string();
+                        break;
+                    }
+                case 4: {
+                        message.playerType = reader.int32();
+                        break;
+                    }
+                case 5: {
+                        message.playerId = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a LobbyMember message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.LobbyMember
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.LobbyMember} LobbyMember
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbyMember.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a LobbyMember message.
+         * @function verify
+         * @memberof models.LobbyMember
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        LobbyMember.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.id != null && message.hasOwnProperty("id"))
+                if (!$util.isString(message.id))
+                    return "id: string expected";
+            if (message.userId != null && message.hasOwnProperty("userId"))
+                if (!$util.isString(message.userId))
+                    return "userId: string expected";
+            if (message.lobbyCode != null && message.hasOwnProperty("lobbyCode"))
+                if (!$util.isString(message.lobbyCode))
+                    return "lobbyCode: string expected";
+            if (message.playerType != null && message.hasOwnProperty("playerType"))
+                switch (message.playerType) {
+                default:
+                    return "playerType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                    break;
+                }
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                switch (message.playerId) {
+                default:
+                    return "playerId: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                    break;
+                }
+            return null;
+        };
+
+        /**
+         * Creates a LobbyMember message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.LobbyMember
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.LobbyMember} LobbyMember
+         */
+        LobbyMember.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.LobbyMember)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.LobbyMember();
+            if (object.id != null)
+                message.id = String(object.id);
+            if (object.userId != null)
+                message.userId = String(object.userId);
+            if (object.lobbyCode != null)
+                message.lobbyCode = String(object.lobbyCode);
+            switch (object.playerType) {
+            default:
+                if (typeof object.playerType === "number") {
+                    message.playerType = object.playerType;
+                    break;
+                }
+                break;
+            case "PLAYER_TYPES_UNSPECIFIED":
+            case 0:
+                message.playerType = 0;
+                break;
+            case "PLAYER_TYPES_PLAYER":
+            case 1:
+                message.playerType = 1;
+                break;
+            case "PLAYER_TYPES_SPECTATOR":
+            case 2:
+                message.playerType = 2;
+                break;
+            }
+            switch (object.playerId) {
+            default:
+                if (typeof object.playerId === "number") {
+                    message.playerId = object.playerId;
+                    break;
+                }
+                break;
+            case "PLAYER_IDS_UNSPECIFIED":
+            case 0:
+                message.playerId = 0;
+                break;
+            case "PLAYER_IDS_PLAYER1":
+            case 1:
+                message.playerId = 1;
+                break;
+            case "PLAYER_IDS_PLAYER2":
+            case 2:
+                message.playerId = 2;
+                break;
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a LobbyMember message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.LobbyMember
+         * @static
+         * @param {models.LobbyMember} message LobbyMember
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        LobbyMember.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.id = "";
+                object.userId = "";
+                object.lobbyCode = "";
+                object.playerType = options.enums === String ? "PLAYER_TYPES_UNSPECIFIED" : 0;
+                object.playerId = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
+            }
+            if (message.id != null && message.hasOwnProperty("id"))
+                object.id = message.id;
+            if (message.userId != null && message.hasOwnProperty("userId"))
+                object.userId = message.userId;
+            if (message.lobbyCode != null && message.hasOwnProperty("lobbyCode"))
+                object.lobbyCode = message.lobbyCode;
+            if (message.playerType != null && message.hasOwnProperty("playerType"))
+                object.playerType = options.enums === String ? $root.shared.PlayerTypes[message.playerType] === undefined ? message.playerType : $root.shared.PlayerTypes[message.playerType] : message.playerType;
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                object.playerId = options.enums === String ? $root.shared.PlayerIDs[message.playerId] === undefined ? message.playerId : $root.shared.PlayerIDs[message.playerId] : message.playerId;
+            return object;
+        };
+
+        /**
+         * Converts this LobbyMember to JSON.
+         * @function toJSON
+         * @memberof models.LobbyMember
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        LobbyMember.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for LobbyMember
+         * @function getTypeUrl
+         * @memberof models.LobbyMember
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        LobbyMember.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.LobbyMember";
+        };
+
+        return LobbyMember;
+    })();
+
+    models.Game = (function() {
+
+        /**
+         * Properties of a Game.
+         * @memberof models
+         * @interface IGame
+         * @property {shared.PlayerIDs|null} [turn] Game turn
+         * @property {shared.IGameBoard|null} [board] Game board
+         */
+
+        /**
+         * Constructs a new Game.
+         * @memberof models
+         * @classdesc Represents a Game.
+         * @implements IGame
+         * @constructor
+         * @param {models.IGame=} [properties] Properties to set
+         */
+        function Game(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * Game turn.
+         * @member {shared.PlayerIDs} turn
+         * @memberof models.Game
+         * @instance
+         */
+        Game.prototype.turn = 0;
+
+        /**
+         * Game board.
+         * @member {shared.IGameBoard|null|undefined} board
+         * @memberof models.Game
+         * @instance
+         */
+        Game.prototype.board = null;
+
+        /**
+         * Creates a new Game instance using the specified properties.
+         * @function create
+         * @memberof models.Game
+         * @static
+         * @param {models.IGame=} [properties] Properties to set
+         * @returns {models.Game} Game instance
+         */
+        Game.create = function create(properties) {
+            return new Game(properties);
+        };
+
+        /**
+         * Encodes the specified Game message. Does not implicitly {@link models.Game.verify|verify} messages.
+         * @function encode
+         * @memberof models.Game
+         * @static
+         * @param {models.IGame} message Game message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Game.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.turn != null && Object.hasOwnProperty.call(message, "turn"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.turn);
+            if (message.board != null && Object.hasOwnProperty.call(message, "board"))
+                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified Game message, length delimited. Does not implicitly {@link models.Game.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.Game
+         * @static
+         * @param {models.IGame} message Game message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Game.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a Game message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.Game
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.Game} Game
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Game.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.Game();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.turn = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a Game message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.Game
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.Game} Game
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Game.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a Game message.
+         * @function verify
+         * @memberof models.Game
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        Game.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.turn != null && message.hasOwnProperty("turn"))
+                switch (message.turn) {
+                default:
+                    return "turn: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                    break;
+                }
+            if (message.board != null && message.hasOwnProperty("board")) {
+                let error = $root.shared.GameBoard.verify(message.board, long + 1);
+                if (error)
+                    return "board." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates a Game message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.Game
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.Game} Game
+         */
+        Game.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.Game)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.Game();
+            switch (object.turn) {
+            default:
+                if (typeof object.turn === "number") {
+                    message.turn = object.turn;
+                    break;
+                }
+                break;
+            case "PLAYER_IDS_UNSPECIFIED":
+            case 0:
+                message.turn = 0;
+                break;
+            case "PLAYER_IDS_PLAYER1":
+            case 1:
+                message.turn = 1;
+                break;
+            case "PLAYER_IDS_PLAYER2":
+            case 2:
+                message.turn = 2;
+                break;
+            }
+            if (object.board != null) {
+                if (typeof object.board !== "object")
+                    throw TypeError(".models.Game.board: object expected");
+                message.board = $root.shared.GameBoard.fromObject(object.board, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a Game message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.Game
+         * @static
+         * @param {models.Game} message Game
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        Game.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.turn = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
+                object.board = null;
+            }
+            if (message.turn != null && message.hasOwnProperty("turn"))
+                object.turn = options.enums === String ? $root.shared.PlayerIDs[message.turn] === undefined ? message.turn : $root.shared.PlayerIDs[message.turn] : message.turn;
+            if (message.board != null && message.hasOwnProperty("board"))
+                object.board = $root.shared.GameBoard.toObject(message.board, options);
+            return object;
+        };
+
+        /**
+         * Converts this Game to JSON.
+         * @function toJSON
+         * @memberof models.Game
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        Game.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Game
+         * @function getTypeUrl
+         * @memberof models.Game
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Game.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.Game";
+        };
+
+        return Game;
+    })();
+
+    return models;
 })();
 
 export { $root as default };
