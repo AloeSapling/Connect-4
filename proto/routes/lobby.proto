@@ -3,6 +3,7 @@ syntax = "proto3";
 package routes;
 
 import "models/models.proto";
+import "shared/shared.proto";
 
 message GetLobbiesResponse {
   repeated models.Lobby lobbies = 1;
@@ -18,4 +19,21 @@ message CreateLobbyResponse {
 
 message JoinLobbyRequest {
   string code = 1;
+}
+
+message ResponseLobbyMember {
+  string id = 1;
+  string user_id = 2;
+  string username = 3;
+  shared.PlayerTypes player_type = 4;
+  shared.PlayerIDs player_id = 5;
+}
+
+message GetLobbyMembersRequest {
+  string code = 1;
+}
+
+
+message GetLobbyMembersResponse {
+  repeated ResponseLobbyMember members = 1; 
 }

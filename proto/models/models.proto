@@ -14,6 +14,14 @@ message User {
   string username = 3;
 }
 
+message LobbyMember {
+  string id = 1;
+  string user_id = 2;
+  string lobby_code = 3;
+  shared.PlayerTypes player_type = 4;
+  shared.PlayerIDs player_id = 5;
+}
+
 message Game {
   shared.PlayerIDs turn = 1;
   shared.GameBoard board = 2;
