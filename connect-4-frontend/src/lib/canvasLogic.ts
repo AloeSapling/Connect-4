@@ -1,4 +1,4 @@
-import { BOARD_START_HEIGHT, BOARD_START_WIDTH, BOARD_SLOT_DISTANCE, STEP } from "./config.js";
+import { BOARD_START_HEIGHT, BOARD_START_WIDTH, BOARD_SLOT_DISTANCE, GAME_ROWS, GAME_COLUMNS, STEP } from "./config.js";
 import * as proto from "./proto.js";
 
 import BoardTable from "../assets/board_table.png";
@@ -7,9 +7,6 @@ import BoardBack from "../assets/board_back.png";
 import ColIndic from "../assets/board_indicator.png";
 import TokenP1 from "../assets/board_token1.png";
 import TokenP2 from "../assets/board_token2.png";
-
-// placeholder
-type Board = proto.shared.PlayerIDs[][];
 
 class GameCanvas {
     private readonly canvas: HTMLCanvasElement;
@@ -44,9 +41,14 @@ class GameCanvas {
         [proto.shared.PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenP2]
     ]);
 
-    private currentBoardState: Board = [[]];
+    private currentBoardState: proto.shared.GameBoard =
+    proto.shared.GameBoard.create({
+        rows: Array.from({ length: GAME_ROWS }, () => ({
+            columns: Array.from({ length: GAME_COLUMNS }, () => proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED)
+        }))
+    });
 
-    public setBoardState(board: Board) {
+    public setBoardState(board: proto.shared.GameBoard) {
         this.currentBoardState = board;
     }
 
@@ -81,11 +83,14 @@ class GameCanvas {
     };
 
     private drawTokens = () => {
-        for (let i = 0; i < this.currentBoardState.length; i++) {
-            for (let j = 0; j < this.currentBoardState[i].length; j++) {
-                const token = this.currentBoardState[i][j];
+        for (let i = 0; i < this.currentBoardState.rows.length; i++) {
+            for (let j = 0; j < this.currentBoardState.rows[i].columns!.length; j++) {
+                const token = this.currentBoardState.rows[i].columns![j];
                 if (token) {
-                    this.ctx.drawImage(this.tokenMap.get(this.currentBoardState[i][j])!, ((j * BOARD_SLOT_DISTANCE) + BOARD_START_WIDTH), ((((this.currentBoardState.length - 1) - i) * BOARD_SLOT_DISTANCE) + BOARD_START_HEIGHT));
+                    this.ctx.drawImage(
+                        this.tokenMap.get(this.currentBoardState.rows[i].columns![j])!,
+                        ((j * BOARD_SLOT_DISTANCE) + BOARD_START_WIDTH),
+                        ((((this.currentBoardState.rows.length - 1) - i) * BOARD_SLOT_DISTANCE) + BOARD_START_HEIGHT));
                 }
             }
         }
@@ -95,11 +100,15 @@ class GameCanvas {
     public gameLoop = (time: number) => {
         if (!this.lastTime) this.lastTime = time;
         let delta: number = time - this.lastTime;
+
         // Prevents crashes due to tab inactivity
         if (delta > 1000) delta = STEP;
+
         this.lastTime = time;
+
         // Add ms; when greater than or equal to STEP, update game state
         this.accumulator += delta;
+
         // Updates board state until it is up-to-date
         while (this.accumulator >= STEP) {
             // ms -> seconds

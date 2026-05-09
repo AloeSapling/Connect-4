@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState, useCallback } from "react";
 import ButtonMenuContainer from "../Components/ButtonMenuContainer";
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from "../lib/config.js";
+import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_ROWS, GAME_COLUMNS } from "../lib/config.js";
 import { makeMove } from "../lib/gameLogic";
 import GameCanvas from "../lib/canvasLogic.js";
 import * as proto from '../lib/proto.js';
@@ -11,12 +11,11 @@ function Game() {
     const gameCanvasRef = useRef<GameCanvas | null>(null);
 
     const [currentBoardState, setCurrentBoardState] = useState(
-        // proto.shared.GameBoard.create({
-        //     rows: Array(6).fill({
-        //         columns: Array(7).fill(proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED)
-        //     })
-        // })
-        Array.from({length: 6}, items => Array(7).fill(proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED))
+        proto.shared.GameBoard.create({
+            rows: Array.from({ length: GAME_ROWS }, () => ({
+                columns: Array.from({ length: GAME_COLUMNS }, () => proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED)
+            }))
+        })
     );
 
     // Which player's turn it is
@@ -39,6 +38,7 @@ function Game() {
         setCurrentTurn(nextTurn);
     };
 
+    // Get canvas and start animation
     const canvasRef = useCallback((canvas: HTMLCanvasElement | null) => {
         if (!canvas) return;
         const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
@@ -59,6 +59,7 @@ function Game() {
         };
     }, []);
 
+    // Update canvas rendering when token is inserted
     useEffect(() => {
         gameCanvasRef.current?.setBoardState(currentBoardState);
     }, [currentBoardState]);
