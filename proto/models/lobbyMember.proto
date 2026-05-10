@@ -4,10 +4,12 @@ package models;
 
 import 'shared/shared.proto';
 
-message User {
-  string id = 1;
-  string session_id = 2;
-  string username = 3;
+message DetailedLobbyMemberData {
+  string user_id = 1;
+  string username = 2;
+  shared.PlayerTypes player_type = 3;
+  shared.PlayerIDs player_id = 4;
+  bool host = 5;
 }
 
 message LobbyMember {
@@ -16,9 +18,5 @@ message LobbyMember {
   string lobby_code = 3;
   shared.PlayerTypes player_type = 4;
   shared.PlayerIDs player_id = 5;
-}
-
-message Game {
-  shared.PlayerIDs turn = 1;
-  shared.GameBoard board = 2;
+  bool host = 6;
 }

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package models;
+
+import 'models/lobbyMember.proto';
+
+message Lobby {
+  string code = 1;
+  string lobby_name = 2;
+}
+
+message LobbyData {
+  string code = 1;
+  string lobby_name = 2;
+  int32 member_count = 3;
+  bool has_game = 4;
+}
+
+message DetailedLobbyData {
+  string code = 1;
+  string lobby_name = 2;
+  int32 member_count = 3;
+  bool has_game = 4;
+  repeated models.DetailedLobbyMemberData lobby_members = 5;
+}

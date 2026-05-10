@@ -6,19 +6,19 @@ import "models/models.proto";
 import "shared/shared.proto";
 
 message GetLobbiesResponse {
-  repeated models.Lobby lobbies = 1;
+  repeated models.LobbyData lobbies = 1;
 }
 
 message GetLobbyResponse {
-  optional models.Lobby lobby = 1;
+  optional models.LobbyData lobby = 1;
 }
 
 message CreateLobbyResponse {
   string code = 1;
 }
 
-message JoinLobbyRequest {
-  string code = 1;
+message GetLobbyDetailsResponse {
+  optional models.DetailedLobbyData lobby_details = 1;
 }
 
 message ResponseLobbyMember {
