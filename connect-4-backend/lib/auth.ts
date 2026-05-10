@@ -1,21 +1,25 @@
 import type { NextFunction, Request, Response } from 'express';
 import { User } from '../database-sqllite/models.ts';
-import { CodedError, type UserRequest } from './types.ts';
+import { P_CodedError, P_ErrorCodes, type UserRequest } from './types.ts';
 import { sessionMiddleware } from '../app.ts';
 import { getUserBySessionID } from '../database-sqllite/user.ts';
-import * as proto from './proto.js';
+import * as lobbyFn from '../database-sqllite/lobbyMembers.ts';
 
 /** Check if there exists a user tied to the client's sessionID
  *
  * Sets the request's user to the user tied to the client's sessionID
  * */
-function AuthUser(req: Request, res: Response, next: NextFunction) {
+export function authUser(req: Request, res: Response, next: NextFunction) {
     const sessionID = req.session.id;
     console.log(sessionID);
     getUserBySessionID(sessionID)
         .then((user: User | null) => {
             if (user === null) {
-                res.status(401).json(new CodedError(proto.shared.ErrorCodes.ERROR_CODES_UNAUTHORISED));
+                res.send(401).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
+                    })
+                );
                 return;
             }
             (req as UserRequest).user = user;
@@ -30,7 +34,7 @@ function AuthUser(req: Request, res: Response, next: NextFunction) {
  *
  * Used for websockets (fakes a http request)
  * */
-function WSAuthUser(req: Request): Promise<boolean> {
+export function wsAuthUser(req: Request): Promise<boolean> {
     return new Promise((resolve) => {
         const fakeRes = {
             status: () => fakeRes,
@@ -39,9 +43,57 @@ function WSAuthUser(req: Request): Promise<boolean> {
         } as unknown as Response;
 
         sessionMiddleware(req, fakeRes, () => {
-            AuthUser(req, fakeRes, (err) => resolve(!err));
+            authUser(req, fakeRes, (err) => resolve(!err));
         });
     });
 }
 
-export { AuthUser, WSAuthUser };
+/** Checks if user is a part of the lobby */
+export async function isLobbyMember(req: Request, res: Response, next: NextFunction) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await authUser(req, res, async (err?: any) => {
+        if (err) {
+            next(err);
+            return;
+        }
+
+        const user = (req as UserRequest).user;
+        const code = req.params.code as string;
+
+        if (!(await lobbyFn.isLobbyMember(code, user.id))) {
+            res.send(401).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
+                })
+            );
+            return;
+        }
+
+        next();
+    });
+}
+
+/** Checks if the user is the host of the lobby */
+export async function isLobbyHost(req: Request, res: Response, next: NextFunction) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await authUser(req, res, async (err?: any) => {
+        if (err) {
+            next(err);
+            return;
+        }
+
+        const user = (req as UserRequest).user;
+        const code = req.params.code as string;
+
+        if (!(await lobbyFn.isLobbyHost(code, user.id))) {
+            res.send(401).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
+                })
+            );
+            return;
+        }
+
+        next();
+    });
+}
