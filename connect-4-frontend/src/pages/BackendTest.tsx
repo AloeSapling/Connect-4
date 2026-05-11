@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 export default function BackendTest() {
 	const [column, setColumn] = useState(0);
+	const [inputCode, setInputCode] = useState("");
 	const [code, setCode] = useState("");
 	const playerID = "PLAYER1";
 	const lobby = () => {
@@ -23,6 +24,17 @@ export default function BackendTest() {
 			})
 		}).catch(err => console.log(err));
 	}
+	const join = () => {
+		setCode(inputCode);
+		fetch("http://localhost:8080/lobby/join", {
+			method: "POST",
+			credentials: "include",
+			headers: new Headers({ 'content-type': 'application/json' }),
+			body: JSON.stringify({
+				code: inputCode,
+			})
+		}).catch(err => console.log(err));
+	}
 	const ws = useMemo(() => {
 		const websocket = new WebSocket("ws://localhost:8080/game");
 		websocket.addEventListener("message", (event) => {
@@ -38,7 +50,7 @@ export default function BackendTest() {
 			"action": "init",
 			"data": {
 				"lobbyCode": code,
-				"playerID": playerID,
+				"playerType": playerID,
 			}
 		}))
 	}
@@ -56,6 +68,8 @@ export default function BackendTest() {
 			<button onClick={() => user()}> Create User </button>
 			<button onClick={() => game()}> Create Game </button>
 			<button onClick={() => init()}> Init </button>
+			<input onChange={e => setInputCode(e.target.value)} value={inputCode} />
+			<button onClick={() => join()}> Join </button>
 			<input onChange={(e) => setColumn(e.target.valueAsNumber)} value={column} type={"number"} />
 			<button onClick={() => play()}> Play </button>
 		</main>

@@ -8,3 +8,5 @@ export const CODE_LENGTH = 8 as const;
 export const SERVER_PORT: string = process.env.SERVER_PORT ?? '8080' as const;
 export const CLIENT_URL: string = process.env.CLIENT_URL ?? 'localhost:3000' as const;
 
+export const SILENT_SEQUELIZE: boolean = true as const;
+

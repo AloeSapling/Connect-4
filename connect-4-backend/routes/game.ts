@@ -10,6 +10,7 @@ const router = Router();
 addRouteWithMethods(router, '/create', async (req, res) => {
 	// Create a new game using the provided code
 	try {
+		console.log(req.body);
 		if (req.body.code) {
 			// Make sure a lobby exists with the provided code
 			if (await getLobby(req.body.code) === null) {

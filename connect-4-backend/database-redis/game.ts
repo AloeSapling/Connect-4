@@ -1,7 +1,7 @@
 import { col } from "sequelize";
 import { redis } from "../app.ts";
 import { GAME_COLUMNS, GAME_EXPIRY_TIME, GAME_ROWS } from "../config.ts";
-import { CodedError, PlayerIDs, type CellState, type GameBoard, type GameState, type TPlayerIDs } from "../lib/types.ts";
+import { CodedError, PlayerTypes, type CellState, type GameBoard, type GameState, type TPlayerTypes } from "../lib/types.ts";
 
 /** The game state used when creating a new game */
 const initialGameState: GameState = {
@@ -46,13 +46,12 @@ export async function getGameState(
 		const boardJSON = await JSON.parse(board);
 		return {
 			board: boardJSON as GameBoard,
-			turn: turn as TPlayerIDs,
+			turn: turn as TPlayerTypes,
 		};
 	} catch {
 		throw new CodedError("ServerError");
 	}
 }
-
 /** Takes in the selected column and calculates the game's state after inserting a tile in that column.
  *
  * Automatically calculates which cell it will fall into
@@ -65,7 +64,7 @@ export async function getGameState(
  * */
 export async function updateGameState(
 	lobbyCode: string,
-	playerID: TPlayerIDs,
+	playerID: TPlayerTypes,
 	column: number,
 ) {
 	if (column < 0 || column > GAME_COLUMNS - 1) throw new CodedError("BadData");
@@ -74,7 +73,7 @@ export async function updateGameState(
 	const board = await redis.get(`GameState_${lobbyCode}:board`);
 	const turn = (await redis.get(
 		`GameState_${lobbyCode}:turn`,
-	)) as TPlayerIDs | null;
+	)) as TPlayerTypes | null;
 
 	// Exit early if there was an error getting the board or turn or if it's not this player's turn
 	if (!board || !turn) throw new CodedError("GameExpired");
@@ -104,9 +103,7 @@ export async function updateGameState(
 		});
 		// Set the next player's turn
 		// Sets it to the next playerID in the list of playerIDs. The fallback if something goes wrong is the first element
-		await redis.set(`GameState_${lobbyCode}:turn`, PlayerIDs.at((PlayerIDs.findIndex((elem) => elem === playerID) + 1) % PlayerIDs.length) ?? PlayerIDs[0], {
-			EX: GAME_EXPIRY_TIME
-		});
+		await redis.set(`GameState_${lobbyCode}:turn`, PlayerTypes.at((PlayerTypes.findIndex((elem) => elem === playerID) + 1) % PlayerTypes.length) ?? PlayerTypes[0]);
 	} catch {
 		throw new CodedError("ServerError");
 	} finally {

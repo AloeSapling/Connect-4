@@ -4,15 +4,15 @@ import type { User } from "../database-sqllite/models.ts";
 import type { WebSocketServer } from "ws";
 
 // Used to identify whose turn it is or whose tile is in a given cell
-export const PlayerIDs = ["PLAYER1", "PLAYER2"] as const;
-export type TPlayerIDs = typeof PlayerIDs[number];
+export const PlayerTypes = ["PLAYER1", "PLAYER2"] as const;
+export type TPlayerTypes = typeof PlayerTypes[number];
 
-export type CellState = "EMPTY" | TPlayerIDs;
+export type CellState = "EMPTY" | TPlayerTypes;
 export type GameBoard = Array<Array<CellState>>;
 
 export type GameState = {
 	board: GameBoard;
-	turn: TPlayerIDs;
+	turn: TPlayerTypes;
 }
 
 export type WSRoutes = {

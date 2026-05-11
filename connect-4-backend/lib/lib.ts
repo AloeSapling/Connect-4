@@ -22,22 +22,26 @@ function createLobbyCode(): string {
 function addRouteWithMethods(router: Router, path: string, fn: RequestHandler, allowedMethods: Methods[] = ["GET"], _auth?: RequestHandler) {
 	const auth = _auth ?? noAuth;
 
+	const asyncFn: RequestHandler = (req, res, next) => {
+		Promise.resolve(fn(req, res, next)).catch(next);
+	};
+
 	allowedMethods.forEach((method) => {
 		switch (method) {
 			case "GET":
-				router.get(path, auth, fn);
+				router.get(path, auth, asyncFn);
 				break;
 			case "POST":
-				router.post(path, auth, fn);
+				router.post(path, auth, asyncFn);
 				break;
 			case "PUT":
-				router.put(path, auth, fn);
+				router.put(path, auth, asyncFn);
 				break;
 			case "PATCH":
-				router.patch(path, auth, fn);
+				router.patch(path, auth, asyncFn);
 				break;
 			case "DELETE":
-				router.delete(path, auth, fn);
+				router.delete(path, auth, asyncFn);
 				break;
 		}
 		// Return 405 for methods outside of allowedMethods array

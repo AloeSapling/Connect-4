@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { User } from "../database-sqllite/models.ts";
 import { CodedError, type UserRequest } from "./types.ts";
+import { sessionMiddleware } from "../app.ts";
 
 /** Check if there exists a user tied to the client's sessionID 
 *
@@ -23,4 +24,18 @@ function AuthUser(req: Request, res: Response, next: NextFunction) {
 	}).catch(err => console.log(err));
 }
 
-export { AuthUser }
+function WSAuthUser(req: any): Promise<boolean> {
+	return new Promise((resolve) => {
+		const fakeRes = {
+			status: () => fakeRes,
+			json: () => resolve(false),
+			send: () => resolve(false),
+		} as any;
+
+		sessionMiddleware(req, fakeRes, () => {
+			AuthUser(req, fakeRes, (err?: any) => resolve(!err));
+		});
+	});
+}
+
+export { AuthUser, WSAuthUser }
