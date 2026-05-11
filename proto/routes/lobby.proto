@@ -17,23 +17,19 @@ message CreateLobbyResponse {
   string code = 1;
 }
 
+message GetLobbyDetailsRequest {
+  string code = 1;
+}
+
 message GetLobbyDetailsResponse {
   optional models.DetailedLobbyData lobby_details = 1;
 }
 
-message ResponseLobbyMember {
-  string id = 1;
-  string user_id = 2;
-  string username = 3;
-  shared.PlayerTypes player_type = 4;
-  shared.PlayerIDs player_id = 5;
+message ChangePlayerIDRequest {
+  string user_id = 1;
+  shared.PlayerIDs player_id = 2;
 }
 
-message GetLobbyMembersRequest {
+message LeaveLobbyRequest {
   string code = 1;
-}
-
-
-message GetLobbyMembersResponse {
-  repeated ResponseLobbyMember members = 1; 
 }
