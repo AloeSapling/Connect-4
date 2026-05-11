@@ -2,10 +2,16 @@ syntax = "proto3";
 
 package routes;
 
+import 'models/models.proto';
+
 message CreateUserRequest {
   string username = 1;
 }
 
 message ChangeUsernameRequest {
   string username = 1;
+}
+
+message GetLoggedInData {
+  models.User user = 1;
 }

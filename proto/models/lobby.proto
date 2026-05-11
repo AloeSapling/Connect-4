@@ -21,5 +21,6 @@ message DetailedLobbyData {
   string lobby_name = 2;
   int32 member_count = 3;
   bool has_game = 4;
-  repeated models.DetailedLobbyMemberData lobby_members = 5;
+  models.DetailedLobbyMemberData host = 5;
+  repeated models.DetailedLobbyMemberData lobby_members = 6;
 }

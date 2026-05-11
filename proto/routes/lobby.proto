@@ -13,6 +13,10 @@ message GetLobbyResponse {
   optional models.LobbyData lobby = 1;
 }
 
+message CreateLobbyRequest {
+  string lobby_name = 1;
+}
+
 message CreateLobbyResponse {
   string code = 1;
 }
