@@ -1,0 +1,22 @@
+version: "1.0"
+
+services:
+  express:
+    container_name: connect_4_backend
+    image: app
+    restart: no 
+    build:
+      context: .
+      dockerfile: DockerFile
+      target: base
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    depends_on:
+      - redis
+
+  redis:
+      image: redis:alpine
+      ports:
+        - "${REDIS_PORT}:6379"
+
+

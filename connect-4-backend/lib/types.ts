@@ -1,26 +1,66 @@
-import type { Request } from "express";
-import type { ErrorCodes } from "../../errorCodes.ts"
-import type { User } from "../database-sqllite/models.ts";
+import type { Request } from 'express';
+import type { LobbyMember, User } from '../database-sqllite/models.ts';
+import type { WebSocket, WebSocketServer } from 'ws';
+import * as proto from './proto.js';
 
-export type PlayerIDs = "PLAYER1" | "PLAYER2"
-export type CellState = "EMPTY" | PlayerIDs;
-export type GameBoard = Array<Array<CellState>>;
+// Protobuf type and value aliases
+/** Alias for equivalent protobuf type */
+export type TPlayerTypes = proto.shared.PlayerTypes;
+/** Alias for equivalent protobuf type */
+export type TPlayerIDs = proto.shared.PlayerIDs;
+/** Alias for equivalent protobuf type */
+export type TErrorCodes = proto.shared.ErrorCodes;
+/** Alias for equivalent protobuf type */
+export type TCodedError = proto.shared.CodedError;
+
+/** Alias for equivalent protobuf value */
+export const P_PlayerTypes = proto.shared.PlayerTypes;
+/** Alias for equivalent protobuf value */
+export const P_PlayerIDs = proto.shared.PlayerIDs;
+/** Alias for equivalent protobuf value */
+export const P_ErrorCodes = proto.shared.ErrorCodes;
+/** Alias for equivalent protobuf value */
+export const P_CodedError = proto.shared.CodedError;
+
+// Game types
+export type GameRow = {
+    columns: Array<TPlayerIDs>;
+};
+export type GameBoard = {
+    rows: Array<GameRow>;
+};
 
 export type GameState = {
-	board: GameBoard;
-	turn: PlayerIDs;
-}
+    board: GameBoard;
+    turn: TPlayerIDs;
+};
 
-export type UserRequest = { user: User } & Request
+// Websocket types
+export type WSRoutes = {
+    '/game/': WebSocketServer;
+};
 
+export type Room = WebSocket[];
+
+// Route-related types
+export type UserRequest = { user: User } & Request;
+
+export type Methods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+export type LowerCaseMethods = 'get' | 'post' | 'put' | 'patch' | 'delete';
+
+export type LobbyMemberSelectResult = LobbyMember & {
+    User: User;
+};
+
+/** An error additionally containing an error code */
 class CodedError {
-	constructor(_code: ErrorCodes, _error?: Error) {
-		this.code = _code;
-		this.error = _error ?? new Error(_code);
-	}
+    constructor(_code: TErrorCodes, _error?: Error) {
+        this.code = _code;
+        this.error = _error ?? new Error(JSON.stringify(_code));
+    }
 
-	code: ErrorCodes;
-	error: Error;
+    code: TErrorCodes;
+    error: Error;
 }
 
-export { CodedError }
+export { CodedError };

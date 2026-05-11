@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package routes;
+
+import "models/models.proto";
+
+message GetGameResponse {
+  models.Game game = 1;
+}

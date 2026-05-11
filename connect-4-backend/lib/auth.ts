@@ -1,22 +1,99 @@
-import type { NextFunction, Request, Response } from "express";
-import { User } from "../database-sqllite/models.ts";
-import { CodedError, type SessionRequest } from "./types.ts";
+import type { NextFunction, Request, Response } from 'express';
+import { User } from '../database-sqllite/models.ts';
+import { P_CodedError, P_ErrorCodes, type UserRequest } from './types.ts';
+import { sessionMiddleware } from '../app.ts';
+import { getUserBySessionID } from '../database-sqllite/user.ts';
+import * as lobbyFn from '../database-sqllite/lobbyMembers.ts';
 
-function AuthUser(req: unknown, res: Response, next: NextFunction) {
-	const sessionID = (req as SessionRequest).session.id;
-	console.log(sessionID);
-	User.findOne({
-		where: {
-			sessionID: sessionID,
-		}
-	}).then((user: User | null) => {
-		if (user === null) {
-			res.status(401).json(new CodedError("Unauthorised"));
-			return;
-		}
-		(req as SessionRequest).user = user;
-		next();
-	}).catch(err => console.log(err));
+/** Check if there exists a user tied to the client's sessionID
+ *
+ * Sets the request's user to the user tied to the client's sessionID
+ * */
+export function authUser(req: Request, res: Response, next: NextFunction) {
+    const sessionID = req.session.id;
+    console.log(sessionID);
+    getUserBySessionID(sessionID)
+        .then((user: User | null) => {
+            if (user === null) {
+                res.status(401).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
+                    })
+                );
+                return;
+            }
+            (req as UserRequest).user = user.dataValues;
+            next();
+        })
+        .catch((err) => {
+            next(err);
+        });
 }
 
-export { AuthUser }
+/** A wrapper around authUser
+ *
+ * Used for websockets (fakes a http request)
+ * */
+export function wsAuthUser(req: Request): Promise<boolean> {
+    return new Promise((resolve) => {
+        const fakeRes = {
+            status: () => fakeRes,
+            json: () => resolve(false),
+            send: () => resolve(false),
+        } as unknown as Response;
+
+        sessionMiddleware(req, fakeRes, () => {
+            authUser(req, fakeRes, (err) => resolve(!err));
+        });
+    });
+}
+
+/** Checks if user is a part of the lobby */
+export async function isLobbyMember(req: Request, res: Response, next: NextFunction) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await authUser(req, res, async (err?: any) => {
+        if (err) {
+            next(err);
+            return;
+        }
+
+        const user = (req as UserRequest).user;
+        const code = req.params.code as string;
+
+        if (!(await lobbyFn.isLobbyMember(code, user.id))) {
+            res.send(401).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
+                })
+            );
+            return;
+        }
+
+        next();
+    });
+}
+
+/** Checks if the user is the host of the lobby */
+export async function isLobbyHost(req: Request, res: Response, next: NextFunction) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await authUser(req, res, async (err?: any) => {
+        if (err) {
+            next(err);
+            return;
+        }
+
+        const user = (req as UserRequest).user;
+        const code = req.params.code as string;
+
+        if (!(await lobbyFn.isLobbyHost(code, user.id))) {
+            res.send(401).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
+                })
+            );
+            return;
+        }
+
+        next();
+    });
+}

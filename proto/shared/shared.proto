@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package shared;
+
+enum PlayerTypes {
+  PLAYER_TYPES_UNSPECIFIED = 0;
+  PLAYER_TYPES_PLAYER = 1;
+  PLAYER_TYPES_SPECTATOR = 2;
+}
+
+enum PlayerIDs {
+  PLAYER_IDS_UNSPECIFIED = 0;
+  PLAYER_IDS_PLAYER1 = 1;
+  PLAYER_IDS_PLAYER2 = 2;
+}
+
+message GameRow {
+  repeated PlayerIDs columns = 1;
+}
+
+message GameBoard {
+  repeated GameRow rows = 1;
+}

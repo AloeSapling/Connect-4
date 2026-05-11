@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package models;
+
+import 'shared/shared.proto';
+
+message DetailedLobbyMemberData {
+  int32 user_id = 1;
+  string username = 2;
+  shared.PlayerTypes player_type = 3;
+  shared.PlayerIDs player_id = 4;
+  bool host = 5;
+}
+
+message LobbyMember {
+  int32 id = 1;
+  int32 user_id = 2;
+  string lobby_code = 3;
+  shared.PlayerTypes player_type = 4;
+  shared.PlayerIDs player_id = 5;
+  bool host = 6;
+}
