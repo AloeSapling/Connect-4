@@ -1,7 +1,7 @@
 import { createLobbyCode } from '../lib/lib.ts';
 import { CodedError, P_ErrorCodes } from '../lib/types.ts';
 import { Lobby, LobbyMember } from './models.ts';
-import * as proto from '../lib/proto.js';
+import { models } from '../lib/proto.js';
 import { getDetailedLobbyMembersData } from './lobbyMembers.ts';
 import { gameExists, gamesExist } from '../database-redis/game.ts';
 import { Sequelize } from 'sequelize';
@@ -10,7 +10,7 @@ import { sequelize } from './database.ts';
 /** Create a new lobby instance in the sql database
  * @returns The code associated with the newly created lobby
  * */
-export async function createLobby(): Promise<string> {
+export async function createLobby(lobbyName: string): Promise<string> {
     // Retry up to 15 times on collision.
     // With the amount of possible codes, 15 retries should be more than enough to create a unique code.
     for (let i = 0; i < 15; i++) {
@@ -18,6 +18,7 @@ export async function createLobby(): Promise<string> {
             const code = createLobbyCode();
             await Lobby.create({
                 code: code,
+                name: lobbyName,
             });
 
             return code;
@@ -38,7 +39,7 @@ export async function deleteLobby(code: string) {
 }
 
 /** @returns A list of all of the lobbies */
-export async function getAllLobbiesData(): Promise<proto.models.ILobbyData[]> {
+export async function getAllLobbiesData(): Promise<models.ILobbyData[]> {
     type tmp_SelectResult = (Lobby & { memberCount: number })[];
 
     const lobbies: tmp_SelectResult = (await Lobby.findAll({
@@ -78,7 +79,7 @@ export async function lobbyExists(code: string): Promise<boolean> {
 }
 
 /** Gets detailed data about a specific lobby, formatted appropriately */
-export async function getDetailedLobbyData(code: string): Promise<proto.models.IDetailedLobbyData> {
+export async function getDetailedLobbyData(code: string): Promise<models.IDetailedLobbyData> {
     const lobby = await Lobby.findOne({
         where: {
             code: code,

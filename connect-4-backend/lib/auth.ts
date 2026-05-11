@@ -15,14 +15,14 @@ export function authUser(req: Request, res: Response, next: NextFunction) {
     getUserBySessionID(sessionID)
         .then((user: User | null) => {
             if (user === null) {
-                res.send(401).send(
+                res.status(401).send(
                     P_CodedError.encode({
                         code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
                     })
                 );
                 return;
             }
-            (req as UserRequest).user = user;
+            (req as UserRequest).user = user.dataValues;
             next();
         })
         .catch((err) => {

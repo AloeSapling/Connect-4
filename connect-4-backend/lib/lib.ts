@@ -2,7 +2,6 @@ import { randomInt } from 'crypto';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import type { LowerCaseMethods, Methods, Room, TPlayerIDs } from './types.ts';
 import { ALL_CODE_CHARS, CODE_LENGTH } from '../config.ts';
-import * as proto from './proto.js';
 
 const noAuth: RequestHandler = (req, res, next) => next();
 

@@ -1,5 +1,5 @@
 import type { Request } from 'express';
-import type { User } from '../database-sqllite/models.ts';
+import type { LobbyMember, User } from '../database-sqllite/models.ts';
 import type { WebSocket, WebSocketServer } from 'ws';
 import * as proto from './proto.js';
 
@@ -47,6 +47,10 @@ export type UserRequest = { user: User } & Request;
 
 export type Methods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 export type LowerCaseMethods = 'get' | 'post' | 'put' | 'patch' | 'delete';
+
+export type LobbyMemberSelectResult = LobbyMember & {
+    User: User;
+};
 
 /** An error additionally containing an error code */
 class CodedError {

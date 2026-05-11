@@ -200,6 +200,103 @@ export namespace routes {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a CreateLobbyRequest. */
+    interface ICreateLobbyRequest {
+
+        /** CreateLobbyRequest lobbyName */
+        lobbyName?: (string|null);
+    }
+
+    /** Represents a CreateLobbyRequest. */
+    class CreateLobbyRequest implements ICreateLobbyRequest {
+
+        /**
+         * Constructs a new CreateLobbyRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: routes.ICreateLobbyRequest);
+
+        /** CreateLobbyRequest lobbyName. */
+        public lobbyName: string;
+
+        /**
+         * Creates a new CreateLobbyRequest instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns CreateLobbyRequest instance
+         */
+        public static create(properties?: routes.ICreateLobbyRequest): routes.CreateLobbyRequest;
+
+        /**
+         * Encodes the specified CreateLobbyRequest message. Does not implicitly {@link routes.CreateLobbyRequest.verify|verify} messages.
+         * @param message CreateLobbyRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: routes.ICreateLobbyRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified CreateLobbyRequest message, length delimited. Does not implicitly {@link routes.CreateLobbyRequest.verify|verify} messages.
+         * @param message CreateLobbyRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: routes.ICreateLobbyRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a CreateLobbyRequest message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns CreateLobbyRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.CreateLobbyRequest;
+
+        /**
+         * Decodes a CreateLobbyRequest message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns CreateLobbyRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.CreateLobbyRequest;
+
+        /**
+         * Verifies a CreateLobbyRequest message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a CreateLobbyRequest message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns CreateLobbyRequest
+         */
+        public static fromObject(object: { [k: string]: any }): routes.CreateLobbyRequest;
+
+        /**
+         * Creates a plain object from a CreateLobbyRequest message. Also converts values to other types if specified.
+         * @param message CreateLobbyRequest
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: routes.CreateLobbyRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this CreateLobbyRequest to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for CreateLobbyRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a CreateLobbyResponse. */
     interface ICreateLobbyResponse {
 
@@ -291,103 +388,6 @@ export namespace routes {
 
         /**
          * Gets the default type url for CreateLobbyResponse
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of a GetLobbyDetailsRequest. */
-    interface IGetLobbyDetailsRequest {
-
-        /** GetLobbyDetailsRequest code */
-        code?: (string|null);
-    }
-
-    /** Represents a GetLobbyDetailsRequest. */
-    class GetLobbyDetailsRequest implements IGetLobbyDetailsRequest {
-
-        /**
-         * Constructs a new GetLobbyDetailsRequest.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: routes.IGetLobbyDetailsRequest);
-
-        /** GetLobbyDetailsRequest code. */
-        public code: string;
-
-        /**
-         * Creates a new GetLobbyDetailsRequest instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns GetLobbyDetailsRequest instance
-         */
-        public static create(properties?: routes.IGetLobbyDetailsRequest): routes.GetLobbyDetailsRequest;
-
-        /**
-         * Encodes the specified GetLobbyDetailsRequest message. Does not implicitly {@link routes.GetLobbyDetailsRequest.verify|verify} messages.
-         * @param message GetLobbyDetailsRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: routes.IGetLobbyDetailsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified GetLobbyDetailsRequest message, length delimited. Does not implicitly {@link routes.GetLobbyDetailsRequest.verify|verify} messages.
-         * @param message GetLobbyDetailsRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: routes.IGetLobbyDetailsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a GetLobbyDetailsRequest message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns GetLobbyDetailsRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetLobbyDetailsRequest;
-
-        /**
-         * Decodes a GetLobbyDetailsRequest message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns GetLobbyDetailsRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetLobbyDetailsRequest;
-
-        /**
-         * Verifies a GetLobbyDetailsRequest message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a GetLobbyDetailsRequest message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns GetLobbyDetailsRequest
-         */
-        public static fromObject(object: { [k: string]: any }): routes.GetLobbyDetailsRequest;
-
-        /**
-         * Creates a plain object from a GetLobbyDetailsRequest message. Also converts values to other types if specified.
-         * @param message GetLobbyDetailsRequest
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: routes.GetLobbyDetailsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this GetLobbyDetailsRequest to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for GetLobbyDetailsRequest
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -594,103 +594,6 @@ export namespace routes {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a LeaveLobbyRequest. */
-    interface ILeaveLobbyRequest {
-
-        /** LeaveLobbyRequest code */
-        code?: (string|null);
-    }
-
-    /** Represents a LeaveLobbyRequest. */
-    class LeaveLobbyRequest implements ILeaveLobbyRequest {
-
-        /**
-         * Constructs a new LeaveLobbyRequest.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: routes.ILeaveLobbyRequest);
-
-        /** LeaveLobbyRequest code. */
-        public code: string;
-
-        /**
-         * Creates a new LeaveLobbyRequest instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns LeaveLobbyRequest instance
-         */
-        public static create(properties?: routes.ILeaveLobbyRequest): routes.LeaveLobbyRequest;
-
-        /**
-         * Encodes the specified LeaveLobbyRequest message. Does not implicitly {@link routes.LeaveLobbyRequest.verify|verify} messages.
-         * @param message LeaveLobbyRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: routes.ILeaveLobbyRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified LeaveLobbyRequest message, length delimited. Does not implicitly {@link routes.LeaveLobbyRequest.verify|verify} messages.
-         * @param message LeaveLobbyRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: routes.ILeaveLobbyRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a LeaveLobbyRequest message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns LeaveLobbyRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.LeaveLobbyRequest;
-
-        /**
-         * Decodes a LeaveLobbyRequest message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns LeaveLobbyRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.LeaveLobbyRequest;
-
-        /**
-         * Verifies a LeaveLobbyRequest message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a LeaveLobbyRequest message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns LeaveLobbyRequest
-         */
-        public static fromObject(object: { [k: string]: any }): routes.LeaveLobbyRequest;
-
-        /**
-         * Creates a plain object from a LeaveLobbyRequest message. Also converts values to other types if specified.
-         * @param message LeaveLobbyRequest
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: routes.LeaveLobbyRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this LeaveLobbyRequest to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for LeaveLobbyRequest
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
     /** Properties of a CreateUserRequest. */
     interface ICreateUserRequest {
 
@@ -888,6 +791,103 @@ export namespace routes {
 
         /**
          * Gets the default type url for ChangeUsernameRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetLoggedInData. */
+    interface IGetLoggedInData {
+
+        /** GetLoggedInData user */
+        user?: (models.IUser|null);
+    }
+
+    /** Represents a GetLoggedInData. */
+    class GetLoggedInData implements IGetLoggedInData {
+
+        /**
+         * Constructs a new GetLoggedInData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: routes.IGetLoggedInData);
+
+        /** GetLoggedInData user. */
+        public user?: (models.IUser|null);
+
+        /**
+         * Creates a new GetLoggedInData instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns GetLoggedInData instance
+         */
+        public static create(properties?: routes.IGetLoggedInData): routes.GetLoggedInData;
+
+        /**
+         * Encodes the specified GetLoggedInData message. Does not implicitly {@link routes.GetLoggedInData.verify|verify} messages.
+         * @param message GetLoggedInData message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: routes.IGetLoggedInData, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified GetLoggedInData message, length delimited. Does not implicitly {@link routes.GetLoggedInData.verify|verify} messages.
+         * @param message GetLoggedInData message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: routes.IGetLoggedInData, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a GetLoggedInData message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns GetLoggedInData
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetLoggedInData;
+
+        /**
+         * Decodes a GetLoggedInData message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns GetLoggedInData
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetLoggedInData;
+
+        /**
+         * Verifies a GetLoggedInData message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a GetLoggedInData message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns GetLoggedInData
+         */
+        public static fromObject(object: { [k: string]: any }): routes.GetLoggedInData;
+
+        /**
+         * Creates a plain object from a GetLoggedInData message. Also converts values to other types if specified.
+         * @param message GetLoggedInData
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: routes.GetLoggedInData, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this GetLoggedInData to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for GetLoggedInData
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -1447,6 +1447,9 @@ export namespace models {
         /** DetailedLobbyData hasGame */
         hasGame?: (boolean|null);
 
+        /** DetailedLobbyData host */
+        host?: (models.IDetailedLobbyMemberData|null);
+
         /** DetailedLobbyData lobbyMembers */
         lobbyMembers?: (models.IDetailedLobbyMemberData[]|null);
     }
@@ -1471,6 +1474,9 @@ export namespace models {
 
         /** DetailedLobbyData hasGame. */
         public hasGame: boolean;
+
+        /** DetailedLobbyData host. */
+        public host?: (models.IDetailedLobbyMemberData|null);
 
         /** DetailedLobbyData lobbyMembers. */
         public lobbyMembers: models.IDetailedLobbyMemberData[];
