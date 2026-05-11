@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-type lobbyData = {
+type LobbyData = {
     code: string,
     lobby_name: string,
     member_count: number,
@@ -8,7 +9,8 @@ type lobbyData = {
 }
 
 function LobbyList() {
-    const [lobbyListData, setLobbyListData] = useState<lobbyData[]>([
+    const navigate = useNavigate();
+    const [lobbyDataList, setLobbyDataList] = useState<LobbyData[]>([
         {
             code: "aaa",
             lobby_name: "es",
@@ -35,17 +37,24 @@ function LobbyList() {
         },
     ]);
 
-    const selectLobbyFromList = (code: string) => {
+    const selectLobby = (code: string) => {
+        navigate(`/lobby/${code}`);
         return;
     }
 
     const refreshData = () => {
-        setLobbyListData(lobbyListData => [...lobbyListData, { 
+        setLobbyDataList(lobbyDataList => [...lobbyDataList, { 
             code: "rfsh",
             lobby_name: "refreshed",
             member_count: 10,
             has_game: false
-         }]);
+        }]);
+        return; 
+    }
+
+    const changeNick = () => {
+        navigate("/username");
+        return;
     }
 
     return (
@@ -100,10 +109,11 @@ function LobbyList() {
                 ">
                 <table className="w-full table-fixed">
                   <tbody>
-                    {lobbyListData.map((lobby) => (
+                    {lobbyDataList.map((lobby) => (
                       <tr
                         key={lobby.code}
                         className="border-b border-amber-950 hover:bg-yellow-800 cursor-pointer"
+                        onClick={() => selectLobby(lobby.code)}
                       >
                         <td className="p-2 truncate">
                           {lobby.lobby_name}
@@ -129,7 +139,8 @@ function LobbyList() {
                 <button className="bg-amber-900 hover:bg-amber-950 rounded p-2 font-semibold cursor-pointer">
                   Create Room
                 </button>
-                <button className="bg-amber-900 hover:bg-amber-950 rounded p-2 font-semibold cursor-pointer">
+                <button className="bg-amber-900 hover:bg-amber-950 rounded p-2 font-semibold cursor-pointer"
+                    onClick={() => selectLobby("a")}>
                   Join Room with Code
                 </button>
                 <button className="bg-amber-900 hover:bg-amber-950 rounded p-2 font-semibold cursor-pointer"
@@ -142,7 +153,9 @@ function LobbyList() {
                 <p className="text-center">
                     Current Nick: idk
                 </p>
-                <button className="bg-amber-900 hover:bg-amber-950 rounded p-2 font-semibold cursor-pointer">
+                <button className="bg-amber-900 hover:bg-amber-950 rounded p-2 font-semibold cursor-pointer"
+                    onClick={changeNick}
+                >
                   Change Nick
                 </button>
               </div>

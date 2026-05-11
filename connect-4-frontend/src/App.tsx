@@ -8,8 +8,11 @@ import BackendTest from "./pages/BackendTest.tsx";
 // Pages
 const BasePage = lazy(() => import("./pages/BasePage.tsx"));
 const Home = lazy(() => import("./pages/Home.tsx"));
-const Settings = lazy(() => import("./pages/Settings.tsx"));
+const Username = lazy(() => import("./pages/Username.tsx"));
+const LobbyList = lazy(() => import("./pages/LobbyList.tsx"));
+const Lobby = lazy(() => import("./pages/Lobby.tsx"));
 const Game = lazy(() => import("./pages/Game.tsx"));
+const Settings = lazy(() => import("./pages/Settings.tsx"));
 const Error = lazy(() => import("./pages/Error.tsx"));
 
 function App() {
@@ -25,7 +28,14 @@ function App() {
 
 							<Route path="settings" element={<SettingsPage />} />
 
-							<Route path="game" element={<GamePage />} />
+							<Route path="lobbylist" element={<LobbyList />} />
+
+							<Route path="lobby/:lobbyCode" element={<Lobby />} />
+
+							<Route path="game" element={<Game />} />
+
+							<Route path="settings" element={<Settings />} />
+
 							<Route path="test" element={<BackendTest />} />
 
 							{/* 404 */}

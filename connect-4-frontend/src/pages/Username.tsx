@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Username() {
-    const [userName, setUserName] = useState("");
     const navigate = useNavigate();
+    const [userName, setUserName] = useState("");
 
     // placeholder
     const submitUserName = () => {
