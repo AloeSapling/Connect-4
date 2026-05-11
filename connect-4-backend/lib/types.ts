@@ -1,5 +1,4 @@
 import type { Request } from "express";
-import type { ErrorCodes } from "./errorCodes.ts"
 import type { User } from "../database-sqllite/models.ts";
 import type { WebSocket, WebSocketServer } from "ws";
 import * as proto from "./proto.js";
@@ -21,7 +20,7 @@ export type GameState = {
 }
 
 export type WSRoutes = {
-        "/game": WebSocketServer
+        "/game/": WebSocketServer
 };
 
 export type Room = WebSocket[];
@@ -32,12 +31,12 @@ export type Methods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 /** An error additionally containing an error code */
 class CodedError {
-        constructor(_code: ErrorCodes, _error?: Error) {
+        constructor(_code: proto.shared.ErrorCodes, _error?: Error) {
                 this.code = _code;
-                this.error = _error ?? new Error(_code);
+                this.error = _error ?? new Error(JSON.stringify(_code));
         }
 
-        code: ErrorCodes;
+        code: proto.shared.ErrorCodes;
         error: Error;
 }
 

@@ -18,7 +18,9 @@ import { CLIENT_URL, REDIS_HOST, REDIS_PORT, SERVER_PORT } from './config.ts';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { setupGameWSServer } from './routes/ws/game.ts';
-import { CodedError, type UserRequest, type WSRoutes } from './lib/types.ts';
+import { type UserRequest, type WSRoutes } from './lib/types.ts';
+
+import * as proto from './lib/proto.js';
 
 // Set up Redis database
 export const redis = createClient({
@@ -50,6 +52,7 @@ export const sessionMiddleware = session({
 
 // Middlewares
 app.use(logger('dev'));
+app.use(express.raw({ type: 'application/octet-stream' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -59,6 +62,14 @@ app.use(cors({
         origin: CLIENT_URL,
         credentials: true,
 }));
+
+// Most endpoints return a protobuf encoded binary stream
+// This sets the content type for all responses to a binary stream
+// Maually override where necessary
+app.use((req, res, next) => {
+        res.set('Content-Type', 'application/octet-stream');
+        next();
+});
 
 // Development anti-caching
 app.use((req, res, next) => {
@@ -76,24 +87,29 @@ app.use('/lobby', AuthUser, lobbyRouter);
 app.use('/game', gameRouter);
 
 // Websockets
-const wsRoutes: WSRoutes = {
-        "/game": new WebSocketServer({ noServer: true })
+const wsRoutes = {
+        "/game/": new WebSocketServer({ noServer: true })
 }
 
 // Setup each websocket route
-setupGameWSServer(wsRoutes["/game"]);
+setupGameWSServer(wsRoutes["/game/"]);
 
 // Handle connections to each websocket route
 server.on("upgrade", async (req, socket, head) => {
         const { pathname } = new URL(req.url || "", `http://${req.headers.host}`);
 
         if (!await WSAuthUser(req as Request)) {
-                socket.write(JSON.stringify(new CodedError("Unauthorised")));
+                socket.write(proto.ws.WSGameResponsePacket.encode({
+                        response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
+                        error: proto.shared.CodedError.create({
+                                code: proto.shared.ErrorCodes.ERROR_CODES_UNAUTHORISED,
+                        })
+                }).finish());
                 socket.destroy();
                 return;
         }
 
-        console.log((req as UserRequest).user);
+        console.log(pathname);
 
         if (pathname in wsRoutes) {
                 wsRoutes[pathname as keyof WSRoutes].handleUpgrade(req, socket, head, (ws) => {

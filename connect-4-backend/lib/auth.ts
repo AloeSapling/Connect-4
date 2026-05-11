@@ -3,6 +3,7 @@ import { User } from "../database-sqllite/models.ts";
 import { CodedError, type UserRequest } from "./types.ts";
 import { sessionMiddleware } from "../app.ts";
 import { getUserBySessionID } from "../database-sqllite/user.ts";
+import * as proto from './proto.js';
 
 /** Check if there exists a user tied to the client's sessionID 
 *
@@ -13,7 +14,7 @@ function AuthUser(req: Request, res: Response, next: NextFunction) {
         console.log(sessionID);
         getUserBySessionID(sessionID).then((user: User | null) => {
                 if (user === null) {
-                        res.status(401).json(new CodedError("Unauthorised"));
+                        res.status(401).json(new CodedError(proto.shared.ErrorCodes.ERROR_CODES_UNAUTHORISED));
                         return;
                 }
                 (req as UserRequest).user = user;
