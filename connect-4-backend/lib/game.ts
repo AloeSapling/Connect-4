@@ -1,5 +1,4 @@
-import { CodedError, type GameBoard, type GameRow, type PlayerIDs } from './types.ts';
-import * as proto from './proto.js';
+import { CodedError, P_ErrorCodes, P_PlayerIDs, type GameBoard, type GameRow, type TPlayerIDs } from './types.ts';
 import { GAME_WIN_LENGTH } from '../config.ts';
 
 const Directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'] as const;
@@ -21,7 +20,7 @@ class TileChecker {
     board: GameBoard;
     column: number;
     row: number;
-    playerID: PlayerIDs;
+    playerID: TPlayerIDs;
 
     /** @throws Error code - "BadData" if the tile position is out of the bounds of the game board or the selected cell is empty */
     constructor(_board: GameBoard, _column: number, _row: number) {
@@ -29,19 +28,19 @@ class TileChecker {
         this.column = _column;
         this.row = _row;
 
-        if (!this.checkIfValidTilePosition()) throw new CodedError(proto.shared.ErrorCodes.ERROR_CODES_BAD_DATA);
+        if (!this.checkIfValidTilePosition()) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
 
-        if ((this.board.rows[this.row] as GameRow).columns[this.column] === proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED)
-            throw new CodedError(proto.shared.ErrorCodes.ERROR_CODES_BAD_DATA);
+        if ((this.board.rows[this.row] as GameRow).columns[this.column] === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED)
+            throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
 
-        this.playerID = (this.board.rows[this.row] as GameRow).columns[this.column] as PlayerIDs;
+        this.playerID = (this.board.rows[this.row] as GameRow).columns[this.column] as TPlayerIDs;
     }
 
     /** Checks if a draw exists on the provided board */
     static checkForDraw(board: GameBoard): boolean {
         for (let i = 0; i < board.rows.length; i++) {
             for (let j = 0; j < (board.rows[i] as GameRow).columns.length; j++) {
-                if ((board.rows[i] as GameRow).columns[j] === proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED) return false;
+                if ((board.rows[i] as GameRow).columns[j] === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED) return false;
             }
         }
 

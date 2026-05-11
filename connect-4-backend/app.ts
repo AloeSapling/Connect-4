@@ -11,13 +11,13 @@ import usersRouter from './routes/users.ts';
 import lobbyRouter from './routes/lobby.ts';
 
 import { createClient } from 'redis';
-import { AuthUser, WSAuthUser } from './lib/auth.ts';
+import { authUser, wsAuthUser } from './lib/auth.ts';
 import { setupDatabase } from './database-sqllite/database.ts';
 import { CLIENT_URL, REDIS_HOST, REDIS_PORT, SERVER_PORT } from './config.ts';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { setupGameWSServer } from './routes/ws/game.ts';
-import { type WSRoutes } from './lib/types.ts';
+import { P_CodedError, P_ErrorCodes, type WSRoutes } from './lib/types.ts';
 
 import * as proto from './lib/proto.js';
 
@@ -83,7 +83,7 @@ app.use('/', indexRouter);
 
 app.use('/user', usersRouter);
 
-app.use('/lobby', AuthUser, lobbyRouter);
+app.use('/lobby', authUser, lobbyRouter);
 
 app.use('/game', gameRouter);
 
@@ -99,12 +99,12 @@ setupGameWSServer(wsRoutes['/game/']);
 server.on('upgrade', async (req, socket, head) => {
     const { pathname } = new URL(req.url || '', `http://${req.headers.host}`);
 
-    if (!(await WSAuthUser(req as Request))) {
+    if (!(await wsAuthUser(req as Request))) {
         socket.write(
             proto.ws.WSGameResponsePacket.encode({
                 response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
-                error: proto.shared.CodedError.create({
-                    code: proto.shared.ErrorCodes.ERROR_CODES_UNAUTHORISED,
+                error: P_CodedError.create({
+                    code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
                 }),
             }).finish()
         );

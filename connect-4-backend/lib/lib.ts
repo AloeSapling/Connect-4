@@ -1,6 +1,6 @@
 import { randomInt } from 'crypto';
 import type { Request, RequestHandler, Response, Router } from 'express';
-import type { Methods, Room } from './types.ts';
+import type { LowerCaseMethods, Methods, Room, TPlayerIDs } from './types.ts';
 import { ALL_CODE_CHARS, CODE_LENGTH } from '../config.ts';
 import * as proto from './proto.js';
 
@@ -24,36 +24,21 @@ function addRouteWithMethods(
     path: string,
     fn: RequestHandler,
     allowedMethods: Methods[] = ['GET'],
-    _auth?: RequestHandler
+    _auth?: [RequestHandler]
 ) {
-    const auth = _auth ?? noAuth;
+    const auth = _auth ?? [noAuth];
 
     const asyncFn: RequestHandler = (req, res, next) => {
         Promise.resolve(fn(req, res, next)).catch(next);
     };
 
     allowedMethods.forEach((method) => {
-        switch (method) {
-            case 'GET':
-                router.get(path, auth, asyncFn);
-                break;
-            case 'POST':
-                router.post(path, auth, asyncFn);
-                break;
-            case 'PUT':
-                router.put(path, auth, asyncFn);
-                break;
-            case 'PATCH':
-                router.patch(path, auth, asyncFn);
-                break;
-            case 'DELETE':
-                router.delete(path, auth, asyncFn);
-                break;
-        }
-        // Return 405 for methods outside of allowedMethods array
-        router.all(path, auth, (req: Request, res: Response) => {
-            res.status(405).json({ message: 'Method Not Allowed' });
-        });
+        router[method.toLowerCase() as LowerCaseMethods](path, ...auth, asyncFn);
+    });
+
+    // Return 405 for methods outside of allowedMethods array
+    router.all(path, ...auth, (req: Request, res: Response) => {
+        res.status(405).json({ message: 'Method Not Allowed' });
     });
 }
 
@@ -65,7 +50,7 @@ function broadcastToRoom(room: Room, message: string | Uint8Array) {
 }
 
 /** @returns The playerID that will play after this player */
-function getNextPlayer(currentPlayer: proto.shared.PlayerIDs): proto.shared.PlayerIDs {
+function getNextPlayer(currentPlayer: TPlayerIDs): TPlayerIDs {
     return (currentPlayer % 2) + 1;
 }
 

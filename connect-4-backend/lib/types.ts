@@ -3,11 +3,28 @@ import type { User } from '../database-sqllite/models.ts';
 import type { WebSocket, WebSocketServer } from 'ws';
 import * as proto from './proto.js';
 
-export type PlayerTypes = proto.shared.PlayerTypes;
-export type PlayerIDs = proto.shared.PlayerIDs;
+// Protobuf type and value aliases
+/** Alias for equivalent protobuf type */
+export type TPlayerTypes = proto.shared.PlayerTypes;
+/** Alias for equivalent protobuf type */
+export type TPlayerIDs = proto.shared.PlayerIDs;
+/** Alias for equivalent protobuf type */
+export type TErrorCodes = proto.shared.ErrorCodes;
+/** Alias for equivalent protobuf type */
+export type TCodedError = proto.shared.CodedError;
 
+/** Alias for equivalent protobuf value */
+export const P_PlayerTypes = proto.shared.PlayerTypes;
+/** Alias for equivalent protobuf value */
+export const P_PlayerIDs = proto.shared.PlayerIDs;
+/** Alias for equivalent protobuf value */
+export const P_ErrorCodes = proto.shared.ErrorCodes;
+/** Alias for equivalent protobuf value */
+export const P_CodedError = proto.shared.CodedError;
+
+// Game types
 export type GameRow = {
-    columns: Array<PlayerIDs>;
+    columns: Array<TPlayerIDs>;
 };
 export type GameBoard = {
     rows: Array<GameRow>;
@@ -15,27 +32,30 @@ export type GameBoard = {
 
 export type GameState = {
     board: GameBoard;
-    turn: PlayerIDs;
+    turn: TPlayerIDs;
 };
 
+// Websocket types
 export type WSRoutes = {
     '/game/': WebSocketServer;
 };
 
 export type Room = WebSocket[];
 
+// Route-related types
 export type UserRequest = { user: User } & Request;
 
 export type Methods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+export type LowerCaseMethods = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 /** An error additionally containing an error code */
 class CodedError {
-    constructor(_code: proto.shared.ErrorCodes, _error?: Error) {
+    constructor(_code: TErrorCodes, _error?: Error) {
         this.code = _code;
         this.error = _error ?? new Error(JSON.stringify(_code));
     }
 
-    code: proto.shared.ErrorCodes;
+    code: TErrorCodes;
     error: Error;
 }
 
