@@ -2,6 +2,7 @@ import { randomInt } from "crypto";
 import type { Request, RequestHandler, Response, Router } from "express";
 import type { Methods, Room } from "./types.ts";
 import { ALL_CODE_CHARS, CODE_LENGTH } from "../config.ts";
+import * as proto from './proto.js';
 
 const noAuth: RequestHandler = (req, res, next) => next();
 
@@ -9,10 +10,10 @@ const noAuth: RequestHandler = (req, res, next) => next();
 * @returns The generated code
 * */
 function createLobbyCode(): string {
-	let code = "";
-	for (let i = 0; i < CODE_LENGTH; i++)
-		code += ALL_CODE_CHARS[randomInt(0, ALL_CODE_CHARS.length)];
-	return code;
+        let code = "";
+        for (let i = 0; i < CODE_LENGTH; i++)
+                code += ALL_CODE_CHARS[randomInt(0, ALL_CODE_CHARS.length)];
+        return code;
 }
 
 /** A helper function that allows you to set a route / endpoint that only accepts the methods provided
@@ -20,42 +21,47 @@ function createLobbyCode(): string {
 * @param fn The callback called when fetching the endpoint
 * */
 function addRouteWithMethods(router: Router, path: string, fn: RequestHandler, allowedMethods: Methods[] = ["GET"], _auth?: RequestHandler) {
-	const auth = _auth ?? noAuth;
+        const auth = _auth ?? noAuth;
 
-	const asyncFn: RequestHandler = (req, res, next) => {
-		Promise.resolve(fn(req, res, next)).catch(next);
-	};
+        const asyncFn: RequestHandler = (req, res, next) => {
+                Promise.resolve(fn(req, res, next)).catch(next);
+        };
 
-	allowedMethods.forEach((method) => {
-		switch (method) {
-			case "GET":
-				router.get(path, auth, asyncFn);
-				break;
-			case "POST":
-				router.post(path, auth, asyncFn);
-				break;
-			case "PUT":
-				router.put(path, auth, asyncFn);
-				break;
-			case "PATCH":
-				router.patch(path, auth, asyncFn);
-				break;
-			case "DELETE":
-				router.delete(path, auth, asyncFn);
-				break;
-		}
-		// Return 405 for methods outside of allowedMethods array
-		router.all(path, auth, (req: Request, res: Response) => {
-			res.status(405).json({ message: 'Method Not Allowed' });
-		});
-	})
+        allowedMethods.forEach((method) => {
+                switch (method) {
+                        case "GET":
+                                router.get(path, auth, asyncFn);
+                                break;
+                        case "POST":
+                                router.post(path, auth, asyncFn);
+                                break;
+                        case "PUT":
+                                router.put(path, auth, asyncFn);
+                                break;
+                        case "PATCH":
+                                router.patch(path, auth, asyncFn);
+                                break;
+                        case "DELETE":
+                                router.delete(path, auth, asyncFn);
+                                break;
+                }
+                // Return 405 for methods outside of allowedMethods array
+                router.all(path, auth, (req: Request, res: Response) => {
+                        res.status(405).json({ message: 'Method Not Allowed' });
+                });
+        })
 }
 
 /** Send a message to all users connected to a websocket room */
 function broadcastToRoom(room: Room, message: string) {
-	room.forEach((ws) => {
-		ws.send(message);
-	});
+        room.forEach((ws) => {
+                ws.send(message);
+        });
 }
 
-export { createLobbyCode, addRouteWithMethods, broadcastToRoom };
+/** @returns The playerID that will play after this player */
+function getNextPlayer(currentPlayer: proto.shared.PlayerIDs): proto.shared.PlayerIDs {
+        return currentPlayer % 2 + 1;
+}
+
+export { createLobbyCode, addRouteWithMethods, broadcastToRoom, getNextPlayer };

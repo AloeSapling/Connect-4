@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package models;
+
+import 'shared/shared.proto';
+
+message Lobby {
+  string code = 1;
+}
+
+message User {
+  string id = 1;
+  string session_id = 2;
+  string username = 3;
+}
+
+message Game {
+  shared.PlayerIDs turn = 1;
+  shared.GameBoard board = 2;
+}

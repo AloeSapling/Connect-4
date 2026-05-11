@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package routes;
+
+import "models/models.proto";
+
+message GetGameResponse {
+  models.Game game = 1;
+}
+
+message GetGameRequest {
+  string code = 1;
+}
+
+message CreateGameRequest {
+  string code = 1;
+}
