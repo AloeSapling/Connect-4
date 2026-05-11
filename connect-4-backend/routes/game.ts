@@ -1,38 +1,26 @@
 import * as GameRedis from '../database-redis/game.ts';
 import { Router } from 'express';
 import { lobbyExists } from '../database-sqllite/lobby.ts';
-import { CodedError } from '../lib/types.ts';
+import { CodedError, P_CodedError, P_ErrorCodes } from '../lib/types.ts';
 import { addRouteWithMethods } from '../lib/lib.ts';
 import * as proto from '../lib/proto.js';
+import { isLobbyMember } from '../lib/auth.ts';
 
 const router = Router();
 
 addRouteWithMethods(
     router,
-    '/create',
+    '/:code/create',
     async (req, res) => {
         // Create a new game using the provided code
-        let body: proto.routes.CreateGameRequest;
+        const code = req.params.code as string;
         try {
-            body = proto.routes.CreateGameRequest.decode(req.body);
-        } catch {
-            res.status(400).send(
-                proto.shared.CodedError.encode({
-                    code: proto.shared.ErrorCodes.ERROR_CODES_BAD_DATA,
-                }).finish()
-            );
-            return;
-        }
-
-        const code = body.code;
-        try {
-            console.log(body);
             if (code) {
                 // Make sure a lobby exists with the provided code
                 if (!(await lobbyExists(code))) {
                     res.status(400).send(
-                        proto.shared.CodedError.encode({
-                            code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
+                        P_CodedError.encode({
+                            code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
                         }).finish()
                     );
                     return;
@@ -46,51 +34,40 @@ addRouteWithMethods(
                         code: (err as CodedError).code,
                         error: (err as CodedError).error.toString(),
                     };
-                    res.status(400).send(proto.shared.CodedError.encode(formattedError).finish());
+                    res.status(400).send(P_CodedError.encode(formattedError).finish());
                 }
             } else {
                 res.status(400).send(
-                    proto.shared.CodedError.encode({
-                        code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
                     }).finish()
                 );
             }
         } catch {
             res.status(500).send(
-                proto.shared.CodedError.encode({
-                    code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR,
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_SERVER_ERROR,
                 }).finish()
             );
         }
     },
-    ['POST', 'PUT']
+    ['POST', 'PUT'],
+    [isLobbyMember]
 );
 
 addRouteWithMethods(
     router,
-    '/',
+    '/:code',
     async (req, res) => {
         // Get the gameState of the game associated with the provided code
-        let body: proto.routes.GetGameRequest;
-        try {
-            body = proto.routes.GetGameRequest.decode(req.body);
-        } catch {
-            res.status(400).send(
-                proto.shared.CodedError.encode({
-                    code: proto.shared.ErrorCodes.ERROR_CODES_BAD_DATA,
-                }).finish()
-            );
-            return;
-        }
-
-        const code = body.code;
+        const code = req.params.code as string;
         try {
             if (code) {
                 // Make sure a lobby exists with the provided code
                 if (!(await lobbyExists(code))) {
                     res.status(400).send(
-                        proto.shared.CodedError.encode({
-                            code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
+                        P_CodedError.encode({
+                            code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
                         }).finish()
                     );
                     return;
@@ -107,24 +84,25 @@ addRouteWithMethods(
                         code: (err as CodedError).code,
                         error: (err as CodedError).error.toString(),
                     };
-                    res.status(400).send(proto.shared.CodedError.encode(formattedError).finish());
+                    res.status(400).send(P_CodedError.encode(formattedError).finish());
                 }
             } else {
                 res.status(400).send(
-                    proto.shared.CodedError.encode({
-                        code: proto.shared.ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
                     }).finish()
                 );
             }
         } catch {
             res.status(500).send(
-                proto.shared.CodedError.encode({
-                    code: proto.shared.ErrorCodes.ERROR_CODES_SERVER_ERROR,
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_SERVER_ERROR,
                 }).finish()
             );
         }
     },
-    ['GET']
+    ['GET'],
+    [isLobbyMember]
 );
 
 export default router;
