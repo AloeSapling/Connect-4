@@ -1,11 +1,8 @@
 import WebSocket, { WebSocketServer } from "ws";
 import type { WSPacket, WSReturnPacket } from "../../../packets.ts";
 import * as gameRedis from "../../database-redis/game.ts";
-import { CodedError, type Room, type TPlayerTypes, type UserRequest } from "../../lib/types.ts";
+import { CodedError, PlayerTypes, type TPlayerTypes, type UserRequest } from "../../lib/types.ts";
 import { getPlayerType } from "../../database-sqllite/lobbyMembers.ts";
-import { broadcastToRoom } from "../../lib/lib.ts";
-import { TileChecker } from "../../lib/game.ts";
-import { GAME_ROWS } from "../../config.ts";
 
 type GameWebSocket = WebSocket & { "lobbyCode"?: string; "playerType"?: TPlayerTypes };
 
@@ -50,50 +47,17 @@ function setupGameWSServer(WSServer: WebSocketServer) {
 
 			switch (packet.action) {
 				case "insertTile":
-					if (!ws["playerType"]) {
-						ws.send(wsStringify({
-							result: "error",
-							data: new CodedError("BadData")
-						}));
-						break;
+					if (!ws["lobbyCode"] || !ws["playerType"]) {
+						ws.send(JSON.stringify({ code: "missingData" }));
+						return;
 					}
-
+					console.log(ws["lobbyCode"], ws["playerType"], packet.data["column"]);
 					try {
 						const column = packet.data["column"];
 						const row = await gameRedis.updateGameState((ws["lobbyCode"] as string), ws["playerType"], column);
 
-						const gameState = await gameRedis.getGameState((ws["lobbyCode"] as string));
-
-						const tileChecker = new TileChecker(gameState.board, column, row);
-
-						if (tileChecker.checkForWin()) {
-							await gameRedis.deleteGame(ws["lobbyCode"] as string);
-							broadcastToRoom((rooms[(ws["lobbyCode"] as string)] as Room), wsStringify({
-								result: "gameEnd",
-								data: {
-									"winner": {
-										id: (req as UserRequest).user.id,
-									}
-								}
-							}))
-							break;
-						}
-						if (TileChecker.checkForDraw(gameState.board)) {
-							broadcastToRoom((rooms[(ws["lobbyCode"] as string)] as Room), wsStringify({
-								result: "gameEnd",
-								data: {
-									"winner": "draw",
-								}
-							}))
-							break;
-						}
-
-						broadcastToRoom((rooms[(ws["lobbyCode"] as string)] as Room), wsStringify({
-							result: "move",
-							data: {
-								"gameState": await gameRedis.getGameState((ws["lobbyCode"] as string))
-							}
-						}));
+						await gameRedis.updateGameState(ws["lobbyCode"], ws["playerType"], packet.data["column"]);
+						ws.send(JSON.stringify(await gameRedis.getGameState(ws["lobbyCode"])));
 					} catch (err) {
 						ws.send(wsStringify({
 							result: "error",
@@ -101,51 +65,20 @@ function setupGameWSServer(WSServer: WebSocketServer) {
 						}));
 					}
 					break;
-				case "init": {
-					if (ws["lobbyCode"]) {
-						ws.send(wsStringify({
-							result: "error",
-							data: new CodedError("AlreadyJoined")
-						}));
-						break;
-					}
-
-					const lobbyCode = packet.data["lobbyCode"];
+				case "init":
+					ws["lobbyCode"] = packet.data["lobbyCode"];
 
 					try {
-						if (!lobbyCode) {
-							ws.send(wsStringify({
-								result: "error",
-								data: new CodedError("BadLobbyCode")
-							}));
-							break;
-						}
-
-						const pType = await getPlayerType(lobbyCode, (req as UserRequest).user.id);
-
+						console.log(ws["lobbyCode"], (req as UserRequest).user.id);
+						const pType = await getPlayerType(ws["lobbyCode"] || "", (req as UserRequest).user ? (req as UserRequest).user.id : -1);
 						if (pType === null) {
-							ws.send(wsStringify({
-								result: "error",
-								data: new CodedError("NotAMember")
-							}));
+							ws.send(JSON.stringify(new CodedError("NotAMember")));
 							break;
 						}
-
 						ws["playerType"] = pType;
-
-						// Add players from the same game to the same room
-						if (rooms[lobbyCode])
-							rooms[lobbyCode] = [...(rooms[lobbyCode] as Room), ws];
-						else
-							rooms[lobbyCode] = [ws];
-
-						ws["lobbyCode"] = packet.data["lobbyCode"];
 					}
 					catch {
-						ws.send(wsStringify({
-							result: "error",
-							data: new CodedError("ServerError")
-						}));
+						ws.send(JSON.stringify(new CodedError("ServerError")));
 					}
 					console.log(packet.data, ws["lobbyCode"], ws["playerType"]);
 					break;

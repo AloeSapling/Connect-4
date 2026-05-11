@@ -1,15 +1,14 @@
 import type { Request } from "express";
 import type { ErrorCodes } from "../../errorCodes.ts"
 import type { User } from "../database-sqllite/models.ts";
-import type { WebSocket, WebSocketServer } from "ws";
+import type { WebSocketServer } from "ws";
 
 // Used to identify whose turn it is or whose tile is in a given cell
 export const PlayerTypes = ["PLAYER1", "PLAYER2"] as const;
 export type TPlayerTypes = typeof PlayerTypes[number];
 
 export type CellState = "EMPTY" | TPlayerTypes;
-export type GameRow = Array<CellState>;
-export type GameBoard = Array<GameRow>;
+export type GameBoard = Array<Array<CellState>>;
 
 export type GameState = {
 	board: GameBoard;
@@ -19,8 +18,6 @@ export type GameState = {
 export type WSRoutes = {
 	"/game": WebSocketServer
 };
-
-export type Room = WebSocket[];
 
 export type UserRequest = { user: User } & Request
 

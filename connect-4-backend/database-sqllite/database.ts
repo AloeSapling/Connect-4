@@ -10,5 +10,7 @@ export const sequelize = new Sequelize({
 
 /** Update the database to match the models defined in models.ts */
 export async function setupDatabase() {
-	await sequelize.sync({ force: true });
+	await sequelize.query("PRAGMA foreign_keys = OFF");
+	await sequelize.sync({ alter: true });
+	await sequelize.query("PRAGMA foreign_keys = ON");
 }
