@@ -16,7 +16,7 @@ addRouteWithMethods(router, '/create', async (req, res) => {
                 console.log(body);
                 if (code) {
                         // Make sure a lobby exists with the provided code
-                        if (await lobbyExists(code)) {
+                        if (!(await lobbyExists(code))) {
                                 res.status(400).json(new CodedError("BadLobbyCode"));
                                 return;
                         }

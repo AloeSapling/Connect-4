@@ -11,7 +11,7 @@ async function createUser(sessionID: string) {
 async function getUserBySessionID(sessionID: string): Promise<User | null> {
         return await User.findOne({
                 where: {
-                        session_id: sessionID,
+                        sessionID: sessionID,
                 }
         })
 }

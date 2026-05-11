@@ -14,7 +14,7 @@ import lobbyRouter from './routes/lobby.ts';
 import { createClient } from 'redis';
 import { AuthUser, WSAuthUser } from './lib/auth.ts';
 import { setupDatabase } from './database-sqllite/database.ts';
-import { SERVER_PORT } from './config.ts';
+import { CLIENT_URL, REDIS_HOST, REDIS_PORT, SERVER_PORT } from './config.ts';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { setupGameWSServer } from './routes/ws/game.ts';
@@ -22,7 +22,7 @@ import { CodedError, type UserRequest, type WSRoutes } from './lib/types.ts';
 
 // Set up Redis database
 export const redis = createClient({
-	url: "redis://localhost:6379",
+        url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
 });
 
 redis.on("error", (err) => console.error("Redis error:", err));
@@ -37,15 +37,15 @@ const app = express();
 const server = createServer(app);
 
 export const sessionMiddleware = session({
-	secret: "temp",
-	resave: false,
-	saveUninitialized: true,
-	cookie: {
-		path: '/',
-		httpOnly: true,
-		secure: false,
-		maxAge: 1000 * 60 * 60 * 5
-	}
+        secret: "temp",
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+                path: '/',
+                httpOnly: true,
+                secure: false,
+                maxAge: 1000 * 60 * 60 * 5
+        }
 });
 
 // Middlewares
@@ -56,14 +56,14 @@ app.use(cookieParser());
 app.use(express.static('./public'));
 app.use(sessionMiddleware);
 app.use(cors({
-	origin: "http://localhost:5173",
-	credentials: true,
+        origin: CLIENT_URL,
+        credentials: true,
 }));
 
 // Development anti-caching
 app.use((req, res, next) => {
-	res.set('Cache-Control', 'no-store');
-	next();
+        res.set('Cache-Control', 'no-store');
+        next();
 });
 
 // Routes
@@ -77,7 +77,7 @@ app.use('/game', gameRouter);
 
 // Websockets
 const wsRoutes: WSRoutes = {
-	"/game": new WebSocketServer({ noServer: true })
+        "/game": new WebSocketServer({ noServer: true })
 }
 
 // Setup each websocket route
@@ -85,41 +85,41 @@ setupGameWSServer(wsRoutes["/game"]);
 
 // Handle connections to each websocket route
 server.on("upgrade", async (req, socket, head) => {
-	const { pathname } = new URL(req.url || "", `http://${req.headers.host}`);
+        const { pathname } = new URL(req.url || "", `http://${req.headers.host}`);
 
-	if (!await WSAuthUser(req as Request)) {
-		socket.write(JSON.stringify(new CodedError("Unauthorised")));
-		socket.destroy();
-		return;
-	}
+        if (!await WSAuthUser(req as Request)) {
+                socket.write(JSON.stringify(new CodedError("Unauthorised")));
+                socket.destroy();
+                return;
+        }
 
-	console.log((req as UserRequest).user);
+        console.log((req as UserRequest).user);
 
-	if (pathname in wsRoutes) {
-		wsRoutes[pathname as keyof WSRoutes].handleUpgrade(req, socket, head, (ws) => {
-			wsRoutes[pathname as keyof WSRoutes].emit("connection", ws, req);
-		});
-	} else {
-		socket.destroy();
-	}
+        if (pathname in wsRoutes) {
+                wsRoutes[pathname as keyof WSRoutes].handleUpgrade(req, socket, head, (ws) => {
+                        wsRoutes[pathname as keyof WSRoutes].emit("connection", ws, req);
+                });
+        } else {
+                socket.destroy();
+        }
 });
 
 // Forward 404 errors to the error handler
-app.use(function(req, res, next) {
-	next(createError(404));
+app.use(function (req, res, next) {
+        next(createError(404));
 });
 
 // Error handler middleware
-app.use(function(err: HttpError, req: Request, res: Response, next: NextFunction) {
-	// Set locals, only providing error in development
-	res.locals.message = err.message;
-	res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err: HttpError, req: Request, res: Response, next: NextFunction) {
+        // Set locals, only providing error in development
+        res.locals.message = err.message;
+        res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-	// render the error page
-	res.status(err.status || 500);
-	res.send(err.message);
+        // render the error page
+        res.status(err.status || 500);
+        res.send(err.message);
 });
 
-server.listen(SERVER_PORT, () => "Server running");
+server.listen(SERVER_PORT, () => console.log("Server running"));
 
 export default app;
