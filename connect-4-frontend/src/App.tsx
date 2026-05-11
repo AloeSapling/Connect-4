@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
+import BackendTest from "./pages/BackendTest.tsx";
 
 // Pages
 const BasePage = lazy(() => import("./pages/BasePage.tsx"));
@@ -11,42 +12,30 @@ const Settings = lazy(() => import("./pages/Settings.tsx"));
 const Game = lazy(() => import("./pages/Game.tsx"));
 const Error = lazy(() => import("./pages/Error.tsx"));
 
-  return (
-    <>
-      {/* sets menu context for the entire app, thus allowing global usage of `currentMenu` and `setCurrentMenu` */}
-      <MenuProvider value={{ currentMenu, setCurrentMenu }}>
-        <header>
-          <div id='websiteLogo'>
-          </div>
-          <nav>
-            <a href='#'>cool</a>
-            <a href='#'>cooler</a>
-            <a href='#'>coolest</a>
-          </nav>
-        </header>
-      <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
-          {/* All routes are to be defined here so that child routes can also use them */}
-          <Routes>
-            <Route path="/" element={<BasePage />}>
-              {/* Base path */}
-              <Route index element={<Home />} />
+function App() {
+	return (
+		<>
+			<BrowserRouter>
+				<Suspense fallback={<div>Loading...</div>}>
+					{/* All routes are to be defined here so that child routes can also use them */}
+					<Routes>
+						<Route path="/" element={<BasePage />}>
+							{/* Base path */}
+							<Route index element={<HomePage />} />
 
-              <Route path="settings" element={<Settings />} />
+							<Route path="settings" element={<SettingsPage />} />
 
-              <Route path="game" element={<Game />} />
+							<Route path="game" element={<GamePage />} />
+							<Route path="test" element={<BackendTest />} />
 
-        <footer>
-        </footer>
-      </MenuProvider>
-              {/* 404 */}
-              <Route path="*" element={<Error />} />
-            </Route>
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
-    </>
-  )
+							{/* 404 */}
+							<Route path="*" element={<ErrorPage />} />
+						</Route>
+					</Routes>
+				</Suspense>
+			</BrowserRouter>
+		</>
+	)
 }
 
 export default App
