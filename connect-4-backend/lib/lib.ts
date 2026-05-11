@@ -53,7 +53,7 @@ function addRouteWithMethods(router: Router, path: string, fn: RequestHandler, a
 }
 
 /** Send a message to all users connected to a websocket room */
-function broadcastToRoom(room: Room, message: string) {
+function broadcastToRoom(room: Room, message: string | Uint8Array) {
         room.forEach((ws) => {
                 ws.send(message);
         });
