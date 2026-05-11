@@ -5,12 +5,16 @@ function Header() {
         <header>
             <div id='websiteLogo'>
             </div>
-            <nav>
-                <Link to="/">
+            <nav className='flex items-center'>
+                <Link to="/" className='ml-3'>
                     Home
                 </Link>
-                <a href='#'>cooler</a>
-                <a href='#'>coolest</a>
+                <Link to="/settings" className='ml-3'>
+                    Settings
+                </Link>
+                <a href='#' className='ml-3'>
+                    This Page
+                </a>
             </nav>
         </header>
     );

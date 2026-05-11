@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState, useCallback } from "react";
-import ButtonMenuContainer from "../Components/ButtonMenuContainer";
 import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_ROWS, GAME_COLUMNS } from "../lib/config.js";
 import { makeMove } from "../lib/gameLogic";
 import GameCanvas from "../lib/canvasLogic.js";
@@ -66,34 +65,20 @@ function Game() {
 
     return (
         <>
-            <ButtonMenuContainer
-            buttons = {
-                <>
-                    {/* temporary test buttons */}
-                    {[0, 1, 2, 3, 4, 5, 6].map(col => (
-                        <button
-                            key={col}
-                            onClick={() => handleMakeMove(col)}
-                        >
-                            Column {col}
-                        </button>
-                    ))}
-
-                    <Link to="/">
-                        <button>
-                            Home
-                        </button>
-                    </Link>
-                </>
-            }
-            display = {
-                <>
-                    <canvas ref={canvasRef} id='gameCanvas'>
-                        Your browser does not support canvas. Sorry! :(
-                    </canvas>
-                </>
-            }
-            />
+            {/* column buttons */}
+            <div className="absolute top-[4%] left-[27.3%] w-[45.85%] h-[80%] flex">
+                {Array.from({ length: GAME_COLUMNS }, (_, col) => (
+                    <button
+                        key={col}
+                        onClick={() => handleMakeMove(col)}
+                        className="pointer-events-auto z-50 flex-1 h-full cursor-pointer"
+                    />
+                ))}
+            </div>
+            
+            <canvas ref={canvasRef} className='gameCanvas absolute top-0 right-0 bottom-0 left-0 w-full h-full z-0'>
+                Your browser does not support canvas. Sorry! :(
+            </canvas>
         </>
     );
 }
