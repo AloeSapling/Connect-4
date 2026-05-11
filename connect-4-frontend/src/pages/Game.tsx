@@ -1,8 +1,7 @@
-import { Link } from "react-router-dom";
-import { useEffect, useRef, useState, useCallback } from "react";
-import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_ROWS, GAME_COLUMNS } from "../lib/config.js";
-import { makeMove } from "../lib/gameLogic";
-import GameCanvas from "../lib/canvasLogic.js";
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_ROWS, GAME_COLUMNS } from '../lib/config.js';
+import { makeMove } from '../lib/gameLogic';
+import GameCanvas from '../lib/canvasLogic.js';
 import * as proto from '../lib/proto.js';
 
 function Game() {
@@ -12,8 +11,8 @@ function Game() {
     const [currentBoardState, setCurrentBoardState] = useState(
         proto.shared.GameBoard.create({
             rows: Array.from({ length: GAME_ROWS }, () => ({
-                columns: Array.from({ length: GAME_COLUMNS }, () => proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED)
-            }))
+                columns: Array.from({ length: GAME_COLUMNS }, () => proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED),
+            })),
         })
     );
 
@@ -26,12 +25,7 @@ function Game() {
     const handleMakeMove = (column: number) => {
         if (userPlayerID !== currentTurn) return;
 
-        const { board, nextTurn } = makeMove(
-            column,
-            userPlayerID,
-            currentTurn,
-            currentBoardState
-        );
+        const { board, nextTurn } = makeMove(column, userPlayerID, currentTurn, currentBoardState);
 
         setCurrentBoardState(board);
         setCurrentTurn(nextTurn);
@@ -40,7 +34,7 @@ function Game() {
     // Get canvas and start animation
     const canvasRef = useCallback((canvas: HTMLCanvasElement | null) => {
         if (!canvas) return;
-        const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+        const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
         if (!ctx) return;
 
         canvas.width = CANVAS_WIDTH;
@@ -75,8 +69,8 @@ function Game() {
                     />
                 ))}
             </div>
-            
-            <canvas ref={canvasRef} className='gameCanvas absolute top-0 right-0 bottom-0 left-0 w-full h-full z-0'>
+
+            <canvas ref={canvasRef} className="gameCanvas absolute top-0 right-0 bottom-0 left-0 w-full h-full z-0">
                 Your browser does not support canvas. Sorry! :(
             </canvas>
         </>

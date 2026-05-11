@@ -3,13 +3,9 @@ import { Link } from 'react-router-dom';
 function Error() {
     return (
         <>
-            <div>
-                Error 404: Page Not Found
-            </div>
+            <div>Error 404: Page Not Found</div>
             <Link to="/">
-                <button>
-                    Home
-                </button>
+                <button>Home</button>
             </Link>
         </>
     );

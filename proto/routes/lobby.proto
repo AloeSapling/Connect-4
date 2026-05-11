@@ -21,19 +21,11 @@ message CreateLobbyResponse {
   string code = 1;
 }
 
-message GetLobbyDetailsRequest {
-  string code = 1;
-}
-
 message GetLobbyDetailsResponse {
   optional models.DetailedLobbyData lobby_details = 1;
 }
 
 message ChangePlayerIDRequest {
-  string user_id = 1;
+  int32 user_id = 1;
   shared.PlayerIDs player_id = 2;
-}
-
-message LeaveLobbyRequest {
-  string code = 1;
 }

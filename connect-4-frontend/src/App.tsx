@@ -1,9 +1,12 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { Suspense, lazy } from "react";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import './App.css'
-import BackendTest from "./pages/BackendTest.tsx";
+// import BackendTest from "./pages/BackendTest.tsx";
+import { UserProvider } from "./components/providers/userProvider.tsx";
+import Auth from "./components/providers/auth.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 
 // Pages
 const BasePage = lazy(() => import("./pages/BasePage.tsx"));
@@ -15,37 +18,52 @@ const Game = lazy(() => import("./pages/Game.tsx"));
 const Settings = lazy(() => import("./pages/Settings.tsx"));
 const Error = lazy(() => import("./pages/Error.tsx"));
 
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            throwOnError: (error) => (error as AxiosError).status !== 401,
+        }
+    }
+})
+
 function App() {
-	return (
-		<>
-			<BrowserRouter>
-				<Suspense fallback={<div>Loading...</div>}>
-					{/* All routes are to be defined here so that child routes can also use them */}
-					<Routes>
-						<Route path="/" element={<BasePage />}>
-							{/* Base path */}
-							<Route index element={<HomePage />} />
+    return (
+        <>
+            <BrowserRouter>
+                <QueryClientProvider client={queryClient}>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <UserProvider>
+                            {/* All routes are to be defined here so that child routes can also use them */}
+                            <Routes>
+                                <Route path="/" element={<BasePage />}>
+                                    {/* Base path */}
+                                    <Route index element={<Home />} />
 
-							<Route path="settings" element={<SettingsPage />} />
+                                    <Route path="username" element={<Username />} />
 
-							<Route path="lobbylist" element={<LobbyList />} />
+                                    <Route element={<Auth.LoggedIn />}>
+                                        <Route path="lobbylist" element={<LobbyList />} />
+                                    </Route>
 
-							<Route path="lobby/:lobbyCode" element={<Lobby />} />
+                                    <Route path="lobby/:lobbyCode" element={<Lobby />} />
 
-							<Route path="game" element={<Game />} />
+                                    <Route path="game" element={<Game />} />
 
-							<Route path="settings" element={<Settings />} />
+                                    <Route path="settings" element={<Settings />} />
 
-							<Route path="test" element={<BackendTest />} />
+                                    {/* <Route path="test" element={<BackendTest />} /> */}
 
-							{/* 404 */}
-							<Route path="*" element={<ErrorPage />} />
-						</Route>
-					</Routes>
-				</Suspense>
-			</BrowserRouter>
-		</>
-	)
+                                    {/* 404 */}
+                                    <Route path="*" element={<Error />} />
+                                </Route>
+                            </Routes>
+                        </UserProvider>
+                    </Suspense>
+
+                </QueryClientProvider>
+            </BrowserRouter>
+        </>
+    )
 }
 
 export default App
