@@ -1,11 +1,12 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from './database.ts';
-import type { PlayerIDs, PlayerTypes } from '../lib/types.ts';
+import { P_PlayerIDs, P_PlayerTypes, type TPlayerIDs, type TPlayerTypes } from '../lib/types.ts';
 import * as proto from '../lib/proto.js';
 
 export class User extends Model {
     declare id: number;
-    declare sessionID: string;
+    declare session_id: string;
+    declare username: string;
 }
 
 User.init(
@@ -15,9 +16,13 @@ User.init(
             autoIncrement: true,
             primaryKey: true,
         },
-        sessionID: {
+        session_id: {
             type: DataTypes.STRING,
             unique: true,
+            allowNull: false,
+        },
+        username: {
+            type: DataTypes.STRING,
             allowNull: false,
         },
     },
@@ -31,19 +36,17 @@ User.init(
 
 export class Lobby extends Model {
     declare code: string;
-    declare member_count: number;
+    declare name: string;
 }
 
 Lobby.init(
     {
         code: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING,
             primaryKey: true,
         },
-        member_count: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: 0,
+        name: {
+            type: DataTypes.STRING,
         },
     },
     {
@@ -58,9 +61,9 @@ export class LobbyMember extends Model {
     declare id: number;
     declare lobby_code: string;
     declare user_id: number;
+    declare player_id: TPlayerIDs;
+    declare player_type: TPlayerTypes;
     declare host: boolean;
-    declare player_id: PlayerIDs;
-    declare player_type: PlayerTypes;
 }
 
 LobbyMember.init(
@@ -71,26 +74,26 @@ LobbyMember.init(
             primaryKey: true,
         },
         lobby_code: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        host: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
-        },
         player_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED,
+            defaultValue: P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
         },
         player_type: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: proto.shared.PlayerTypes.PLAYER_TYPES_UNSPECIFIED,
+            defaultValue: P_PlayerTypes.PLAYER_TYPES_UNSPECIFIED,
+        },
+        host: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
         },
     },
     {

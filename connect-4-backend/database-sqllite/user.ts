@@ -1,19 +1,29 @@
 import { User } from './models.ts';
 
 /** Creates a new user instance in the sql database and ties it to the specified session id */
-async function createUser(sessionID: string) {
-    await User.create({ sessionID: sessionID });
+export async function createUser(sessionID: string, username: string) {
+    await User.create({ username: username, session_id: sessionID });
+}
+
+/** Updates the username of the user with the given id */
+export async function changeUsername(newUsername: string, userID: number) {
+    await User.update(
+        { username: newUsername },
+        {
+            where: {
+                id: userID,
+            },
+        }
+    );
 }
 
 /** @returns The user tied to the given sessionID
  * @returns Null if the user wasn't found
  * */
-async function getUserBySessionID(sessionID: string): Promise<User | null> {
+export async function getUserBySessionID(sessionID: string): Promise<User | null> {
     return await User.findOne({
         where: {
-            sessionID: sessionID,
+            session_id: sessionID,
         },
     });
 }
-
-export { createUser, getUserBySessionID };
