@@ -1,6 +1,6 @@
 import { redis } from "../app.ts";
 import { GAME_COLUMNS, GAME_EXPIRY_TIME, GAME_ROWS } from "../config.ts";
-import { CodedError, PlayerTypes, type CellState, type GameBoard, type GameState, type TPlayerTypes } from "../lib/types.ts";
+import { CodedError, PlayerTypes, type CellState, type GameBoard, type GameRow, type GameState, type TPlayerTypes } from "../lib/types.ts";
 
 /** The game state used when creating a new game */
 const initialGameState: GameState = {
@@ -26,6 +26,12 @@ export async function createGame(lobbyCode: string) {
 	await redis.set(`GameState_${lobbyCode}:turn`, initialGameState.turn, {
 		EX: GAME_EXPIRY_TIME, // In seconds
 	});
+}
+
+/** Deletes all data associated with the game in the redis storage */
+export async function deleteGame(lobbyCode: string) {
+	await redis.del(`GameState_${lobbyCode}:board`);
+	await redis.del(`GameState_${lobbyCode}:turn)`);
 }
 
 /** @returns The game's state 
@@ -105,6 +111,8 @@ export async function updateGameState(
 		// Set the next player's turn
 		// Sets it to the next playerID in the list of playerIDs. The fallback if something goes wrong is the first element
 		await redis.set(`GameState_${lobbyCode}:turn`, PlayerTypes.at((PlayerTypes.findIndex((elem) => elem === playerID) + 1) % PlayerTypes.length) ?? PlayerTypes[0]);
+
+		return i;
 	} catch {
 		throw new CodedError("ServerError");
 	} finally {

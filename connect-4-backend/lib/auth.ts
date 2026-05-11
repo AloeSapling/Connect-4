@@ -26,16 +26,16 @@ function AuthUser(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
-function WSAuthUser(req: any): Promise<boolean> {
+function WSAuthUser(req: Request): Promise<boolean> {
 	return new Promise((resolve) => {
 		const fakeRes = {
 			status: () => fakeRes,
 			json: () => resolve(false),
 			send: () => resolve(false),
-		} as any;
+		} as unknown as Response;
 
 		sessionMiddleware(req, fakeRes, () => {
-			AuthUser(req, fakeRes, (err?: any) => resolve(!err));
+			AuthUser(req, fakeRes, (err) => resolve(!err));
 		});
 	});
 }
