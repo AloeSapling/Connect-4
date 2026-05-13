@@ -41,21 +41,37 @@ function Username() {
     return (
         <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="bg-yellow-800 text-white text-center justify-center content-center text-xl rounded-md grid grid-cols-1 gap-y-2
-            absolute w-[300px] md:w-[350px] h-[150px] md:h-[200px] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+            className="
+                bg-yellow-800
+                text-white
+                text-center
+                justify-center
+                content-center
+                items-center-safe
+                text-xl
+                rounded-md
+                flex flex-col
+                gap-y-2
+                absolute w-[300px] md:w-[350px]
+                h-[150px] md:h-[200px]
+                top-[50%] left-[50%]
+                translate-x-[-50%] translate-y-[-50%]
+            "
         >
-            <FieldSet>
+            <FieldSet className="
+                w-[70%]
+            ">
                 <FieldLegend className="text-2xl md:text-3xl justify-self-center-safe">Choose your username</FieldLegend>
                 <FieldGroup>
                     <Controller
                         name="username"
                         control={form.control}
                         render={({ field, fieldState }) => (
-                            <Field className="inline-block bg-amber-900 w-[70%] justify-self-center-safe rounded-md p-[5px]"
+                            <Field className="inline-block bg-amber-900 w-full justify-self-center-safe rounded-md p-[5px]"
                                 data-invalid={fieldState.invalid}>
                                 <FieldLabel htmlFor={field.name} className="mr-[5%]">Name:</FieldLabel>
                                 <Input
-                                    className="w-[70%] rounded-md bg-yellow-950 focus:bg-amber-950"
+                                    className="w-full rounded-md bg-yellow-950 focus:bg-amber-950"
                                     {...field}
                                     id={field.name}
                                     type="text"

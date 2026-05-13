@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { getLobbies } from "../lib/api";
+import { Button } from "../components/ui/button";
 import LobbyTable from "../components/lobbyList/LobbyTable";
 import ChangeUsernameForm from "@/components/lobbyList/ChangeUsernameForm";
 
@@ -48,17 +49,17 @@ function LobbyList() {
                 <div className="flex flex-col justify-between h-full">
 
                     <div className="flex flex-col gap-2">
-                        <button className="bg-amber-900 hover:bg-amber-950 rounded p-2 font-semibold cursor-pointer">
+                        <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer">
                             Create Room
-                        </button>
-                        <button className="bg-amber-900 hover:bg-amber-950 rounded p-2 font-semibold cursor-pointer"
+                        </Button>
+                        <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer"
                             onClick={() => selectLobby("a")}>
                             Join Room with Code
-                        </button>
-                        <button className="bg-amber-900 hover:bg-amber-950 rounded p-2 font-semibold cursor-pointer"
+                        </Button>
+                        <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer"
                             onClick={() => refetch()}>
                             Refresh Lobbies
-                        </button>
+                        </Button>
                     </div>
 
                     <ChangeUsernameForm />

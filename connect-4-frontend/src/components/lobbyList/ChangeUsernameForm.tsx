@@ -24,7 +24,7 @@ export default function ChangeForm() {
     const changeUsername_m = useMutation({
         mutationFn: changeUsername,
         onSuccess: () => {
-            toast.success("success");
+            toast.success("Username changed!");
             queryClient.invalidateQueries({
                 refetchType: 'all',
                 queryKey: ['user']
@@ -37,26 +37,41 @@ export default function ChangeForm() {
     const onSubmit = (formData: Z_TUsername) =>
         changeUsername_m.mutate(formData.username);
 
+    const onCancel = () =>
+        setFormOpen(false);
+
     const user = useContext(UserContext);
 
     return formOpen ? (
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-y-1">
             <Controller
                 name="username"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                    < Field data-invalid={fieldState.invalid}>
+                    <Field data-invalid={fieldState.invalid}>
                         <Input
                             {...field}
                             id={field.name}
                             type="text"
                             aria-invalid={fieldState.invalid}
+                            className="w-full rounded-md bg-yellow-950 focus:bg-amber-950"
+                            placeholder="username"
                         />
                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                 )} />
-            <Button type="submit">Zatwierdź</Button>
-        </form >
+            <div className="flex flex-row justify-between">
+                <Button type="submit"
+                    className="bg-amber-900 hover:bg-amber-950 rounded-lg p-3 font-semibold cursor-pointer">
+                    OK
+                </Button>
+                <Button onClick={onCancel}
+                    className="bg-amber-900 hover:bg-amber-950 rounded-lg p-3 font-semibold cursor-pointer">
+                    Cancel
+                </Button>
+            </div>
+        </form>
     )
         :
         (
@@ -64,14 +79,14 @@ export default function ChangeForm() {
                 <p className="text-center">
                     Current Nick: {user?.username || ""}
                 </p>
-                <button className="bg-amber-900 hover:bg-amber-950 rounded p-2 font-semibold cursor-pointer"
+                <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer"
                     onClick={() => {
                         form.reset();
                         setFormOpen(true);
                     }}
                 >
-                    Zmień nazwę użytkownika
-                </button>
+                    Change Username
+                </Button>
             </div>
         )
 }

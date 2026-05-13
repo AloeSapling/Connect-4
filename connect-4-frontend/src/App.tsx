@@ -38,8 +38,10 @@ function App() {
                                 <Route path="/" element={<BasePage />}>
                                     {/* Base path */}
                                     <Route index element={<Home />} />
-
-                                    <Route path="username" element={<Username />} />
+                                    
+                                    <Route element={<Auth.UserDoesNotExist />}>
+                                        <Route path="username" element={<Username />} />
+                                    </Route>
 
                                     <Route element={<Auth.LoggedIn />}>
                                         <Route path="lobbylist" element={<LobbyList />} />
