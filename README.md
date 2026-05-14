@@ -12,7 +12,7 @@ It allows 2 users to play connect-4 live online.
 **Unauthorised** - The user is not allowed to perform this action<br>
 **Already_joined** - The user is already part of the room/game/lobby/..ect they're trying to join<br>
 **Not_a_member** - The user is not a member of some room/game/lobby/..ect they need to be a part of to perform this action<br>
-****Game_locked - The game the user is trying to interact with is locked and unable to be accessed or changed<br>
+**Game_locked** - The game the user is trying to interact with is locked and unable to be accessed or changed<br>
 **Game_expired** - The game has expired or was never created<br>
 **Game_already_exist**s - The user is trying to create a game when one already exists<br>
 **Doesnt_exist** - The item the user is trying to access or change doesn't exist<br>
