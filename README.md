@@ -4,19 +4,19 @@ This is a project built using React and Express.
 It allows 2 users to play connect-4 live online.
 
 # ERROR CODES reference
-Unspecified - This error code remains unused<br>
-Server_error - A server-side error occured<br>
-Bad_data - The body or some other data is malformed<br>
-Bad_turn - The user is trying to act outside of their turn<br>
-Bad_user - Something is incorrect about the specified user e.g. They're inactive<br>
-Unauthorised - The user is not allowed to perform this action<br>
-Already_joined - The user is already part of the room/game/lobby/..ect they're trying to join<br>
-Not_a_member - The user is not a member of some room/game/lobby/..ect they need to be a part of to perform this action<br>
-Game_locked - The game the user is trying to interact with is locked and unable to be accessed or changed<br>
-Game_expired - The game has expired or was never created<br>
-Game_already_exists - The user is trying to create a game when one already exists<br>
-Doesnt_exist - The item the user is trying to access or change doesn't exist<br>
-User_already_exsits - The user already has an account associated with their session id<br>
+**Unspecified** - This error code remains unused<br>
+**Server_error** - A server-side error occured<br>
+**Bad_data** - The body or some other data is malformed<br>
+**Bad_turn** - The user is trying to act outside of their turn<br>
+**Bad_user** - Something is incorrect about the specified user e.g. They're inactive<br>
+**Unauthorised** - The user is not allowed to perform this action<br>
+**Already_joined** - The user is already part of the room/game/lobby/..ect they're trying to join<br>
+**Not_a_member** - The user is not a member of some room/game/lobby/..ect they need to be a part of to perform this action<br>
+****Game_locked - The game the user is trying to interact with is locked and unable to be accessed or changed<br>
+**Game_expired** - The game has expired or was never created<br>
+**Game_already_exist**s - The user is trying to create a game when one already exists<br>
+**Doesnt_exist** - The item the user is trying to access or change doesn't exist<br>
+**User_already_exsits** - The user already has an account associated with their session id<br>
 
 # Backend API reference
 ## /lobby/ 
