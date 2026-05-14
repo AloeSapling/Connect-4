@@ -23,18 +23,16 @@ function Username() {
     const createUser_m = useMutation({
         mutationFn: createUser,
         onSuccess: () => {
-            console.log("test")
             navigate('/lobbylist');
             queryClient.invalidateQueries({
                 refetchType: 'all',
                 queryKey: ['user']
             });
         },
-        onError: () => toast.error("błąd"),
+        onError: (err) => toast.error(err.message),
     })
 
     const onSubmit = (formData: Z_TUsername) => {
-        console.log("testtt");
         createUser_m.mutate(formData.username);
     }
 

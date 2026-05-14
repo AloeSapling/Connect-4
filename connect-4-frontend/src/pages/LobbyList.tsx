@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getLobbies } from "../lib/api";
 import { Button } from "../components/ui/button";
 import LobbyTable from "../components/lobbyList/LobbyTable";
+import CreateLobbyForm from "@/components/lobbyList/CreateLobbyForm";
 import ChangeUsernameForm from "@/components/lobbyList/ChangeUsernameForm";
 
 function LobbyList() {
@@ -49,9 +50,7 @@ function LobbyList() {
                 <div className="flex flex-col justify-between h-full">
 
                     <div className="flex flex-col gap-2">
-                        <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer">
-                            Create Room
-                        </Button>
+                        <CreateLobbyForm />
                         <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer"
                             onClick={() => selectLobby("a")}>
                             Join Room with Code
