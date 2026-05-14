@@ -70,8 +70,6 @@ addRouteWithMethods(
             await joinLobby(code, (req as UserRequest).user.id);
             await becomeHost(code, (req as UserRequest).user.id);
 
-            await assignPlayerID(code, (req as UserRequest).user.id, P_PlayerIDs.PLAYER_IDS_PLAYER1);
-
             res.status(201).send(routes.CreateLobbyResponse.encode({ code: code }).finish());
         } catch {
             res.status(500).send(
@@ -92,7 +90,7 @@ addRouteWithMethods(
         const user = (req as UserRequest).user;
 
         try {
-            if (!code || !(await lobbyExists(code))) {
+            if (!(await lobbyExists(code))) {
                 res.status(400).send(
                     P_CodedError.encode({
                         code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
@@ -102,7 +100,6 @@ addRouteWithMethods(
             }
 
             await joinLobby(code, user.id);
-            await assignPlayerID(code, user.id, P_PlayerIDs.PLAYER_IDS_PLAYER2);
 
             res.status(200).send();
         } catch {
@@ -124,10 +121,10 @@ addRouteWithMethods(
         const user = (req as UserRequest).user;
 
         try {
-            if (!code || !(await lobbyExists(code))) {
+            if (!(await lobbyExists(code))) {
                 res.status(400).send(
                     P_CodedError.encode({
-                        code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
+                        code: P_ErrorCodes.ERROR_CODES_DOESNT_EXIST,
                     }).finish()
                 );
                 return;
@@ -148,67 +145,72 @@ addRouteWithMethods(
     [isLobbyMember]
 );
 
-addRouteWithMethods(router, '/:code/changePlayerID', async (req, res) => {
-    // Sets the player id of the specified player to the provided player id
-    const code = req.params.code as string;
+addRouteWithMethods(
+    router,
+    '/:code/changePlayerID',
+    async (req, res) => {
+        // Sets the player id of the specified player to the provided player id
+        const code = req.params.code as string;
 
-    let body: routes.ChangePlayerIDRequest;
-    try {
-        body = routes.ChangePlayerIDRequest.decode(req.body);
-    } catch {
-        res.status(400).send(
-            P_CodedError.encode({
-                code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
-            })
-        );
-        return;
-    }
-
-    if (!body.playerId || !body.userId) {
-        res.status(400).send(
-            P_CodedError.encode({
-                code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
-            })
-        );
-        return;
-    }
-
-    const userID = body.userId;
-    const playerID = body.playerId;
-
-    try {
-        if (!code || !(await lobbyExists(code))) {
+        let body: routes.ChangePlayerIDRequest;
+        try {
+            body = routes.ChangePlayerIDRequest.decode(req.body);
+        } catch {
             res.status(400).send(
                 P_CodedError.encode({
-                    code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
-                }).finish()
-            );
-            return;
-        }
-
-        const userPlayerType = await getPlayerType(code, userID);
-        // Inactive / AFK player
-        if (userPlayerType === P_PlayerTypes.PLAYER_TYPES_UNSPECIFIED) {
-            res.status(400).send(
-                P_CodedError.encode({
-                    code: P_ErrorCodes.ERROR_CODES_BAD_USER,
+                    code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
                 })
             );
             return;
         }
 
-        await unsetPlayerIDAndType(code, playerID);
-        await assignPlayerID(code, userID, playerID);
+        if (!body.playerId || !body.userId) {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
+                })
+            );
+            return;
+        }
 
-        res.status(200).send();
-    } catch {
-        res.status(500).send(
-            P_CodedError.encode({
-                code: P_ErrorCodes.ERROR_CODES_SERVER_ERROR,
-            }).finish()
-        );
-    }
-});
+        const userID = body.userId;
+        const playerID = body.playerId;
+
+        try {
+            if (!(await lobbyExists(code))) {
+                res.status(400).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_DOESNT_EXIST,
+                    }).finish()
+                );
+                return;
+            }
+
+            const userPlayerType = await getPlayerType(code, userID);
+            // Inactive / AFK player
+            if (userPlayerType === P_PlayerTypes.PLAYER_TYPES_UNSPECIFIED) {
+                res.status(400).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_BAD_USER,
+                    })
+                );
+                return;
+            }
+
+            await unsetPlayerIDAndType(code, playerID);
+            await assignPlayerID(code, userID, playerID);
+
+            res.status(200).send();
+        } catch {
+            res.status(500).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_SERVER_ERROR,
+                }).finish()
+            );
+        }
+    },
+    ['POST', 'PUT']
+);
 
 addRouteWithMethods(
     router,
@@ -218,10 +220,10 @@ addRouteWithMethods(
         const code = req.params.code as string;
 
         try {
-            if (!code || !(await lobbyExists(code))) {
+            if (!(await lobbyExists(code))) {
                 res.status(400).send(
                     P_CodedError.encode({
-                        code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
+                        code: P_ErrorCodes.ERROR_CODES_DOESNT_EXIST,
                     }).finish()
                 );
                 return;

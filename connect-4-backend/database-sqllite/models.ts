@@ -89,7 +89,7 @@ LobbyMember.init(
         player_type: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: P_PlayerTypes.PLAYER_TYPES_UNSPECIFIED,
+            defaultValue: P_PlayerTypes.PLAYER_TYPES_SPECTATOR,
         },
         host: {
             type: DataTypes.BOOLEAN,

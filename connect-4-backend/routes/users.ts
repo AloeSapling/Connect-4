@@ -84,10 +84,20 @@ addRouteWithMethods(
             return;
         }
 
+        const username = body.username;
         const user = (req as UserRequest).user;
 
+        if (!username || username.length <= 0) {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_NAME,
+                }).finish()
+            );
+            return;
+        }
+
         try {
-            await changeUsername(body.username, user.id);
+            await changeUsername(username, user.id);
             res.status(200).send();
         } catch {
             res.status(500).send(

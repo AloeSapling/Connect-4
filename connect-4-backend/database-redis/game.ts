@@ -83,6 +83,8 @@ export async function getGameState(lobbyCode: string): Promise<GameState> {
 
     if (!board || !turn) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_EXPIRED);
 
+    if (await redis.exists(`GameState_${lobbyCode}:lock`)) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_LOCKED);
+
     try {
         const boardData = (await JSON.parse(board)) as GameBoard;
         const turnData = Number(turn) as TPlayerIDs;

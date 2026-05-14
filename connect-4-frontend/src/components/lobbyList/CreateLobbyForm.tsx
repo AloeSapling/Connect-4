@@ -43,7 +43,7 @@ export default function ChangeForm() {
     // });
 
     const onSubmit = (formData: Z_TLobbyName) =>
-        createLobby_m.mutate();
+        createLobby_m.mutate(formData.lobby_name);
 
     const onCancel = () =>
         setFormOpen(false);

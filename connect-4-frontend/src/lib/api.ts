@@ -32,8 +32,13 @@ api.interceptors.response.use(
 /** Creates a new lobby entry on the backend
  * @returns The response from the backend
  * */
-export async function createLobby(): Promise<routes.CreateLobbyResponse> {
-    const response = await api.post<ArrayBuffer>('/lobby/create');
+export async function createLobby(lobbyName: string): Promise<routes.CreateLobbyResponse> {
+    const response = await api.post<ArrayBuffer>(
+        '/lobby/create',
+        routes.CreateLobbyRequest.encode({
+            lobbyName: lobbyName,
+        }).finish()
+    );
 
     return routes.CreateLobbyResponse.decode(new Uint8Array(response.data));
 }

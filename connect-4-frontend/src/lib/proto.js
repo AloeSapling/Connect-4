@@ -5037,12 +5037,11 @@ export const shared = $root.shared = (() => {
      * @property {number} ERROR_CODES_UNAUTHORISED=7 ERROR_CODES_UNAUTHORISED value
      * @property {number} ERROR_CODES_ALREADY_JOINED=8 ERROR_CODES_ALREADY_JOINED value
      * @property {number} ERROR_CODES_NOT_A_MEMBER=9 ERROR_CODES_NOT_A_MEMBER value
-     * @property {number} ERROR_CODES_LOBBY_CREATE_FAIL=10 ERROR_CODES_LOBBY_CREATE_FAIL value
-     * @property {number} ERROR_CODES_GAME_LOCKED=11 ERROR_CODES_GAME_LOCKED value
-     * @property {number} ERROR_CODES_GAME_EXPIRED=12 ERROR_CODES_GAME_EXPIRED value
-     * @property {number} ERROR_CODES_GAME_ALREADY_EXISTS=13 ERROR_CODES_GAME_ALREADY_EXISTS value
-     * @property {number} ERROR_CODES_DOESNT_EXIST=14 ERROR_CODES_DOESNT_EXIST value
-     * @property {number} ERROR_CODES_USER_ALREADY_EXISTS=15 ERROR_CODES_USER_ALREADY_EXISTS value
+     * @property {number} ERROR_CODES_GAME_LOCKED=10 ERROR_CODES_GAME_LOCKED value
+     * @property {number} ERROR_CODES_GAME_EXPIRED=11 ERROR_CODES_GAME_EXPIRED value
+     * @property {number} ERROR_CODES_GAME_ALREADY_EXISTS=12 ERROR_CODES_GAME_ALREADY_EXISTS value
+     * @property {number} ERROR_CODES_DOESNT_EXIST=13 ERROR_CODES_DOESNT_EXIST value
+     * @property {number} ERROR_CODES_USER_ALREADY_EXISTS=14 ERROR_CODES_USER_ALREADY_EXISTS value
      */
     shared.ErrorCodes = (function() {
         const valuesById = {}, values = Object.create(valuesById);
@@ -5056,12 +5055,11 @@ export const shared = $root.shared = (() => {
         values[valuesById[7] = "ERROR_CODES_UNAUTHORISED"] = 7;
         values[valuesById[8] = "ERROR_CODES_ALREADY_JOINED"] = 8;
         values[valuesById[9] = "ERROR_CODES_NOT_A_MEMBER"] = 9;
-        values[valuesById[10] = "ERROR_CODES_LOBBY_CREATE_FAIL"] = 10;
-        values[valuesById[11] = "ERROR_CODES_GAME_LOCKED"] = 11;
-        values[valuesById[12] = "ERROR_CODES_GAME_EXPIRED"] = 12;
-        values[valuesById[13] = "ERROR_CODES_GAME_ALREADY_EXISTS"] = 13;
-        values[valuesById[14] = "ERROR_CODES_DOESNT_EXIST"] = 14;
-        values[valuesById[15] = "ERROR_CODES_USER_ALREADY_EXISTS"] = 15;
+        values[valuesById[10] = "ERROR_CODES_GAME_LOCKED"] = 10;
+        values[valuesById[11] = "ERROR_CODES_GAME_EXPIRED"] = 11;
+        values[valuesById[12] = "ERROR_CODES_GAME_ALREADY_EXISTS"] = 12;
+        values[valuesById[13] = "ERROR_CODES_DOESNT_EXIST"] = 13;
+        values[valuesById[14] = "ERROR_CODES_USER_ALREADY_EXISTS"] = 14;
         return values;
     })();
 
@@ -5250,7 +5248,6 @@ export const shared = $root.shared = (() => {
                 case 12:
                 case 13:
                 case 14:
-                case 15:
                     break;
                 }
             if (message.error != null && message.hasOwnProperty("error")) {
@@ -5324,29 +5321,25 @@ export const shared = $root.shared = (() => {
             case 9:
                 message.code = 9;
                 break;
-            case "ERROR_CODES_LOBBY_CREATE_FAIL":
+            case "ERROR_CODES_GAME_LOCKED":
             case 10:
                 message.code = 10;
                 break;
-            case "ERROR_CODES_GAME_LOCKED":
+            case "ERROR_CODES_GAME_EXPIRED":
             case 11:
                 message.code = 11;
                 break;
-            case "ERROR_CODES_GAME_EXPIRED":
+            case "ERROR_CODES_GAME_ALREADY_EXISTS":
             case 12:
                 message.code = 12;
                 break;
-            case "ERROR_CODES_GAME_ALREADY_EXISTS":
+            case "ERROR_CODES_DOESNT_EXIST":
             case 13:
                 message.code = 13;
                 break;
-            case "ERROR_CODES_DOESNT_EXIST":
+            case "ERROR_CODES_USER_ALREADY_EXISTS":
             case 14:
                 message.code = 14;
-                break;
-            case "ERROR_CODES_USER_ALREADY_EXISTS":
-            case 15:
-                message.code = 15;
                 break;
             }
             if (object.error != null)
