@@ -109,7 +109,7 @@ Error codes:
 - bad_name
 - user_already_exists
 - server_error
-## /user/changeUsername
+## /user/changeUsername/
 Methods: **POST, PATCH**; <br>
 Parmaeters: **username**; <br>
 Response: **200, 400, 500**; <br>
