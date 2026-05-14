@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from 'express';
 import { User } from '../database-sqllite/models.ts';
 import { addRouteWithMethods } from '../lib/lib.ts';
-import { changeUsername, createUser, getUserBySessionID } from '../database-sqllite/user.ts';
+import { changeUsername, createUser, getUserBySessionID, userExists } from '../database-sqllite/user.ts';
 import { routes } from '../lib/proto.js';
 import { P_CodedError, P_ErrorCodes, type UserRequest } from '../lib/types.ts';
 import { authUser } from '../lib/auth.ts';
@@ -25,10 +25,37 @@ addRouteWithMethods(
             return;
         }
 
+        const username = body.username;
         const sessionID = req.session.id;
 
+        // Validation
+        if (!username || username.length <= 0) {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_NAME,
+                }).finish()
+            );
+            return;
+        }
+        if (!sessionID) {
+            res.status(500).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_SERVER_ERROR,
+                }).finish()
+            );
+            return;
+        }
+        if (await userExists(sessionID)) {
+            res.status(409).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_USER_ALREADY_EXISTS,
+                }).finish()
+            );
+            return;
+        }
+
         try {
-            await createUser(sessionID, body.username);
+            await createUser(sessionID, username);
             res.status(201).send();
         } catch {
             res.status(500).send(
@@ -52,11 +79,10 @@ addRouteWithMethods(
             res.status(400).send(
                 P_CodedError.encode({
                     code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
-                }).finis()
+                }).finish()
             );
             return;
         }
-        console.log(body);
 
         const user = (req as UserRequest).user;
 

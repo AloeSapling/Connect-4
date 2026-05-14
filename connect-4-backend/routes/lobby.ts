@@ -53,6 +53,16 @@ addRouteWithMethods(
         }
         const lobbyName = body.lobbyName;
 
+        // lobby name validation
+        if (!lobbyName || lobbyName.length <= 0) {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_NAME,
+                }).finish()
+            );
+            return;
+        }
+
         try {
             const code = await createLobby(lobbyName);
             console.log(code);
@@ -177,10 +187,11 @@ addRouteWithMethods(router, '/:code/changePlayerID', async (req, res) => {
         }
 
         const userPlayerType = await getPlayerType(code, userID);
+        // Inactive / AFK player
         if (userPlayerType === P_PlayerTypes.PLAYER_TYPES_UNSPECIFIED) {
             res.status(400).send(
                 P_CodedError.encode({
-                    code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
+                    code: P_ErrorCodes.ERROR_CODES_BAD_USER,
                 })
             );
             return;

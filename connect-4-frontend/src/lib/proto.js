@@ -5032,14 +5032,17 @@ export const shared = $root.shared = (() => {
      * @property {number} ERROR_CODES_BAD_LOBBY_CODE=2 ERROR_CODES_BAD_LOBBY_CODE value
      * @property {number} ERROR_CODES_BAD_DATA=3 ERROR_CODES_BAD_DATA value
      * @property {number} ERROR_CODES_BAD_TURN=4 ERROR_CODES_BAD_TURN value
-     * @property {number} ERROR_CODES_LOBBY_CREATE_FAIL=5 ERROR_CODES_LOBBY_CREATE_FAIL value
-     * @property {number} ERROR_CODES_UNAUTHORISED=6 ERROR_CODES_UNAUTHORISED value
-     * @property {number} ERROR_CODES_NOT_A_MEMBER=7 ERROR_CODES_NOT_A_MEMBER value
-     * @property {number} ERROR_CODES_GAME_ALREADY_EXISTS=8 ERROR_CODES_GAME_ALREADY_EXISTS value
-     * @property {number} ERROR_CODES_GAME_LOCKED=9 ERROR_CODES_GAME_LOCKED value
-     * @property {number} ERROR_CODES_GAME_EXPIRED=10 ERROR_CODES_GAME_EXPIRED value
-     * @property {number} ERROR_CODES_ALREADY_JOINED=11 ERROR_CODES_ALREADY_JOINED value
-     * @property {number} ERROR_CODES_DOESNT_EXIST=12 ERROR_CODES_DOESNT_EXIST value
+     * @property {number} ERROR_CODES_BAD_USER=5 ERROR_CODES_BAD_USER value
+     * @property {number} ERROR_CODES_BAD_NAME=6 ERROR_CODES_BAD_NAME value
+     * @property {number} ERROR_CODES_UNAUTHORISED=7 ERROR_CODES_UNAUTHORISED value
+     * @property {number} ERROR_CODES_ALREADY_JOINED=8 ERROR_CODES_ALREADY_JOINED value
+     * @property {number} ERROR_CODES_NOT_A_MEMBER=9 ERROR_CODES_NOT_A_MEMBER value
+     * @property {number} ERROR_CODES_LOBBY_CREATE_FAIL=10 ERROR_CODES_LOBBY_CREATE_FAIL value
+     * @property {number} ERROR_CODES_GAME_LOCKED=11 ERROR_CODES_GAME_LOCKED value
+     * @property {number} ERROR_CODES_GAME_EXPIRED=12 ERROR_CODES_GAME_EXPIRED value
+     * @property {number} ERROR_CODES_GAME_ALREADY_EXISTS=13 ERROR_CODES_GAME_ALREADY_EXISTS value
+     * @property {number} ERROR_CODES_DOESNT_EXIST=14 ERROR_CODES_DOESNT_EXIST value
+     * @property {number} ERROR_CODES_USER_ALREADY_EXISTS=15 ERROR_CODES_USER_ALREADY_EXISTS value
      */
     shared.ErrorCodes = (function() {
         const valuesById = {}, values = Object.create(valuesById);
@@ -5048,14 +5051,17 @@ export const shared = $root.shared = (() => {
         values[valuesById[2] = "ERROR_CODES_BAD_LOBBY_CODE"] = 2;
         values[valuesById[3] = "ERROR_CODES_BAD_DATA"] = 3;
         values[valuesById[4] = "ERROR_CODES_BAD_TURN"] = 4;
-        values[valuesById[5] = "ERROR_CODES_LOBBY_CREATE_FAIL"] = 5;
-        values[valuesById[6] = "ERROR_CODES_UNAUTHORISED"] = 6;
-        values[valuesById[7] = "ERROR_CODES_NOT_A_MEMBER"] = 7;
-        values[valuesById[8] = "ERROR_CODES_GAME_ALREADY_EXISTS"] = 8;
-        values[valuesById[9] = "ERROR_CODES_GAME_LOCKED"] = 9;
-        values[valuesById[10] = "ERROR_CODES_GAME_EXPIRED"] = 10;
-        values[valuesById[11] = "ERROR_CODES_ALREADY_JOINED"] = 11;
-        values[valuesById[12] = "ERROR_CODES_DOESNT_EXIST"] = 12;
+        values[valuesById[5] = "ERROR_CODES_BAD_USER"] = 5;
+        values[valuesById[6] = "ERROR_CODES_BAD_NAME"] = 6;
+        values[valuesById[7] = "ERROR_CODES_UNAUTHORISED"] = 7;
+        values[valuesById[8] = "ERROR_CODES_ALREADY_JOINED"] = 8;
+        values[valuesById[9] = "ERROR_CODES_NOT_A_MEMBER"] = 9;
+        values[valuesById[10] = "ERROR_CODES_LOBBY_CREATE_FAIL"] = 10;
+        values[valuesById[11] = "ERROR_CODES_GAME_LOCKED"] = 11;
+        values[valuesById[12] = "ERROR_CODES_GAME_EXPIRED"] = 12;
+        values[valuesById[13] = "ERROR_CODES_GAME_ALREADY_EXISTS"] = 13;
+        values[valuesById[14] = "ERROR_CODES_DOESNT_EXIST"] = 14;
+        values[valuesById[15] = "ERROR_CODES_USER_ALREADY_EXISTS"] = 15;
         return values;
     })();
 
@@ -5242,6 +5248,9 @@ export const shared = $root.shared = (() => {
                 case 10:
                 case 11:
                 case 12:
+                case 13:
+                case 14:
+                case 15:
                     break;
                 }
             if (message.error != null && message.hasOwnProperty("error")) {
@@ -5295,37 +5304,49 @@ export const shared = $root.shared = (() => {
             case 4:
                 message.code = 4;
                 break;
-            case "ERROR_CODES_LOBBY_CREATE_FAIL":
+            case "ERROR_CODES_BAD_USER":
             case 5:
                 message.code = 5;
                 break;
-            case "ERROR_CODES_UNAUTHORISED":
+            case "ERROR_CODES_BAD_NAME":
             case 6:
                 message.code = 6;
                 break;
-            case "ERROR_CODES_NOT_A_MEMBER":
+            case "ERROR_CODES_UNAUTHORISED":
             case 7:
                 message.code = 7;
                 break;
-            case "ERROR_CODES_GAME_ALREADY_EXISTS":
+            case "ERROR_CODES_ALREADY_JOINED":
             case 8:
                 message.code = 8;
                 break;
-            case "ERROR_CODES_GAME_LOCKED":
+            case "ERROR_CODES_NOT_A_MEMBER":
             case 9:
                 message.code = 9;
                 break;
-            case "ERROR_CODES_GAME_EXPIRED":
+            case "ERROR_CODES_LOBBY_CREATE_FAIL":
             case 10:
                 message.code = 10;
                 break;
-            case "ERROR_CODES_ALREADY_JOINED":
+            case "ERROR_CODES_GAME_LOCKED":
             case 11:
                 message.code = 11;
                 break;
-            case "ERROR_CODES_DOESNT_EXIST":
+            case "ERROR_CODES_GAME_EXPIRED":
             case 12:
                 message.code = 12;
+                break;
+            case "ERROR_CODES_GAME_ALREADY_EXISTS":
+            case 13:
+                message.code = 13;
+                break;
+            case "ERROR_CODES_DOESNT_EXIST":
+            case 14:
+                message.code = 14;
+                break;
+            case "ERROR_CODES_USER_ALREADY_EXISTS":
+            case 15:
+                message.code = 15;
                 break;
             }
             if (object.error != null)

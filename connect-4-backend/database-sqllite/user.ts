@@ -27,3 +27,13 @@ export async function getUserBySessionID(sessionID: string): Promise<User | null
         },
     });
 }
+
+export async function userExists(sessionID: string): Promise<boolean> {
+    return (
+        (await User.count({
+            where: {
+                session_id: sessionID,
+            },
+        })) > 0
+    );
+}

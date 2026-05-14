@@ -20,7 +20,7 @@ addRouteWithMethods(
                 if (!(await lobbyExists(code))) {
                     res.status(400).send(
                         P_CodedError.encode({
-                            code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
+                            code: P_ErrorCodes.ERROR_CODES_DOESNT_EXIST,
                         }).finish()
                     );
                     return;
@@ -67,7 +67,7 @@ addRouteWithMethods(
                 if (!(await lobbyExists(code))) {
                     res.status(400).send(
                         P_CodedError.encode({
-                            code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
+                            code: P_ErrorCodes.ERROR_CODES_DOESNT_EXIST,
                         }).finish()
                     );
                     return;
