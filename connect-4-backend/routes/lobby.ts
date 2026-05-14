@@ -37,41 +37,6 @@ addRouteWithMethods(
 
 addRouteWithMethods(
     router,
-    '/:code',
-    async (req, res) => {
-        // Get lobby details
-        const code = req.params.code as string;
-
-        try {
-            if (!code || !(await lobbyExists(code))) {
-                res.status(400).send(
-                    P_CodedError.encode({
-                        code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
-                    }).finish()
-                );
-                return;
-            }
-
-            const lobbyDetails = await getDetailedLobbyData(code);
-            res.status(200).send(
-                routes.GetLobbyDetailsResponse.encode({
-                    lobbyDetails: lobbyDetails,
-                })
-            );
-        } catch {
-            res.status(500).send(
-                P_CodedError.encode({
-                    code: P_ErrorCodes.ERROR_CODES_SERVER_ERROR,
-                }).finish()
-            );
-        }
-    },
-    ['GET'],
-    [isLobbyMember]
-);
-
-addRouteWithMethods(
-    router,
     '/create',
     async (req, res) => {
         // Create a new lobby and return the associated code
@@ -233,5 +198,40 @@ addRouteWithMethods(router, '/:code/changePlayerID', async (req, res) => {
         );
     }
 });
+
+addRouteWithMethods(
+    router,
+    '/:code/details',
+    async (req, res) => {
+        // Get lobby details
+        const code = req.params.code as string;
+
+        try {
+            if (!code || !(await lobbyExists(code))) {
+                res.status(400).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_BAD_LOBBY_CODE,
+                    }).finish()
+                );
+                return;
+            }
+
+            const lobbyDetails = await getDetailedLobbyData(code);
+            res.status(200).send(
+                routes.GetLobbyDetailsResponse.encode({
+                    lobbyDetails: lobbyDetails,
+                })
+            );
+        } catch {
+            res.status(500).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_SERVER_ERROR,
+                }).finish()
+            );
+        }
+    },
+    ['GET'],
+    [isLobbyMember]
+);
 
 export default router;

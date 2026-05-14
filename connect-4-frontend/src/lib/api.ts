@@ -85,7 +85,7 @@ export async function leaveLobby(lobbyCode: string) {
 
 /** @returns Detailed data about the given lobby */
 export async function getLobbyDetails(lobbyCode: string): Promise<routes.GetLobbyDetailsResponse> {
-    const response = await api.get<ArrayBuffer>(`/lobby/${lobbyCode}`);
+    const response = await api.get<ArrayBuffer>(`/lobby/${lobbyCode}/details`);
 
     return routes.GetLobbyDetailsResponse.decode(new Uint8Array(response.data));
 }

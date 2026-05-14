@@ -11,7 +11,12 @@ import * as lobbyFn from '../database-sqllite/lobbyMembers.ts';
  * */
 export function authUser(req: Request, res: Response, next: NextFunction) {
     const sessionID = req.session.id;
-    console.log(sessionID);
+
+    if ((req as UserRequest).user?.id) {
+        next();
+        return;
+    }
+
     getUserBySessionID(sessionID)
         .then((user: User | null) => {
             if (user === null) {
@@ -61,7 +66,7 @@ export async function isLobbyMember(req: Request, res: Response, next: NextFunct
         const code = req.params.code as string;
 
         if (!(await lobbyFn.isLobbyMember(code, user.id))) {
-            res.send(401).send(
+            res.status(401).send(
                 P_CodedError.encode({
                     code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
                 })
@@ -86,7 +91,7 @@ export async function isLobbyHost(req: Request, res: Response, next: NextFunctio
         const code = req.params.code as string;
 
         if (!(await lobbyFn.isLobbyHost(code, user.id))) {
-            res.send(401).send(
+            res.status(401).send(
                 P_CodedError.encode({
                     code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
                 })
