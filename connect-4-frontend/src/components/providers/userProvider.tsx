@@ -12,7 +12,7 @@ export function UserProvider({ children }: React.PropsWithChildren) {
                 return await getLoggedInUserData();
                 // eslint-disable-next-line
             } catch (err: any) {
-                if (err?.response?.status === 401) return null;
+                if (err.status === 401) return null;
                 throw err;
             }
         },

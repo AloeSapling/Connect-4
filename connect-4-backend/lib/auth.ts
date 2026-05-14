@@ -23,7 +23,7 @@ export function authUser(req: Request, res: Response, next: NextFunction) {
                 res.status(401).send(
                     P_CodedError.encode({
                         code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
-                    })
+                    }).finish()
                 );
                 return;
             }
@@ -69,7 +69,7 @@ export async function isLobbyMember(req: Request, res: Response, next: NextFunct
             res.status(401).send(
                 P_CodedError.encode({
                     code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
-                })
+                }).finish()
             );
             return;
         }
@@ -94,7 +94,7 @@ export async function isLobbyHost(req: Request, res: Response, next: NextFunctio
             res.status(401).send(
                 P_CodedError.encode({
                     code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
-                })
+                }).finish()
             );
             return;
         }

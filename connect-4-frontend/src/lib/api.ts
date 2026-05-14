@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SERVER_URL } from './config';
 import { routes } from './proto.js';
-import type { TPlayerIDs } from './types.js';
+import { P_CodedError, type ResponseError, type TPlayerIDs } from './types.js';
 
 /** An axios instance shared between all backend fetches */
 const api = axios.create({
@@ -18,21 +18,29 @@ const api = axios.create({
     },
 });
 
+api.interceptors.response.use(
+    function (response) {
+        return response;
+    },
+    function (error) {
+        const decodedErr = P_CodedError.decode(new Uint8Array(error.response.data));
+        const responseErr: ResponseError = { ...decodedErr, status: error.status };
+        return Promise.reject(responseErr);
+    }
+);
+
 /** Creates a new lobby entry on the backend
  * @returns The response from the backend
  * */
-export async function createLobby(lobbyName: string): Promise<routes.CreateLobbyResponse> {
-    const response = await api.post<ArrayBuffer>(
-        '/lobby/create',
-        routes.CreateLobbyRequest.encode({ lobbyName: lobbyName }).finish()
-    );
+export async function createLobby(): Promise<routes.CreateLobbyResponse> {
+    const response = await api.post<ArrayBuffer>('/lobby/create');
 
     return routes.CreateLobbyResponse.decode(new Uint8Array(response.data));
 }
 
 /** Creates a new user entry on the backend */
 export async function createUser(username: string) {
-    await api.post(
+    await api.post<ArrayBuffer>(
         '/user/create',
         routes.CreateUserRequest.encode({
             username: username,
@@ -54,12 +62,12 @@ export async function changeUsername(username: string) {
  * @param lobbyCode Used to determine in which lobby to create the game
  * */
 export async function createGame(lobbyCode: string) {
-    await api.post(`/game/${lobbyCode}/create`);
+    await api.post<ArrayBuffer>(`/game/${lobbyCode}/create`);
 }
 
 /** Joins the lobby associated with the provided code */
 export async function joinLobby(lobbyCode: string) {
-    await api.post(`/lobby/${lobbyCode}/join`);
+    await api.post<ArrayBuffer>(`/lobby/${lobbyCode}/join`);
 }
 
 /** Changes the player id of the given user in the given lobby
@@ -69,7 +77,7 @@ export async function joinLobby(lobbyCode: string) {
  * @param uid The id of the user whose player id is to be changed
  * */
 export async function changePlayerID(lobbyCode: string, uid: number, playerID: TPlayerIDs) {
-    await api.post(
+    await api.post<ArrayBuffer>(
         `/lobby/${lobbyCode}/changePlayerID`,
         routes.ChangePlayerIDRequest.encode({
             playerId: playerID,
@@ -80,7 +88,7 @@ export async function changePlayerID(lobbyCode: string, uid: number, playerID: T
 
 /** Leaves the lobby associated with the provided code */
 export async function leaveLobby(lobbyCode: string) {
-    await api.post(`/lobby/${lobbyCode}/leave`);
+    await api.post<ArrayBuffer>(`/lobby/${lobbyCode}/leave`);
 }
 
 /** @returns Detailed data about the given lobby */

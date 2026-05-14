@@ -28,19 +28,22 @@ export default function ChangeForm() {
             setFormOpen(false);
             navigate(`/lobby/${response.code}`);
         },
-        onError: (err) => toast.error(err.message)
+        onError: (err) => {
+            console.log(err);
+            toast.error(err.message)
+        }
     });
     // const joinLobby_m = useMutation({
     //     mutationFn: joinLobby,
     //     onSuccess: (_data, code) => {
-            // setFormOpen(false);
-            // navigate(`/lobby/${code}`);
+    // setFormOpen(false);
+    // navigate(`/lobby/${code}`);
     //     },
     //     onError: (err) => toast.error(err.message)
     // });
 
     const onSubmit = (formData: Z_TLobbyName) =>
-        createLobby_m.mutate(formData.lobby_name);
+        createLobby_m.mutate();
 
     const onCancel = () =>
         setFormOpen(false);
