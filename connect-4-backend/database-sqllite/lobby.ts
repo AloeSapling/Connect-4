@@ -11,54 +11,56 @@ import { sequelize } from './database.ts';
  * @returns The code associated with the newly created lobby
  * */
 export async function createLobby(lobbyName: string): Promise<string> {
-    // Retry up to 15 times on collision.
-    // With the amount of possible codes, 15 retries should be more than enough to create a unique code.
-    for (let i = 0; i < 15; i++) {
-        try {
-            const code = createLobbyCode();
-            await Lobby.create({
-                code: code,
-                name: lobbyName,
-            });
+	// Retry up to 15 times on collision.
+	// With the amount of possible codes, 15 retries should be more than enough to create a unique code.
+	for (let i = 0; i < 15; i++) {
+		try {
+			const code = createLobbyCode();
+			await Lobby.create({
+				code: code,
+				name: lobbyName,
+			});
 
-            return code;
-            // eslint-disable-next-line no-empty
-        } catch {} // Disregard unique constraint failure errors
-    }
+			return code;
+			// eslint-disable-next-line no-empty
+		} catch { } // Disregard unique constraint failure errors
+	}
 
-    throw new CodedError(P_ErrorCodes.ERROR_CODES_LOBBY_CREATE_FAIL);
+	throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
 }
 
 /** Deletes the lobby associated with the provided code */
 export async function deleteLobby(code: string) {
-    await Lobby.findOne({
-        where: {
-            code: code,
-        },
-    }).then((lobby) => lobby?.destroy());
+	await Lobby.findOne({
+		where: {
+			code: code,
+		},
+	}).then((lobby) => lobby?.destroy());
 }
 
 /** @returns A list of all of the lobbies */
 export async function getAllLobbiesData(): Promise<models.ILobbyData[]> {
-    type tmp_SelectResult = (Lobby & { memberCount: number })[];
+	type tmp_SelectResult = (Lobby & { memberCount: number })[];
 
-    const lobbies: tmp_SelectResult = (await Lobby.findAll({
-        attributes: ['code', 'name', [Sequelize.fn('COUNT', sequelize.col('LobbyMembers.id')), 'memberCount']],
-        include: [
-            {
-                model: LobbyMember,
-                attributes: [],
-            },
-        ],
-        group: ['Lobby.code'],
-    })) as tmp_SelectResult;
+	const lobbies: tmp_SelectResult = (await Lobby.findAll({
+		attributes: ['code', 'name', [Sequelize.fn('COUNT', sequelize.col('LobbyMembers.id')), 'memberCount']],
+		include: [
+			{
+				model: LobbyMember,
+				attributes: [],
+			},
+		],
+		group: ['Lobby.code'],
+		raw: true,
+	})) as tmp_SelectResult;
 
-    const hasGames = await gamesExist(lobbies.map((lobby) => lobby.code));
+	const hasGames = await gamesExist(lobbies.map((lobby) => lobby.code));
 
-    return lobbies.map((lobby, i) => ({
-        ...lobby,
-        hasGame: hasGames[i] || false,
-    }));
+	return lobbies.map((lobby, i) => ({
+		...(lobby),
+		lobbyName: lobby.name,
+		hasGame: hasGames[i] || false,
+	}));
 }
 
 /** Gets the data of the lobby associated with the provided code
@@ -66,43 +68,44 @@ export async function getAllLobbiesData(): Promise<models.ILobbyData[]> {
  * @returns The lobby or null if the lobby wasn't found
  * */
 export async function getLobby(code: string): Promise<Lobby | null> {
-    return await Lobby.findOne({
-        where: {
-            code: code,
-        },
-    });
+	return await Lobby.findOne({
+		where: {
+			code: code,
+		},
+	});
 }
 
 /** Checks if a lobby associated with the specified code exists */
 export async function lobbyExists(code: string): Promise<boolean> {
-    return (await Lobby.count({ where: { code: code } })) > 0;
+	return (await Lobby.count({ where: { code: code } })) > 0;
 }
 
 /** Gets detailed data about a specific lobby, formatted appropriately */
 export async function getDetailedLobbyData(code: string): Promise<models.IDetailedLobbyData> {
-    const lobby = await Lobby.findOne({
-        where: {
-            code: code,
-        },
-    });
+	const lobby = await Lobby.findOne({
+		where: {
+			code: code,
+		},
+		raw: true,
+	});
 
-    if (!lobby) throw new CodedError(P_ErrorCodes.ERROR_CODES_DOESNT_EXIST);
+	if (!lobby) throw new CodedError(P_ErrorCodes.ERROR_CODES_DOESNT_EXIST);
 
-    const memberCount = await LobbyMember.count({
-        where: {
-            lobby_code: code,
-        },
-    });
+	const memberCount = await LobbyMember.count({
+		where: {
+			lobby_code: code,
+		},
+	});
 
-    const hasGame = await gameExists(code);
+	const hasGame = await gameExists(code);
 
-    const memberData = await getDetailedLobbyMembersData(code);
+	const memberData = await getDetailedLobbyMembersData(code);
 
-    return {
-        code: lobby.code,
-        lobbyName: lobby.name,
-        memberCount: memberCount,
-        hasGame: hasGame,
-        lobbyMembers: memberData,
-    };
+	return {
+		code: lobby.code,
+		lobbyName: lobby.name,
+		memberCount: memberCount,
+		hasGame: hasGame,
+		lobbyMembers: memberData,
+	};
 }
