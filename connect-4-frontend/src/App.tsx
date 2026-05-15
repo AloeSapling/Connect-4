@@ -3,10 +3,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import './App.css'
 // import BackendTest from "./pages/BackendTest.tsx";
-import { UserProvider } from "./components/providers/userProvider.tsx";
+import UserProvider from "./components/providers/userProvider.tsx";
 import Auth from "./components/providers/auth.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import LangProvider from "./components/providers/langProvider.tsx";
 
 // Pages
 const BasePage = lazy(() => import("./pages/BasePage.tsx"));
@@ -33,35 +34,35 @@ function App() {
                 <QueryClientProvider client={queryClient}>
                     <Suspense fallback={<div>Loading...</div>}>
                         <UserProvider>
-                            {/* All routes are to be defined here so that child routes can also use them */}
-                            <Routes>
-                                <Route path="/" element={<BasePage />}>
-                                    {/* Base path */}
-                                    <Route index element={<Home />} />
-                                    
-                                    <Route element={<Auth.UserDoesNotExist />}>
-                                        <Route path="username" element={<Username />} />
+                            <LangProvider>     {/* All routes are to be defined here so that child routes can also use them */}
+                                <Routes>
+                                    <Route path="/" element={<BasePage />}>
+                                        {/* Base path */}
+                                        <Route index element={<Home />} />
+
+                                        <Route element={<Auth.UserDoesNotExist />}>
+                                            <Route path="username" element={<Username />} />
+                                        </Route>
+
+                                        <Route element={<Auth.LoggedIn />}>
+                                            <Route path="lobbylist" element={<LobbyList />} />
+                                        </Route>
+
+                                        <Route path="lobby/:lobbyCode" element={<Lobby />} />
+
+                                        <Route path="game" element={<Game />} />
+
+                                        <Route path="settings" element={<Settings />} />
+
+                                        {/* <Route path="test" element={<BackendTest />} /> */}
+
+                                        {/* 404 */}
+                                        <Route path="*" element={<Error />} />
                                     </Route>
-
-                                    <Route element={<Auth.LoggedIn />}>
-                                        <Route path="lobbylist" element={<LobbyList />} />
-                                    </Route>
-
-                                    <Route path="lobby/:lobbyCode" element={<Lobby />} />
-
-                                    <Route path="game" element={<Game />} />
-
-                                    <Route path="settings" element={<Settings />} />
-
-                                    {/* <Route path="test" element={<BackendTest />} /> */}
-
-                                    {/* 404 */}
-                                    <Route path="*" element={<Error />} />
-                                </Route>
-                            </Routes>
+                                </Routes>
+                            </LangProvider>
                         </UserProvider>
                     </Suspense>
-
                 </QueryClientProvider>
             </BrowserRouter>
         </>

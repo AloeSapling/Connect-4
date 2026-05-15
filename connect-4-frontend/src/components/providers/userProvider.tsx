@@ -4,7 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 
 console.log('UserProvider render');
-export function UserProvider({ children }: React.PropsWithChildren) {
+export default function UserProvider({ children }: React.PropsWithChildren) {
     const { data } = useSuspenseQuery({
         queryKey: ['user'],
         queryFn: async () => {
