@@ -1,10 +1,22 @@
 import { useNavigate } from "react-router-dom";
+import { joinLobby } from "@/lib/api";
+import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
 import * as proto from "../../lib/proto.js"
 
 export default function LobbyTable({ lobbyData }: { lobbyData: proto.models.ILobbyData[] }) {
     const navigate = useNavigate();
+    
+    const joinLobby_m = useMutation({
+        mutationFn: joinLobby,
+        onSuccess: (_data, code) => {
+            toast.success("Joining lobby...");
+            navigate(`/lobby/${code}`);
+        },
+        onError: (err) => toast.error(err.message)
+    });
 
-    const selectLobby = (code: string) => navigate(`/lobby/${code}`);
+    const selectLobby = (code: string) => joinLobby_m.mutate(code);
 
     return (
         <div className="flex flex-col min-h-0 min-w-0 select-none">
@@ -41,11 +53,11 @@ export default function LobbyTable({ lobbyData }: { lobbyData: proto.models.ILob
                                     {lobby.lobbyName}
                                 </td>
 
-                                <td className="p-2 text-right">
+                                <td className="p-2 w-24 text-right">
                                     {lobby.memberCount}
                                 </td>
 
-                                <td className="p-2 text-right">
+                                <td className="p-2 w-24 text-right">
                                     {lobby.hasGame ? "Yes" : "No"}
                                 </td>
                             </tr>
