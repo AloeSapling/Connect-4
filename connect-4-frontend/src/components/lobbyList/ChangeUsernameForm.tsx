@@ -12,7 +12,8 @@ import { UserContext } from "@/lib/contexts";
 
 export default function ChangeForm() {
     const queryClient = useQueryClient();
-
+    const user = useContext(UserContext);
+    
     const [formOpen, setFormOpen] = useState(false);
 
     const form = useForm<Z_TUsername>({
@@ -39,8 +40,6 @@ export default function ChangeForm() {
 
     const onCancel = () =>
         setFormOpen(false);
-
-    const user = useContext(UserContext);
 
     return formOpen ? (
         <form onSubmit={form.handleSubmit(onSubmit)}

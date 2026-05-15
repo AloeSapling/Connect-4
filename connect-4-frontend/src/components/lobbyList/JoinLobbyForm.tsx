@@ -1,6 +1,6 @@
-import { createLobby } from "@/lib/api";
-import { Z_LobbyName, type Z_TLobbyName } from "@/lib/zod";
-import { useContext, useState } from "react";
+import { joinLobby } from "@/lib/api";
+import { Z_LobbyCode, type Z_TLobbyCode } from "@/lib/zod";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -9,35 +9,30 @@ import { useMutation } from "@tanstack/react-query";
 import { Field, FieldError } from "../ui/field";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { UserContext } from "@/lib/contexts";
 
 export default function ChangeForm() {
     const navigate = useNavigate();
-    const user = useContext(UserContext);
 
     const [formOpen, setFormOpen] = useState(false);
 
-    const form = useForm<Z_TLobbyName>({
-        resolver: zodResolver(Z_LobbyName),
+    const form = useForm<Z_TLobbyCode>({
+        resolver: zodResolver(Z_LobbyCode),
         defaultValues: {
-            lobby_name: `${user?.username}'s lobby`,
+            lobby_code: "",
         }
     });
-    const createLobby_m = useMutation({
-        mutationFn: createLobby,
-        onSuccess: (response) => {
-            toast.success("Lobby created successfully! Joining lobby...");
+    const joinLobby_m = useMutation({
+        mutationFn: joinLobby,
+        onSuccess: (_data, code) => {
+            toast.success("Joining lobby...");
             setFormOpen(false);
-            navigate(`/lobby/${response.code}`);
+            navigate(`/lobby/${code}`);
         },
-        onError: (err) => {
-            form.reset();
-            toast.error(err.message);
-        }
+        onError: (err) => toast.error(err.message)
     });
 
-    const onSubmit = (formData: Z_TLobbyName) =>
-        createLobby_m.mutate(formData.lobby_name);
+    const onSubmit = (formData: Z_TLobbyCode) =>
+        joinLobby_m.mutate(formData.lobby_code);
 
     const onCancel = () =>
         setFormOpen(false);
@@ -46,7 +41,7 @@ export default function ChangeForm() {
         <form onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-y-1">
             <Controller
-                name="lobby_name"
+                name="lobby_code"
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
@@ -56,7 +51,7 @@ export default function ChangeForm() {
                             type="text"
                             aria-invalid={fieldState.invalid}
                             className="w-full rounded-md bg-yellow-950 focus:bg-amber-950"
-                            placeholder="lobby name"
+                            placeholder="lobby code"
                         />
                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
@@ -81,7 +76,7 @@ export default function ChangeForm() {
                     setFormOpen(true);
                 }}
             >
-                Create Lobby
+                Join Lobby with Code
             </Button>
         )
 }
