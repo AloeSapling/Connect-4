@@ -2,10 +2,43 @@ import textsPLPL from '../locales/pl_PL.json';
 import textsENUK from '../locales/en_UK.json';
 
 export type PageTexts = {
-    lobbyList: {};
+    header: {
+        home: string;
+        settings: string;
+        thisPage: string;
+    };
+    home: {
+        play: string;
+    };
     username: {
         chooseYourUsername: string;
         name: string;
+        hint: string;
+    };
+    lobbyList: {
+        listHeader: string;
+        refresh: string;
+
+        tableName: string;
+        tablePlayers: string;
+        tableHasGame: string;
+        tableNo: string;
+        tableYes: string;
+
+        formCancel: string;
+
+        lobbyFormHint: string;
+        lobbyFormButton: string;
+        lobbyToast: string;
+
+        createFormHint: string;
+        createFormButton: string;
+        createToast: string;
+
+        usernameFormHint: string;
+        usernameFormText: string;
+        usernameFormButton: string;
+        usernameToast: string;
     };
     lobby: {};
     game: {};

@@ -1,8 +1,41 @@
 {
-    "lobbyList": {},
+    "header": {
+        "home": "Home",
+        "settings": "Settings",
+        "thisPage": "This Page"
+    },
+    "home": {
+        "play": "Play"
+    },
     "username": {
         "chooseYourUsername": "Choose your username",
-        "name": "Name"
+        "name": "Name",
+        "hint": "username"
+    },
+    "lobbyList": {
+        "listHeader": "Lobby List",
+        "refresh": "Refresh Lobbies",
+
+        "tableName": "Name",
+        "tablePlayers": "Players",
+        "tableHasGame": "Has Game",
+        "tableNo": "No",
+        "tableYes": "Yes",
+
+        "formCancel": "Cancel",
+
+        "lobbyFormHint": "lobby code",
+        "lobbyFormButton": "Join Lobby with Code",
+        "lobbyToast": "Joining lobby...",
+
+        "createFormHint": "lobby name",
+        "createFormButton": "Create Lobby",
+        "createToast": "Lobby created successfully! Joining lobby...",
+
+        "usernameFormHint": "username",
+        "usernameFormText": "Current Nick:",
+        "usernameFormButton": "Change Username",
+        "usernameToast": "Username changed!"
     },
     "lobby": {},
     "game": {}

@@ -2,6 +2,7 @@ import { changeUsername } from "@/lib/api";
 import { Z_Username, type Z_TUsername } from "@/lib/zod";
 import { useContext, useState } from "react";
 import { toast } from "sonner";
+import { langContext } from '@/lib/contexts';
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -25,7 +26,7 @@ export default function ChangeForm() {
     const changeUsername_m = useMutation({
         mutationFn: changeUsername,
         onSuccess: () => {
-            toast.success("Username changed!");
+            toast.success(`${texts.usernameToast}`);
             queryClient.invalidateQueries({
                 refetchType: 'all',
                 queryKey: ['user']
@@ -41,6 +42,12 @@ export default function ChangeForm() {
     const onCancel = () =>
         setFormOpen(false);
 
+    const langCtx = useContext(langContext)!;
+            
+    if (!langCtx) return <p>Missing language context!</p>;
+            
+    const texts = langCtx.texts.lobbyList;
+
     return formOpen ? (
         <form onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-y-1">
@@ -55,7 +62,7 @@ export default function ChangeForm() {
                             type="text"
                             aria-invalid={fieldState.invalid}
                             className="w-full rounded-md bg-yellow-950 focus:bg-amber-950"
-                            placeholder="username"
+                            placeholder={texts.usernameFormHint}
                         />
                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
@@ -67,7 +74,7 @@ export default function ChangeForm() {
                 </Button>
                 <Button onClick={onCancel}
                     className="bg-amber-900 hover:bg-amber-950 rounded-lg p-3 font-semibold cursor-pointer">
-                    Cancel
+                    {texts.formCancel}
                 </Button>
             </div>
         </form>
@@ -76,7 +83,7 @@ export default function ChangeForm() {
         (
             <div className="flex flex-col gap-2">
                 <p className="text-center">
-                    Current Nick: {user?.username || ""}
+                    {texts.usernameFormText} {user?.username || ""}
                 </p>
                 <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer"
                     onClick={() => {
@@ -84,7 +91,7 @@ export default function ChangeForm() {
                         setFormOpen(true);
                     }}
                 >
-                    Change Username
+                    {texts.usernameFormButton}
                 </Button>
             </div>
         )

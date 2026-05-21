@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { getLobbies } from "../lib/api";
-import { Button } from "../components/ui/button";
-import LobbyTable from "../components/lobbyList/LobbyTable";
+import { getLobbies } from "@/lib/api";
+import { langContext } from '@/lib/contexts';
+import { useContext } from 'react';
+import { Button } from "@/components/ui/button";
+import LobbyTable from "@/components/lobbyList/LobbyTable";
 import CreateLobbyForm from "@/components/lobbyList/CreateLobbyForm";
 import JoinLobbyForm from "@/components/lobbyList/JoinLobbyForm";
 import ChangeUsernameForm from "@/components/lobbyList/ChangeUsernameForm";
@@ -12,6 +14,12 @@ function LobbyList() {
 		queryFn: getLobbies,
 	})
 	console.log(queryData);
+
+	const langCtx = useContext(langContext)!;
+	
+	if (!langCtx) return <p>Missing language context!</p>;
+	
+	const texts = langCtx.texts.lobbyList;
 
 	return (
 		<div
@@ -27,7 +35,7 @@ function LobbyList() {
           "
 		>
 			<div className="mb-3 border-b-[2px] border-amber-950 pb-2">
-				<h1 className="text-2xl font-bold">Lobby List</h1>
+				<h1 className="text-2xl font-bold">{texts.listHeader}</h1>
 			</div>
 
 			<div className="
@@ -51,7 +59,7 @@ function LobbyList() {
 						<JoinLobbyForm />
 						<Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer"
 							onClick={() => refetch()}>
-							Refresh Lobbies
+							{texts.refresh}
 						</Button>
 					</div>
 

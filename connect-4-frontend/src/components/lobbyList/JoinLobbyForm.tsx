@@ -1,7 +1,8 @@
 import { joinLobby } from "@/lib/api";
 import { Z_LobbyCode, type Z_TLobbyCode } from "@/lib/zod";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "sonner";
+import { langContext } from '@/lib/contexts';
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +25,7 @@ export default function ChangeForm() {
     const joinLobby_m = useMutation({
         mutationFn: joinLobby,
         onSuccess: (_data, code) => {
-            toast.success("Joining lobby...");
+            toast.success(`${texts.lobbyToast}`);
             setFormOpen(false);
             navigate(`/lobby/${code}`);
         },
@@ -36,6 +37,12 @@ export default function ChangeForm() {
 
     const onCancel = () =>
         setFormOpen(false);
+
+    const langCtx = useContext(langContext)!;
+    
+    if (!langCtx) return <p>Missing language context!</p>;
+    
+    const texts = langCtx.texts.lobbyList;
 
     return formOpen ? (
         <form onSubmit={form.handleSubmit(onSubmit)}
@@ -51,7 +58,7 @@ export default function ChangeForm() {
                             type="text"
                             aria-invalid={fieldState.invalid}
                             className="w-full rounded-md bg-yellow-950 focus:bg-amber-950"
-                            placeholder="lobby code"
+                            placeholder={texts.lobbyFormHint}
                         />
                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
@@ -63,7 +70,7 @@ export default function ChangeForm() {
                 </Button>
                 <Button onClick={onCancel}
                     className="bg-amber-900 hover:bg-amber-950 rounded-lg p-3 font-semibold cursor-pointer">
-                    Cancel
+                    {texts.formCancel}
                 </Button>
             </div>
         </form>
@@ -76,7 +83,7 @@ export default function ChangeForm() {
                     setFormOpen(true);
                 }}
             >
-                Join Lobby with Code
+                {texts.lobbyFormButton}
             </Button>
         )
 }

@@ -1,4 +1,3 @@
-import LangSwitch from '@/components/LangSwitch';
 import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -83,7 +82,7 @@ function Username() {
                                     id={field.name}
                                     type="text"
                                     aria-invalid={fieldState.invalid}
-                                    placeholder="username"
+                                    placeholder={texts.hint}
                                 />
                                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                             </Field>

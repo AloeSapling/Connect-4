@@ -1,8 +1,41 @@
 {
-    "lobbyList": {},
+    "header": {
+        "home": "Strona Główna",
+        "settings": "Ustawienia",
+        "thisPage": "Ta Strona"
+    },
+    "home": {
+        "play": "Graj"
+    },
     "username": {
         "chooseYourUsername": "Wybierz nazwę użytkownika",
-        "name": "Nazwa"
+        "name": "Nazwa",
+        "hint": "nazwa użytkownika"
+    },
+    "lobbyList": {
+        "listHeader": "Lista Pokoi",
+        "refresh": "Odśwież Pokoje",
+
+        "tableName": "Nazwa",
+        "tablePlayers": "Gracze",
+        "tableHasGame": "Ma Grę",
+        "tableNo": "Nie",
+        "tableYes": "Tak",
+
+        "formCancel": "Anuluj",
+
+        "lobbyFormHint": "kod pokoju",
+        "lobbyFormButton": "Dołącz do Pokoju Kodem",
+        "lobbyToast": "Dołączanie do pokoju...",
+
+        "createFormHint": "nazwa pokoju",
+        "createFormButton": "Stwórz Pokój",
+        "createToast": "Stworzono pokój! Dołączanie do pokoju...",
+
+        "usernameFormHint": "nazwa użytkownika",
+        "usernameFormText": "Nazwa użytkownika:",
+        "usernameFormButton": "Zmień Nazwę",
+        "usernameToast": "Zmieniono nazwę użytkownika!"
     },
     "lobby": {},
     "game": {}

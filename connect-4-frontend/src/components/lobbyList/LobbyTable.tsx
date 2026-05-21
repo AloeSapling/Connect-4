@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { joinLobby } from "@/lib/api";
+import { langContext } from '@/lib/contexts';
 import { toast } from "sonner";
+import { useContext } from "react";
 import { useMutation } from "@tanstack/react-query";
 import * as proto from "../../lib/proto.js"
 
@@ -18,14 +20,20 @@ export default function LobbyTable({ lobbyData }: { lobbyData: proto.models.ILob
 
     const selectLobby = (code: string) => joinLobby_m.mutate(code);
 
+    const langCtx = useContext(langContext)!;
+        
+    if (!langCtx) return <p>Missing language context!</p>;
+       
+    const texts = langCtx.texts.lobbyList;
+
     return (
         <div className="flex flex-col min-h-0 min-w-0 select-none">
             <table className="w-full table-fixed text-left">
                 <thead className="bg-amber-950">
                     <tr>
-                        <th className="p-2">Name</th>
-                        <th className="p-2 w-24">Players</th>
-                        <th className="p-2 w-24">Has Game</th>
+                        <th className="p-2">{texts.tableName}</th>
+                        <th className="p-2 w-24">{texts.tablePlayers}</th>
+                        <th className="p-2 w-24">{texts.tableHasGame}</th>
                     </tr>
                 </thead>
             </table>
@@ -58,7 +66,7 @@ export default function LobbyTable({ lobbyData }: { lobbyData: proto.models.ILob
                                 </td>
 
                                 <td className="p-2 w-24 text-right">
-                                    {lobby.hasGame ? "Yes" : "No"}
+                                    {lobby.hasGame ? `${texts.tableYes}` : `${texts.tableNo}`}
                                 </td>
                             </tr>
                         ))}
