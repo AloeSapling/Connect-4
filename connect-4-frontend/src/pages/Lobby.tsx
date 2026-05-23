@@ -1,23 +1,26 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from "@tanstack/react-query";
-import { getLobbyDetails } from '@/lib/api.js';
-import { langContext } from '@/lib/contexts';
-import * as proto from '../lib/proto.js';
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getLobbyDetails } from '@/lib/api';
+import { UserContext, langContext } from '@/lib/contexts';
+import { leaveLobby } from '@/lib/api';
+import { toast } from 'sonner';
+// import * as proto from '../lib/proto.js';
 
-type LobbyMember = {
-    id: number;
-    lobby_code: string;
-    user_id: number;
-    host: boolean;
-    player_id: proto.shared.PlayerIDs;
-    player_type: proto.shared.PlayerTypes;
-};
+// type LobbyMember = {
+//     id: number;
+//     lobby_code: string;
+//     user_id: number;
+//     host: boolean;
+//     player_id: proto.shared.PlayerIDs;
+//     player_type: proto.shared.PlayerTypes;
+// };
 
 function Lobby() {
     const navigate = useNavigate();
     let { lobbyCode } = useParams();
+    const user = useContext(UserContext);
 
     const { data: queryData, refetch } = useQuery({
         queryKey: [lobbyCode],
@@ -25,59 +28,22 @@ function Lobby() {
     });
     console.log(queryData);
 
-    const [lobbyMemberDataList, setLobbyMemberDataList] = useState<LobbyMember[]>([
-        {
-            id: 1,
-            lobby_code: 'a',
-            user_id: 123,
-            host: true,
-            player_id: proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED,
-            player_type: proto.shared.PlayerTypes.PLAYER_TYPES_SPECTATOR,
+    const leaveLobby_m = useMutation({
+        mutationFn: leaveLobby,
+        onSuccess: () => {
+            toast.success(`${texts.leaveToast}`);
+            navigate('/lobbylist');
         },
-        {
-            id: 2,
-            lobby_code: 'a',
-            user_id: 124,
-            host: false,
-            player_id: proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED,
-            player_type: proto.shared.PlayerTypes.PLAYER_TYPES_PLAYER,
-        },
-        {
-            id: 3,
-            lobby_code: 'a',
-            user_id: 125,
-            host: false,
-            player_id: proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED,
-            player_type: proto.shared.PlayerTypes.PLAYER_TYPES_SPECTATOR,
-        },
-        {
-            id: 4,
-            lobby_code: 'a',
-            user_id: 126,
-            host: false,
-            player_id: proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED,
-            player_type: proto.shared.PlayerTypes.PLAYER_TYPES_UNSPECIFIED,
-        },
-    ]);
+        onError: (err) => toast.error(err.message)
+    });
 
-    // test for showing who the (user) is
-    const userIDTest: number = 123;
-    // test for user being the host
-    const userIsHostTest: boolean = true;
-
-    const leaveLobby = () => {
-        navigate('/lobbylist');
-    };
-
-    useEffect(() => {
-        // if (lobbyCode != "a") navigate("/lobbylist");
-    }, []);
+    const leaveLobbyButton = () => leaveLobby_m.mutate(lobbyCode!);
 
     const langCtx = useContext(langContext)!;
         
     if (!langCtx) return <p>Missing language context!</p>;
         
-    const texts = langCtx.texts.lobbyList;
+    const texts = langCtx.texts.lobby;
 
     return (
         <div
@@ -93,8 +59,8 @@ function Lobby() {
         "
         >
             <div className="mb-3 border-b-[2px] border-amber-950 pb-2 flex justify-between">
-                <p>Lobby: [lobbyName]</p>
-                <p>Lobby Code: {lobbyCode}</p>
+                <p>{texts.lobby} {queryData?.lobbyDetails?.lobbyName}</p>
+                <p>{texts.lobbyCode} {queryData?.lobbyDetails?.code}</p>
             </div>
 
             {/* Tables */}
@@ -104,7 +70,7 @@ function Lobby() {
                     <table className="w-full table-fixed text-left">
                         <thead className="bg-amber-950">
                             <tr>
-                                <th className="p-2">Players</th>
+                                <th className="p-2">{texts.players}</th>
                             </tr>
                         </thead>
                     </table>
@@ -125,10 +91,10 @@ function Lobby() {
                     >
                         <table className="w-full table-fixed">
                             <tbody>
-                                {lobbyMemberDataList.map((member) => (
-                                    <tr key={member.id} className="border-b border-amber-950 hover:bg-yellow-800">
+                                {queryData?.lobbyDetails?.lobbyMembers!.map((member) => (
+                                    <tr key={member.userId} className="border-b border-amber-950 hover:bg-yellow-800">
                                         <td className="p-2 truncate">
-                                            {member.user_id} {member.host && '(host)'} {member.user_id === userIDTest && '(you)'}
+                                            {member.username} {member.host && '(host)'} {member.userId === user?.id && `${texts.labelYou}` }
                                         </td>
                                     </tr>
                                 ))}
@@ -137,19 +103,31 @@ function Lobby() {
                     </div>
                 </div>
 
-                <div className="flex flex-col flex-1">
-                    <button className="bg-yellow-900">buttons</button>
-                    <button className="bg-yellow-900">buttons</button>
-                </div>
+                {queryData?.lobbyDetails?.lobbyMembers?.some(
+                    (member) => member.userId === user?.id && member.host
+                ) && (
+                    <div className="flex flex-col flex-1">
+                        <button className="bg-yellow-900">buttons</button>
+                        <button className="bg-yellow-900">buttons</button>
+                    </div>
+                )}
             </div>
 
             <div className="flex flex-row justify-between mt-auto">
-                <button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={leaveLobby}>
-                    Leave
+                <button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={leaveLobbyButton}>
+                    {texts.leaveButton}
                 </button>
-                {(userIsHostTest && (
-                    <button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg">START GAME</button>
-                )) || <button className="w-[15%] text-gray-400 bg-yellow-900 rounded-lg">START GAME</button>}
+                {queryData?.lobbyDetails?.lobbyMembers?.some(
+                    (member) => member.userId === user?.id && member.host
+                ) ? (
+                    <button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg">
+                        {texts.startGameButton}
+                    </button>
+                ) : (
+                    <button className="w-[15%] text-gray-400 bg-yellow-900 rounded-lg" disabled>
+                        {texts.startGameButton}
+                    </button>
+                )}
             </div>
         </div>
     );

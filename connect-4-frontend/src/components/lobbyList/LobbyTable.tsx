@@ -12,7 +12,7 @@ export default function LobbyTable({ lobbyData }: { lobbyData: proto.models.ILob
     const joinLobby_m = useMutation({
         mutationFn: joinLobby,
         onSuccess: (_data, code) => {
-            toast.success("Joining lobby...");
+            toast.success(`${texts.lobbyToast}`);
             navigate(`/lobby/${code}`);
         },
         onError: (err) => toast.error(err.message)

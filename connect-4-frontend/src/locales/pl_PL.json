@@ -37,6 +37,18 @@
         "usernameFormButton": "Zmień Nazwę",
         "usernameToast": "Zmieniono nazwę użytkownika!"
     },
-    "lobby": {},
-    "game": {}
+    "lobby": {
+        "lobby": "Pokój:",
+        "lobbyCode": "Kod Pokoju:",
+
+        "players": "Gracze",
+        "labelYou": "(ty)",
+
+        "leaveButton": "Opuść Pokój",
+        "leaveToast": "Opuszczanie pokoju...",
+        "startGameButton": "ROZPOCZNIJ GRĘ"
+    },
+    "game": {
+
+    }
 }
