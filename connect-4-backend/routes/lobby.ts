@@ -159,7 +159,7 @@ addRouteWithMethods(
             res.status(400).send(
                 P_CodedError.encode({
                     code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
-                })
+                }).finish()
             );
             return;
         }
@@ -168,7 +168,7 @@ addRouteWithMethods(
             res.status(400).send(
                 P_CodedError.encode({
                     code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
-                })
+                }).finish()
             );
             return;
         }
@@ -192,7 +192,7 @@ addRouteWithMethods(
                 res.status(400).send(
                     P_CodedError.encode({
                         code: P_ErrorCodes.ERROR_CODES_BAD_USER,
-                    })
+                    }).finish()
                 );
                 return;
             }
@@ -233,7 +233,7 @@ addRouteWithMethods(
             res.status(200).send(
                 routes.GetLobbyDetailsResponse.encode({
                     lobbyDetails: lobbyDetails,
-                })
+                }).finish()
             );
         } catch {
             res.status(500).send(

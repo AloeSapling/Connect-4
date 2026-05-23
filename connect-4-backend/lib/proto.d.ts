@@ -2004,19 +2004,18 @@ export namespace shared {
     enum ErrorCodes {
         ERROR_CODES_UNSPECIFIED = 0,
         ERROR_CODES_SERVER_ERROR = 1,
-        ERROR_CODES_BAD_LOBBY_CODE = 2,
-        ERROR_CODES_BAD_DATA = 3,
-        ERROR_CODES_BAD_TURN = 4,
-        ERROR_CODES_BAD_USER = 5,
-        ERROR_CODES_BAD_NAME = 6,
-        ERROR_CODES_UNAUTHORISED = 7,
-        ERROR_CODES_ALREADY_JOINED = 8,
-        ERROR_CODES_NOT_A_MEMBER = 9,
-        ERROR_CODES_GAME_LOCKED = 10,
-        ERROR_CODES_GAME_EXPIRED = 11,
-        ERROR_CODES_GAME_ALREADY_EXISTS = 12,
-        ERROR_CODES_DOESNT_EXIST = 13,
-        ERROR_CODES_USER_ALREADY_EXISTS = 14
+        ERROR_CODES_BAD_DATA = 2,
+        ERROR_CODES_BAD_TURN = 3,
+        ERROR_CODES_BAD_USER = 4,
+        ERROR_CODES_BAD_NAME = 5,
+        ERROR_CODES_UNAUTHORISED = 6,
+        ERROR_CODES_ALREADY_JOINED = 7,
+        ERROR_CODES_NOT_A_MEMBER = 8,
+        ERROR_CODES_GAME_LOCKED = 9,
+        ERROR_CODES_GAME_EXPIRED = 10,
+        ERROR_CODES_GAME_ALREADY_EXISTS = 11,
+        ERROR_CODES_DOESNT_EXIST = 12,
+        ERROR_CODES_USER_ALREADY_EXISTS = 13
     }
 
     /** Properties of a CodedError. */
@@ -2125,6 +2124,103 @@ export namespace shared {
 
 /** Namespace ws. */
 export namespace ws {
+
+    /** Properties of an ErrorResponse. */
+    interface IErrorResponse {
+
+        /** ErrorResponse error */
+        error?: (shared.ICodedError|null);
+    }
+
+    /** Represents an ErrorResponse. */
+    class ErrorResponse implements IErrorResponse {
+
+        /**
+         * Constructs a new ErrorResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.IErrorResponse);
+
+        /** ErrorResponse error. */
+        public error?: (shared.ICodedError|null);
+
+        /**
+         * Creates a new ErrorResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns ErrorResponse instance
+         */
+        public static create(properties?: ws.IErrorResponse): ws.ErrorResponse;
+
+        /**
+         * Encodes the specified ErrorResponse message. Does not implicitly {@link ws.ErrorResponse.verify|verify} messages.
+         * @param message ErrorResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.IErrorResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified ErrorResponse message, length delimited. Does not implicitly {@link ws.ErrorResponse.verify|verify} messages.
+         * @param message ErrorResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.IErrorResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes an ErrorResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns ErrorResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.ErrorResponse;
+
+        /**
+         * Decodes an ErrorResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns ErrorResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.ErrorResponse;
+
+        /**
+         * Verifies an ErrorResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates an ErrorResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns ErrorResponse
+         */
+        public static fromObject(object: { [k: string]: any }): ws.ErrorResponse;
+
+        /**
+         * Creates a plain object from an ErrorResponse message. Also converts values to other types if specified.
+         * @param message ErrorResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.ErrorResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this ErrorResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for ErrorResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
 
     /** Properties of a WSGameInit. */
     interface IWSGameInit {
@@ -2877,6 +2973,424 @@ export namespace ws {
 
         /**
          * Gets the default type url for WSGameResponsePacket
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** LobbyResponses enum. */
+    enum LobbyResponses {
+        LOBBY_RESPONSES_UNSPECIFIED = 0,
+        LOBBY_RESPONSES_JOIN = 1,
+        LOBBY_RESPONSES_LEAVE = 2,
+        LOBBY_RESPONSES_CHANGE_PLAYER = 3,
+        LOBBY_RESPONSES_START_GAME = 4
+    }
+
+    /** Properties of a LobbyJoin. */
+    interface ILobbyJoin {
+
+        /** LobbyJoin user */
+        user?: (models.IDetailedLobbyMemberData|null);
+    }
+
+    /** Represents a LobbyJoin. */
+    class LobbyJoin implements ILobbyJoin {
+
+        /**
+         * Constructs a new LobbyJoin.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.ILobbyJoin);
+
+        /** LobbyJoin user. */
+        public user?: (models.IDetailedLobbyMemberData|null);
+
+        /**
+         * Creates a new LobbyJoin instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LobbyJoin instance
+         */
+        public static create(properties?: ws.ILobbyJoin): ws.LobbyJoin;
+
+        /**
+         * Encodes the specified LobbyJoin message. Does not implicitly {@link ws.LobbyJoin.verify|verify} messages.
+         * @param message LobbyJoin message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.ILobbyJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LobbyJoin message, length delimited. Does not implicitly {@link ws.LobbyJoin.verify|verify} messages.
+         * @param message LobbyJoin message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.ILobbyJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LobbyJoin message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LobbyJoin
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyJoin;
+
+        /**
+         * Decodes a LobbyJoin message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LobbyJoin
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyJoin;
+
+        /**
+         * Verifies a LobbyJoin message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LobbyJoin message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LobbyJoin
+         */
+        public static fromObject(object: { [k: string]: any }): ws.LobbyJoin;
+
+        /**
+         * Creates a plain object from a LobbyJoin message. Also converts values to other types if specified.
+         * @param message LobbyJoin
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.LobbyJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LobbyJoin to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LobbyJoin
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a LobbyLeave. */
+    interface ILobbyLeave {
+
+        /** LobbyLeave user */
+        user?: (models.IDetailedLobbyMemberData|null);
+    }
+
+    /** Represents a LobbyLeave. */
+    class LobbyLeave implements ILobbyLeave {
+
+        /**
+         * Constructs a new LobbyLeave.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.ILobbyLeave);
+
+        /** LobbyLeave user. */
+        public user?: (models.IDetailedLobbyMemberData|null);
+
+        /**
+         * Creates a new LobbyLeave instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LobbyLeave instance
+         */
+        public static create(properties?: ws.ILobbyLeave): ws.LobbyLeave;
+
+        /**
+         * Encodes the specified LobbyLeave message. Does not implicitly {@link ws.LobbyLeave.verify|verify} messages.
+         * @param message LobbyLeave message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.ILobbyLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LobbyLeave message, length delimited. Does not implicitly {@link ws.LobbyLeave.verify|verify} messages.
+         * @param message LobbyLeave message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.ILobbyLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LobbyLeave message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LobbyLeave
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyLeave;
+
+        /**
+         * Decodes a LobbyLeave message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LobbyLeave
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyLeave;
+
+        /**
+         * Verifies a LobbyLeave message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LobbyLeave message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LobbyLeave
+         */
+        public static fromObject(object: { [k: string]: any }): ws.LobbyLeave;
+
+        /**
+         * Creates a plain object from a LobbyLeave message. Also converts values to other types if specified.
+         * @param message LobbyLeave
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.LobbyLeave, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LobbyLeave to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LobbyLeave
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a LobbyChangePlayer. */
+    interface ILobbyChangePlayer {
+
+        /** LobbyChangePlayer user */
+        user?: (models.IDetailedLobbyMemberData|null);
+    }
+
+    /** Represents a LobbyChangePlayer. */
+    class LobbyChangePlayer implements ILobbyChangePlayer {
+
+        /**
+         * Constructs a new LobbyChangePlayer.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.ILobbyChangePlayer);
+
+        /** LobbyChangePlayer user. */
+        public user?: (models.IDetailedLobbyMemberData|null);
+
+        /**
+         * Creates a new LobbyChangePlayer instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LobbyChangePlayer instance
+         */
+        public static create(properties?: ws.ILobbyChangePlayer): ws.LobbyChangePlayer;
+
+        /**
+         * Encodes the specified LobbyChangePlayer message. Does not implicitly {@link ws.LobbyChangePlayer.verify|verify} messages.
+         * @param message LobbyChangePlayer message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.ILobbyChangePlayer, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LobbyChangePlayer message, length delimited. Does not implicitly {@link ws.LobbyChangePlayer.verify|verify} messages.
+         * @param message LobbyChangePlayer message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.ILobbyChangePlayer, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LobbyChangePlayer message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LobbyChangePlayer
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyChangePlayer;
+
+        /**
+         * Decodes a LobbyChangePlayer message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LobbyChangePlayer
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyChangePlayer;
+
+        /**
+         * Verifies a LobbyChangePlayer message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LobbyChangePlayer message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LobbyChangePlayer
+         */
+        public static fromObject(object: { [k: string]: any }): ws.LobbyChangePlayer;
+
+        /**
+         * Creates a plain object from a LobbyChangePlayer message. Also converts values to other types if specified.
+         * @param message LobbyChangePlayer
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.LobbyChangePlayer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LobbyChangePlayer to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LobbyChangePlayer
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a LobbyResponsePacket. */
+    interface ILobbyResponsePacket {
+
+        /** LobbyResponsePacket response */
+        response?: (ws.LobbyResponses|null);
+
+        /** LobbyResponsePacket join */
+        join?: (ws.ILobbyJoin|null);
+
+        /** LobbyResponsePacket leave */
+        leave?: (ws.ILobbyLeave|null);
+
+        /** LobbyResponsePacket changePlayer */
+        changePlayer?: (ws.ILobbyChangePlayer|null);
+    }
+
+    /** Represents a LobbyResponsePacket. */
+    class LobbyResponsePacket implements ILobbyResponsePacket {
+
+        /**
+         * Constructs a new LobbyResponsePacket.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.ILobbyResponsePacket);
+
+        /** LobbyResponsePacket response. */
+        public response: ws.LobbyResponses;
+
+        /** LobbyResponsePacket join. */
+        public join?: (ws.ILobbyJoin|null);
+
+        /** LobbyResponsePacket leave. */
+        public leave?: (ws.ILobbyLeave|null);
+
+        /** LobbyResponsePacket changePlayer. */
+        public changePlayer?: (ws.ILobbyChangePlayer|null);
+
+        /** LobbyResponsePacket data. */
+        public data?: ("join"|"leave"|"changePlayer");
+
+        /**
+         * Creates a new LobbyResponsePacket instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LobbyResponsePacket instance
+         */
+        public static create(properties?: ws.ILobbyResponsePacket): ws.LobbyResponsePacket;
+
+        /**
+         * Encodes the specified LobbyResponsePacket message. Does not implicitly {@link ws.LobbyResponsePacket.verify|verify} messages.
+         * @param message LobbyResponsePacket message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.ILobbyResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LobbyResponsePacket message, length delimited. Does not implicitly {@link ws.LobbyResponsePacket.verify|verify} messages.
+         * @param message LobbyResponsePacket message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.ILobbyResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LobbyResponsePacket message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LobbyResponsePacket
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyResponsePacket;
+
+        /**
+         * Decodes a LobbyResponsePacket message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LobbyResponsePacket
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyResponsePacket;
+
+        /**
+         * Verifies a LobbyResponsePacket message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LobbyResponsePacket message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LobbyResponsePacket
+         */
+        public static fromObject(object: { [k: string]: any }): ws.LobbyResponsePacket;
+
+        /**
+         * Creates a plain object from a LobbyResponsePacket message. Also converts values to other types if specified.
+         * @param message LobbyResponsePacket
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.LobbyResponsePacket, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LobbyResponsePacket to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LobbyResponsePacket
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */

@@ -11,15 +11,15 @@ import usersRouter from './routes/users.ts';
 import lobbyRouter from './routes/lobby.ts';
 
 import { createClient } from 'redis';
-import { authUser, wsAuthUser } from './lib/auth.ts';
+import { authUser, wsAuthUser, wsIsLobbyMember } from './lib/auth.ts';
 import { setupDatabase } from './database-sqllite/database.ts';
 import { CLIENT_URL, REDIS_HOST, REDIS_PORT, SERVER_PORT } from './config.ts';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { setupGameWSServer } from './routes/ws/game.ts';
-import { P_CodedError, P_ErrorCodes, type WSRoutes } from './lib/types.ts';
+import { P_CodedError, P_ErrorCodes, type WsAuthArgs } from './lib/types.ts';
 
-import * as proto from './lib/proto.js';
+import { setupLobbyWSServer } from './routes/ws/lobby.ts';
 
 // Set up Redis database
 export const redis = createClient({
@@ -89,34 +89,65 @@ app.use('/game', gameRouter);
 
 // Websockets
 const wsRoutes = {
-    '/game/': new WebSocketServer({ noServer: true }),
+    game: {
+        wss: new WebSocketServer({ noServer: true }),
+        auth: [wsAuthUser],
+    },
+    lobby: {
+        wss: new WebSocketServer({ noServer: true }),
+        auth: [wsIsLobbyMember],
+    },
 };
 
 // Setup each websocket route
-setupGameWSServer(wsRoutes['/game/']);
+setupGameWSServer(wsRoutes['game'].wss);
+setupLobbyWSServer(wsRoutes['lobby'].wss);
 
 // Handle connections to each websocket route
 server.on('upgrade', async (req, socket, head) => {
     const { pathname } = new URL(req.url || '', `http://${req.headers.host}`);
+    const pathArguments = pathname.split('/');
+    const routePath = pathArguments[1]; // Takes the first path argument ie. 'ws://localhost:8080/lobby' gives 'lobby'
 
-    if (!(await wsAuthUser(req as Request))) {
-        socket.write(
-            proto.ws.WSGameResponsePacket.encode({
-                response: proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR,
-                error: P_CodedError.create({
-                    code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED,
-                }),
-            }).finish()
-        );
+    if (!routePath) {
         socket.destroy();
         return;
     }
 
-    console.log(pathname);
+    const writeUnauthorisedError = () => {
+        const error = P_CodedError.encode({ code: P_ErrorCodes.ERROR_CODES_UNAUTHORISED }).finish();
+        socket.write('HTTP/1.1 401 Unauthorized\r\nContent-Length: ' + error.length + '\r\n\r\n');
+        socket.write(error);
+        socket.destroy();
+    };
 
-    if (pathname in wsRoutes) {
-        wsRoutes[pathname as keyof WSRoutes].handleUpgrade(req, socket, head, (ws) => {
-            wsRoutes[pathname as keyof WSRoutes].emit('connection', ws, req);
+    console.log(pathname, routePath);
+
+    const authArgs: WsAuthArgs = {
+        req: req,
+    };
+    // eslint-disable-next-line
+    const wsArgs: any[] = [req];
+
+    if (routePath in wsRoutes) {
+        // Paths with a lobby code argument
+        if (routePath === 'lobby') {
+            const lobbyCode = pathArguments[2];
+            authArgs.lobbyCode = lobbyCode;
+            wsArgs[1] = lobbyCode;
+        }
+
+        // Check if the user is authorised to connect to the given path
+        await wsRoutes[routePath as keyof typeof wsRoutes].auth.forEach(async (authFn) => {
+            if (!(await authFn(authArgs))) {
+                writeUnauthorisedError();
+                return;
+            }
+        });
+
+        // Establish the connection with the appropriate arguments
+        wsRoutes[routePath as keyof typeof wsRoutes].wss.handleUpgrade(req, socket, head, (ws) => {
+            wsRoutes[routePath as keyof typeof wsRoutes].wss.emit('connection', ws, ...wsArgs);
         });
     } else {
         socket.destroy();

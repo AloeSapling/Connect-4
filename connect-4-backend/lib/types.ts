@@ -2,6 +2,7 @@ import type { Request } from 'express';
 import type { LobbyMember, User } from '../database-sqllite/models.ts';
 import type { WebSocket, WebSocketServer } from 'ws';
 import * as proto from './proto.js';
+import type { IncomingMessage } from 'http';
 
 // Protobuf type and value aliases
 /** Alias for equivalent protobuf type */
@@ -36,8 +37,9 @@ export type GameState = {
 };
 
 // Websocket types
-export type WSRoutes = {
-    '/game/': WebSocketServer;
+export type WsAuthArgs = {
+    req: IncomingMessage;
+    lobbyCode?: string | undefined;
 };
 
 export type Room = WebSocket[];
@@ -49,7 +51,8 @@ export type Methods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 export type LowerCaseMethods = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 export type LobbyMemberSelectResult = LobbyMember & {
-    User: User;
+    'User.id': number;
+    'User.username': string;
 };
 
 /** An error additionally containing an error code */
