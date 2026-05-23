@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from "@tanstack/react-query";
+import { getLobbyDetails } from '@/lib/api.js';
+import { langContext } from '@/lib/contexts';
 import * as proto from '../lib/proto.js';
 
 type LobbyMember = {
@@ -15,6 +18,13 @@ type LobbyMember = {
 function Lobby() {
     const navigate = useNavigate();
     let { lobbyCode } = useParams();
+
+    const { data: queryData, refetch } = useQuery({
+        queryKey: [lobbyCode],
+        queryFn: () => getLobbyDetails(lobbyCode!),
+    });
+    console.log(queryData);
+
     const [lobbyMemberDataList, setLobbyMemberDataList] = useState<LobbyMember[]>([
         {
             id: 1,
@@ -62,6 +72,12 @@ function Lobby() {
     useEffect(() => {
         // if (lobbyCode != "a") navigate("/lobbylist");
     }, []);
+
+    const langCtx = useContext(langContext)!;
+        
+    if (!langCtx) return <p>Missing language context!</p>;
+        
+    const texts = langCtx.texts.lobbyList;
 
     return (
         <div
