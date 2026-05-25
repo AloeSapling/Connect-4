@@ -6,7 +6,9 @@ import { getLobbyDetails } from '@/lib/api';
 import { UserContext, langContext } from '@/lib/contexts';
 import { leaveLobby } from '@/lib/api';
 import { toast } from 'sonner';
-// import * as proto from '../lib/proto.js';
+import { Button } from '@/components/ui/button';
+import * as proto from '../lib/proto.js';
+import HostControls from '@/components/lobby/HostControls.js';
 
 // type LobbyMember = {
 //     id: number;
@@ -38,6 +40,11 @@ function Lobby() {
     });
 
     const leaveLobbyButton = () => leaveLobby_m.mutate(lobbyCode!);
+
+    const startGameButton = () => {
+        // placeholder
+        return;
+    };
 
     const langCtx = useContext(langContext)!;
         
@@ -94,7 +101,9 @@ function Lobby() {
                                 {queryData?.lobbyDetails?.lobbyMembers!.map((member) => (
                                     <tr key={member.userId} className="border-b border-amber-950 hover:bg-yellow-800">
                                         <td className="p-2 truncate">
-                                            {member.username} {member.host && '(host)'} {member.userId === user?.id && `${texts.labelYou}` }
+                                            {member.playerId === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1 && 'P1: '}
+                                            {member.playerId === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER2 && 'P2: '}
+                                            {member.username} {member.host && '(host)'} {member.userId === user?.id && `${texts.labelYou}`}
                                         </td>
                                     </tr>
                                 ))}
@@ -106,27 +115,24 @@ function Lobby() {
                 {queryData?.lobbyDetails?.lobbyMembers?.some(
                     (member) => member.userId === user?.id && member.host
                 ) && (
-                    <div className="flex flex-col flex-1">
-                        <button className="bg-yellow-900">buttons</button>
-                        <button className="bg-yellow-900">buttons</button>
-                    </div>
+                    <HostControls lobbyCode={lobbyCode!} membersData={queryData?.lobbyDetails?.lobbyMembers!} />
                 )}
             </div>
 
             <div className="flex flex-row justify-between mt-auto">
-                <button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={leaveLobbyButton}>
+                <Button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={leaveLobbyButton}>
                     {texts.leaveButton}
-                </button>
+                </Button>
                 {queryData?.lobbyDetails?.lobbyMembers?.some(
                     (member) => member.userId === user?.id && member.host
                 ) ? (
-                    <button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg">
+                    <Button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={startGameButton}>
                         {texts.startGameButton}
-                    </button>
+                    </Button>
                 ) : (
-                    <button className="w-[15%] text-gray-400 bg-yellow-900 rounded-lg" disabled>
+                    <Button className="w-[15%] text-gray-400 bg-yellow-900 rounded-lg" disabled>
                         {texts.startGameButton}
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>

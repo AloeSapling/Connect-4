@@ -50,6 +50,13 @@ export type PageTexts = {
         leaveButton: string;
         leaveToast: string;
         startGameButton: string;
+
+        changePlayerIDFormHint: string;
+        changePlayerIDFormUnspecified: string;
+        changePlayerIDFormPlayer1: string;
+        changePlayerIDFormPlayer2: string;
+        changePlayerIDFormButton: string;
+        changePlayerIDToast: string;
     };
     game: {
 

@@ -46,7 +46,14 @@
 
         "leaveButton": "Leave Lobby",
         "leaveToast": "Leaving lobby...",
-        "startGameButton": "START GAME"
+        "startGameButton": "START GAME",
+
+        "changePlayerIDFormHint": "--select player--",
+        "changePlayerIDFormUnspecified": "Unspecified",
+        "changePlayerIDFormPlayer1": "Player 1",
+        "changePlayerIDFormPlayer2": "Player 2",
+        "changePlayerIDFormButton": "Change Player's ID",
+        "changePlayerIDToast": "Player ID changed successfully!"
     },
     "game": {
 
