@@ -56,7 +56,7 @@ export default function HostControls({ lobbyCode, membersData }: { lobbyCode: st
         });
     }
 
-    const langCtx = useContext(langContext)!;
+    const langCtx = useContext(langContext);
             
     if (!langCtx) return <p>Missing language context!</p>;
         

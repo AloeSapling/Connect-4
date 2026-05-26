@@ -1,32 +1,26 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getLobbyDetails } from '@/lib/api';
 import { UserContext, langContext } from '@/lib/contexts';
-import { leaveLobby } from '@/lib/api';
+import { leaveLobby, createGame } from '@/lib/api';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import * as proto from '../lib/proto.js';
 import HostControls from '@/components/lobby/HostControls.js';
-
-// type LobbyMember = {
-//     id: number;
-//     lobby_code: string;
-//     user_id: number;
-//     host: boolean;
-//     player_id: proto.shared.PlayerIDs;
-//     player_type: proto.shared.PlayerTypes;
-// };
+import MemberTable from '@/components/lobby/MemberTable.js';
 
 function Lobby() {
     const navigate = useNavigate();
     let { lobbyCode } = useParams();
     const user = useContext(UserContext);
+    const queryClient = useQueryClient();
 
-    const { data: queryData, refetch } = useQuery({
-        queryKey: [lobbyCode],
+    const { data: queryData } = useQuery({
+        queryKey: ['lobby', lobbyCode],
         queryFn: () => getLobbyDetails(lobbyCode!),
+
+        // refetchInterval: 5000,
     });
     console.log(queryData);
 
@@ -39,14 +33,29 @@ function Lobby() {
         onError: (err) => toast.error(err.message)
     });
 
-    const leaveLobbyButton = () => leaveLobby_m.mutate(lobbyCode!);
+    const leaveLobbyButton = () =>
+        leaveLobby_m.mutate(lobbyCode!);
 
-    const startGameButton = () => {
-        // placeholder
-        return;
-    };
+    const createGame_m = useMutation({
+        mutationFn: createGame,
+        onSuccess: () => {
+            toast.success(`${texts.createGameToast}`);
 
-    const langCtx = useContext(langContext)!;
+            queryClient.invalidateQueries({
+                queryKey: ['lobby', lobbyCode]
+            });
+        },
+        onError: (err) => toast.error(err.message)
+    })
+
+    const createGameButton = (lobbyCode: string) =>
+        createGame_m.mutate(lobbyCode);
+
+    useEffect(() => {
+        if (queryData?.lobbyDetails?.hasGame) navigate('/game');
+    }, [queryData?.lobbyDetails?.hasGame, navigate])
+
+    const langCtx = useContext(langContext);
         
     if (!langCtx) return <p>Missing language context!</p>;
         
@@ -70,47 +79,9 @@ function Lobby() {
                 <p>{texts.lobbyCode} {queryData?.lobbyDetails?.code}</p>
             </div>
 
-            {/* Tables */}
+            {/* Top */}
             <div className="flex flex-row flex-1 gap-4 min-h-0 max-h-[80%] min-w-0 select-none">
-                {/* Players */}
-                <div className="flex flex-col flex-2 min-w-0">
-                    <table className="w-full table-fixed text-left">
-                        <thead className="bg-amber-950">
-                            <tr>
-                                <th className="p-2">{texts.players}</th>
-                            </tr>
-                        </thead>
-                    </table>
-
-                    <div
-                        className="
-                        flex-1
-                        overflow-y-auto
-                        overflow-x-hidden
-                        bg-yellow-900
-                        rounded-b
-                        pr-2
-                        scrollbar-thin
-                        scrollbar-track-yellow-900
-                        scrollbar-thumb-amber-800
-                        hover:scrollbar-thumb-amber-700
-                    "
-                    >
-                        <table className="w-full table-fixed">
-                            <tbody>
-                                {queryData?.lobbyDetails?.lobbyMembers!.map((member) => (
-                                    <tr key={member.userId} className="border-b border-amber-950 hover:bg-yellow-800">
-                                        <td className="p-2 truncate">
-                                            {member.playerId === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1 && 'P1: '}
-                                            {member.playerId === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER2 && 'P2: '}
-                                            {member.username} {member.host && '(host)'} {member.userId === user?.id && `${texts.labelYou}`}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <MemberTable membersData={queryData?.lobbyDetails?.lobbyMembers!} />
 
                 {queryData?.lobbyDetails?.lobbyMembers?.some(
                     (member) => member.userId === user?.id && member.host
@@ -119,6 +90,7 @@ function Lobby() {
                 )}
             </div>
 
+            {/* Bottom */}
             <div className="flex flex-row justify-between mt-auto">
                 <Button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={leaveLobbyButton}>
                     {texts.leaveButton}
@@ -126,12 +98,12 @@ function Lobby() {
                 {queryData?.lobbyDetails?.lobbyMembers?.some(
                     (member) => member.userId === user?.id && member.host
                 ) ? (
-                    <Button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={startGameButton}>
-                        {texts.startGameButton}
+                    <Button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={() => createGameButton(lobbyCode!)}>
+                        {texts.createGameButton}
                     </Button>
                 ) : (
                     <Button className="w-[15%] text-gray-400 bg-yellow-900 rounded-lg" disabled>
-                        {texts.startGameButton}
+                        {texts.createGameButton}
                     </Button>
                 )}
             </div>

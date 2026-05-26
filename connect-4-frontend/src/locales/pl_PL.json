@@ -46,7 +46,9 @@
 
         "leaveButton": "Opuść Pokój",
         "leaveToast": "Opuszczanie pokoju...",
-        "startGameButton": "ROZPOCZNIJ GRĘ",
+
+        "createGameButton": "ROZPOCZNIJ GRĘ",
+        "createGameToast": "Rozpoczęto grę!",
 
         "changePlayerIDFormHint": "--wybierz gracza--",
         "changePlayerIDFormUnspecified": "Niespecyfikowany",

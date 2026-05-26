@@ -46,7 +46,9 @@
 
         "leaveButton": "Leave Lobby",
         "leaveToast": "Leaving lobby...",
-        "startGameButton": "START GAME",
+
+        "createGameButton": "START GAME",
+        "createGameToast": "Started game!",
 
         "changePlayerIDFormHint": "--select player--",
         "changePlayerIDFormUnspecified": "Unspecified",

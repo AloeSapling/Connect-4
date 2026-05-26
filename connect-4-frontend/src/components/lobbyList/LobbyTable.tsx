@@ -20,7 +20,7 @@ export default function LobbyTable({ lobbyData }: { lobbyData: proto.models.ILob
 
     const selectLobby = (code: string) => joinLobby_m.mutate(code);
 
-    const langCtx = useContext(langContext)!;
+    const langCtx = useContext(langContext);
         
     if (!langCtx) return <p>Missing language context!</p>;
        

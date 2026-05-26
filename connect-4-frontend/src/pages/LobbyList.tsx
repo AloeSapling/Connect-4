@@ -15,7 +15,7 @@ function LobbyList() {
 	})
 	console.log(queryData);
 
-	const langCtx = useContext(langContext)!;
+	const langCtx = useContext(langContext);
 	
 	if (!langCtx) return <p>Missing language context!</p>;
 	
