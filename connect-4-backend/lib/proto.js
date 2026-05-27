@@ -5406,228 +5406,6 @@ export const ws = $root.ws = (() => {
      */
     const ws = {};
 
-    ws.ErrorResponse = (function() {
-
-        /**
-         * Properties of an ErrorResponse.
-         * @memberof ws
-         * @interface IErrorResponse
-         * @property {shared.ICodedError|null} [error] ErrorResponse error
-         */
-
-        /**
-         * Constructs a new ErrorResponse.
-         * @memberof ws
-         * @classdesc Represents an ErrorResponse.
-         * @implements IErrorResponse
-         * @constructor
-         * @param {ws.IErrorResponse=} [properties] Properties to set
-         */
-        function ErrorResponse(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * ErrorResponse error.
-         * @member {shared.ICodedError|null|undefined} error
-         * @memberof ws.ErrorResponse
-         * @instance
-         */
-        ErrorResponse.prototype.error = null;
-
-        /**
-         * Creates a new ErrorResponse instance using the specified properties.
-         * @function create
-         * @memberof ws.ErrorResponse
-         * @static
-         * @param {ws.IErrorResponse=} [properties] Properties to set
-         * @returns {ws.ErrorResponse} ErrorResponse instance
-         */
-        ErrorResponse.create = function create(properties) {
-            return new ErrorResponse(properties);
-        };
-
-        /**
-         * Encodes the specified ErrorResponse message. Does not implicitly {@link ws.ErrorResponse.verify|verify} messages.
-         * @function encode
-         * @memberof ws.ErrorResponse
-         * @static
-         * @param {ws.IErrorResponse} message ErrorResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        ErrorResponse.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.error != null && Object.hasOwnProperty.call(message, "error"))
-                $root.shared.CodedError.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            return writer;
-        };
-
-        /**
-         * Encodes the specified ErrorResponse message, length delimited. Does not implicitly {@link ws.ErrorResponse.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof ws.ErrorResponse
-         * @static
-         * @param {ws.IErrorResponse} message ErrorResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        ErrorResponse.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes an ErrorResponse message from the specified reader or buffer.
-         * @function decode
-         * @memberof ws.ErrorResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {ws.ErrorResponse} ErrorResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        ErrorResponse.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.ErrorResponse();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.error = $root.shared.CodedError.decode(reader, reader.uint32(), undefined, long + 1);
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes an ErrorResponse message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof ws.ErrorResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.ErrorResponse} ErrorResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        ErrorResponse.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies an ErrorResponse message.
-         * @function verify
-         * @memberof ws.ErrorResponse
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        ErrorResponse.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.error != null && message.hasOwnProperty("error")) {
-                let error = $root.shared.CodedError.verify(message.error, long + 1);
-                if (error)
-                    return "error." + error;
-            }
-            return null;
-        };
-
-        /**
-         * Creates an ErrorResponse message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof ws.ErrorResponse
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {ws.ErrorResponse} ErrorResponse
-         */
-        ErrorResponse.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.ErrorResponse)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.ErrorResponse();
-            if (object.error != null) {
-                if (typeof object.error !== "object")
-                    throw TypeError(".ws.ErrorResponse.error: object expected");
-                message.error = $root.shared.CodedError.fromObject(object.error, long + 1);
-            }
-            return message;
-        };
-
-        /**
-         * Creates a plain object from an ErrorResponse message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof ws.ErrorResponse
-         * @static
-         * @param {ws.ErrorResponse} message ErrorResponse
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        ErrorResponse.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults)
-                object.error = null;
-            if (message.error != null && message.hasOwnProperty("error"))
-                object.error = $root.shared.CodedError.toObject(message.error, options);
-            return object;
-        };
-
-        /**
-         * Converts this ErrorResponse to JSON.
-         * @function toJSON
-         * @memberof ws.ErrorResponse
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        ErrorResponse.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for ErrorResponse
-         * @function getTypeUrl
-         * @memberof ws.ErrorResponse
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        ErrorResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/ws.ErrorResponse";
-        };
-
-        return ErrorResponse;
-    })();
-
     ws.WSGameInit = (function() {
 
         /**
@@ -7613,7 +7391,7 @@ export const ws = $root.ws = (() => {
          * Properties of a LobbyJoin.
          * @memberof ws
          * @interface ILobbyJoin
-         * @property {models.IDetailedLobbyMemberData|null} [user] LobbyJoin user
+         * @property {Array.<models.IDetailedLobbyMemberData>|null} [users] LobbyJoin users
          */
 
         /**
@@ -7625,6 +7403,7 @@ export const ws = $root.ws = (() => {
          * @param {ws.ILobbyJoin=} [properties] Properties to set
          */
         function LobbyJoin(properties) {
+            this.users = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -7632,12 +7411,12 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * LobbyJoin user.
-         * @member {models.IDetailedLobbyMemberData|null|undefined} user
+         * LobbyJoin users.
+         * @member {Array.<models.IDetailedLobbyMemberData>} users
          * @memberof ws.LobbyJoin
          * @instance
          */
-        LobbyJoin.prototype.user = null;
+        LobbyJoin.prototype.users = $util.emptyArray;
 
         /**
          * Creates a new LobbyJoin instance using the specified properties.
@@ -7663,8 +7442,9 @@ export const ws = $root.ws = (() => {
         LobbyJoin.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.user != null && Object.hasOwnProperty.call(message, "user"))
-                $root.models.DetailedLobbyMemberData.encode(message.user, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.users != null && message.users.length)
+                for (let i = 0; i < message.users.length; ++i)
+                    $root.models.DetailedLobbyMemberData.encode(message.users[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             return writer;
         };
 
@@ -7706,7 +7486,9 @@ export const ws = $root.ws = (() => {
                     break;
                 switch (tag >>> 3) {
                 case 1: {
-                        message.user = $root.models.DetailedLobbyMemberData.decode(reader, reader.uint32(), undefined, long + 1);
+                        if (!(message.users && message.users.length))
+                            message.users = [];
+                        message.users.push($root.models.DetailedLobbyMemberData.decode(reader, reader.uint32(), undefined, long + 1));
                         break;
                     }
                 default:
@@ -7748,10 +7530,14 @@ export const ws = $root.ws = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            if (message.user != null && message.hasOwnProperty("user")) {
-                let error = $root.models.DetailedLobbyMemberData.verify(message.user, long + 1);
-                if (error)
-                    return "user." + error;
+            if (message.users != null && message.hasOwnProperty("users")) {
+                if (!Array.isArray(message.users))
+                    return "users: array expected";
+                for (let i = 0; i < message.users.length; ++i) {
+                    let error = $root.models.DetailedLobbyMemberData.verify(message.users[i], long + 1);
+                    if (error)
+                        return "users." + error;
+                }
             }
             return null;
         };
@@ -7772,10 +7558,15 @@ export const ws = $root.ws = (() => {
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
             let message = new $root.ws.LobbyJoin();
-            if (object.user != null) {
-                if (typeof object.user !== "object")
-                    throw TypeError(".ws.LobbyJoin.user: object expected");
-                message.user = $root.models.DetailedLobbyMemberData.fromObject(object.user, long + 1);
+            if (object.users) {
+                if (!Array.isArray(object.users))
+                    throw TypeError(".ws.LobbyJoin.users: array expected");
+                message.users = [];
+                for (let i = 0; i < object.users.length; ++i) {
+                    if (typeof object.users[i] !== "object")
+                        throw TypeError(".ws.LobbyJoin.users: object expected");
+                    message.users[i] = $root.models.DetailedLobbyMemberData.fromObject(object.users[i], long + 1);
+                }
             }
             return message;
         };
@@ -7793,10 +7584,13 @@ export const ws = $root.ws = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults)
-                object.user = null;
-            if (message.user != null && message.hasOwnProperty("user"))
-                object.user = $root.models.DetailedLobbyMemberData.toObject(message.user, options);
+            if (options.arrays || options.defaults)
+                object.users = [];
+            if (message.users && message.users.length) {
+                object.users = [];
+                for (let j = 0; j < message.users.length; ++j)
+                    object.users[j] = $root.models.DetailedLobbyMemberData.toObject(message.users[j], options);
+            }
             return object;
         };
 
@@ -7835,7 +7629,7 @@ export const ws = $root.ws = (() => {
          * Properties of a LobbyLeave.
          * @memberof ws
          * @interface ILobbyLeave
-         * @property {models.IDetailedLobbyMemberData|null} [user] LobbyLeave user
+         * @property {Array.<models.IDetailedLobbyMemberData>|null} [users] LobbyLeave users
          */
 
         /**
@@ -7847,6 +7641,7 @@ export const ws = $root.ws = (() => {
          * @param {ws.ILobbyLeave=} [properties] Properties to set
          */
         function LobbyLeave(properties) {
+            this.users = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -7854,12 +7649,12 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * LobbyLeave user.
-         * @member {models.IDetailedLobbyMemberData|null|undefined} user
+         * LobbyLeave users.
+         * @member {Array.<models.IDetailedLobbyMemberData>} users
          * @memberof ws.LobbyLeave
          * @instance
          */
-        LobbyLeave.prototype.user = null;
+        LobbyLeave.prototype.users = $util.emptyArray;
 
         /**
          * Creates a new LobbyLeave instance using the specified properties.
@@ -7885,8 +7680,9 @@ export const ws = $root.ws = (() => {
         LobbyLeave.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.user != null && Object.hasOwnProperty.call(message, "user"))
-                $root.models.DetailedLobbyMemberData.encode(message.user, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.users != null && message.users.length)
+                for (let i = 0; i < message.users.length; ++i)
+                    $root.models.DetailedLobbyMemberData.encode(message.users[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             return writer;
         };
 
@@ -7928,7 +7724,9 @@ export const ws = $root.ws = (() => {
                     break;
                 switch (tag >>> 3) {
                 case 1: {
-                        message.user = $root.models.DetailedLobbyMemberData.decode(reader, reader.uint32(), undefined, long + 1);
+                        if (!(message.users && message.users.length))
+                            message.users = [];
+                        message.users.push($root.models.DetailedLobbyMemberData.decode(reader, reader.uint32(), undefined, long + 1));
                         break;
                     }
                 default:
@@ -7970,10 +7768,14 @@ export const ws = $root.ws = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            if (message.user != null && message.hasOwnProperty("user")) {
-                let error = $root.models.DetailedLobbyMemberData.verify(message.user, long + 1);
-                if (error)
-                    return "user." + error;
+            if (message.users != null && message.hasOwnProperty("users")) {
+                if (!Array.isArray(message.users))
+                    return "users: array expected";
+                for (let i = 0; i < message.users.length; ++i) {
+                    let error = $root.models.DetailedLobbyMemberData.verify(message.users[i], long + 1);
+                    if (error)
+                        return "users." + error;
+                }
             }
             return null;
         };
@@ -7994,10 +7796,15 @@ export const ws = $root.ws = (() => {
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
             let message = new $root.ws.LobbyLeave();
-            if (object.user != null) {
-                if (typeof object.user !== "object")
-                    throw TypeError(".ws.LobbyLeave.user: object expected");
-                message.user = $root.models.DetailedLobbyMemberData.fromObject(object.user, long + 1);
+            if (object.users) {
+                if (!Array.isArray(object.users))
+                    throw TypeError(".ws.LobbyLeave.users: array expected");
+                message.users = [];
+                for (let i = 0; i < object.users.length; ++i) {
+                    if (typeof object.users[i] !== "object")
+                        throw TypeError(".ws.LobbyLeave.users: object expected");
+                    message.users[i] = $root.models.DetailedLobbyMemberData.fromObject(object.users[i], long + 1);
+                }
             }
             return message;
         };
@@ -8015,10 +7822,13 @@ export const ws = $root.ws = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults)
-                object.user = null;
-            if (message.user != null && message.hasOwnProperty("user"))
-                object.user = $root.models.DetailedLobbyMemberData.toObject(message.user, options);
+            if (options.arrays || options.defaults)
+                object.users = [];
+            if (message.users && message.users.length) {
+                object.users = [];
+                for (let j = 0; j < message.users.length; ++j)
+                    object.users[j] = $root.models.DetailedLobbyMemberData.toObject(message.users[j], options);
+            }
             return object;
         };
 
@@ -8057,7 +7867,7 @@ export const ws = $root.ws = (() => {
          * Properties of a LobbyChangePlayer.
          * @memberof ws
          * @interface ILobbyChangePlayer
-         * @property {models.IDetailedLobbyMemberData|null} [user] LobbyChangePlayer user
+         * @property {Array.<models.IDetailedLobbyMemberData>|null} [users] LobbyChangePlayer users
          */
 
         /**
@@ -8069,6 +7879,7 @@ export const ws = $root.ws = (() => {
          * @param {ws.ILobbyChangePlayer=} [properties] Properties to set
          */
         function LobbyChangePlayer(properties) {
+            this.users = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -8076,12 +7887,12 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * LobbyChangePlayer user.
-         * @member {models.IDetailedLobbyMemberData|null|undefined} user
+         * LobbyChangePlayer users.
+         * @member {Array.<models.IDetailedLobbyMemberData>} users
          * @memberof ws.LobbyChangePlayer
          * @instance
          */
-        LobbyChangePlayer.prototype.user = null;
+        LobbyChangePlayer.prototype.users = $util.emptyArray;
 
         /**
          * Creates a new LobbyChangePlayer instance using the specified properties.
@@ -8107,8 +7918,9 @@ export const ws = $root.ws = (() => {
         LobbyChangePlayer.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.user != null && Object.hasOwnProperty.call(message, "user"))
-                $root.models.DetailedLobbyMemberData.encode(message.user, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.users != null && message.users.length)
+                for (let i = 0; i < message.users.length; ++i)
+                    $root.models.DetailedLobbyMemberData.encode(message.users[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             return writer;
         };
 
@@ -8150,7 +7962,9 @@ export const ws = $root.ws = (() => {
                     break;
                 switch (tag >>> 3) {
                 case 1: {
-                        message.user = $root.models.DetailedLobbyMemberData.decode(reader, reader.uint32(), undefined, long + 1);
+                        if (!(message.users && message.users.length))
+                            message.users = [];
+                        message.users.push($root.models.DetailedLobbyMemberData.decode(reader, reader.uint32(), undefined, long + 1));
                         break;
                     }
                 default:
@@ -8192,10 +8006,14 @@ export const ws = $root.ws = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            if (message.user != null && message.hasOwnProperty("user")) {
-                let error = $root.models.DetailedLobbyMemberData.verify(message.user, long + 1);
-                if (error)
-                    return "user." + error;
+            if (message.users != null && message.hasOwnProperty("users")) {
+                if (!Array.isArray(message.users))
+                    return "users: array expected";
+                for (let i = 0; i < message.users.length; ++i) {
+                    let error = $root.models.DetailedLobbyMemberData.verify(message.users[i], long + 1);
+                    if (error)
+                        return "users." + error;
+                }
             }
             return null;
         };
@@ -8216,10 +8034,15 @@ export const ws = $root.ws = (() => {
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
             let message = new $root.ws.LobbyChangePlayer();
-            if (object.user != null) {
-                if (typeof object.user !== "object")
-                    throw TypeError(".ws.LobbyChangePlayer.user: object expected");
-                message.user = $root.models.DetailedLobbyMemberData.fromObject(object.user, long + 1);
+            if (object.users) {
+                if (!Array.isArray(object.users))
+                    throw TypeError(".ws.LobbyChangePlayer.users: array expected");
+                message.users = [];
+                for (let i = 0; i < object.users.length; ++i) {
+                    if (typeof object.users[i] !== "object")
+                        throw TypeError(".ws.LobbyChangePlayer.users: object expected");
+                    message.users[i] = $root.models.DetailedLobbyMemberData.fromObject(object.users[i], long + 1);
+                }
             }
             return message;
         };
@@ -8237,10 +8060,13 @@ export const ws = $root.ws = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults)
-                object.user = null;
-            if (message.user != null && message.hasOwnProperty("user"))
-                object.user = $root.models.DetailedLobbyMemberData.toObject(message.user, options);
+            if (options.arrays || options.defaults)
+                object.users = [];
+            if (message.users && message.users.length) {
+                object.users = [];
+                for (let j = 0; j < message.users.length; ++j)
+                    object.users[j] = $root.models.DetailedLobbyMemberData.toObject(message.users[j], options);
+            }
             return object;
         };
 

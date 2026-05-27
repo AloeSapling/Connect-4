@@ -2125,103 +2125,6 @@ export namespace shared {
 /** Namespace ws. */
 export namespace ws {
 
-    /** Properties of an ErrorResponse. */
-    interface IErrorResponse {
-
-        /** ErrorResponse error */
-        error?: (shared.ICodedError|null);
-    }
-
-    /** Represents an ErrorResponse. */
-    class ErrorResponse implements IErrorResponse {
-
-        /**
-         * Constructs a new ErrorResponse.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: ws.IErrorResponse);
-
-        /** ErrorResponse error. */
-        public error?: (shared.ICodedError|null);
-
-        /**
-         * Creates a new ErrorResponse instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns ErrorResponse instance
-         */
-        public static create(properties?: ws.IErrorResponse): ws.ErrorResponse;
-
-        /**
-         * Encodes the specified ErrorResponse message. Does not implicitly {@link ws.ErrorResponse.verify|verify} messages.
-         * @param message ErrorResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: ws.IErrorResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified ErrorResponse message, length delimited. Does not implicitly {@link ws.ErrorResponse.verify|verify} messages.
-         * @param message ErrorResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: ws.IErrorResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes an ErrorResponse message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns ErrorResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.ErrorResponse;
-
-        /**
-         * Decodes an ErrorResponse message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns ErrorResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.ErrorResponse;
-
-        /**
-         * Verifies an ErrorResponse message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates an ErrorResponse message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns ErrorResponse
-         */
-        public static fromObject(object: { [k: string]: any }): ws.ErrorResponse;
-
-        /**
-         * Creates a plain object from an ErrorResponse message. Also converts values to other types if specified.
-         * @param message ErrorResponse
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: ws.ErrorResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this ErrorResponse to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for ErrorResponse
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
     /** Properties of a WSGameInit. */
     interface IWSGameInit {
 
@@ -2991,8 +2894,8 @@ export namespace ws {
     /** Properties of a LobbyJoin. */
     interface ILobbyJoin {
 
-        /** LobbyJoin user */
-        user?: (models.IDetailedLobbyMemberData|null);
+        /** LobbyJoin users */
+        users?: (models.IDetailedLobbyMemberData[]|null);
     }
 
     /** Represents a LobbyJoin. */
@@ -3004,8 +2907,8 @@ export namespace ws {
          */
         constructor(properties?: ws.ILobbyJoin);
 
-        /** LobbyJoin user. */
-        public user?: (models.IDetailedLobbyMemberData|null);
+        /** LobbyJoin users. */
+        public users: models.IDetailedLobbyMemberData[];
 
         /**
          * Creates a new LobbyJoin instance using the specified properties.
@@ -3088,8 +2991,8 @@ export namespace ws {
     /** Properties of a LobbyLeave. */
     interface ILobbyLeave {
 
-        /** LobbyLeave user */
-        user?: (models.IDetailedLobbyMemberData|null);
+        /** LobbyLeave users */
+        users?: (models.IDetailedLobbyMemberData[]|null);
     }
 
     /** Represents a LobbyLeave. */
@@ -3101,8 +3004,8 @@ export namespace ws {
          */
         constructor(properties?: ws.ILobbyLeave);
 
-        /** LobbyLeave user. */
-        public user?: (models.IDetailedLobbyMemberData|null);
+        /** LobbyLeave users. */
+        public users: models.IDetailedLobbyMemberData[];
 
         /**
          * Creates a new LobbyLeave instance using the specified properties.
@@ -3185,8 +3088,8 @@ export namespace ws {
     /** Properties of a LobbyChangePlayer. */
     interface ILobbyChangePlayer {
 
-        /** LobbyChangePlayer user */
-        user?: (models.IDetailedLobbyMemberData|null);
+        /** LobbyChangePlayer users */
+        users?: (models.IDetailedLobbyMemberData[]|null);
     }
 
     /** Represents a LobbyChangePlayer. */
@@ -3198,8 +3101,8 @@ export namespace ws {
          */
         constructor(properties?: ws.ILobbyChangePlayer);
 
-        /** LobbyChangePlayer user. */
-        public user?: (models.IDetailedLobbyMemberData|null);
+        /** LobbyChangePlayer users. */
+        public users: models.IDetailedLobbyMemberData[];
 
         /**
          * Creates a new LobbyChangePlayer instance using the specified properties.

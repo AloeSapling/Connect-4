@@ -5,7 +5,8 @@ import { addRouteWithMethods } from '../lib/lib.ts';
 import {
     assignPlayerID,
     becomeHost,
-    getDetailedLobbyMemberData,
+    getDetailedLobbyMembersData,
+    getPlayerType,
     joinLobby,
     leaveLobby,
     unsetPlayerIDAndType,
@@ -105,9 +106,9 @@ addRouteWithMethods(
             broadcastToLobbyRoom(code, {
                 response: ws.LobbyResponses.LOBBY_RESPONSES_JOIN,
                 join: {
-                    user: await getDetailedLobbyMemberData(code, user.id),
+                    users: await getDetailedLobbyMembersData(code),
                 },
-            })
+            });
             res.status(200).send();
         } catch {
             res.status(500).send(
@@ -142,9 +143,9 @@ addRouteWithMethods(
             broadcastToLobbyRoom(code, {
                 response: ws.LobbyResponses.LOBBY_RESPONSES_LEAVE,
                 leave: {
-                    user: await getDetailedLobbyMemberData(code, user.id),
+                    users: await getDetailedLobbyMembersData(code),
                 },
-            })
+            });
             res.status(204).send();
         } catch {
             res.status(500).send(
@@ -199,9 +200,9 @@ addRouteWithMethods(
                 return;
             }
 
-            const userData = await getDetailedLobbyMemberData(code, userID);
+            const userPlayerType = await getPlayerType(code, userID);
             // Inactive / AFK player
-            if (userData.playerType === P_PlayerTypes.PLAYER_TYPES_UNSPECIFIED) {
+            if (userPlayerType === P_PlayerTypes.PLAYER_TYPES_UNSPECIFIED) {
                 res.status(400).send(
                     P_CodedError.encode({
                         code: P_ErrorCodes.ERROR_CODES_BAD_USER,
@@ -216,7 +217,7 @@ addRouteWithMethods(
             broadcastToLobbyRoom(code, {
                 response: ws.LobbyResponses.LOBBY_RESPONSES_CHANGE_PLAYER,
                 changePlayer: {
-                    user: userData,
+                    users: await getDetailedLobbyMembersData(code),
                 },
             });
             res.status(200).send();

@@ -13,15 +13,15 @@ enum LobbyResponses {
 }
 
 message LobbyJoin {
-  models.DetailedLobbyMemberData user = 1;
+  repeated models.DetailedLobbyMemberData users = 1;
 }
 
 message LobbyLeave {
-  models.DetailedLobbyMemberData user = 1;
+  repeated models.DetailedLobbyMemberData users = 1;
 }
 
 message LobbyChangePlayer {
-  models.DetailedLobbyMemberData user = 1;
+  repeated models.DetailedLobbyMemberData users = 1;
 }
 
 message LobbyResponsePacket {
