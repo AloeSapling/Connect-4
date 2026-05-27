@@ -27,7 +27,8 @@ function Game() {
 
         const { board, nextTurn } = makeMove(column, userPlayerID, currentTurn, currentBoardState);
 
-        setCurrentBoardState(board);
+        gameCanvasRef.current?.insertToken(column, 0, userPlayerID);
+        // setCurrentBoardState(board);
         setCurrentTurn(nextTurn);
     };
 
@@ -53,9 +54,9 @@ function Game() {
     }, []);
 
     // Update canvas rendering when token is inserted
-    useEffect(() => {
-        gameCanvasRef.current?.setBoardState(currentBoardState);
-    }, [currentBoardState]);
+    // useEffect(() => {
+    //     gameCanvasRef.current?.setBoardState(currentBoardState);
+    // }, [currentBoardState]);
 
     return (
         <>
