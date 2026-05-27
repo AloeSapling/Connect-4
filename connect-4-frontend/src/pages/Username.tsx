@@ -38,7 +38,7 @@ function Username() {
         createUser_m.mutate(formData.username);
     }
 
-    const langCtx = useContext(langContext)!;
+    const langCtx = useContext(langContext);
 
     if (!langCtx) return <p>Missing language context!</p>;
 

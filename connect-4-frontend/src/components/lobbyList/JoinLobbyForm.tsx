@@ -22,6 +22,7 @@ export default function ChangeForm() {
             lobby_code: "",
         }
     });
+    
     const joinLobby_m = useMutation({
         mutationFn: joinLobby,
         onSuccess: (_data, code) => {
@@ -38,7 +39,7 @@ export default function ChangeForm() {
     const onCancel = () =>
         setFormOpen(false);
 
-    const langCtx = useContext(langContext)!;
+    const langCtx = useContext(langContext);
     
     if (!langCtx) return <p>Missing language context!</p>;
     
@@ -74,16 +75,14 @@ export default function ChangeForm() {
                 </Button>
             </div>
         </form>
+    ) : (
+        <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer"
+            onClick={() => {
+                form.reset();
+                setFormOpen(true);
+            }}
+        >
+            {texts.lobbyFormButton}
+        </Button>
     )
-        :
-        (
-            <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer"
-                onClick={() => {
-                    form.reset();
-                    setFormOpen(true);
-                }}
-            >
-                {texts.lobbyFormButton}
-            </Button>
-        )
 }

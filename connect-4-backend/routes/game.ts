@@ -3,9 +3,10 @@ import { Router } from 'express';
 import { lobbyExists } from '../database-sqllite/lobby.ts';
 import { CodedError, P_CodedError, P_ErrorCodes, P_PlayerIDs } from '../lib/types.ts';
 import { addRouteWithMethods } from '../lib/lib.ts';
-import * as proto from '../lib/proto.js';
+import { routes, ws } from '../lib/proto.js';
 import { isLobbyHost, isLobbyMember } from '../lib/auth.ts';
 import { lobbyHasPlayerWithID } from '../database-sqllite/lobbyMembers.ts';
+import { broadcastToLobbyRoom } from './ws/lobby.ts';
 
 const router = Router();
 
@@ -41,6 +42,10 @@ addRouteWithMethods(
 
             try {
                 await GameRedis.createGame(code);
+
+                broadcastToLobbyRoom(code, {
+                    response: ws.LobbyResponses.LOBBY_RESPONSES_START_GAME,
+                });
                 res.status(201).send();
             } catch (err) {
                 const formattedError = {
@@ -80,7 +85,7 @@ addRouteWithMethods(
 
             try {
                 res.status(200).send(
-                    proto.routes.GetGameResponse.encode({
+                    routes.GetGameResponse.encode({
                         game: await GameRedis.getGameState(code),
                     }).finish()
                 );

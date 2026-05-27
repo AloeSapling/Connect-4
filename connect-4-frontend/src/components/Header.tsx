@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import LangSwitch from './LangSwitch';
 
 function Header() {
-    const langCtx = useContext(langContext)!;
+    const langCtx = useContext(langContext);
     
     if (!langCtx) return <p>Missing language context!</p>;
     

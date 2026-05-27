@@ -1,17 +1,18 @@
 import { Router } from 'express';
 import { createLobby, getAllLobbiesData, getDetailedLobbyData, lobbyExists } from '../database-sqllite/lobby.ts';
-import { P_CodedError, P_ErrorCodes, P_PlayerIDs, P_PlayerTypes, type UserRequest } from '../lib/types.ts';
+import { P_CodedError, P_ErrorCodes, P_PlayerTypes, type UserRequest } from '../lib/types.ts';
 import { addRouteWithMethods } from '../lib/lib.ts';
 import {
     assignPlayerID,
     becomeHost,
-    getPlayerType,
+    getDetailedLobbyMemberData,
     joinLobby,
     leaveLobby,
     unsetPlayerIDAndType,
 } from '../database-sqllite/lobbyMembers.ts';
-import { routes } from '../lib/proto.js';
+import { routes, ws } from '../lib/proto.js';
 import { isLobbyMember } from '../lib/auth.ts';
+import { broadcastToLobbyRoom } from './ws/lobby.ts';
 
 const router = Router();
 
@@ -101,6 +102,12 @@ addRouteWithMethods(
 
             await joinLobby(code, user.id);
 
+            broadcastToLobbyRoom(code, {
+                response: ws.LobbyResponses.LOBBY_RESPONSES_JOIN,
+                join: {
+                    user: await getDetailedLobbyMemberData(code, user.id),
+                },
+            })
             res.status(200).send();
         } catch {
             res.status(500).send(
@@ -132,6 +139,12 @@ addRouteWithMethods(
 
             await leaveLobby(code, user.id);
 
+            broadcastToLobbyRoom(code, {
+                response: ws.LobbyResponses.LOBBY_RESPONSES_LEAVE,
+                leave: {
+                    user: await getDetailedLobbyMemberData(code, user.id),
+                },
+            })
             res.status(204).send();
         } catch {
             res.status(500).send(
@@ -186,9 +199,9 @@ addRouteWithMethods(
                 return;
             }
 
-            const userPlayerType = await getPlayerType(code, userID);
+            const userData = await getDetailedLobbyMemberData(code, userID);
             // Inactive / AFK player
-            if (userPlayerType === P_PlayerTypes.PLAYER_TYPES_UNSPECIFIED) {
+            if (userData.playerType === P_PlayerTypes.PLAYER_TYPES_UNSPECIFIED) {
                 res.status(400).send(
                     P_CodedError.encode({
                         code: P_ErrorCodes.ERROR_CODES_BAD_USER,
@@ -200,6 +213,12 @@ addRouteWithMethods(
             await unsetPlayerIDAndType(code, playerID);
             await assignPlayerID(code, userID, playerID);
 
+            broadcastToLobbyRoom(code, {
+                response: ws.LobbyResponses.LOBBY_RESPONSES_CHANGE_PLAYER,
+                changePlayer: {
+                    user: userData,
+                },
+            });
             res.status(200).send();
         } catch {
             res.status(500).send(

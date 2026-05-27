@@ -37,6 +37,27 @@
         "usernameFormButton": "Zmień Nazwę",
         "usernameToast": "Zmieniono nazwę użytkownika!"
     },
-    "lobby": {},
-    "game": {}
+    "lobby": {
+        "lobby": "Pokój:",
+        "lobbyCode": "Kod Pokoju:",
+
+        "players": "Gracze",
+        "labelYou": "(ty)",
+
+        "leaveButton": "Opuść Pokój",
+        "leaveToast": "Opuszczanie pokoju...",
+
+        "createGameButton": "ROZPOCZNIJ GRĘ",
+        "createGameToast": "Rozpoczęto grę!",
+
+        "changePlayerIDFormHint": "--wybierz gracza--",
+        "changePlayerIDFormUnspecified": "Niespecyfikowany",
+        "changePlayerIDFormPlayer1": "Gracz 1",
+        "changePlayerIDFormPlayer2": "Gracz 2",
+        "changePlayerIDFormButton": "Zmień ID Gracza",
+        "changePlayerIDToast": "Zmieniono ID gracza!"
+    },
+    "game": {
+
+    }
 }

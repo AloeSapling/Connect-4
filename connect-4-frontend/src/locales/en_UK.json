@@ -37,6 +37,27 @@
         "usernameFormButton": "Change Username",
         "usernameToast": "Username changed!"
     },
-    "lobby": {},
-    "game": {}
+    "lobby": {
+        "lobby": "Lobby:",
+        "lobbyCode": "Lobby Code:",
+        
+        "players": "Players",
+        "labelYou": "(you)",
+
+        "leaveButton": "Leave Lobby",
+        "leaveToast": "Leaving lobby...",
+
+        "createGameButton": "START GAME",
+        "createGameToast": "Started game!",
+
+        "changePlayerIDFormHint": "--select player--",
+        "changePlayerIDFormUnspecified": "Unspecified",
+        "changePlayerIDFormPlayer1": "Player 1",
+        "changePlayerIDFormPlayer2": "Player 2",
+        "changePlayerIDFormButton": "Change Player's ID",
+        "changePlayerIDToast": "Player ID changed successfully!"
+    },
+    "game": {
+
+    }
 }

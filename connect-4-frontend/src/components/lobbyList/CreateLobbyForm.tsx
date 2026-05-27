@@ -43,7 +43,7 @@ export default function ChangeForm() {
     const onCancel = () =>
         setFormOpen(false);
 
-    const langCtx = useContext(langContext)!;
+    const langCtx = useContext(langContext);
         
     if (!langCtx) return <p>Missing language context!</p>;
         

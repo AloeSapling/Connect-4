@@ -5029,37 +5029,35 @@ export const shared = $root.shared = (() => {
      * @enum {number}
      * @property {number} ERROR_CODES_UNSPECIFIED=0 ERROR_CODES_UNSPECIFIED value
      * @property {number} ERROR_CODES_SERVER_ERROR=1 ERROR_CODES_SERVER_ERROR value
-     * @property {number} ERROR_CODES_BAD_LOBBY_CODE=2 ERROR_CODES_BAD_LOBBY_CODE value
-     * @property {number} ERROR_CODES_BAD_DATA=3 ERROR_CODES_BAD_DATA value
-     * @property {number} ERROR_CODES_BAD_TURN=4 ERROR_CODES_BAD_TURN value
-     * @property {number} ERROR_CODES_BAD_USER=5 ERROR_CODES_BAD_USER value
-     * @property {number} ERROR_CODES_BAD_NAME=6 ERROR_CODES_BAD_NAME value
-     * @property {number} ERROR_CODES_UNAUTHORISED=7 ERROR_CODES_UNAUTHORISED value
-     * @property {number} ERROR_CODES_ALREADY_JOINED=8 ERROR_CODES_ALREADY_JOINED value
-     * @property {number} ERROR_CODES_NOT_A_MEMBER=9 ERROR_CODES_NOT_A_MEMBER value
-     * @property {number} ERROR_CODES_GAME_LOCKED=10 ERROR_CODES_GAME_LOCKED value
-     * @property {number} ERROR_CODES_GAME_EXPIRED=11 ERROR_CODES_GAME_EXPIRED value
-     * @property {number} ERROR_CODES_GAME_ALREADY_EXISTS=12 ERROR_CODES_GAME_ALREADY_EXISTS value
-     * @property {number} ERROR_CODES_DOESNT_EXIST=13 ERROR_CODES_DOESNT_EXIST value
-     * @property {number} ERROR_CODES_USER_ALREADY_EXISTS=14 ERROR_CODES_USER_ALREADY_EXISTS value
+     * @property {number} ERROR_CODES_BAD_DATA=2 ERROR_CODES_BAD_DATA value
+     * @property {number} ERROR_CODES_BAD_TURN=3 ERROR_CODES_BAD_TURN value
+     * @property {number} ERROR_CODES_BAD_USER=4 ERROR_CODES_BAD_USER value
+     * @property {number} ERROR_CODES_BAD_NAME=5 ERROR_CODES_BAD_NAME value
+     * @property {number} ERROR_CODES_UNAUTHORISED=6 ERROR_CODES_UNAUTHORISED value
+     * @property {number} ERROR_CODES_ALREADY_JOINED=7 ERROR_CODES_ALREADY_JOINED value
+     * @property {number} ERROR_CODES_NOT_A_MEMBER=8 ERROR_CODES_NOT_A_MEMBER value
+     * @property {number} ERROR_CODES_GAME_LOCKED=9 ERROR_CODES_GAME_LOCKED value
+     * @property {number} ERROR_CODES_GAME_EXPIRED=10 ERROR_CODES_GAME_EXPIRED value
+     * @property {number} ERROR_CODES_GAME_ALREADY_EXISTS=11 ERROR_CODES_GAME_ALREADY_EXISTS value
+     * @property {number} ERROR_CODES_DOESNT_EXIST=12 ERROR_CODES_DOESNT_EXIST value
+     * @property {number} ERROR_CODES_USER_ALREADY_EXISTS=13 ERROR_CODES_USER_ALREADY_EXISTS value
      */
     shared.ErrorCodes = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "ERROR_CODES_UNSPECIFIED"] = 0;
         values[valuesById[1] = "ERROR_CODES_SERVER_ERROR"] = 1;
-        values[valuesById[2] = "ERROR_CODES_BAD_LOBBY_CODE"] = 2;
-        values[valuesById[3] = "ERROR_CODES_BAD_DATA"] = 3;
-        values[valuesById[4] = "ERROR_CODES_BAD_TURN"] = 4;
-        values[valuesById[5] = "ERROR_CODES_BAD_USER"] = 5;
-        values[valuesById[6] = "ERROR_CODES_BAD_NAME"] = 6;
-        values[valuesById[7] = "ERROR_CODES_UNAUTHORISED"] = 7;
-        values[valuesById[8] = "ERROR_CODES_ALREADY_JOINED"] = 8;
-        values[valuesById[9] = "ERROR_CODES_NOT_A_MEMBER"] = 9;
-        values[valuesById[10] = "ERROR_CODES_GAME_LOCKED"] = 10;
-        values[valuesById[11] = "ERROR_CODES_GAME_EXPIRED"] = 11;
-        values[valuesById[12] = "ERROR_CODES_GAME_ALREADY_EXISTS"] = 12;
-        values[valuesById[13] = "ERROR_CODES_DOESNT_EXIST"] = 13;
-        values[valuesById[14] = "ERROR_CODES_USER_ALREADY_EXISTS"] = 14;
+        values[valuesById[2] = "ERROR_CODES_BAD_DATA"] = 2;
+        values[valuesById[3] = "ERROR_CODES_BAD_TURN"] = 3;
+        values[valuesById[4] = "ERROR_CODES_BAD_USER"] = 4;
+        values[valuesById[5] = "ERROR_CODES_BAD_NAME"] = 5;
+        values[valuesById[6] = "ERROR_CODES_UNAUTHORISED"] = 6;
+        values[valuesById[7] = "ERROR_CODES_ALREADY_JOINED"] = 7;
+        values[valuesById[8] = "ERROR_CODES_NOT_A_MEMBER"] = 8;
+        values[valuesById[9] = "ERROR_CODES_GAME_LOCKED"] = 9;
+        values[valuesById[10] = "ERROR_CODES_GAME_EXPIRED"] = 10;
+        values[valuesById[11] = "ERROR_CODES_GAME_ALREADY_EXISTS"] = 11;
+        values[valuesById[12] = "ERROR_CODES_DOESNT_EXIST"] = 12;
+        values[valuesById[13] = "ERROR_CODES_USER_ALREADY_EXISTS"] = 13;
         return values;
     })();
 
@@ -5247,7 +5245,6 @@ export const shared = $root.shared = (() => {
                 case 11:
                 case 12:
                 case 13:
-                case 14:
                     break;
                 }
             if (message.error != null && message.hasOwnProperty("error")) {
@@ -5289,57 +5286,53 @@ export const shared = $root.shared = (() => {
             case 1:
                 message.code = 1;
                 break;
-            case "ERROR_CODES_BAD_LOBBY_CODE":
+            case "ERROR_CODES_BAD_DATA":
             case 2:
                 message.code = 2;
                 break;
-            case "ERROR_CODES_BAD_DATA":
+            case "ERROR_CODES_BAD_TURN":
             case 3:
                 message.code = 3;
                 break;
-            case "ERROR_CODES_BAD_TURN":
+            case "ERROR_CODES_BAD_USER":
             case 4:
                 message.code = 4;
                 break;
-            case "ERROR_CODES_BAD_USER":
+            case "ERROR_CODES_BAD_NAME":
             case 5:
                 message.code = 5;
                 break;
-            case "ERROR_CODES_BAD_NAME":
+            case "ERROR_CODES_UNAUTHORISED":
             case 6:
                 message.code = 6;
                 break;
-            case "ERROR_CODES_UNAUTHORISED":
+            case "ERROR_CODES_ALREADY_JOINED":
             case 7:
                 message.code = 7;
                 break;
-            case "ERROR_CODES_ALREADY_JOINED":
+            case "ERROR_CODES_NOT_A_MEMBER":
             case 8:
                 message.code = 8;
                 break;
-            case "ERROR_CODES_NOT_A_MEMBER":
+            case "ERROR_CODES_GAME_LOCKED":
             case 9:
                 message.code = 9;
                 break;
-            case "ERROR_CODES_GAME_LOCKED":
+            case "ERROR_CODES_GAME_EXPIRED":
             case 10:
                 message.code = 10;
                 break;
-            case "ERROR_CODES_GAME_EXPIRED":
+            case "ERROR_CODES_GAME_ALREADY_EXISTS":
             case 11:
                 message.code = 11;
                 break;
-            case "ERROR_CODES_GAME_ALREADY_EXISTS":
+            case "ERROR_CODES_DOESNT_EXIST":
             case 12:
                 message.code = 12;
                 break;
-            case "ERROR_CODES_DOESNT_EXIST":
+            case "ERROR_CODES_USER_ALREADY_EXISTS":
             case 13:
                 message.code = 13;
-                break;
-            case "ERROR_CODES_USER_ALREADY_EXISTS":
-            case 14:
-                message.code = 14;
                 break;
             }
             if (object.error != null)
@@ -5412,6 +5405,228 @@ export const ws = $root.ws = (() => {
      * @namespace
      */
     const ws = {};
+
+    ws.ErrorResponse = (function() {
+
+        /**
+         * Properties of an ErrorResponse.
+         * @memberof ws
+         * @interface IErrorResponse
+         * @property {shared.ICodedError|null} [error] ErrorResponse error
+         */
+
+        /**
+         * Constructs a new ErrorResponse.
+         * @memberof ws
+         * @classdesc Represents an ErrorResponse.
+         * @implements IErrorResponse
+         * @constructor
+         * @param {ws.IErrorResponse=} [properties] Properties to set
+         */
+        function ErrorResponse(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * ErrorResponse error.
+         * @member {shared.ICodedError|null|undefined} error
+         * @memberof ws.ErrorResponse
+         * @instance
+         */
+        ErrorResponse.prototype.error = null;
+
+        /**
+         * Creates a new ErrorResponse instance using the specified properties.
+         * @function create
+         * @memberof ws.ErrorResponse
+         * @static
+         * @param {ws.IErrorResponse=} [properties] Properties to set
+         * @returns {ws.ErrorResponse} ErrorResponse instance
+         */
+        ErrorResponse.create = function create(properties) {
+            return new ErrorResponse(properties);
+        };
+
+        /**
+         * Encodes the specified ErrorResponse message. Does not implicitly {@link ws.ErrorResponse.verify|verify} messages.
+         * @function encode
+         * @memberof ws.ErrorResponse
+         * @static
+         * @param {ws.IErrorResponse} message ErrorResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ErrorResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.error != null && Object.hasOwnProperty.call(message, "error"))
+                $root.shared.CodedError.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified ErrorResponse message, length delimited. Does not implicitly {@link ws.ErrorResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof ws.ErrorResponse
+         * @static
+         * @param {ws.IErrorResponse} message ErrorResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ErrorResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes an ErrorResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof ws.ErrorResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {ws.ErrorResponse} ErrorResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ErrorResponse.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.ErrorResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.error = $root.shared.CodedError.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes an ErrorResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof ws.ErrorResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {ws.ErrorResponse} ErrorResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ErrorResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies an ErrorResponse message.
+         * @function verify
+         * @memberof ws.ErrorResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        ErrorResponse.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.error != null && message.hasOwnProperty("error")) {
+                let error = $root.shared.CodedError.verify(message.error, long + 1);
+                if (error)
+                    return "error." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates an ErrorResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof ws.ErrorResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {ws.ErrorResponse} ErrorResponse
+         */
+        ErrorResponse.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.ErrorResponse)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.ws.ErrorResponse();
+            if (object.error != null) {
+                if (typeof object.error !== "object")
+                    throw TypeError(".ws.ErrorResponse.error: object expected");
+                message.error = $root.shared.CodedError.fromObject(object.error, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from an ErrorResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof ws.ErrorResponse
+         * @static
+         * @param {ws.ErrorResponse} message ErrorResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        ErrorResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.error = null;
+            if (message.error != null && message.hasOwnProperty("error"))
+                object.error = $root.shared.CodedError.toObject(message.error, options);
+            return object;
+        };
+
+        /**
+         * Converts this ErrorResponse to JSON.
+         * @function toJSON
+         * @memberof ws.ErrorResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        ErrorResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for ErrorResponse
+         * @function getTypeUrl
+         * @memberof ws.ErrorResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        ErrorResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/ws.ErrorResponse";
+        };
+
+        return ErrorResponse;
+    })();
 
     ws.WSGameInit = (function() {
 
@@ -7370,6 +7585,1061 @@ export const ws = $root.ws = (() => {
         };
 
         return WSGameResponsePacket;
+    })();
+
+    /**
+     * LobbyResponses enum.
+     * @name ws.LobbyResponses
+     * @enum {number}
+     * @property {number} LOBBY_RESPONSES_UNSPECIFIED=0 LOBBY_RESPONSES_UNSPECIFIED value
+     * @property {number} LOBBY_RESPONSES_JOIN=1 LOBBY_RESPONSES_JOIN value
+     * @property {number} LOBBY_RESPONSES_LEAVE=2 LOBBY_RESPONSES_LEAVE value
+     * @property {number} LOBBY_RESPONSES_CHANGE_PLAYER=3 LOBBY_RESPONSES_CHANGE_PLAYER value
+     * @property {number} LOBBY_RESPONSES_START_GAME=4 LOBBY_RESPONSES_START_GAME value
+     */
+    ws.LobbyResponses = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "LOBBY_RESPONSES_UNSPECIFIED"] = 0;
+        values[valuesById[1] = "LOBBY_RESPONSES_JOIN"] = 1;
+        values[valuesById[2] = "LOBBY_RESPONSES_LEAVE"] = 2;
+        values[valuesById[3] = "LOBBY_RESPONSES_CHANGE_PLAYER"] = 3;
+        values[valuesById[4] = "LOBBY_RESPONSES_START_GAME"] = 4;
+        return values;
+    })();
+
+    ws.LobbyJoin = (function() {
+
+        /**
+         * Properties of a LobbyJoin.
+         * @memberof ws
+         * @interface ILobbyJoin
+         * @property {models.IDetailedLobbyMemberData|null} [user] LobbyJoin user
+         */
+
+        /**
+         * Constructs a new LobbyJoin.
+         * @memberof ws
+         * @classdesc Represents a LobbyJoin.
+         * @implements ILobbyJoin
+         * @constructor
+         * @param {ws.ILobbyJoin=} [properties] Properties to set
+         */
+        function LobbyJoin(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * LobbyJoin user.
+         * @member {models.IDetailedLobbyMemberData|null|undefined} user
+         * @memberof ws.LobbyJoin
+         * @instance
+         */
+        LobbyJoin.prototype.user = null;
+
+        /**
+         * Creates a new LobbyJoin instance using the specified properties.
+         * @function create
+         * @memberof ws.LobbyJoin
+         * @static
+         * @param {ws.ILobbyJoin=} [properties] Properties to set
+         * @returns {ws.LobbyJoin} LobbyJoin instance
+         */
+        LobbyJoin.create = function create(properties) {
+            return new LobbyJoin(properties);
+        };
+
+        /**
+         * Encodes the specified LobbyJoin message. Does not implicitly {@link ws.LobbyJoin.verify|verify} messages.
+         * @function encode
+         * @memberof ws.LobbyJoin
+         * @static
+         * @param {ws.ILobbyJoin} message LobbyJoin message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbyJoin.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.user != null && Object.hasOwnProperty.call(message, "user"))
+                $root.models.DetailedLobbyMemberData.encode(message.user, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified LobbyJoin message, length delimited. Does not implicitly {@link ws.LobbyJoin.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof ws.LobbyJoin
+         * @static
+         * @param {ws.ILobbyJoin} message LobbyJoin message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbyJoin.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a LobbyJoin message from the specified reader or buffer.
+         * @function decode
+         * @memberof ws.LobbyJoin
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {ws.LobbyJoin} LobbyJoin
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbyJoin.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.LobbyJoin();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.user = $root.models.DetailedLobbyMemberData.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a LobbyJoin message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof ws.LobbyJoin
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {ws.LobbyJoin} LobbyJoin
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbyJoin.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a LobbyJoin message.
+         * @function verify
+         * @memberof ws.LobbyJoin
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        LobbyJoin.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.user != null && message.hasOwnProperty("user")) {
+                let error = $root.models.DetailedLobbyMemberData.verify(message.user, long + 1);
+                if (error)
+                    return "user." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates a LobbyJoin message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof ws.LobbyJoin
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {ws.LobbyJoin} LobbyJoin
+         */
+        LobbyJoin.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.LobbyJoin)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.ws.LobbyJoin();
+            if (object.user != null) {
+                if (typeof object.user !== "object")
+                    throw TypeError(".ws.LobbyJoin.user: object expected");
+                message.user = $root.models.DetailedLobbyMemberData.fromObject(object.user, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a LobbyJoin message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof ws.LobbyJoin
+         * @static
+         * @param {ws.LobbyJoin} message LobbyJoin
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        LobbyJoin.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.user = null;
+            if (message.user != null && message.hasOwnProperty("user"))
+                object.user = $root.models.DetailedLobbyMemberData.toObject(message.user, options);
+            return object;
+        };
+
+        /**
+         * Converts this LobbyJoin to JSON.
+         * @function toJSON
+         * @memberof ws.LobbyJoin
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        LobbyJoin.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for LobbyJoin
+         * @function getTypeUrl
+         * @memberof ws.LobbyJoin
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        LobbyJoin.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/ws.LobbyJoin";
+        };
+
+        return LobbyJoin;
+    })();
+
+    ws.LobbyLeave = (function() {
+
+        /**
+         * Properties of a LobbyLeave.
+         * @memberof ws
+         * @interface ILobbyLeave
+         * @property {models.IDetailedLobbyMemberData|null} [user] LobbyLeave user
+         */
+
+        /**
+         * Constructs a new LobbyLeave.
+         * @memberof ws
+         * @classdesc Represents a LobbyLeave.
+         * @implements ILobbyLeave
+         * @constructor
+         * @param {ws.ILobbyLeave=} [properties] Properties to set
+         */
+        function LobbyLeave(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * LobbyLeave user.
+         * @member {models.IDetailedLobbyMemberData|null|undefined} user
+         * @memberof ws.LobbyLeave
+         * @instance
+         */
+        LobbyLeave.prototype.user = null;
+
+        /**
+         * Creates a new LobbyLeave instance using the specified properties.
+         * @function create
+         * @memberof ws.LobbyLeave
+         * @static
+         * @param {ws.ILobbyLeave=} [properties] Properties to set
+         * @returns {ws.LobbyLeave} LobbyLeave instance
+         */
+        LobbyLeave.create = function create(properties) {
+            return new LobbyLeave(properties);
+        };
+
+        /**
+         * Encodes the specified LobbyLeave message. Does not implicitly {@link ws.LobbyLeave.verify|verify} messages.
+         * @function encode
+         * @memberof ws.LobbyLeave
+         * @static
+         * @param {ws.ILobbyLeave} message LobbyLeave message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbyLeave.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.user != null && Object.hasOwnProperty.call(message, "user"))
+                $root.models.DetailedLobbyMemberData.encode(message.user, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified LobbyLeave message, length delimited. Does not implicitly {@link ws.LobbyLeave.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof ws.LobbyLeave
+         * @static
+         * @param {ws.ILobbyLeave} message LobbyLeave message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbyLeave.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a LobbyLeave message from the specified reader or buffer.
+         * @function decode
+         * @memberof ws.LobbyLeave
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {ws.LobbyLeave} LobbyLeave
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbyLeave.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.LobbyLeave();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.user = $root.models.DetailedLobbyMemberData.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a LobbyLeave message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof ws.LobbyLeave
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {ws.LobbyLeave} LobbyLeave
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbyLeave.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a LobbyLeave message.
+         * @function verify
+         * @memberof ws.LobbyLeave
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        LobbyLeave.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.user != null && message.hasOwnProperty("user")) {
+                let error = $root.models.DetailedLobbyMemberData.verify(message.user, long + 1);
+                if (error)
+                    return "user." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates a LobbyLeave message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof ws.LobbyLeave
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {ws.LobbyLeave} LobbyLeave
+         */
+        LobbyLeave.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.LobbyLeave)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.ws.LobbyLeave();
+            if (object.user != null) {
+                if (typeof object.user !== "object")
+                    throw TypeError(".ws.LobbyLeave.user: object expected");
+                message.user = $root.models.DetailedLobbyMemberData.fromObject(object.user, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a LobbyLeave message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof ws.LobbyLeave
+         * @static
+         * @param {ws.LobbyLeave} message LobbyLeave
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        LobbyLeave.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.user = null;
+            if (message.user != null && message.hasOwnProperty("user"))
+                object.user = $root.models.DetailedLobbyMemberData.toObject(message.user, options);
+            return object;
+        };
+
+        /**
+         * Converts this LobbyLeave to JSON.
+         * @function toJSON
+         * @memberof ws.LobbyLeave
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        LobbyLeave.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for LobbyLeave
+         * @function getTypeUrl
+         * @memberof ws.LobbyLeave
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        LobbyLeave.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/ws.LobbyLeave";
+        };
+
+        return LobbyLeave;
+    })();
+
+    ws.LobbyChangePlayer = (function() {
+
+        /**
+         * Properties of a LobbyChangePlayer.
+         * @memberof ws
+         * @interface ILobbyChangePlayer
+         * @property {models.IDetailedLobbyMemberData|null} [user] LobbyChangePlayer user
+         */
+
+        /**
+         * Constructs a new LobbyChangePlayer.
+         * @memberof ws
+         * @classdesc Represents a LobbyChangePlayer.
+         * @implements ILobbyChangePlayer
+         * @constructor
+         * @param {ws.ILobbyChangePlayer=} [properties] Properties to set
+         */
+        function LobbyChangePlayer(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * LobbyChangePlayer user.
+         * @member {models.IDetailedLobbyMemberData|null|undefined} user
+         * @memberof ws.LobbyChangePlayer
+         * @instance
+         */
+        LobbyChangePlayer.prototype.user = null;
+
+        /**
+         * Creates a new LobbyChangePlayer instance using the specified properties.
+         * @function create
+         * @memberof ws.LobbyChangePlayer
+         * @static
+         * @param {ws.ILobbyChangePlayer=} [properties] Properties to set
+         * @returns {ws.LobbyChangePlayer} LobbyChangePlayer instance
+         */
+        LobbyChangePlayer.create = function create(properties) {
+            return new LobbyChangePlayer(properties);
+        };
+
+        /**
+         * Encodes the specified LobbyChangePlayer message. Does not implicitly {@link ws.LobbyChangePlayer.verify|verify} messages.
+         * @function encode
+         * @memberof ws.LobbyChangePlayer
+         * @static
+         * @param {ws.ILobbyChangePlayer} message LobbyChangePlayer message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbyChangePlayer.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.user != null && Object.hasOwnProperty.call(message, "user"))
+                $root.models.DetailedLobbyMemberData.encode(message.user, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified LobbyChangePlayer message, length delimited. Does not implicitly {@link ws.LobbyChangePlayer.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof ws.LobbyChangePlayer
+         * @static
+         * @param {ws.ILobbyChangePlayer} message LobbyChangePlayer message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbyChangePlayer.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a LobbyChangePlayer message from the specified reader or buffer.
+         * @function decode
+         * @memberof ws.LobbyChangePlayer
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {ws.LobbyChangePlayer} LobbyChangePlayer
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbyChangePlayer.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.LobbyChangePlayer();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.user = $root.models.DetailedLobbyMemberData.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a LobbyChangePlayer message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof ws.LobbyChangePlayer
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {ws.LobbyChangePlayer} LobbyChangePlayer
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbyChangePlayer.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a LobbyChangePlayer message.
+         * @function verify
+         * @memberof ws.LobbyChangePlayer
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        LobbyChangePlayer.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.user != null && message.hasOwnProperty("user")) {
+                let error = $root.models.DetailedLobbyMemberData.verify(message.user, long + 1);
+                if (error)
+                    return "user." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates a LobbyChangePlayer message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof ws.LobbyChangePlayer
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {ws.LobbyChangePlayer} LobbyChangePlayer
+         */
+        LobbyChangePlayer.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.LobbyChangePlayer)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.ws.LobbyChangePlayer();
+            if (object.user != null) {
+                if (typeof object.user !== "object")
+                    throw TypeError(".ws.LobbyChangePlayer.user: object expected");
+                message.user = $root.models.DetailedLobbyMemberData.fromObject(object.user, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a LobbyChangePlayer message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof ws.LobbyChangePlayer
+         * @static
+         * @param {ws.LobbyChangePlayer} message LobbyChangePlayer
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        LobbyChangePlayer.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.user = null;
+            if (message.user != null && message.hasOwnProperty("user"))
+                object.user = $root.models.DetailedLobbyMemberData.toObject(message.user, options);
+            return object;
+        };
+
+        /**
+         * Converts this LobbyChangePlayer to JSON.
+         * @function toJSON
+         * @memberof ws.LobbyChangePlayer
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        LobbyChangePlayer.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for LobbyChangePlayer
+         * @function getTypeUrl
+         * @memberof ws.LobbyChangePlayer
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        LobbyChangePlayer.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/ws.LobbyChangePlayer";
+        };
+
+        return LobbyChangePlayer;
+    })();
+
+    ws.LobbyResponsePacket = (function() {
+
+        /**
+         * Properties of a LobbyResponsePacket.
+         * @memberof ws
+         * @interface ILobbyResponsePacket
+         * @property {ws.LobbyResponses|null} [response] LobbyResponsePacket response
+         * @property {ws.ILobbyJoin|null} [join] LobbyResponsePacket join
+         * @property {ws.ILobbyLeave|null} [leave] LobbyResponsePacket leave
+         * @property {ws.ILobbyChangePlayer|null} [changePlayer] LobbyResponsePacket changePlayer
+         */
+
+        /**
+         * Constructs a new LobbyResponsePacket.
+         * @memberof ws
+         * @classdesc Represents a LobbyResponsePacket.
+         * @implements ILobbyResponsePacket
+         * @constructor
+         * @param {ws.ILobbyResponsePacket=} [properties] Properties to set
+         */
+        function LobbyResponsePacket(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * LobbyResponsePacket response.
+         * @member {ws.LobbyResponses} response
+         * @memberof ws.LobbyResponsePacket
+         * @instance
+         */
+        LobbyResponsePacket.prototype.response = 0;
+
+        /**
+         * LobbyResponsePacket join.
+         * @member {ws.ILobbyJoin|null|undefined} join
+         * @memberof ws.LobbyResponsePacket
+         * @instance
+         */
+        LobbyResponsePacket.prototype.join = null;
+
+        /**
+         * LobbyResponsePacket leave.
+         * @member {ws.ILobbyLeave|null|undefined} leave
+         * @memberof ws.LobbyResponsePacket
+         * @instance
+         */
+        LobbyResponsePacket.prototype.leave = null;
+
+        /**
+         * LobbyResponsePacket changePlayer.
+         * @member {ws.ILobbyChangePlayer|null|undefined} changePlayer
+         * @memberof ws.LobbyResponsePacket
+         * @instance
+         */
+        LobbyResponsePacket.prototype.changePlayer = null;
+
+        // OneOf field names bound to virtual getters and setters
+        let $oneOfFields;
+
+        /**
+         * LobbyResponsePacket data.
+         * @member {"join"|"leave"|"changePlayer"|undefined} data
+         * @memberof ws.LobbyResponsePacket
+         * @instance
+         */
+        Object.defineProperty(LobbyResponsePacket.prototype, "data", {
+            get: $util.oneOfGetter($oneOfFields = ["join", "leave", "changePlayer"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new LobbyResponsePacket instance using the specified properties.
+         * @function create
+         * @memberof ws.LobbyResponsePacket
+         * @static
+         * @param {ws.ILobbyResponsePacket=} [properties] Properties to set
+         * @returns {ws.LobbyResponsePacket} LobbyResponsePacket instance
+         */
+        LobbyResponsePacket.create = function create(properties) {
+            return new LobbyResponsePacket(properties);
+        };
+
+        /**
+         * Encodes the specified LobbyResponsePacket message. Does not implicitly {@link ws.LobbyResponsePacket.verify|verify} messages.
+         * @function encode
+         * @memberof ws.LobbyResponsePacket
+         * @static
+         * @param {ws.ILobbyResponsePacket} message LobbyResponsePacket message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbyResponsePacket.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.response != null && Object.hasOwnProperty.call(message, "response"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.response);
+            if (message.join != null && Object.hasOwnProperty.call(message, "join"))
+                $root.ws.LobbyJoin.encode(message.join, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.leave != null && Object.hasOwnProperty.call(message, "leave"))
+                $root.ws.LobbyLeave.encode(message.leave, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+            if (message.changePlayer != null && Object.hasOwnProperty.call(message, "changePlayer"))
+                $root.ws.LobbyChangePlayer.encode(message.changePlayer, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified LobbyResponsePacket message, length delimited. Does not implicitly {@link ws.LobbyResponsePacket.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof ws.LobbyResponsePacket
+         * @static
+         * @param {ws.ILobbyResponsePacket} message LobbyResponsePacket message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbyResponsePacket.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a LobbyResponsePacket message from the specified reader or buffer.
+         * @function decode
+         * @memberof ws.LobbyResponsePacket
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {ws.LobbyResponsePacket} LobbyResponsePacket
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbyResponsePacket.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.LobbyResponsePacket();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.response = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.join = $root.ws.LobbyJoin.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 3: {
+                        message.leave = $root.ws.LobbyLeave.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 4: {
+                        message.changePlayer = $root.ws.LobbyChangePlayer.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a LobbyResponsePacket message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof ws.LobbyResponsePacket
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {ws.LobbyResponsePacket} LobbyResponsePacket
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbyResponsePacket.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a LobbyResponsePacket message.
+         * @function verify
+         * @memberof ws.LobbyResponsePacket
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        LobbyResponsePacket.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            let properties = {};
+            if (message.response != null && message.hasOwnProperty("response"))
+                switch (message.response) {
+                default:
+                    return "response: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    break;
+                }
+            if (message.join != null && message.hasOwnProperty("join")) {
+                properties.data = 1;
+                {
+                    let error = $root.ws.LobbyJoin.verify(message.join, long + 1);
+                    if (error)
+                        return "join." + error;
+                }
+            }
+            if (message.leave != null && message.hasOwnProperty("leave")) {
+                if (properties.data === 1)
+                    return "data: multiple values";
+                properties.data = 1;
+                {
+                    let error = $root.ws.LobbyLeave.verify(message.leave, long + 1);
+                    if (error)
+                        return "leave." + error;
+                }
+            }
+            if (message.changePlayer != null && message.hasOwnProperty("changePlayer")) {
+                if (properties.data === 1)
+                    return "data: multiple values";
+                properties.data = 1;
+                {
+                    let error = $root.ws.LobbyChangePlayer.verify(message.changePlayer, long + 1);
+                    if (error)
+                        return "changePlayer." + error;
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a LobbyResponsePacket message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof ws.LobbyResponsePacket
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {ws.LobbyResponsePacket} LobbyResponsePacket
+         */
+        LobbyResponsePacket.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.LobbyResponsePacket)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.ws.LobbyResponsePacket();
+            switch (object.response) {
+            default:
+                if (typeof object.response === "number") {
+                    message.response = object.response;
+                    break;
+                }
+                break;
+            case "LOBBY_RESPONSES_UNSPECIFIED":
+            case 0:
+                message.response = 0;
+                break;
+            case "LOBBY_RESPONSES_JOIN":
+            case 1:
+                message.response = 1;
+                break;
+            case "LOBBY_RESPONSES_LEAVE":
+            case 2:
+                message.response = 2;
+                break;
+            case "LOBBY_RESPONSES_CHANGE_PLAYER":
+            case 3:
+                message.response = 3;
+                break;
+            case "LOBBY_RESPONSES_START_GAME":
+            case 4:
+                message.response = 4;
+                break;
+            }
+            if (object.join != null) {
+                if (typeof object.join !== "object")
+                    throw TypeError(".ws.LobbyResponsePacket.join: object expected");
+                message.join = $root.ws.LobbyJoin.fromObject(object.join, long + 1);
+            }
+            if (object.leave != null) {
+                if (typeof object.leave !== "object")
+                    throw TypeError(".ws.LobbyResponsePacket.leave: object expected");
+                message.leave = $root.ws.LobbyLeave.fromObject(object.leave, long + 1);
+            }
+            if (object.changePlayer != null) {
+                if (typeof object.changePlayer !== "object")
+                    throw TypeError(".ws.LobbyResponsePacket.changePlayer: object expected");
+                message.changePlayer = $root.ws.LobbyChangePlayer.fromObject(object.changePlayer, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a LobbyResponsePacket message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof ws.LobbyResponsePacket
+         * @static
+         * @param {ws.LobbyResponsePacket} message LobbyResponsePacket
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        LobbyResponsePacket.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.response = options.enums === String ? "LOBBY_RESPONSES_UNSPECIFIED" : 0;
+            if (message.response != null && message.hasOwnProperty("response"))
+                object.response = options.enums === String ? $root.ws.LobbyResponses[message.response] === undefined ? message.response : $root.ws.LobbyResponses[message.response] : message.response;
+            if (message.join != null && message.hasOwnProperty("join")) {
+                object.join = $root.ws.LobbyJoin.toObject(message.join, options);
+                if (options.oneofs)
+                    object.data = "join";
+            }
+            if (message.leave != null && message.hasOwnProperty("leave")) {
+                object.leave = $root.ws.LobbyLeave.toObject(message.leave, options);
+                if (options.oneofs)
+                    object.data = "leave";
+            }
+            if (message.changePlayer != null && message.hasOwnProperty("changePlayer")) {
+                object.changePlayer = $root.ws.LobbyChangePlayer.toObject(message.changePlayer, options);
+                if (options.oneofs)
+                    object.data = "changePlayer";
+            }
+            return object;
+        };
+
+        /**
+         * Converts this LobbyResponsePacket to JSON.
+         * @function toJSON
+         * @memberof ws.LobbyResponsePacket
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        LobbyResponsePacket.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for LobbyResponsePacket
+         * @function getTypeUrl
+         * @memberof ws.LobbyResponsePacket
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        LobbyResponsePacket.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/ws.LobbyResponsePacket";
+        };
+
+        return LobbyResponsePacket;
     })();
 
     return ws;

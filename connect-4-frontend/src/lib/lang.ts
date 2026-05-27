@@ -40,8 +40,29 @@ export type PageTexts = {
         usernameFormButton: string;
         usernameToast: string;
     };
-    lobby: {};
-    game: {};
+    lobby: {
+        lobby: string;
+        lobbyCode: string;
+
+        players: string;
+        labelYou: string;
+
+        leaveButton: string;
+        leaveToast: string;
+
+        createGameButton: string;
+        createGameToast: string;
+
+        changePlayerIDFormHint: string;
+        changePlayerIDFormUnspecified: string;
+        changePlayerIDFormPlayer1: string;
+        changePlayerIDFormPlayer2: string;
+        changePlayerIDFormButton: string;
+        changePlayerIDToast: string;
+    };
+    game: {
+
+    };
 };
 
 export type Languages = 'en_UK' | 'pl_PL';

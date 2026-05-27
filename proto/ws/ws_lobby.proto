@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package ws;
+
+import 'models/models.proto';
+
+enum LobbyResponses {
+  LOBBY_RESPONSES_UNSPECIFIED = 0;
+  LOBBY_RESPONSES_JOIN = 1;
+  LOBBY_RESPONSES_LEAVE = 2;
+  LOBBY_RESPONSES_CHANGE_PLAYER = 3;
+  LOBBY_RESPONSES_START_GAME = 4;
+}
+
+message LobbyJoin {
+  models.DetailedLobbyMemberData user = 1;
+}
+
+message LobbyLeave {
+  models.DetailedLobbyMemberData user = 1;
+}
+
+message LobbyChangePlayer {
+  models.DetailedLobbyMemberData user = 1;
+}
+
+message LobbyResponsePacket {
+  LobbyResponses response = 1;
+  oneof data {
+    LobbyJoin join = 2;
+    LobbyLeave leave = 3;
+    LobbyChangePlayer changePlayer = 4;
+  }
+}
