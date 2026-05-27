@@ -1,4 +1,5 @@
 import { BOARD_START_HEIGHT, BOARD_START_WIDTH, BOARD_SLOT_DISTANCE, GAME_ROWS, GAME_COLUMNS, STEP } from "./config.js";
+import * as types from "@/lib/types.js";
 import * as proto from "./proto.js";
 
 import BoardTable from "../assets/board_table.png";
@@ -8,9 +9,22 @@ import ColIndic from "../assets/board_indicator.png";
 import TokenP1 from "../assets/board_token1.png";
 import TokenP2 from "../assets/board_token2.png";
 
+type FallingToken = {
+    column: number;
+    targetRow: number;
+    player: proto.shared.PlayerIDs;
+
+    x: number;
+    y: number;
+    targetY: number;
+
+    velocity: number;
+};
+
 class GameCanvas {
     private readonly canvas: HTMLCanvasElement;
     private readonly ctx: CanvasRenderingContext2D;
+    private fallingTokens: FallingToken[] = [];
 
     private boardTable = new Image();
     private boardFront = new Image();
@@ -36,15 +50,15 @@ class GameCanvas {
         proto.shared.PlayerIDs,
         HTMLImageElement | undefined
     > = new Map([
-        [proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED, undefined],
-        [proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenP1],
-        [proto.shared.PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenP2]
+        [types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED, undefined],
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenP1],
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenP2]
     ]);
 
     private currentBoardState: proto.shared.GameBoard =
     proto.shared.GameBoard.create({
         rows: Array.from({ length: GAME_ROWS }, () => ({
-            columns: Array.from({ length: GAME_COLUMNS }, () => proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED)
+            columns: Array.from({ length: GAME_COLUMNS }, () => types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED)
         }))
     });
 
@@ -68,6 +82,66 @@ class GameCanvas {
     };
     ///// ***************************************************************
 
+    public insertToken(
+        column: number,
+        row: number,
+        player: types.TPlayerIDs,
+    ) {
+        const x = (column * BOARD_SLOT_DISTANCE) + BOARD_START_WIDTH;
+    
+        // Starting position
+        const startY: number = 0;
+    
+        const targetY = (((GAME_ROWS - 1) - row) * BOARD_SLOT_DISTANCE) + BOARD_START_HEIGHT;
+    
+        this.fallingTokens.push({
+            column,
+            targetRow: row,
+            player,
+        
+            x,
+            y: startY,
+            targetY,
+        
+            velocity: 0
+        });
+    }
+
+    private updateFallingTokens(dt: number) {
+        const gravity: number = 5000;
+
+        for (let i = this.fallingTokens.length - 1; i >= 0; i--) {
+            const token = this.fallingTokens[i];
+
+            token.velocity += gravity * dt;
+            token.y += token.velocity * dt;
+
+            if (token.y >= token.targetY) {
+                token.y = token.targetY;
+
+                // Commit token to board state
+                this.currentBoardState.rows[token.targetRow]
+                    .columns![token.column] = token.player;
+
+                this.fallingTokens.splice(i, 1);
+            }
+        }
+    }
+
+    private drawFallingTokens() {
+        for (const token of this.fallingTokens) {
+            const img = this.tokenMap.get(token.player);
+
+            if (!img) continue;
+
+            this.ctx.drawImage(
+                img,
+                token.x,
+                token.y
+            );
+        }
+    }
+
     private drawGame = () => {
         // Clear canvas before drawing
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -75,7 +149,9 @@ class GameCanvas {
 
         this.ctx.drawImage(this.boardTable, 0, 0);
         this.ctx.drawImage(this.boardBack, 0, 0);
+
         this.drawTokens();
+        this.drawFallingTokens();
 
         this.ctx.drawImage(this.boardFront, 0, 0);
         this.ctx.fillStyle = "blue";
@@ -113,6 +189,7 @@ class GameCanvas {
         while (this.accumulator >= STEP) {
             // ms -> seconds
             this.updateSquare(STEP / 1000);
+            this.updateFallingTokens(STEP / 1000);
             this.accumulator -= STEP;
         }
         this.drawGame();
