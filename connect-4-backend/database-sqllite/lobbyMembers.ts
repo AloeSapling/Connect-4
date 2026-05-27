@@ -166,6 +166,35 @@ export async function getLobbyHostMemberData(lobbyCode: string): Promise<models.
  *
  * @returns A list of detailed lobby member data, formatted appropriately
  * */
+export async function getDetailedLobbyMemberData(lobbyCode: string, userID: number): Promise<models.IDetailedLobbyMemberData> {
+    // Get all the necessary data
+    const memberData: LobbyMemberSelectResult = (await LobbyMember.findOne({
+        where: {
+            lobby_code: lobbyCode,
+            user_id: userID,
+        },
+        include: [
+            {
+                model: User,
+            },
+        ],
+        raw: true,
+    })) as LobbyMemberSelectResult;
+
+    // Organise the gotten data in the appropriate format
+    return {
+        userId: memberData['User.id'],
+        username: memberData['User.username'],
+        playerType: memberData.player_type,
+        playerId: memberData.player_id,
+        host: memberData.host,
+    };
+}
+
+/** Get a list of the lobby members along with some additional data
+ *
+ * @returns A list of detailed lobby member data, formatted appropriately
+ * */
 export async function getDetailedLobbyMembersData(lobbyCode: string): Promise<models.IDetailedLobbyMemberData[]> {
     // Get all the necessary data
     const tmp_members: LobbyMemberSelectResult[] = (await LobbyMember.findAll({
