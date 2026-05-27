@@ -68,7 +68,7 @@ export class GameWebSocket {
         const ws = await createWebsocketConnection(
             `/game/${lobbyCode}`,
             (ev: MessageEvent) => {
-                const decodedPacket = p_ws.WSGameResponsePacket.decode(ev.data);
+                const decodedPacket = p_ws.WSGameResponsePacket.decode(new Uint8Array(ev.data));
                 onMessage?.(decodedPacket);
             },
             onError
@@ -110,7 +110,7 @@ export class LobbyWebSocket {
         const ws = await createWebsocketConnection(
             `/lobby/${lobbyCode}`,
             (ev: MessageEvent) => {
-                const decodedPacket = p_ws.LobbyResponsePacket.decode(ev.data);
+                const decodedPacket = p_ws.LobbyResponsePacket.decode(new Uint8Array(ev.data));
                 onMessage?.(decodedPacket);
             },
             onError
