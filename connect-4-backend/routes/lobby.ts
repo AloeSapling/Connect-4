@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { createLobby, getAllLobbiesData, getDetailedLobbyData, lobbyExists } from '../database-sqllite/lobby.ts';
-import { P_CodedError, P_ErrorCodes, P_PlayerTypes, type UserRequest } from '../lib/types.ts';
+import { P_CodedError, P_ErrorCodes, P_PlayerIDs, P_PlayerTypes, type UserRequest } from '../lib/types.ts';
 import { addRouteWithMethods } from '../lib/lib.ts';
 import {
     assignPlayerID,
+    assignPlayerType,
     becomeHost,
     getDetailedLobbyMembersData,
     getPlayerType,
@@ -178,7 +179,7 @@ addRouteWithMethods(
             return;
         }
 
-        if (!body.playerId || !body.userId) {
+        if (body.playerId === undefined || body.playerId === null || !body.userId) {
             res.status(400).send(
                 P_CodedError.encode({
                     code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
@@ -213,6 +214,11 @@ addRouteWithMethods(
 
             await unsetPlayerIDAndType(code, playerID);
             await assignPlayerID(code, userID, playerID);
+
+            // Assign the appropriate player type
+            if (playerID === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED)
+                await assignPlayerType(code, userID, P_PlayerTypes.PLAYER_TYPES_SPECTATOR);
+            else await assignPlayerType(code, userID, P_PlayerTypes.PLAYER_TYPES_PLAYER);
 
             broadcastToLobbyRoom(code, {
                 response: ws.LobbyResponses.LOBBY_RESPONSES_CHANGE_PLAYER,
