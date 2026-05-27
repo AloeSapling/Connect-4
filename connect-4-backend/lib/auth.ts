@@ -58,6 +58,7 @@ export async function isLobbyMember(req: Request, res: Response, next: NextFunct
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await authUser(req, res, async (err?: any) => {
         if (err) {
+            console.log(err);
             next(err);
             return;
         }
@@ -95,10 +96,11 @@ export function wsIsLobbyMember({ req, lobbyCode }: WsAuthArgs): Promise<boolean
             return;
         }
 
+        if (!req.params) req.params = {};
         (req as Request).params.code = lobbyCode;
 
-        sessionMiddleware(req as Request, fakeRes, () => {
-            isLobbyMember(req as Request, fakeRes, (err) => resolve(!err));
+        sessionMiddleware(req as Request, fakeRes, async () => {
+            await isLobbyMember(req as Request, fakeRes, (err) => resolve(!err));
         });
     });
 }

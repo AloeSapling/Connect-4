@@ -135,7 +135,7 @@ server.on('upgrade', async (req, socket, head) => {
         // Paths with a lobby code argument
         if (routePath === 'lobby') {
             const lobbyCode = pathArguments[2];
-            authArgs.req.params.code = lobbyCode;
+            authArgs.lobbyCode = lobbyCode;
             wsArgs[1] = lobbyCode;
         }
 
