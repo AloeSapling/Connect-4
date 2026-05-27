@@ -3,23 +3,24 @@ import { ws as p_ws } from './proto.js';
 import { P_CodedError, P_ErrorCodes } from './types.js';
 
 /** Helper functions that initialises a websocket connection
-*
-* Handles / throws errors returned by the backend that occured while trying to create the connection 
-*
-* @param path - The path of the websocket with which the connection should be established
-*
-* (optional) Methods to be called during the appropriate event:
-* @param onMessage
-* @param onError
-* @param onOpen
-* @returns The newly created websocket connection
-* */
+ *
+ * Handles / throws errors returned by the backend that occured while trying to create the connection
+ *
+ * @param path - The path of the websocket with which the connection should be established
+ *
+ * (optional) Methods to be called during the appropriate event:
+ * @param onMessage
+ * @param onError
+ * @param onOpen
+ * @returns The newly created websocket connection
+ * */
 async function createWebsocketConnection(
     path: string,
     onMessage?: (this: WebSocket, ev: MessageEvent) => void,
     onError?: (this: WebSocket, ev: Event) => void,
-    onOpen?: (ws: WebSocket) => void,
+    onOpen?: (ws: WebSocket) => void
 ): Promise<WebSocket> {
+    // Promise-based solution is necessary to "bubble-up" errors from onevent callbacks
     return new Promise((resolve, reject) => {
         const ws = new WebSocket(new URL(path, SERVER_URL_WS));
         ws.binaryType = 'arraybuffer';
@@ -27,13 +28,7 @@ async function createWebsocketConnection(
         // Handle errors during websocket initialisation
         ws.onmessage = (ev: MessageEvent) => {
             const packet = P_CodedError.decode(new Uint8Array(ev.data));
-            reject(
-                new Error(
-                    JSON.stringify(
-                        packet.code ?? P_ErrorCodes.ERROR_CODES_UNSPECIFIED
-                    )
-                )
-            );
+            reject(new Error(JSON.stringify(packet.code ?? P_ErrorCodes.ERROR_CODES_UNSPECIFIED)));
         };
         ws.onerror = () => {
             reject(new Error(JSON.stringify(P_ErrorCodes.ERROR_CODES_SERVER_ERROR)));
@@ -48,14 +43,15 @@ async function createWebsocketConnection(
             if (onMessage) ws.onmessage = onMessage;
             if (onError) ws.onerror = onError;
 
-            ws.onclose = () => { };
+            ws.onclose = () => {};
 
             resolve(ws);
         };
     });
 }
 
-class GameWebSocket {
+/** Handles the connection to the 'game' websocket */
+export class GameWebSocket {
     ws: WebSocket;
 
     /** The constructor is only called internally, by the static factory method */
@@ -63,31 +59,22 @@ class GameWebSocket {
         this.ws = _ws;
     }
 
-    /** Static factory method used to be able to properly handle errors during websocket initialisation */
+    /** Static factory method in order to be able to await async functions */
     static async create(
         lobbyCode: string,
-        onMessage?: (this: WebSocket, ev: MessageEvent) => void,
+        onMessage?: (packet: p_ws.WSGameResponsePacket) => void,
         onError?: (this: WebSocket, ev: Event) => void
     ): Promise<GameWebSocket> {
-        try {
-            const ws = await createWebsocketConnection('/game/', onMessage, onError, (ws) => {
-                // Initialise the parameters for the websocket connection
-                ws.send(
-                    Buffer.from(
-                        p_ws.WSGamePacket.encode({
-                            action: p_ws.WSGameActions.WS_GAME_ACTIONS_INIT,
-                            init: {
-                                lobbyCode: lobbyCode,
-                            },
-                        }).finish()
-                    )
-                );
-            })
-            return new GameWebSocket(ws);
-        }
-        catch (e) {
-            throw e;
-        }
+        const ws = await createWebsocketConnection(
+            `/game/${lobbyCode}`,
+            (ev: MessageEvent) => {
+                const decodedPacket = p_ws.WSGameResponsePacket.decode(ev.data);
+                onMessage?.(decodedPacket);
+            },
+            onError
+        );
+
+        return new GameWebSocket(ws);
     }
 
     /** Inserts a tile at the given column */
@@ -105,4 +92,30 @@ class GameWebSocket {
     }
 }
 
-export { GameWebSocket };
+/** Handles the connection to the 'lobby' websocket */
+export class LobbyWebSocket {
+    ws: WebSocket;
+
+    /** The constructor is only called internally, by the static factory method */
+    private constructor(_ws: WebSocket) {
+        this.ws = _ws;
+    }
+
+    /** Static factory method in order to be able to await async functions */
+    static async create(
+        lobbyCode: string,
+        onMessage?: (packet: p_ws.LobbyResponsePacket) => void,
+        onError?: (this: WebSocket, ev: Event) => void
+    ): Promise<LobbyWebSocket> {
+        const ws = await createWebsocketConnection(
+            `/game/${lobbyCode}`,
+            (ev: MessageEvent) => {
+                const decodedPacket = p_ws.LobbyResponsePacket.decode(ev.data);
+                onMessage?.(decodedPacket);
+            },
+            onError
+        );
+
+        return new LobbyWebSocket(ws);
+    }
+}
