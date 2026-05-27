@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import HostControls from '@/components/lobby/HostControls.js';
 import MemberTable from '@/components/lobby/MemberTable.js';
+import * as proto from '@/lib/proto.js';
 
 function Lobby() {
     const navigate = useNavigate();
@@ -17,17 +18,40 @@ function Lobby() {
     const user = useContext(UserContext);
     const queryClient = useQueryClient();
 
-    const { data: queryData } = useQuery({
+    const { data: queryData, isLoading } = useQuery({
         queryKey: ['lobby', lobbyCode],
         queryFn: () => getLobbyDetails(lobbyCode!),
     });
+
+    const [lobbyMembersData, setLobbyMembersData] = useState(queryData?.lobbyDetails?.lobbyMembers ?? []);
+
+    useEffect(() => {
+        if (queryData?.lobbyDetails?.lobbyMembers) {
+            setLobbyMembersData(queryData.lobbyDetails.lobbyMembers);
+        }
+    }, [queryData]);
 
     useEffect(() => {
         if (!lobbyCode) return;
         let cancelled = false;
 
         LobbyWebSocket.create(lobbyCode, (packet) => {
-            console.log(packet);
+            switch (packet.response) {
+                case proto.ws.LobbyResponses.LOBBY_RESPONSES_UNSPECIFIED:
+                    break;
+                case proto.ws.LobbyResponses.LOBBY_RESPONSES_JOIN:
+                    setLobbyMembersData(packet.join?.users!);
+                    break;
+                case proto.ws.LobbyResponses.LOBBY_RESPONSES_LEAVE:
+                    setLobbyMembersData(packet.leave?.users!);
+                    break;
+                case proto.ws.LobbyResponses.LOBBY_RESPONSES_CHANGE_PLAYER:
+                    setLobbyMembersData(packet.changePlayer?.users!);
+                    break;
+                case proto.ws.LobbyResponses.LOBBY_RESPONSES_START_GAME:
+                    navigate('/game');
+                    break;
+            }
         }).then((instance) => {
             if (cancelled) {
                 instance.ws.close();
@@ -76,6 +100,10 @@ function Lobby() {
 
     const texts = langCtx.texts.lobby;
 
+    if (isLoading || !queryData || lobbyMembersData.length === 0) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div
             className="
@@ -96,12 +124,12 @@ function Lobby() {
 
             {/* Top */}
             <div className="flex flex-row flex-1 gap-4 min-h-0 max-h-[80%] min-w-0 select-none">
-                <MemberTable membersData={queryData?.lobbyDetails?.lobbyMembers!} />
+                <MemberTable membersData={lobbyMembersData} />
 
-                {queryData?.lobbyDetails?.lobbyMembers?.some(
+                {lobbyMembersData.some(
                     (member) => member.userId === user?.id && member.host
                 ) && (
-                        <HostControls lobbyCode={lobbyCode!} membersData={queryData?.lobbyDetails?.lobbyMembers!} />
+                        <HostControls lobbyCode={lobbyCode!} membersData={lobbyMembersData} />
                     )}
             </div>
 
@@ -110,7 +138,7 @@ function Lobby() {
                 <Button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={leaveLobbyButton}>
                     {texts.leaveButton}
                 </Button>
-                {queryData?.lobbyDetails?.lobbyMembers?.some(
+                {lobbyMembersData?.some(
                     (member) => member.userId === user?.id && member.host
                 ) ? (
                     <Button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={() => createGameButton(lobbyCode!)}>
