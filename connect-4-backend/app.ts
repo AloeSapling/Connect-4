@@ -130,10 +130,11 @@ server.on('upgrade', async (req, socket, head) => {
     const wsArgs: any[] = [req];
 
     if (routePath in wsRoutes) {
+        authArgs.req.params = {};
         // Paths with a lobby code argument
         if (routePath === 'lobby') {
             const lobbyCode = pathArguments[2];
-            if (lobbyCode) (authArgs.req as Request).params.lobbyCode = lobbyCode;
+            authArgs.req.params.lobbyCode = lobbyCode;
             wsArgs[1] = lobbyCode;
         }
 

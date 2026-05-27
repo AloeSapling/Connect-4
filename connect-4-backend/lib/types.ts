@@ -38,7 +38,7 @@ export type GameState = {
 
 // Websocket types
 export type WsAuthArgs = {
-    req: IncomingMessage;
+    req: IncomingMessage & { params?: Record<string, string | undefined> };
     lobbyCode?: string | undefined;
 };
 
