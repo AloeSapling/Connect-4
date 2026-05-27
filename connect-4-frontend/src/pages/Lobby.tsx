@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getLobbyDetails } from '@/lib/api';
 import { UserContext, langContext } from '@/lib/contexts';
 import { leaveLobby, createGame } from '@/lib/api';
+import { LobbyWebSocket } from '@/lib/websockets';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import HostControls from '@/components/lobby/HostControls.js';
@@ -19,10 +20,11 @@ function Lobby() {
     const { data: queryData } = useQuery({
         queryKey: ['lobby', lobbyCode],
         queryFn: () => getLobbyDetails(lobbyCode!),
-
-        // refetchInterval: 5000,
     });
-    console.log(queryData);
+
+    const ws = LobbyWebSocket.create(lobbyCode!, (packet) => {
+        console.log(packet);
+    });
 
     const leaveLobby_m = useMutation({
         mutationFn: leaveLobby,

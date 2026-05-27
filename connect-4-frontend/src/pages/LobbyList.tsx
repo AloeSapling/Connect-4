@@ -13,7 +13,6 @@ function LobbyList() {
 		queryKey: ["lobbies"],
 		queryFn: getLobbies,
 	})
-	console.log(queryData);
 
 	const langCtx = useContext(langContext);
 	

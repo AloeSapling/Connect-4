@@ -108,7 +108,7 @@ export class LobbyWebSocket {
         onError?: (this: WebSocket, ev: Event) => void
     ): Promise<LobbyWebSocket> {
         const ws = await createWebsocketConnection(
-            `/game/${lobbyCode}`,
+            `/lobby/${lobbyCode}`,
             (ev: MessageEvent) => {
                 const decodedPacket = p_ws.LobbyResponsePacket.decode(ev.data);
                 onMessage?.(decodedPacket);
