@@ -1,6 +1,6 @@
 import { type TPlayerIDs, P_PlayerTypes, type TPlayerTypes, P_PlayerIDs, type LobbyMemberSelectResult } from '../lib/types.ts';
 import { LobbyMember, User } from './models.ts';
-import { models } from '../lib/proto.js';
+import { models, shared } from '../lib/proto.js';
 
 /** Makes the specified user becom a host of the lobby associated with the provided code */
 export async function becomeHost(lobbyCode: string, userID: number) {
@@ -188,4 +188,16 @@ export async function getDetailedLobbyMembersData(lobbyCode: string): Promise<mo
         playerId: elem.player_id,
         host: elem.host,
     }));
+}
+
+/** Checks if the given lobby has a player that has been assigned the specified player id */
+export async function lobbyHasPlayerWithID(lobbyCode: string, playerID: shared.PlayerIDs): Promise<boolean> {
+    return (
+        (await LobbyMember.count({
+            where: {
+                lobby_code: lobbyCode,
+                player_id: playerID,
+            },
+        })) > 0
+    );
 }

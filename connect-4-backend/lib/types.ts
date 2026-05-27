@@ -1,6 +1,6 @@
 import type { Request } from 'express';
 import type { LobbyMember, User } from '../database-sqllite/models.ts';
-import type { WebSocket, WebSocketServer } from 'ws';
+import type { WebSocket } from 'ws';
 import * as proto from './proto.js';
 import type { IncomingMessage } from 'http';
 

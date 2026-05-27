@@ -1,10 +1,11 @@
 import * as GameRedis from '../database-redis/game.ts';
 import { Router } from 'express';
 import { lobbyExists } from '../database-sqllite/lobby.ts';
-import { CodedError, P_CodedError, P_ErrorCodes } from '../lib/types.ts';
+import { CodedError, P_CodedError, P_ErrorCodes, P_PlayerIDs } from '../lib/types.ts';
 import { addRouteWithMethods } from '../lib/lib.ts';
 import * as proto from '../lib/proto.js';
 import { isLobbyHost, isLobbyMember } from '../lib/auth.ts';
+import { lobbyHasPlayerWithID } from '../database-sqllite/lobbyMembers.ts';
 
 const router = Router();
 
@@ -20,6 +21,19 @@ addRouteWithMethods(
                 res.status(400).send(
                     P_CodedError.encode({
                         code: P_ErrorCodes.ERROR_CODES_DOESNT_EXIST,
+                    }).finish()
+                );
+                return;
+            }
+
+            // Checks if the lobby is in a valid state
+            if (
+                !(await lobbyHasPlayerWithID(code, P_PlayerIDs.PLAYER_IDS_PLAYER1)) ||
+                !(await lobbyHasPlayerWithID(code, P_PlayerIDs.PLAYER_IDS_PLAYER2))
+            ) {
+                res.status(400).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
                     }).finish()
                 );
                 return;
