@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,7 +13,7 @@ import MemberTable from '@/components/lobby/MemberTable.js';
 
 function Lobby() {
     const navigate = useNavigate();
-    let { lobbyCode } = useParams();
+    const { lobbyCode } = useParams();
     const user = useContext(UserContext);
     const queryClient = useQueryClient();
 
@@ -22,9 +22,22 @@ function Lobby() {
         queryFn: () => getLobbyDetails(lobbyCode!),
     });
 
-    const ws = LobbyWebSocket.create(lobbyCode!, (packet) => {
-        console.log(packet);
-    });
+    useEffect(() => {
+        if (!lobbyCode) return;
+        let cancelled = false;
+
+        LobbyWebSocket.create(lobbyCode, (packet) => {
+            console.log(packet);
+        }).then((instance) => {
+            if (cancelled) {
+                instance.ws.close();
+            }
+        });
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     const leaveLobby_m = useMutation({
         mutationFn: leaveLobby,
@@ -58,9 +71,9 @@ function Lobby() {
     }, [queryData?.lobbyDetails?.hasGame, navigate])
 
     const langCtx = useContext(langContext);
-        
+
     if (!langCtx) return <p>Missing language context!</p>;
-        
+
     const texts = langCtx.texts.lobby;
 
     return (
@@ -88,8 +101,8 @@ function Lobby() {
                 {queryData?.lobbyDetails?.lobbyMembers?.some(
                     (member) => member.userId === user?.id && member.host
                 ) && (
-                    <HostControls lobbyCode={lobbyCode!} membersData={queryData?.lobbyDetails?.lobbyMembers!} />
-                )}
+                        <HostControls lobbyCode={lobbyCode!} membersData={queryData?.lobbyDetails?.lobbyMembers!} />
+                    )}
             </div>
 
             {/* Bottom */}
