@@ -80,14 +80,12 @@ export class GameWebSocket {
     /** Inserts a tile at the given column */
     insertTile(column: number) {
         this.ws.send(
-            Buffer.from(
-                p_ws.WSGamePacket.encode({
-                    action: p_ws.WSGameActions.WS_GAME_ACTIONS_INSERT_TILE,
-                    insertTile: {
-                        column: column,
-                    },
-                }).finish()
-            )
+            p_ws.WSGamePacket.encode({
+                action: p_ws.WSGameActions.WS_GAME_ACTIONS_INSERT_TILE,
+                insertTile: {
+                    column: column,
+                },
+            }).finish()
         );
     }
 }
