@@ -6,10 +6,11 @@ import 'models/models.proto';
 
 enum LobbyResponses {
   LOBBY_RESPONSES_UNSPECIFIED = 0;
-  LOBBY_RESPONSES_JOIN = 1;
-  LOBBY_RESPONSES_LEAVE = 2;
-  LOBBY_RESPONSES_CHANGE_PLAYER = 3;
-  LOBBY_RESPONSES_START_GAME = 4;
+  LOBBY_RESPONSES_ERROR = 1;
+  LOBBY_RESPONSES_JOIN = 2;
+  LOBBY_RESPONSES_LEAVE = 3;
+  LOBBY_RESPONSES_CHANGE_PLAYER = 4;
+  LOBBY_RESPONSES_START_GAME = 5;
 }
 
 message LobbyJoin {
@@ -27,8 +28,9 @@ message LobbyChangePlayer {
 message LobbyResponsePacket {
   LobbyResponses response = 1;
   oneof data {
-    LobbyJoin join = 2;
-    LobbyLeave leave = 3;
-    LobbyChangePlayer changePlayer = 4;
+    shared.CodedError error = 2;
+    LobbyJoin join = 3;
+    LobbyLeave leave = 4;
+    LobbyChangePlayer changePlayer = 5;
   }
 }

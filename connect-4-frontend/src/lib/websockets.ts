@@ -62,13 +62,13 @@ export class GameWebSocket {
     /** Static factory method in order to be able to await async functions */
     static async create(
         lobbyCode: string,
-        onMessage?: (packet: p_ws.WSGameResponsePacket) => void,
+        onMessage?: (packet: p_ws.GameResponsePacket) => void,
         onError?: (this: WebSocket, ev: Event) => void
     ): Promise<GameWebSocket> {
         const ws = await createWebsocketConnection(
             `/game/${lobbyCode}`,
             (ev: MessageEvent) => {
-                const decodedPacket = p_ws.WSGameResponsePacket.decode(new Uint8Array(ev.data));
+                const decodedPacket = p_ws.GameResponsePacket.decode(new Uint8Array(ev.data));
                 onMessage?.(decodedPacket);
             },
             onError
@@ -80,8 +80,8 @@ export class GameWebSocket {
     /** Inserts a tile at the given column */
     insertTile(column: number) {
         this.ws.send(
-            p_ws.WSGamePacket.encode({
-                action: p_ws.WSGameActions.WS_GAME_ACTIONS_INSERT_TILE,
+            p_ws.GamePacket.encode({
+                action: p_ws.GameActions.GAME_ACTIONS_INSERT_TILE,
                 insertTile: {
                     column: column,
                 },

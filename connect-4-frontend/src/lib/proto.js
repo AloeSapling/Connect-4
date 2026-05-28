@@ -5041,6 +5041,7 @@ export const shared = $root.shared = (() => {
      * @property {number} ERROR_CODES_GAME_ALREADY_EXISTS=11 ERROR_CODES_GAME_ALREADY_EXISTS value
      * @property {number} ERROR_CODES_DOESNT_EXIST=12 ERROR_CODES_DOESNT_EXIST value
      * @property {number} ERROR_CODES_USER_ALREADY_EXISTS=13 ERROR_CODES_USER_ALREADY_EXISTS value
+     * @property {number} ERROR_CODES_BAD_SETUP=14 ERROR_CODES_BAD_SETUP value
      */
     shared.ErrorCodes = (function() {
         const valuesById = {}, values = Object.create(valuesById);
@@ -5058,6 +5059,7 @@ export const shared = $root.shared = (() => {
         values[valuesById[11] = "ERROR_CODES_GAME_ALREADY_EXISTS"] = 11;
         values[valuesById[12] = "ERROR_CODES_DOESNT_EXIST"] = 12;
         values[valuesById[13] = "ERROR_CODES_USER_ALREADY_EXISTS"] = 13;
+        values[valuesById[14] = "ERROR_CODES_BAD_SETUP"] = 14;
         return values;
     })();
 
@@ -5245,6 +5247,7 @@ export const shared = $root.shared = (() => {
                 case 11:
                 case 12:
                 case 13:
+                case 14:
                     break;
                 }
             if (message.error != null && message.hasOwnProperty("error")) {
@@ -5334,6 +5337,10 @@ export const shared = $root.shared = (() => {
             case 13:
                 message.code = 13;
                 break;
+            case "ERROR_CODES_BAD_SETUP":
+            case 14:
+                message.code = 14;
+                break;
             }
             if (object.error != null)
                 message.error = String(object.error);
@@ -5406,24 +5413,24 @@ export const ws = $root.ws = (() => {
      */
     const ws = {};
 
-    ws.WSGameInit = (function() {
+    ws.GameInsertTile = (function() {
 
         /**
-         * Properties of a WSGameInit.
+         * Properties of a GameInsertTile.
          * @memberof ws
-         * @interface IWSGameInit
-         * @property {string|null} [lobbyCode] WSGameInit lobbyCode
+         * @interface IGameInsertTile
+         * @property {number|null} [column] GameInsertTile column
          */
 
         /**
-         * Constructs a new WSGameInit.
+         * Constructs a new GameInsertTile.
          * @memberof ws
-         * @classdesc Represents a WSGameInit.
-         * @implements IWSGameInit
+         * @classdesc Represents a GameInsertTile.
+         * @implements IGameInsertTile
          * @constructor
-         * @param {ws.IWSGameInit=} [properties] Properties to set
+         * @param {ws.IGameInsertTile=} [properties] Properties to set
          */
-        function WSGameInit(properties) {
+        function GameInsertTile(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -5431,252 +5438,35 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * WSGameInit lobbyCode.
-         * @member {string} lobbyCode
-         * @memberof ws.WSGameInit
-         * @instance
-         */
-        WSGameInit.prototype.lobbyCode = "";
-
-        /**
-         * Creates a new WSGameInit instance using the specified properties.
-         * @function create
-         * @memberof ws.WSGameInit
-         * @static
-         * @param {ws.IWSGameInit=} [properties] Properties to set
-         * @returns {ws.WSGameInit} WSGameInit instance
-         */
-        WSGameInit.create = function create(properties) {
-            return new WSGameInit(properties);
-        };
-
-        /**
-         * Encodes the specified WSGameInit message. Does not implicitly {@link ws.WSGameInit.verify|verify} messages.
-         * @function encode
-         * @memberof ws.WSGameInit
-         * @static
-         * @param {ws.IWSGameInit} message WSGameInit message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        WSGameInit.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.lobbyCode != null && Object.hasOwnProperty.call(message, "lobbyCode"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.lobbyCode);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified WSGameInit message, length delimited. Does not implicitly {@link ws.WSGameInit.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof ws.WSGameInit
-         * @static
-         * @param {ws.IWSGameInit} message WSGameInit message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        WSGameInit.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a WSGameInit message from the specified reader or buffer.
-         * @function decode
-         * @memberof ws.WSGameInit
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {ws.WSGameInit} WSGameInit
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        WSGameInit.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.WSGameInit();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.lobbyCode = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a WSGameInit message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof ws.WSGameInit
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.WSGameInit} WSGameInit
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        WSGameInit.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a WSGameInit message.
-         * @function verify
-         * @memberof ws.WSGameInit
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        WSGameInit.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.lobbyCode != null && message.hasOwnProperty("lobbyCode"))
-                if (!$util.isString(message.lobbyCode))
-                    return "lobbyCode: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a WSGameInit message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof ws.WSGameInit
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {ws.WSGameInit} WSGameInit
-         */
-        WSGameInit.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.WSGameInit)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.WSGameInit();
-            if (object.lobbyCode != null)
-                message.lobbyCode = String(object.lobbyCode);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a WSGameInit message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof ws.WSGameInit
-         * @static
-         * @param {ws.WSGameInit} message WSGameInit
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        WSGameInit.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults)
-                object.lobbyCode = "";
-            if (message.lobbyCode != null && message.hasOwnProperty("lobbyCode"))
-                object.lobbyCode = message.lobbyCode;
-            return object;
-        };
-
-        /**
-         * Converts this WSGameInit to JSON.
-         * @function toJSON
-         * @memberof ws.WSGameInit
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        WSGameInit.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for WSGameInit
-         * @function getTypeUrl
-         * @memberof ws.WSGameInit
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        WSGameInit.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/ws.WSGameInit";
-        };
-
-        return WSGameInit;
-    })();
-
-    ws.WSGameInsertTile = (function() {
-
-        /**
-         * Properties of a WSGameInsertTile.
-         * @memberof ws
-         * @interface IWSGameInsertTile
-         * @property {number|null} [column] WSGameInsertTile column
-         */
-
-        /**
-         * Constructs a new WSGameInsertTile.
-         * @memberof ws
-         * @classdesc Represents a WSGameInsertTile.
-         * @implements IWSGameInsertTile
-         * @constructor
-         * @param {ws.IWSGameInsertTile=} [properties] Properties to set
-         */
-        function WSGameInsertTile(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * WSGameInsertTile column.
+         * GameInsertTile column.
          * @member {number} column
-         * @memberof ws.WSGameInsertTile
+         * @memberof ws.GameInsertTile
          * @instance
          */
-        WSGameInsertTile.prototype.column = 0;
+        GameInsertTile.prototype.column = 0;
 
         /**
-         * Creates a new WSGameInsertTile instance using the specified properties.
+         * Creates a new GameInsertTile instance using the specified properties.
          * @function create
-         * @memberof ws.WSGameInsertTile
+         * @memberof ws.GameInsertTile
          * @static
-         * @param {ws.IWSGameInsertTile=} [properties] Properties to set
-         * @returns {ws.WSGameInsertTile} WSGameInsertTile instance
+         * @param {ws.IGameInsertTile=} [properties] Properties to set
+         * @returns {ws.GameInsertTile} GameInsertTile instance
          */
-        WSGameInsertTile.create = function create(properties) {
-            return new WSGameInsertTile(properties);
+        GameInsertTile.create = function create(properties) {
+            return new GameInsertTile(properties);
         };
 
         /**
-         * Encodes the specified WSGameInsertTile message. Does not implicitly {@link ws.WSGameInsertTile.verify|verify} messages.
+         * Encodes the specified GameInsertTile message. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
          * @function encode
-         * @memberof ws.WSGameInsertTile
+         * @memberof ws.GameInsertTile
          * @static
-         * @param {ws.IWSGameInsertTile} message WSGameInsertTile message or plain object to encode
+         * @param {ws.IGameInsertTile} message GameInsertTile message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        WSGameInsertTile.encode = function encode(message, writer) {
+        GameInsertTile.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.column != null && Object.hasOwnProperty.call(message, "column"))
@@ -5685,37 +5475,37 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Encodes the specified WSGameInsertTile message, length delimited. Does not implicitly {@link ws.WSGameInsertTile.verify|verify} messages.
+         * Encodes the specified GameInsertTile message, length delimited. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof ws.WSGameInsertTile
+         * @memberof ws.GameInsertTile
          * @static
-         * @param {ws.IWSGameInsertTile} message WSGameInsertTile message or plain object to encode
+         * @param {ws.IGameInsertTile} message GameInsertTile message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        WSGameInsertTile.encodeDelimited = function encodeDelimited(message, writer) {
+        GameInsertTile.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a WSGameInsertTile message from the specified reader or buffer.
+         * Decodes a GameInsertTile message from the specified reader or buffer.
          * @function decode
-         * @memberof ws.WSGameInsertTile
+         * @memberof ws.GameInsertTile
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {ws.WSGameInsertTile} WSGameInsertTile
+         * @returns {ws.GameInsertTile} GameInsertTile
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        WSGameInsertTile.decode = function decode(reader, length, error, long) {
+        GameInsertTile.decode = function decode(reader, length, error, long) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             if (long === undefined)
                 long = 0;
             if (long > $Reader.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.WSGameInsertTile();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameInsertTile();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 if (tag === error)
@@ -5734,30 +5524,30 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Decodes a WSGameInsertTile message from the specified reader or buffer, length delimited.
+         * Decodes a GameInsertTile message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof ws.WSGameInsertTile
+         * @memberof ws.GameInsertTile
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.WSGameInsertTile} WSGameInsertTile
+         * @returns {ws.GameInsertTile} GameInsertTile
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        WSGameInsertTile.decodeDelimited = function decodeDelimited(reader) {
+        GameInsertTile.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a WSGameInsertTile message.
+         * Verifies a GameInsertTile message.
          * @function verify
-         * @memberof ws.WSGameInsertTile
+         * @memberof ws.GameInsertTile
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        WSGameInsertTile.verify = function verify(message, long) {
+        GameInsertTile.verify = function verify(message, long) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (long === undefined)
@@ -5771,36 +5561,36 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Creates a WSGameInsertTile message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameInsertTile message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof ws.WSGameInsertTile
+         * @memberof ws.GameInsertTile
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {ws.WSGameInsertTile} WSGameInsertTile
+         * @returns {ws.GameInsertTile} GameInsertTile
          */
-        WSGameInsertTile.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.WSGameInsertTile)
+        GameInsertTile.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.GameInsertTile)
                 return object;
             if (long === undefined)
                 long = 0;
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.WSGameInsertTile();
+            let message = new $root.ws.GameInsertTile();
             if (object.column != null)
                 message.column = object.column | 0;
             return message;
         };
 
         /**
-         * Creates a plain object from a WSGameInsertTile message. Also converts values to other types if specified.
+         * Creates a plain object from a GameInsertTile message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof ws.WSGameInsertTile
+         * @memberof ws.GameInsertTile
          * @static
-         * @param {ws.WSGameInsertTile} message WSGameInsertTile
+         * @param {ws.GameInsertTile} message GameInsertTile
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        WSGameInsertTile.toObject = function toObject(message, options) {
+        GameInsertTile.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
@@ -5812,70 +5602,69 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Converts this WSGameInsertTile to JSON.
+         * Converts this GameInsertTile to JSON.
          * @function toJSON
-         * @memberof ws.WSGameInsertTile
+         * @memberof ws.GameInsertTile
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        WSGameInsertTile.prototype.toJSON = function toJSON() {
+        GameInsertTile.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for WSGameInsertTile
+         * Gets the default type url for GameInsertTile
          * @function getTypeUrl
-         * @memberof ws.WSGameInsertTile
+         * @memberof ws.GameInsertTile
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        WSGameInsertTile.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        GameInsertTile.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/ws.WSGameInsertTile";
+            return typeUrlPrefix + "/ws.GameInsertTile";
         };
 
-        return WSGameInsertTile;
+        return GameInsertTile;
     })();
 
     /**
-     * WSGameActions enum.
-     * @name ws.WSGameActions
+     * GameActions enum.
+     * @name ws.GameActions
      * @enum {number}
-     * @property {number} WS_GAME_ACTIONS_UNSPECIFIED=0 WS_GAME_ACTIONS_UNSPECIFIED value
-     * @property {number} WS_GAME_ACTIONS_INIT=1 WS_GAME_ACTIONS_INIT value
-     * @property {number} WS_GAME_ACTIONS_INSERT_TILE=2 WS_GAME_ACTIONS_INSERT_TILE value
+     * @property {number} GAME_ACTIONS_UNSPECIFIED=0 GAME_ACTIONS_UNSPECIFIED value
+     * @property {number} GAME_ACTIONS_INIT=1 GAME_ACTIONS_INIT value
+     * @property {number} GAME_ACTIONS_INSERT_TILE=2 GAME_ACTIONS_INSERT_TILE value
      */
-    ws.WSGameActions = (function() {
+    ws.GameActions = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = "WS_GAME_ACTIONS_UNSPECIFIED"] = 0;
-        values[valuesById[1] = "WS_GAME_ACTIONS_INIT"] = 1;
-        values[valuesById[2] = "WS_GAME_ACTIONS_INSERT_TILE"] = 2;
+        values[valuesById[0] = "GAME_ACTIONS_UNSPECIFIED"] = 0;
+        values[valuesById[1] = "GAME_ACTIONS_INIT"] = 1;
+        values[valuesById[2] = "GAME_ACTIONS_INSERT_TILE"] = 2;
         return values;
     })();
 
-    ws.WSGamePacket = (function() {
+    ws.GamePacket = (function() {
 
         /**
-         * Properties of a WSGamePacket.
+         * Properties of a GamePacket.
          * @memberof ws
-         * @interface IWSGamePacket
-         * @property {ws.WSGameActions|null} [action] WSGamePacket action
-         * @property {ws.IWSGameInit|null} [init] WSGamePacket init
-         * @property {ws.IWSGameInsertTile|null} [insertTile] WSGamePacket insertTile
+         * @interface IGamePacket
+         * @property {ws.GameActions|null} [action] GamePacket action
+         * @property {ws.IGameInsertTile|null} [insertTile] GamePacket insertTile
          */
 
         /**
-         * Constructs a new WSGamePacket.
+         * Constructs a new GamePacket.
          * @memberof ws
-         * @classdesc Represents a WSGamePacket.
-         * @implements IWSGamePacket
+         * @classdesc Represents a GamePacket.
+         * @implements IGamePacket
          * @constructor
-         * @param {ws.IWSGamePacket=} [properties] Properties to set
+         * @param {ws.IGamePacket=} [properties] Properties to set
          */
-        function WSGamePacket(properties) {
+        function GamePacket(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -5883,108 +5672,98 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * WSGamePacket action.
-         * @member {ws.WSGameActions} action
-         * @memberof ws.WSGamePacket
+         * GamePacket action.
+         * @member {ws.GameActions} action
+         * @memberof ws.GamePacket
          * @instance
          */
-        WSGamePacket.prototype.action = 0;
+        GamePacket.prototype.action = 0;
 
         /**
-         * WSGamePacket init.
-         * @member {ws.IWSGameInit|null|undefined} init
-         * @memberof ws.WSGamePacket
+         * GamePacket insertTile.
+         * @member {ws.IGameInsertTile|null|undefined} insertTile
+         * @memberof ws.GamePacket
          * @instance
          */
-        WSGamePacket.prototype.init = null;
-
-        /**
-         * WSGamePacket insertTile.
-         * @member {ws.IWSGameInsertTile|null|undefined} insertTile
-         * @memberof ws.WSGamePacket
-         * @instance
-         */
-        WSGamePacket.prototype.insertTile = null;
+        GamePacket.prototype.insertTile = null;
 
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
-         * WSGamePacket data.
-         * @member {"init"|"insertTile"|undefined} data
-         * @memberof ws.WSGamePacket
+         * GamePacket data.
+         * @member {"insertTile"|undefined} data
+         * @memberof ws.GamePacket
          * @instance
          */
-        Object.defineProperty(WSGamePacket.prototype, "data", {
-            get: $util.oneOfGetter($oneOfFields = ["init", "insertTile"]),
+        Object.defineProperty(GamePacket.prototype, "data", {
+            get: $util.oneOfGetter($oneOfFields = ["insertTile"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
         /**
-         * Creates a new WSGamePacket instance using the specified properties.
+         * Creates a new GamePacket instance using the specified properties.
          * @function create
-         * @memberof ws.WSGamePacket
+         * @memberof ws.GamePacket
          * @static
-         * @param {ws.IWSGamePacket=} [properties] Properties to set
-         * @returns {ws.WSGamePacket} WSGamePacket instance
+         * @param {ws.IGamePacket=} [properties] Properties to set
+         * @returns {ws.GamePacket} GamePacket instance
          */
-        WSGamePacket.create = function create(properties) {
-            return new WSGamePacket(properties);
+        GamePacket.create = function create(properties) {
+            return new GamePacket(properties);
         };
 
         /**
-         * Encodes the specified WSGamePacket message. Does not implicitly {@link ws.WSGamePacket.verify|verify} messages.
+         * Encodes the specified GamePacket message. Does not implicitly {@link ws.GamePacket.verify|verify} messages.
          * @function encode
-         * @memberof ws.WSGamePacket
+         * @memberof ws.GamePacket
          * @static
-         * @param {ws.IWSGamePacket} message WSGamePacket message or plain object to encode
+         * @param {ws.IGamePacket} message GamePacket message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        WSGamePacket.encode = function encode(message, writer) {
+        GamePacket.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.action != null && Object.hasOwnProperty.call(message, "action"))
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.action);
-            if (message.init != null && Object.hasOwnProperty.call(message, "init"))
-                $root.ws.WSGameInit.encode(message.init, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.insertTile != null && Object.hasOwnProperty.call(message, "insertTile"))
-                $root.ws.WSGameInsertTile.encode(message.insertTile, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                $root.ws.GameInsertTile.encode(message.insertTile, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             return writer;
         };
 
         /**
-         * Encodes the specified WSGamePacket message, length delimited. Does not implicitly {@link ws.WSGamePacket.verify|verify} messages.
+         * Encodes the specified GamePacket message, length delimited. Does not implicitly {@link ws.GamePacket.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof ws.WSGamePacket
+         * @memberof ws.GamePacket
          * @static
-         * @param {ws.IWSGamePacket} message WSGamePacket message or plain object to encode
+         * @param {ws.IGamePacket} message GamePacket message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        WSGamePacket.encodeDelimited = function encodeDelimited(message, writer) {
+        GamePacket.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a WSGamePacket message from the specified reader or buffer.
+         * Decodes a GamePacket message from the specified reader or buffer.
          * @function decode
-         * @memberof ws.WSGamePacket
+         * @memberof ws.GamePacket
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {ws.WSGamePacket} WSGamePacket
+         * @returns {ws.GamePacket} GamePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        WSGamePacket.decode = function decode(reader, length, error, long) {
+        GamePacket.decode = function decode(reader, length, error, long) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             if (long === undefined)
                 long = 0;
             if (long > $Reader.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.WSGamePacket();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GamePacket();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 if (tag === error)
@@ -5995,11 +5774,7 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 2: {
-                        message.init = $root.ws.WSGameInit.decode(reader, reader.uint32(), undefined, long + 1);
-                        break;
-                    }
-                case 3: {
-                        message.insertTile = $root.ws.WSGameInsertTile.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.insertTile = $root.ws.GameInsertTile.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 default:
@@ -6011,30 +5786,30 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Decodes a WSGamePacket message from the specified reader or buffer, length delimited.
+         * Decodes a GamePacket message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof ws.WSGamePacket
+         * @memberof ws.GamePacket
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.WSGamePacket} WSGamePacket
+         * @returns {ws.GamePacket} GamePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        WSGamePacket.decodeDelimited = function decodeDelimited(reader) {
+        GamePacket.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a WSGamePacket message.
+         * Verifies a GamePacket message.
          * @function verify
-         * @memberof ws.WSGamePacket
+         * @memberof ws.GamePacket
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        WSGamePacket.verify = function verify(message, long) {
+        GamePacket.verify = function verify(message, long) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (long === undefined)
@@ -6051,20 +5826,10 @@ export const ws = $root.ws = (() => {
                 case 2:
                     break;
                 }
-            if (message.init != null && message.hasOwnProperty("init")) {
-                properties.data = 1;
-                {
-                    let error = $root.ws.WSGameInit.verify(message.init, long + 1);
-                    if (error)
-                        return "init." + error;
-                }
-            }
             if (message.insertTile != null && message.hasOwnProperty("insertTile")) {
-                if (properties.data === 1)
-                    return "data: multiple values";
                 properties.data = 1;
                 {
-                    let error = $root.ws.WSGameInsertTile.verify(message.insertTile, long + 1);
+                    let error = $root.ws.GameInsertTile.verify(message.insertTile, long + 1);
                     if (error)
                         return "insertTile." + error;
                 }
@@ -6073,21 +5838,21 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Creates a WSGamePacket message from a plain object. Also converts values to their respective internal types.
+         * Creates a GamePacket message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof ws.WSGamePacket
+         * @memberof ws.GamePacket
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {ws.WSGamePacket} WSGamePacket
+         * @returns {ws.GamePacket} GamePacket
          */
-        WSGamePacket.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.WSGamePacket)
+        GamePacket.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.GamePacket)
                 return object;
             if (long === undefined)
                 long = 0;
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.WSGamePacket();
+            let message = new $root.ws.GamePacket();
             switch (object.action) {
             default:
                 if (typeof object.action === "number") {
@@ -6095,56 +5860,46 @@ export const ws = $root.ws = (() => {
                     break;
                 }
                 break;
-            case "WS_GAME_ACTIONS_UNSPECIFIED":
+            case "GAME_ACTIONS_UNSPECIFIED":
             case 0:
                 message.action = 0;
                 break;
-            case "WS_GAME_ACTIONS_INIT":
+            case "GAME_ACTIONS_INIT":
             case 1:
                 message.action = 1;
                 break;
-            case "WS_GAME_ACTIONS_INSERT_TILE":
+            case "GAME_ACTIONS_INSERT_TILE":
             case 2:
                 message.action = 2;
                 break;
             }
-            if (object.init != null) {
-                if (typeof object.init !== "object")
-                    throw TypeError(".ws.WSGamePacket.init: object expected");
-                message.init = $root.ws.WSGameInit.fromObject(object.init, long + 1);
-            }
             if (object.insertTile != null) {
                 if (typeof object.insertTile !== "object")
-                    throw TypeError(".ws.WSGamePacket.insertTile: object expected");
-                message.insertTile = $root.ws.WSGameInsertTile.fromObject(object.insertTile, long + 1);
+                    throw TypeError(".ws.GamePacket.insertTile: object expected");
+                message.insertTile = $root.ws.GameInsertTile.fromObject(object.insertTile, long + 1);
             }
             return message;
         };
 
         /**
-         * Creates a plain object from a WSGamePacket message. Also converts values to other types if specified.
+         * Creates a plain object from a GamePacket message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof ws.WSGamePacket
+         * @memberof ws.GamePacket
          * @static
-         * @param {ws.WSGamePacket} message WSGamePacket
+         * @param {ws.GamePacket} message GamePacket
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        WSGamePacket.toObject = function toObject(message, options) {
+        GamePacket.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
             if (options.defaults)
-                object.action = options.enums === String ? "WS_GAME_ACTIONS_UNSPECIFIED" : 0;
+                object.action = options.enums === String ? "GAME_ACTIONS_UNSPECIFIED" : 0;
             if (message.action != null && message.hasOwnProperty("action"))
-                object.action = options.enums === String ? $root.ws.WSGameActions[message.action] === undefined ? message.action : $root.ws.WSGameActions[message.action] : message.action;
-            if (message.init != null && message.hasOwnProperty("init")) {
-                object.init = $root.ws.WSGameInit.toObject(message.init, options);
-                if (options.oneofs)
-                    object.data = "init";
-            }
+                object.action = options.enums === String ? $root.ws.GameActions[message.action] === undefined ? message.action : $root.ws.GameActions[message.action] : message.action;
             if (message.insertTile != null && message.hasOwnProperty("insertTile")) {
-                object.insertTile = $root.ws.WSGameInsertTile.toObject(message.insertTile, options);
+                object.insertTile = $root.ws.GameInsertTile.toObject(message.insertTile, options);
                 if (options.oneofs)
                     object.data = "insertTile";
             }
@@ -6152,32 +5907,32 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Converts this WSGamePacket to JSON.
+         * Converts this GamePacket to JSON.
          * @function toJSON
-         * @memberof ws.WSGamePacket
+         * @memberof ws.GamePacket
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        WSGamePacket.prototype.toJSON = function toJSON() {
+        GamePacket.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for WSGamePacket
+         * Gets the default type url for GamePacket
          * @function getTypeUrl
-         * @memberof ws.WSGamePacket
+         * @memberof ws.GamePacket
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        WSGamePacket.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        GamePacket.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/ws.WSGamePacket";
+            return typeUrlPrefix + "/ws.GamePacket";
         };
 
-        return WSGamePacket;
+        return GamePacket;
     })();
 
     ws.PartialUser = (function() {
@@ -6397,25 +6152,25 @@ export const ws = $root.ws = (() => {
         return PartialUser;
     })();
 
-    ws.WSGameEnd = (function() {
+    ws.GameEnd = (function() {
 
         /**
-         * Properties of a WSGameEnd.
+         * Properties of a GameEnd.
          * @memberof ws
-         * @interface IWSGameEnd
-         * @property {ws.IPartialUser|null} [user] WSGameEnd user
-         * @property {boolean|null} [draw] WSGameEnd draw
+         * @interface IGameEnd
+         * @property {ws.IPartialUser|null} [user] GameEnd user
+         * @property {boolean|null} [draw] GameEnd draw
          */
 
         /**
-         * Constructs a new WSGameEnd.
+         * Constructs a new GameEnd.
          * @memberof ws
-         * @classdesc Represents a WSGameEnd.
-         * @implements IWSGameEnd
+         * @classdesc Represents a GameEnd.
+         * @implements IGameEnd
          * @constructor
-         * @param {ws.IWSGameEnd=} [properties] Properties to set
+         * @param {ws.IGameEnd=} [properties] Properties to set
          */
-        function WSGameEnd(properties) {
+        function GameEnd(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -6423,57 +6178,57 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * WSGameEnd user.
+         * GameEnd user.
          * @member {ws.IPartialUser|null|undefined} user
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @instance
          */
-        WSGameEnd.prototype.user = null;
+        GameEnd.prototype.user = null;
 
         /**
-         * WSGameEnd draw.
+         * GameEnd draw.
          * @member {boolean|null|undefined} draw
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @instance
          */
-        WSGameEnd.prototype.draw = null;
+        GameEnd.prototype.draw = null;
 
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
-         * WSGameEnd winner.
+         * GameEnd winner.
          * @member {"user"|"draw"|undefined} winner
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @instance
          */
-        Object.defineProperty(WSGameEnd.prototype, "winner", {
+        Object.defineProperty(GameEnd.prototype, "winner", {
             get: $util.oneOfGetter($oneOfFields = ["user", "draw"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
         /**
-         * Creates a new WSGameEnd instance using the specified properties.
+         * Creates a new GameEnd instance using the specified properties.
          * @function create
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @static
-         * @param {ws.IWSGameEnd=} [properties] Properties to set
-         * @returns {ws.WSGameEnd} WSGameEnd instance
+         * @param {ws.IGameEnd=} [properties] Properties to set
+         * @returns {ws.GameEnd} GameEnd instance
          */
-        WSGameEnd.create = function create(properties) {
-            return new WSGameEnd(properties);
+        GameEnd.create = function create(properties) {
+            return new GameEnd(properties);
         };
 
         /**
-         * Encodes the specified WSGameEnd message. Does not implicitly {@link ws.WSGameEnd.verify|verify} messages.
+         * Encodes the specified GameEnd message. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
          * @function encode
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @static
-         * @param {ws.IWSGameEnd} message WSGameEnd message or plain object to encode
+         * @param {ws.IGameEnd} message GameEnd message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        WSGameEnd.encode = function encode(message, writer) {
+        GameEnd.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.user != null && Object.hasOwnProperty.call(message, "user"))
@@ -6484,37 +6239,37 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Encodes the specified WSGameEnd message, length delimited. Does not implicitly {@link ws.WSGameEnd.verify|verify} messages.
+         * Encodes the specified GameEnd message, length delimited. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @static
-         * @param {ws.IWSGameEnd} message WSGameEnd message or plain object to encode
+         * @param {ws.IGameEnd} message GameEnd message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        WSGameEnd.encodeDelimited = function encodeDelimited(message, writer) {
+        GameEnd.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a WSGameEnd message from the specified reader or buffer.
+         * Decodes a GameEnd message from the specified reader or buffer.
          * @function decode
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {ws.WSGameEnd} WSGameEnd
+         * @returns {ws.GameEnd} GameEnd
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        WSGameEnd.decode = function decode(reader, length, error, long) {
+        GameEnd.decode = function decode(reader, length, error, long) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             if (long === undefined)
                 long = 0;
             if (long > $Reader.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.WSGameEnd();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameEnd();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 if (tag === error)
@@ -6537,30 +6292,30 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Decodes a WSGameEnd message from the specified reader or buffer, length delimited.
+         * Decodes a GameEnd message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.WSGameEnd} WSGameEnd
+         * @returns {ws.GameEnd} GameEnd
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        WSGameEnd.decodeDelimited = function decodeDelimited(reader) {
+        GameEnd.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a WSGameEnd message.
+         * Verifies a GameEnd message.
          * @function verify
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        WSGameEnd.verify = function verify(message, long) {
+        GameEnd.verify = function verify(message, long) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (long === undefined)
@@ -6587,24 +6342,24 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Creates a WSGameEnd message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameEnd message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {ws.WSGameEnd} WSGameEnd
+         * @returns {ws.GameEnd} GameEnd
          */
-        WSGameEnd.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.WSGameEnd)
+        GameEnd.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.GameEnd)
                 return object;
             if (long === undefined)
                 long = 0;
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.WSGameEnd();
+            let message = new $root.ws.GameEnd();
             if (object.user != null) {
                 if (typeof object.user !== "object")
-                    throw TypeError(".ws.WSGameEnd.user: object expected");
+                    throw TypeError(".ws.GameEnd.user: object expected");
                 message.user = $root.ws.PartialUser.fromObject(object.user, long + 1);
             }
             if (object.draw != null)
@@ -6613,15 +6368,15 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Creates a plain object from a WSGameEnd message. Also converts values to other types if specified.
+         * Creates a plain object from a GameEnd message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @static
-         * @param {ws.WSGameEnd} message WSGameEnd
+         * @param {ws.GameEnd} message GameEnd
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        WSGameEnd.toObject = function toObject(message, options) {
+        GameEnd.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
@@ -6639,55 +6394,55 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Converts this WSGameEnd to JSON.
+         * Converts this GameEnd to JSON.
          * @function toJSON
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        WSGameEnd.prototype.toJSON = function toJSON() {
+        GameEnd.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for WSGameEnd
+         * Gets the default type url for GameEnd
          * @function getTypeUrl
-         * @memberof ws.WSGameEnd
+         * @memberof ws.GameEnd
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        WSGameEnd.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        GameEnd.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/ws.WSGameEnd";
+            return typeUrlPrefix + "/ws.GameEnd";
         };
 
-        return WSGameEnd;
+        return GameEnd;
     })();
 
-    ws.WSGameMove = (function() {
+    ws.GameMove = (function() {
 
         /**
-         * Properties of a WSGameMove.
+         * Properties of a GameMove.
          * @memberof ws
-         * @interface IWSGameMove
-         * @property {number|null} [row] WSGameMove row
-         * @property {number|null} [column] WSGameMove column
-         * @property {shared.IGameBoard|null} [board] WSGameMove board
-         * @property {shared.PlayerIDs|null} [turn] WSGameMove turn
+         * @interface IGameMove
+         * @property {number|null} [row] GameMove row
+         * @property {number|null} [column] GameMove column
+         * @property {shared.IGameBoard|null} [board] GameMove board
+         * @property {shared.PlayerIDs|null} [turn] GameMove turn
          */
 
         /**
-         * Constructs a new WSGameMove.
+         * Constructs a new GameMove.
          * @memberof ws
-         * @classdesc Represents a WSGameMove.
-         * @implements IWSGameMove
+         * @classdesc Represents a GameMove.
+         * @implements IGameMove
          * @constructor
-         * @param {ws.IWSGameMove=} [properties] Properties to set
+         * @param {ws.IGameMove=} [properties] Properties to set
          */
-        function WSGameMove(properties) {
+        function GameMove(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -6695,59 +6450,59 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * WSGameMove row.
+         * GameMove row.
          * @member {number} row
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @instance
          */
-        WSGameMove.prototype.row = 0;
+        GameMove.prototype.row = 0;
 
         /**
-         * WSGameMove column.
+         * GameMove column.
          * @member {number} column
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @instance
          */
-        WSGameMove.prototype.column = 0;
+        GameMove.prototype.column = 0;
 
         /**
-         * WSGameMove board.
+         * GameMove board.
          * @member {shared.IGameBoard|null|undefined} board
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @instance
          */
-        WSGameMove.prototype.board = null;
+        GameMove.prototype.board = null;
 
         /**
-         * WSGameMove turn.
+         * GameMove turn.
          * @member {shared.PlayerIDs} turn
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @instance
          */
-        WSGameMove.prototype.turn = 0;
+        GameMove.prototype.turn = 0;
 
         /**
-         * Creates a new WSGameMove instance using the specified properties.
+         * Creates a new GameMove instance using the specified properties.
          * @function create
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @static
-         * @param {ws.IWSGameMove=} [properties] Properties to set
-         * @returns {ws.WSGameMove} WSGameMove instance
+         * @param {ws.IGameMove=} [properties] Properties to set
+         * @returns {ws.GameMove} GameMove instance
          */
-        WSGameMove.create = function create(properties) {
-            return new WSGameMove(properties);
+        GameMove.create = function create(properties) {
+            return new GameMove(properties);
         };
 
         /**
-         * Encodes the specified WSGameMove message. Does not implicitly {@link ws.WSGameMove.verify|verify} messages.
+         * Encodes the specified GameMove message. Does not implicitly {@link ws.GameMove.verify|verify} messages.
          * @function encode
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @static
-         * @param {ws.IWSGameMove} message WSGameMove message or plain object to encode
+         * @param {ws.IGameMove} message GameMove message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        WSGameMove.encode = function encode(message, writer) {
+        GameMove.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.row != null && Object.hasOwnProperty.call(message, "row"))
@@ -6762,37 +6517,37 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Encodes the specified WSGameMove message, length delimited. Does not implicitly {@link ws.WSGameMove.verify|verify} messages.
+         * Encodes the specified GameMove message, length delimited. Does not implicitly {@link ws.GameMove.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @static
-         * @param {ws.IWSGameMove} message WSGameMove message or plain object to encode
+         * @param {ws.IGameMove} message GameMove message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        WSGameMove.encodeDelimited = function encodeDelimited(message, writer) {
+        GameMove.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a WSGameMove message from the specified reader or buffer.
+         * Decodes a GameMove message from the specified reader or buffer.
          * @function decode
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {ws.WSGameMove} WSGameMove
+         * @returns {ws.GameMove} GameMove
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        WSGameMove.decode = function decode(reader, length, error, long) {
+        GameMove.decode = function decode(reader, length, error, long) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             if (long === undefined)
                 long = 0;
             if (long > $Reader.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.WSGameMove();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameMove();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 if (tag === error)
@@ -6823,30 +6578,30 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Decodes a WSGameMove message from the specified reader or buffer, length delimited.
+         * Decodes a GameMove message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.WSGameMove} WSGameMove
+         * @returns {ws.GameMove} GameMove
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        WSGameMove.decodeDelimited = function decodeDelimited(reader) {
+        GameMove.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a WSGameMove message.
+         * Verifies a GameMove message.
          * @function verify
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        WSGameMove.verify = function verify(message, long) {
+        GameMove.verify = function verify(message, long) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (long === undefined)
@@ -6877,28 +6632,28 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Creates a WSGameMove message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameMove message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {ws.WSGameMove} WSGameMove
+         * @returns {ws.GameMove} GameMove
          */
-        WSGameMove.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.WSGameMove)
+        GameMove.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.GameMove)
                 return object;
             if (long === undefined)
                 long = 0;
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.WSGameMove();
+            let message = new $root.ws.GameMove();
             if (object.row != null)
                 message.row = object.row | 0;
             if (object.column != null)
                 message.column = object.column | 0;
             if (object.board != null) {
                 if (typeof object.board !== "object")
-                    throw TypeError(".ws.WSGameMove.board: object expected");
+                    throw TypeError(".ws.GameMove.board: object expected");
                 message.board = $root.shared.GameBoard.fromObject(object.board, long + 1);
             }
             switch (object.turn) {
@@ -6925,15 +6680,15 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Creates a plain object from a WSGameMove message. Also converts values to other types if specified.
+         * Creates a plain object from a GameMove message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @static
-         * @param {ws.WSGameMove} message WSGameMove
+         * @param {ws.GameMove} message GameMove
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        WSGameMove.toObject = function toObject(message, options) {
+        GameMove.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
@@ -6955,73 +6710,73 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Converts this WSGameMove to JSON.
+         * Converts this GameMove to JSON.
          * @function toJSON
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        WSGameMove.prototype.toJSON = function toJSON() {
+        GameMove.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for WSGameMove
+         * Gets the default type url for GameMove
          * @function getTypeUrl
-         * @memberof ws.WSGameMove
+         * @memberof ws.GameMove
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        WSGameMove.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        GameMove.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/ws.WSGameMove";
+            return typeUrlPrefix + "/ws.GameMove";
         };
 
-        return WSGameMove;
+        return GameMove;
     })();
 
     /**
-     * WSGameResponses enum.
-     * @name ws.WSGameResponses
+     * GameResponses enum.
+     * @name ws.GameResponses
      * @enum {number}
-     * @property {number} WS_GAME_RESPONSES_UNSPECIFIED=0 WS_GAME_RESPONSES_UNSPECIFIED value
-     * @property {number} WS_GAME_RESPONSES_ERROR=1 WS_GAME_RESPONSES_ERROR value
-     * @property {number} WS_GAME_RESPONSES_MOVE=2 WS_GAME_RESPONSES_MOVE value
-     * @property {number} WS_GAME_RESPONSES_END=3 WS_GAME_RESPONSES_END value
+     * @property {number} GAME_RESPONSES_UNSPECIFIED=0 GAME_RESPONSES_UNSPECIFIED value
+     * @property {number} GAME_RESPONSES_ERROR=1 GAME_RESPONSES_ERROR value
+     * @property {number} GAME_RESPONSES_MOVE=2 GAME_RESPONSES_MOVE value
+     * @property {number} GAME_RESPONSES_END=3 GAME_RESPONSES_END value
      */
-    ws.WSGameResponses = (function() {
+    ws.GameResponses = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = "WS_GAME_RESPONSES_UNSPECIFIED"] = 0;
-        values[valuesById[1] = "WS_GAME_RESPONSES_ERROR"] = 1;
-        values[valuesById[2] = "WS_GAME_RESPONSES_MOVE"] = 2;
-        values[valuesById[3] = "WS_GAME_RESPONSES_END"] = 3;
+        values[valuesById[0] = "GAME_RESPONSES_UNSPECIFIED"] = 0;
+        values[valuesById[1] = "GAME_RESPONSES_ERROR"] = 1;
+        values[valuesById[2] = "GAME_RESPONSES_MOVE"] = 2;
+        values[valuesById[3] = "GAME_RESPONSES_END"] = 3;
         return values;
     })();
 
-    ws.WSGameResponsePacket = (function() {
+    ws.GameResponsePacket = (function() {
 
         /**
-         * Properties of a WSGameResponsePacket.
+         * Properties of a GameResponsePacket.
          * @memberof ws
-         * @interface IWSGameResponsePacket
-         * @property {ws.WSGameResponses|null} [response] WSGameResponsePacket response
-         * @property {shared.ICodedError|null} [error] WSGameResponsePacket error
-         * @property {ws.IWSGameMove|null} [move] WSGameResponsePacket move
-         * @property {ws.IWSGameEnd|null} [end] WSGameResponsePacket end
+         * @interface IGameResponsePacket
+         * @property {ws.GameResponses|null} [response] GameResponsePacket response
+         * @property {shared.ICodedError|null} [error] GameResponsePacket error
+         * @property {ws.IGameMove|null} [move] GameResponsePacket move
+         * @property {ws.IGameEnd|null} [end] GameResponsePacket end
          */
 
         /**
-         * Constructs a new WSGameResponsePacket.
+         * Constructs a new GameResponsePacket.
          * @memberof ws
-         * @classdesc Represents a WSGameResponsePacket.
-         * @implements IWSGameResponsePacket
+         * @classdesc Represents a GameResponsePacket.
+         * @implements IGameResponsePacket
          * @constructor
-         * @param {ws.IWSGameResponsePacket=} [properties] Properties to set
+         * @param {ws.IGameResponsePacket=} [properties] Properties to set
          */
-        function WSGameResponsePacket(properties) {
+        function GameResponsePacket(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -7029,73 +6784,73 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * WSGameResponsePacket response.
-         * @member {ws.WSGameResponses} response
-         * @memberof ws.WSGameResponsePacket
+         * GameResponsePacket response.
+         * @member {ws.GameResponses} response
+         * @memberof ws.GameResponsePacket
          * @instance
          */
-        WSGameResponsePacket.prototype.response = 0;
+        GameResponsePacket.prototype.response = 0;
 
         /**
-         * WSGameResponsePacket error.
+         * GameResponsePacket error.
          * @member {shared.ICodedError|null|undefined} error
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @instance
          */
-        WSGameResponsePacket.prototype.error = null;
+        GameResponsePacket.prototype.error = null;
 
         /**
-         * WSGameResponsePacket move.
-         * @member {ws.IWSGameMove|null|undefined} move
-         * @memberof ws.WSGameResponsePacket
+         * GameResponsePacket move.
+         * @member {ws.IGameMove|null|undefined} move
+         * @memberof ws.GameResponsePacket
          * @instance
          */
-        WSGameResponsePacket.prototype.move = null;
+        GameResponsePacket.prototype.move = null;
 
         /**
-         * WSGameResponsePacket end.
-         * @member {ws.IWSGameEnd|null|undefined} end
-         * @memberof ws.WSGameResponsePacket
+         * GameResponsePacket end.
+         * @member {ws.IGameEnd|null|undefined} end
+         * @memberof ws.GameResponsePacket
          * @instance
          */
-        WSGameResponsePacket.prototype.end = null;
+        GameResponsePacket.prototype.end = null;
 
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
-         * WSGameResponsePacket data.
+         * GameResponsePacket data.
          * @member {"error"|"move"|"end"|undefined} data
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @instance
          */
-        Object.defineProperty(WSGameResponsePacket.prototype, "data", {
+        Object.defineProperty(GameResponsePacket.prototype, "data", {
             get: $util.oneOfGetter($oneOfFields = ["error", "move", "end"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
         /**
-         * Creates a new WSGameResponsePacket instance using the specified properties.
+         * Creates a new GameResponsePacket instance using the specified properties.
          * @function create
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @static
-         * @param {ws.IWSGameResponsePacket=} [properties] Properties to set
-         * @returns {ws.WSGameResponsePacket} WSGameResponsePacket instance
+         * @param {ws.IGameResponsePacket=} [properties] Properties to set
+         * @returns {ws.GameResponsePacket} GameResponsePacket instance
          */
-        WSGameResponsePacket.create = function create(properties) {
-            return new WSGameResponsePacket(properties);
+        GameResponsePacket.create = function create(properties) {
+            return new GameResponsePacket(properties);
         };
 
         /**
-         * Encodes the specified WSGameResponsePacket message. Does not implicitly {@link ws.WSGameResponsePacket.verify|verify} messages.
+         * Encodes the specified GameResponsePacket message. Does not implicitly {@link ws.GameResponsePacket.verify|verify} messages.
          * @function encode
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @static
-         * @param {ws.IWSGameResponsePacket} message WSGameResponsePacket message or plain object to encode
+         * @param {ws.IGameResponsePacket} message GameResponsePacket message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        WSGameResponsePacket.encode = function encode(message, writer) {
+        GameResponsePacket.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.response != null && Object.hasOwnProperty.call(message, "response"))
@@ -7103,44 +6858,44 @@ export const ws = $root.ws = (() => {
             if (message.error != null && Object.hasOwnProperty.call(message, "error"))
                 $root.shared.CodedError.encode(message.error, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.move != null && Object.hasOwnProperty.call(message, "move"))
-                $root.ws.WSGameMove.encode(message.move, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                $root.ws.GameMove.encode(message.move, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.end != null && Object.hasOwnProperty.call(message, "end"))
-                $root.ws.WSGameEnd.encode(message.end, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                $root.ws.GameEnd.encode(message.end, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             return writer;
         };
 
         /**
-         * Encodes the specified WSGameResponsePacket message, length delimited. Does not implicitly {@link ws.WSGameResponsePacket.verify|verify} messages.
+         * Encodes the specified GameResponsePacket message, length delimited. Does not implicitly {@link ws.GameResponsePacket.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @static
-         * @param {ws.IWSGameResponsePacket} message WSGameResponsePacket message or plain object to encode
+         * @param {ws.IGameResponsePacket} message GameResponsePacket message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        WSGameResponsePacket.encodeDelimited = function encodeDelimited(message, writer) {
+        GameResponsePacket.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a WSGameResponsePacket message from the specified reader or buffer.
+         * Decodes a GameResponsePacket message from the specified reader or buffer.
          * @function decode
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {ws.WSGameResponsePacket} WSGameResponsePacket
+         * @returns {ws.GameResponsePacket} GameResponsePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        WSGameResponsePacket.decode = function decode(reader, length, error, long) {
+        GameResponsePacket.decode = function decode(reader, length, error, long) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             if (long === undefined)
                 long = 0;
             if (long > $Reader.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.WSGameResponsePacket();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameResponsePacket();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 if (tag === error)
@@ -7155,11 +6910,11 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 3: {
-                        message.move = $root.ws.WSGameMove.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.move = $root.ws.GameMove.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 case 4: {
-                        message.end = $root.ws.WSGameEnd.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.end = $root.ws.GameEnd.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 default:
@@ -7171,30 +6926,30 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Decodes a WSGameResponsePacket message from the specified reader or buffer, length delimited.
+         * Decodes a GameResponsePacket message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.WSGameResponsePacket} WSGameResponsePacket
+         * @returns {ws.GameResponsePacket} GameResponsePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        WSGameResponsePacket.decodeDelimited = function decodeDelimited(reader) {
+        GameResponsePacket.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a WSGameResponsePacket message.
+         * Verifies a GameResponsePacket message.
          * @function verify
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        WSGameResponsePacket.verify = function verify(message, long) {
+        GameResponsePacket.verify = function verify(message, long) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (long === undefined)
@@ -7225,7 +6980,7 @@ export const ws = $root.ws = (() => {
                     return "data: multiple values";
                 properties.data = 1;
                 {
-                    let error = $root.ws.WSGameMove.verify(message.move, long + 1);
+                    let error = $root.ws.GameMove.verify(message.move, long + 1);
                     if (error)
                         return "move." + error;
                 }
@@ -7235,7 +6990,7 @@ export const ws = $root.ws = (() => {
                     return "data: multiple values";
                 properties.data = 1;
                 {
-                    let error = $root.ws.WSGameEnd.verify(message.end, long + 1);
+                    let error = $root.ws.GameEnd.verify(message.end, long + 1);
                     if (error)
                         return "end." + error;
                 }
@@ -7244,21 +6999,21 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Creates a WSGameResponsePacket message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameResponsePacket message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {ws.WSGameResponsePacket} WSGameResponsePacket
+         * @returns {ws.GameResponsePacket} GameResponsePacket
          */
-        WSGameResponsePacket.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.WSGameResponsePacket)
+        GameResponsePacket.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.GameResponsePacket)
                 return object;
             if (long === undefined)
                 long = 0;
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.WSGameResponsePacket();
+            let message = new $root.ws.GameResponsePacket();
             switch (object.response) {
             default:
                 if (typeof object.response === "number") {
@@ -7266,70 +7021,70 @@ export const ws = $root.ws = (() => {
                     break;
                 }
                 break;
-            case "WS_GAME_RESPONSES_UNSPECIFIED":
+            case "GAME_RESPONSES_UNSPECIFIED":
             case 0:
                 message.response = 0;
                 break;
-            case "WS_GAME_RESPONSES_ERROR":
+            case "GAME_RESPONSES_ERROR":
             case 1:
                 message.response = 1;
                 break;
-            case "WS_GAME_RESPONSES_MOVE":
+            case "GAME_RESPONSES_MOVE":
             case 2:
                 message.response = 2;
                 break;
-            case "WS_GAME_RESPONSES_END":
+            case "GAME_RESPONSES_END":
             case 3:
                 message.response = 3;
                 break;
             }
             if (object.error != null) {
                 if (typeof object.error !== "object")
-                    throw TypeError(".ws.WSGameResponsePacket.error: object expected");
+                    throw TypeError(".ws.GameResponsePacket.error: object expected");
                 message.error = $root.shared.CodedError.fromObject(object.error, long + 1);
             }
             if (object.move != null) {
                 if (typeof object.move !== "object")
-                    throw TypeError(".ws.WSGameResponsePacket.move: object expected");
-                message.move = $root.ws.WSGameMove.fromObject(object.move, long + 1);
+                    throw TypeError(".ws.GameResponsePacket.move: object expected");
+                message.move = $root.ws.GameMove.fromObject(object.move, long + 1);
             }
             if (object.end != null) {
                 if (typeof object.end !== "object")
-                    throw TypeError(".ws.WSGameResponsePacket.end: object expected");
-                message.end = $root.ws.WSGameEnd.fromObject(object.end, long + 1);
+                    throw TypeError(".ws.GameResponsePacket.end: object expected");
+                message.end = $root.ws.GameEnd.fromObject(object.end, long + 1);
             }
             return message;
         };
 
         /**
-         * Creates a plain object from a WSGameResponsePacket message. Also converts values to other types if specified.
+         * Creates a plain object from a GameResponsePacket message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @static
-         * @param {ws.WSGameResponsePacket} message WSGameResponsePacket
+         * @param {ws.GameResponsePacket} message GameResponsePacket
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        WSGameResponsePacket.toObject = function toObject(message, options) {
+        GameResponsePacket.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
             if (options.defaults)
-                object.response = options.enums === String ? "WS_GAME_RESPONSES_UNSPECIFIED" : 0;
+                object.response = options.enums === String ? "GAME_RESPONSES_UNSPECIFIED" : 0;
             if (message.response != null && message.hasOwnProperty("response"))
-                object.response = options.enums === String ? $root.ws.WSGameResponses[message.response] === undefined ? message.response : $root.ws.WSGameResponses[message.response] : message.response;
+                object.response = options.enums === String ? $root.ws.GameResponses[message.response] === undefined ? message.response : $root.ws.GameResponses[message.response] : message.response;
             if (message.error != null && message.hasOwnProperty("error")) {
                 object.error = $root.shared.CodedError.toObject(message.error, options);
                 if (options.oneofs)
                     object.data = "error";
             }
             if (message.move != null && message.hasOwnProperty("move")) {
-                object.move = $root.ws.WSGameMove.toObject(message.move, options);
+                object.move = $root.ws.GameMove.toObject(message.move, options);
                 if (options.oneofs)
                     object.data = "move";
             }
             if (message.end != null && message.hasOwnProperty("end")) {
-                object.end = $root.ws.WSGameEnd.toObject(message.end, options);
+                object.end = $root.ws.GameEnd.toObject(message.end, options);
                 if (options.oneofs)
                     object.data = "end";
             }
@@ -7337,32 +7092,32 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Converts this WSGameResponsePacket to JSON.
+         * Converts this GameResponsePacket to JSON.
          * @function toJSON
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        WSGameResponsePacket.prototype.toJSON = function toJSON() {
+        GameResponsePacket.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for WSGameResponsePacket
+         * Gets the default type url for GameResponsePacket
          * @function getTypeUrl
-         * @memberof ws.WSGameResponsePacket
+         * @memberof ws.GameResponsePacket
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        WSGameResponsePacket.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        GameResponsePacket.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/ws.WSGameResponsePacket";
+            return typeUrlPrefix + "/ws.GameResponsePacket";
         };
 
-        return WSGameResponsePacket;
+        return GameResponsePacket;
     })();
 
     /**
@@ -7370,18 +7125,20 @@ export const ws = $root.ws = (() => {
      * @name ws.LobbyResponses
      * @enum {number}
      * @property {number} LOBBY_RESPONSES_UNSPECIFIED=0 LOBBY_RESPONSES_UNSPECIFIED value
-     * @property {number} LOBBY_RESPONSES_JOIN=1 LOBBY_RESPONSES_JOIN value
-     * @property {number} LOBBY_RESPONSES_LEAVE=2 LOBBY_RESPONSES_LEAVE value
-     * @property {number} LOBBY_RESPONSES_CHANGE_PLAYER=3 LOBBY_RESPONSES_CHANGE_PLAYER value
-     * @property {number} LOBBY_RESPONSES_START_GAME=4 LOBBY_RESPONSES_START_GAME value
+     * @property {number} LOBBY_RESPONSES_ERROR=1 LOBBY_RESPONSES_ERROR value
+     * @property {number} LOBBY_RESPONSES_JOIN=2 LOBBY_RESPONSES_JOIN value
+     * @property {number} LOBBY_RESPONSES_LEAVE=3 LOBBY_RESPONSES_LEAVE value
+     * @property {number} LOBBY_RESPONSES_CHANGE_PLAYER=4 LOBBY_RESPONSES_CHANGE_PLAYER value
+     * @property {number} LOBBY_RESPONSES_START_GAME=5 LOBBY_RESPONSES_START_GAME value
      */
     ws.LobbyResponses = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "LOBBY_RESPONSES_UNSPECIFIED"] = 0;
-        values[valuesById[1] = "LOBBY_RESPONSES_JOIN"] = 1;
-        values[valuesById[2] = "LOBBY_RESPONSES_LEAVE"] = 2;
-        values[valuesById[3] = "LOBBY_RESPONSES_CHANGE_PLAYER"] = 3;
-        values[valuesById[4] = "LOBBY_RESPONSES_START_GAME"] = 4;
+        values[valuesById[1] = "LOBBY_RESPONSES_ERROR"] = 1;
+        values[valuesById[2] = "LOBBY_RESPONSES_JOIN"] = 2;
+        values[valuesById[3] = "LOBBY_RESPONSES_LEAVE"] = 3;
+        values[valuesById[4] = "LOBBY_RESPONSES_CHANGE_PLAYER"] = 4;
+        values[valuesById[5] = "LOBBY_RESPONSES_START_GAME"] = 5;
         return values;
     })();
 
@@ -8106,6 +7863,7 @@ export const ws = $root.ws = (() => {
          * @memberof ws
          * @interface ILobbyResponsePacket
          * @property {ws.LobbyResponses|null} [response] LobbyResponsePacket response
+         * @property {shared.ICodedError|null} [error] LobbyResponsePacket error
          * @property {ws.ILobbyJoin|null} [join] LobbyResponsePacket join
          * @property {ws.ILobbyLeave|null} [leave] LobbyResponsePacket leave
          * @property {ws.ILobbyChangePlayer|null} [changePlayer] LobbyResponsePacket changePlayer
@@ -8133,6 +7891,14 @@ export const ws = $root.ws = (() => {
          * @instance
          */
         LobbyResponsePacket.prototype.response = 0;
+
+        /**
+         * LobbyResponsePacket error.
+         * @member {shared.ICodedError|null|undefined} error
+         * @memberof ws.LobbyResponsePacket
+         * @instance
+         */
+        LobbyResponsePacket.prototype.error = null;
 
         /**
          * LobbyResponsePacket join.
@@ -8163,12 +7929,12 @@ export const ws = $root.ws = (() => {
 
         /**
          * LobbyResponsePacket data.
-         * @member {"join"|"leave"|"changePlayer"|undefined} data
+         * @member {"error"|"join"|"leave"|"changePlayer"|undefined} data
          * @memberof ws.LobbyResponsePacket
          * @instance
          */
         Object.defineProperty(LobbyResponsePacket.prototype, "data", {
-            get: $util.oneOfGetter($oneOfFields = ["join", "leave", "changePlayer"]),
+            get: $util.oneOfGetter($oneOfFields = ["error", "join", "leave", "changePlayer"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -8198,12 +7964,14 @@ export const ws = $root.ws = (() => {
                 writer = $Writer.create();
             if (message.response != null && Object.hasOwnProperty.call(message, "response"))
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.response);
+            if (message.error != null && Object.hasOwnProperty.call(message, "error"))
+                $root.shared.CodedError.encode(message.error, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.join != null && Object.hasOwnProperty.call(message, "join"))
-                $root.ws.LobbyJoin.encode(message.join, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                $root.ws.LobbyJoin.encode(message.join, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.leave != null && Object.hasOwnProperty.call(message, "leave"))
-                $root.ws.LobbyLeave.encode(message.leave, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                $root.ws.LobbyLeave.encode(message.leave, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             if (message.changePlayer != null && Object.hasOwnProperty.call(message, "changePlayer"))
-                $root.ws.LobbyChangePlayer.encode(message.changePlayer, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                $root.ws.LobbyChangePlayer.encode(message.changePlayer, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
             return writer;
         };
 
@@ -8249,14 +8017,18 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 2: {
-                        message.join = $root.ws.LobbyJoin.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.error = $root.shared.CodedError.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 case 3: {
-                        message.leave = $root.ws.LobbyLeave.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.join = $root.ws.LobbyJoin.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 case 4: {
+                        message.leave = $root.ws.LobbyLeave.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 5: {
                         message.changePlayer = $root.ws.LobbyChangePlayer.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
@@ -8309,9 +8081,20 @@ export const ws = $root.ws = (() => {
                 case 2:
                 case 3:
                 case 4:
+                case 5:
                     break;
                 }
+            if (message.error != null && message.hasOwnProperty("error")) {
+                properties.data = 1;
+                {
+                    let error = $root.shared.CodedError.verify(message.error, long + 1);
+                    if (error)
+                        return "error." + error;
+                }
+            }
             if (message.join != null && message.hasOwnProperty("join")) {
+                if (properties.data === 1)
+                    return "data: multiple values";
                 properties.data = 1;
                 {
                     let error = $root.ws.LobbyJoin.verify(message.join, long + 1);
@@ -8369,22 +8152,31 @@ export const ws = $root.ws = (() => {
             case 0:
                 message.response = 0;
                 break;
-            case "LOBBY_RESPONSES_JOIN":
+            case "LOBBY_RESPONSES_ERROR":
             case 1:
                 message.response = 1;
                 break;
-            case "LOBBY_RESPONSES_LEAVE":
+            case "LOBBY_RESPONSES_JOIN":
             case 2:
                 message.response = 2;
                 break;
-            case "LOBBY_RESPONSES_CHANGE_PLAYER":
+            case "LOBBY_RESPONSES_LEAVE":
             case 3:
                 message.response = 3;
                 break;
-            case "LOBBY_RESPONSES_START_GAME":
+            case "LOBBY_RESPONSES_CHANGE_PLAYER":
             case 4:
                 message.response = 4;
                 break;
+            case "LOBBY_RESPONSES_START_GAME":
+            case 5:
+                message.response = 5;
+                break;
+            }
+            if (object.error != null) {
+                if (typeof object.error !== "object")
+                    throw TypeError(".ws.LobbyResponsePacket.error: object expected");
+                message.error = $root.shared.CodedError.fromObject(object.error, long + 1);
             }
             if (object.join != null) {
                 if (typeof object.join !== "object")
@@ -8421,6 +8213,11 @@ export const ws = $root.ws = (() => {
                 object.response = options.enums === String ? "LOBBY_RESPONSES_UNSPECIFIED" : 0;
             if (message.response != null && message.hasOwnProperty("response"))
                 object.response = options.enums === String ? $root.ws.LobbyResponses[message.response] === undefined ? message.response : $root.ws.LobbyResponses[message.response] : message.response;
+            if (message.error != null && message.hasOwnProperty("error")) {
+                object.error = $root.shared.CodedError.toObject(message.error, options);
+                if (options.oneofs)
+                    object.data = "error";
+            }
             if (message.join != null && message.hasOwnProperty("join")) {
                 object.join = $root.ws.LobbyJoin.toObject(message.join, options);
                 if (options.oneofs)

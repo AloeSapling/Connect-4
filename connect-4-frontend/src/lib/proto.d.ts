@@ -2015,7 +2015,8 @@ export namespace shared {
         ERROR_CODES_GAME_EXPIRED = 10,
         ERROR_CODES_GAME_ALREADY_EXISTS = 11,
         ERROR_CODES_DOESNT_EXIST = 12,
-        ERROR_CODES_USER_ALREADY_EXISTS = 13
+        ERROR_CODES_USER_ALREADY_EXISTS = 13,
+        ERROR_CODES_BAD_SETUP = 14
     }
 
     /** Properties of a CodedError. */
@@ -2125,313 +2126,210 @@ export namespace shared {
 /** Namespace ws. */
 export namespace ws {
 
-    /** Properties of a WSGameInit. */
-    interface IWSGameInit {
+    /** Properties of a GameInsertTile. */
+    interface IGameInsertTile {
 
-        /** WSGameInit lobbyCode */
-        lobbyCode?: (string|null);
-    }
-
-    /** Represents a WSGameInit. */
-    class WSGameInit implements IWSGameInit {
-
-        /**
-         * Constructs a new WSGameInit.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: ws.IWSGameInit);
-
-        /** WSGameInit lobbyCode. */
-        public lobbyCode: string;
-
-        /**
-         * Creates a new WSGameInit instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns WSGameInit instance
-         */
-        public static create(properties?: ws.IWSGameInit): ws.WSGameInit;
-
-        /**
-         * Encodes the specified WSGameInit message. Does not implicitly {@link ws.WSGameInit.verify|verify} messages.
-         * @param message WSGameInit message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: ws.IWSGameInit, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified WSGameInit message, length delimited. Does not implicitly {@link ws.WSGameInit.verify|verify} messages.
-         * @param message WSGameInit message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: ws.IWSGameInit, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a WSGameInit message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns WSGameInit
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.WSGameInit;
-
-        /**
-         * Decodes a WSGameInit message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns WSGameInit
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.WSGameInit;
-
-        /**
-         * Verifies a WSGameInit message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a WSGameInit message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns WSGameInit
-         */
-        public static fromObject(object: { [k: string]: any }): ws.WSGameInit;
-
-        /**
-         * Creates a plain object from a WSGameInit message. Also converts values to other types if specified.
-         * @param message WSGameInit
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: ws.WSGameInit, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this WSGameInit to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for WSGameInit
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of a WSGameInsertTile. */
-    interface IWSGameInsertTile {
-
-        /** WSGameInsertTile column */
+        /** GameInsertTile column */
         column?: (number|null);
     }
 
-    /** Represents a WSGameInsertTile. */
-    class WSGameInsertTile implements IWSGameInsertTile {
+    /** Represents a GameInsertTile. */
+    class GameInsertTile implements IGameInsertTile {
 
         /**
-         * Constructs a new WSGameInsertTile.
+         * Constructs a new GameInsertTile.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IWSGameInsertTile);
+        constructor(properties?: ws.IGameInsertTile);
 
-        /** WSGameInsertTile column. */
+        /** GameInsertTile column. */
         public column: number;
 
         /**
-         * Creates a new WSGameInsertTile instance using the specified properties.
+         * Creates a new GameInsertTile instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns WSGameInsertTile instance
+         * @returns GameInsertTile instance
          */
-        public static create(properties?: ws.IWSGameInsertTile): ws.WSGameInsertTile;
+        public static create(properties?: ws.IGameInsertTile): ws.GameInsertTile;
 
         /**
-         * Encodes the specified WSGameInsertTile message. Does not implicitly {@link ws.WSGameInsertTile.verify|verify} messages.
-         * @param message WSGameInsertTile message or plain object to encode
+         * Encodes the specified GameInsertTile message. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
+         * @param message GameInsertTile message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IWSGameInsertTile, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameInsertTile, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified WSGameInsertTile message, length delimited. Does not implicitly {@link ws.WSGameInsertTile.verify|verify} messages.
-         * @param message WSGameInsertTile message or plain object to encode
+         * Encodes the specified GameInsertTile message, length delimited. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
+         * @param message GameInsertTile message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IWSGameInsertTile, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameInsertTile, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a WSGameInsertTile message from the specified reader or buffer.
+         * Decodes a GameInsertTile message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns WSGameInsertTile
+         * @returns GameInsertTile
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.WSGameInsertTile;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameInsertTile;
 
         /**
-         * Decodes a WSGameInsertTile message from the specified reader or buffer, length delimited.
+         * Decodes a GameInsertTile message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns WSGameInsertTile
+         * @returns GameInsertTile
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.WSGameInsertTile;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameInsertTile;
 
         /**
-         * Verifies a WSGameInsertTile message.
+         * Verifies a GameInsertTile message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a WSGameInsertTile message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameInsertTile message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns WSGameInsertTile
+         * @returns GameInsertTile
          */
-        public static fromObject(object: { [k: string]: any }): ws.WSGameInsertTile;
+        public static fromObject(object: { [k: string]: any }): ws.GameInsertTile;
 
         /**
-         * Creates a plain object from a WSGameInsertTile message. Also converts values to other types if specified.
-         * @param message WSGameInsertTile
+         * Creates a plain object from a GameInsertTile message. Also converts values to other types if specified.
+         * @param message GameInsertTile
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.WSGameInsertTile, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameInsertTile, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this WSGameInsertTile to JSON.
+         * Converts this GameInsertTile to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for WSGameInsertTile
+         * Gets the default type url for GameInsertTile
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** WSGameActions enum. */
-    enum WSGameActions {
-        WS_GAME_ACTIONS_UNSPECIFIED = 0,
-        WS_GAME_ACTIONS_INIT = 1,
-        WS_GAME_ACTIONS_INSERT_TILE = 2
+    /** GameActions enum. */
+    enum GameActions {
+        GAME_ACTIONS_UNSPECIFIED = 0,
+        GAME_ACTIONS_INIT = 1,
+        GAME_ACTIONS_INSERT_TILE = 2
     }
 
-    /** Properties of a WSGamePacket. */
-    interface IWSGamePacket {
+    /** Properties of a GamePacket. */
+    interface IGamePacket {
 
-        /** WSGamePacket action */
-        action?: (ws.WSGameActions|null);
+        /** GamePacket action */
+        action?: (ws.GameActions|null);
 
-        /** WSGamePacket init */
-        init?: (ws.IWSGameInit|null);
-
-        /** WSGamePacket insertTile */
-        insertTile?: (ws.IWSGameInsertTile|null);
+        /** GamePacket insertTile */
+        insertTile?: (ws.IGameInsertTile|null);
     }
 
-    /** Represents a WSGamePacket. */
-    class WSGamePacket implements IWSGamePacket {
+    /** Represents a GamePacket. */
+    class GamePacket implements IGamePacket {
 
         /**
-         * Constructs a new WSGamePacket.
+         * Constructs a new GamePacket.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IWSGamePacket);
+        constructor(properties?: ws.IGamePacket);
 
-        /** WSGamePacket action. */
-        public action: ws.WSGameActions;
+        /** GamePacket action. */
+        public action: ws.GameActions;
 
-        /** WSGamePacket init. */
-        public init?: (ws.IWSGameInit|null);
+        /** GamePacket insertTile. */
+        public insertTile?: (ws.IGameInsertTile|null);
 
-        /** WSGamePacket insertTile. */
-        public insertTile?: (ws.IWSGameInsertTile|null);
-
-        /** WSGamePacket data. */
-        public data?: ("init"|"insertTile");
+        /** GamePacket data. */
+        public data?: "insertTile";
 
         /**
-         * Creates a new WSGamePacket instance using the specified properties.
+         * Creates a new GamePacket instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns WSGamePacket instance
+         * @returns GamePacket instance
          */
-        public static create(properties?: ws.IWSGamePacket): ws.WSGamePacket;
+        public static create(properties?: ws.IGamePacket): ws.GamePacket;
 
         /**
-         * Encodes the specified WSGamePacket message. Does not implicitly {@link ws.WSGamePacket.verify|verify} messages.
-         * @param message WSGamePacket message or plain object to encode
+         * Encodes the specified GamePacket message. Does not implicitly {@link ws.GamePacket.verify|verify} messages.
+         * @param message GamePacket message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IWSGamePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGamePacket, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified WSGamePacket message, length delimited. Does not implicitly {@link ws.WSGamePacket.verify|verify} messages.
-         * @param message WSGamePacket message or plain object to encode
+         * Encodes the specified GamePacket message, length delimited. Does not implicitly {@link ws.GamePacket.verify|verify} messages.
+         * @param message GamePacket message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IWSGamePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGamePacket, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a WSGamePacket message from the specified reader or buffer.
+         * Decodes a GamePacket message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns WSGamePacket
+         * @returns GamePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.WSGamePacket;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GamePacket;
 
         /**
-         * Decodes a WSGamePacket message from the specified reader or buffer, length delimited.
+         * Decodes a GamePacket message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns WSGamePacket
+         * @returns GamePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.WSGamePacket;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GamePacket;
 
         /**
-         * Verifies a WSGamePacket message.
+         * Verifies a GamePacket message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a WSGamePacket message from a plain object. Also converts values to their respective internal types.
+         * Creates a GamePacket message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns WSGamePacket
+         * @returns GamePacket
          */
-        public static fromObject(object: { [k: string]: any }): ws.WSGamePacket;
+        public static fromObject(object: { [k: string]: any }): ws.GamePacket;
 
         /**
-         * Creates a plain object from a WSGamePacket message. Also converts values to other types if specified.
-         * @param message WSGamePacket
+         * Creates a plain object from a GamePacket message. Also converts values to other types if specified.
+         * @param message GamePacket
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.WSGamePacket, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GamePacket, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this WSGamePacket to JSON.
+         * Converts this GamePacket to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for WSGamePacket
+         * Gets the default type url for GamePacket
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -2535,347 +2433,347 @@ export namespace ws {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a WSGameEnd. */
-    interface IWSGameEnd {
+    /** Properties of a GameEnd. */
+    interface IGameEnd {
 
-        /** WSGameEnd user */
+        /** GameEnd user */
         user?: (ws.IPartialUser|null);
 
-        /** WSGameEnd draw */
+        /** GameEnd draw */
         draw?: (boolean|null);
     }
 
-    /** Represents a WSGameEnd. */
-    class WSGameEnd implements IWSGameEnd {
+    /** Represents a GameEnd. */
+    class GameEnd implements IGameEnd {
 
         /**
-         * Constructs a new WSGameEnd.
+         * Constructs a new GameEnd.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IWSGameEnd);
+        constructor(properties?: ws.IGameEnd);
 
-        /** WSGameEnd user. */
+        /** GameEnd user. */
         public user?: (ws.IPartialUser|null);
 
-        /** WSGameEnd draw. */
+        /** GameEnd draw. */
         public draw?: (boolean|null);
 
-        /** WSGameEnd winner. */
+        /** GameEnd winner. */
         public winner?: ("user"|"draw");
 
         /**
-         * Creates a new WSGameEnd instance using the specified properties.
+         * Creates a new GameEnd instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns WSGameEnd instance
+         * @returns GameEnd instance
          */
-        public static create(properties?: ws.IWSGameEnd): ws.WSGameEnd;
+        public static create(properties?: ws.IGameEnd): ws.GameEnd;
 
         /**
-         * Encodes the specified WSGameEnd message. Does not implicitly {@link ws.WSGameEnd.verify|verify} messages.
-         * @param message WSGameEnd message or plain object to encode
+         * Encodes the specified GameEnd message. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
+         * @param message GameEnd message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IWSGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified WSGameEnd message, length delimited. Does not implicitly {@link ws.WSGameEnd.verify|verify} messages.
-         * @param message WSGameEnd message or plain object to encode
+         * Encodes the specified GameEnd message, length delimited. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
+         * @param message GameEnd message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IWSGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a WSGameEnd message from the specified reader or buffer.
+         * Decodes a GameEnd message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns WSGameEnd
+         * @returns GameEnd
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.WSGameEnd;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameEnd;
 
         /**
-         * Decodes a WSGameEnd message from the specified reader or buffer, length delimited.
+         * Decodes a GameEnd message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns WSGameEnd
+         * @returns GameEnd
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.WSGameEnd;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameEnd;
 
         /**
-         * Verifies a WSGameEnd message.
+         * Verifies a GameEnd message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a WSGameEnd message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameEnd message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns WSGameEnd
+         * @returns GameEnd
          */
-        public static fromObject(object: { [k: string]: any }): ws.WSGameEnd;
+        public static fromObject(object: { [k: string]: any }): ws.GameEnd;
 
         /**
-         * Creates a plain object from a WSGameEnd message. Also converts values to other types if specified.
-         * @param message WSGameEnd
+         * Creates a plain object from a GameEnd message. Also converts values to other types if specified.
+         * @param message GameEnd
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.WSGameEnd, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameEnd, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this WSGameEnd to JSON.
+         * Converts this GameEnd to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for WSGameEnd
+         * Gets the default type url for GameEnd
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a WSGameMove. */
-    interface IWSGameMove {
+    /** Properties of a GameMove. */
+    interface IGameMove {
 
-        /** WSGameMove row */
+        /** GameMove row */
         row?: (number|null);
 
-        /** WSGameMove column */
+        /** GameMove column */
         column?: (number|null);
 
-        /** WSGameMove board */
+        /** GameMove board */
         board?: (shared.IGameBoard|null);
 
-        /** WSGameMove turn */
+        /** GameMove turn */
         turn?: (shared.PlayerIDs|null);
     }
 
-    /** Represents a WSGameMove. */
-    class WSGameMove implements IWSGameMove {
+    /** Represents a GameMove. */
+    class GameMove implements IGameMove {
 
         /**
-         * Constructs a new WSGameMove.
+         * Constructs a new GameMove.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IWSGameMove);
+        constructor(properties?: ws.IGameMove);
 
-        /** WSGameMove row. */
+        /** GameMove row. */
         public row: number;
 
-        /** WSGameMove column. */
+        /** GameMove column. */
         public column: number;
 
-        /** WSGameMove board. */
+        /** GameMove board. */
         public board?: (shared.IGameBoard|null);
 
-        /** WSGameMove turn. */
+        /** GameMove turn. */
         public turn: shared.PlayerIDs;
 
         /**
-         * Creates a new WSGameMove instance using the specified properties.
+         * Creates a new GameMove instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns WSGameMove instance
+         * @returns GameMove instance
          */
-        public static create(properties?: ws.IWSGameMove): ws.WSGameMove;
+        public static create(properties?: ws.IGameMove): ws.GameMove;
 
         /**
-         * Encodes the specified WSGameMove message. Does not implicitly {@link ws.WSGameMove.verify|verify} messages.
-         * @param message WSGameMove message or plain object to encode
+         * Encodes the specified GameMove message. Does not implicitly {@link ws.GameMove.verify|verify} messages.
+         * @param message GameMove message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IWSGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified WSGameMove message, length delimited. Does not implicitly {@link ws.WSGameMove.verify|verify} messages.
-         * @param message WSGameMove message or plain object to encode
+         * Encodes the specified GameMove message, length delimited. Does not implicitly {@link ws.GameMove.verify|verify} messages.
+         * @param message GameMove message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IWSGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a WSGameMove message from the specified reader or buffer.
+         * Decodes a GameMove message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns WSGameMove
+         * @returns GameMove
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.WSGameMove;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameMove;
 
         /**
-         * Decodes a WSGameMove message from the specified reader or buffer, length delimited.
+         * Decodes a GameMove message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns WSGameMove
+         * @returns GameMove
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.WSGameMove;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameMove;
 
         /**
-         * Verifies a WSGameMove message.
+         * Verifies a GameMove message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a WSGameMove message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameMove message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns WSGameMove
+         * @returns GameMove
          */
-        public static fromObject(object: { [k: string]: any }): ws.WSGameMove;
+        public static fromObject(object: { [k: string]: any }): ws.GameMove;
 
         /**
-         * Creates a plain object from a WSGameMove message. Also converts values to other types if specified.
-         * @param message WSGameMove
+         * Creates a plain object from a GameMove message. Also converts values to other types if specified.
+         * @param message GameMove
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.WSGameMove, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameMove, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this WSGameMove to JSON.
+         * Converts this GameMove to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for WSGameMove
+         * Gets the default type url for GameMove
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** WSGameResponses enum. */
-    enum WSGameResponses {
-        WS_GAME_RESPONSES_UNSPECIFIED = 0,
-        WS_GAME_RESPONSES_ERROR = 1,
-        WS_GAME_RESPONSES_MOVE = 2,
-        WS_GAME_RESPONSES_END = 3
+    /** GameResponses enum. */
+    enum GameResponses {
+        GAME_RESPONSES_UNSPECIFIED = 0,
+        GAME_RESPONSES_ERROR = 1,
+        GAME_RESPONSES_MOVE = 2,
+        GAME_RESPONSES_END = 3
     }
 
-    /** Properties of a WSGameResponsePacket. */
-    interface IWSGameResponsePacket {
+    /** Properties of a GameResponsePacket. */
+    interface IGameResponsePacket {
 
-        /** WSGameResponsePacket response */
-        response?: (ws.WSGameResponses|null);
+        /** GameResponsePacket response */
+        response?: (ws.GameResponses|null);
 
-        /** WSGameResponsePacket error */
+        /** GameResponsePacket error */
         error?: (shared.ICodedError|null);
 
-        /** WSGameResponsePacket move */
-        move?: (ws.IWSGameMove|null);
+        /** GameResponsePacket move */
+        move?: (ws.IGameMove|null);
 
-        /** WSGameResponsePacket end */
-        end?: (ws.IWSGameEnd|null);
+        /** GameResponsePacket end */
+        end?: (ws.IGameEnd|null);
     }
 
-    /** Represents a WSGameResponsePacket. */
-    class WSGameResponsePacket implements IWSGameResponsePacket {
+    /** Represents a GameResponsePacket. */
+    class GameResponsePacket implements IGameResponsePacket {
 
         /**
-         * Constructs a new WSGameResponsePacket.
+         * Constructs a new GameResponsePacket.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IWSGameResponsePacket);
+        constructor(properties?: ws.IGameResponsePacket);
 
-        /** WSGameResponsePacket response. */
-        public response: ws.WSGameResponses;
+        /** GameResponsePacket response. */
+        public response: ws.GameResponses;
 
-        /** WSGameResponsePacket error. */
+        /** GameResponsePacket error. */
         public error?: (shared.ICodedError|null);
 
-        /** WSGameResponsePacket move. */
-        public move?: (ws.IWSGameMove|null);
+        /** GameResponsePacket move. */
+        public move?: (ws.IGameMove|null);
 
-        /** WSGameResponsePacket end. */
-        public end?: (ws.IWSGameEnd|null);
+        /** GameResponsePacket end. */
+        public end?: (ws.IGameEnd|null);
 
-        /** WSGameResponsePacket data. */
+        /** GameResponsePacket data. */
         public data?: ("error"|"move"|"end");
 
         /**
-         * Creates a new WSGameResponsePacket instance using the specified properties.
+         * Creates a new GameResponsePacket instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns WSGameResponsePacket instance
+         * @returns GameResponsePacket instance
          */
-        public static create(properties?: ws.IWSGameResponsePacket): ws.WSGameResponsePacket;
+        public static create(properties?: ws.IGameResponsePacket): ws.GameResponsePacket;
 
         /**
-         * Encodes the specified WSGameResponsePacket message. Does not implicitly {@link ws.WSGameResponsePacket.verify|verify} messages.
-         * @param message WSGameResponsePacket message or plain object to encode
+         * Encodes the specified GameResponsePacket message. Does not implicitly {@link ws.GameResponsePacket.verify|verify} messages.
+         * @param message GameResponsePacket message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IWSGameResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified WSGameResponsePacket message, length delimited. Does not implicitly {@link ws.WSGameResponsePacket.verify|verify} messages.
-         * @param message WSGameResponsePacket message or plain object to encode
+         * Encodes the specified GameResponsePacket message, length delimited. Does not implicitly {@link ws.GameResponsePacket.verify|verify} messages.
+         * @param message GameResponsePacket message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IWSGameResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a WSGameResponsePacket message from the specified reader or buffer.
+         * Decodes a GameResponsePacket message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns WSGameResponsePacket
+         * @returns GameResponsePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.WSGameResponsePacket;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameResponsePacket;
 
         /**
-         * Decodes a WSGameResponsePacket message from the specified reader or buffer, length delimited.
+         * Decodes a GameResponsePacket message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns WSGameResponsePacket
+         * @returns GameResponsePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.WSGameResponsePacket;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameResponsePacket;
 
         /**
-         * Verifies a WSGameResponsePacket message.
+         * Verifies a GameResponsePacket message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a WSGameResponsePacket message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameResponsePacket message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns WSGameResponsePacket
+         * @returns GameResponsePacket
          */
-        public static fromObject(object: { [k: string]: any }): ws.WSGameResponsePacket;
+        public static fromObject(object: { [k: string]: any }): ws.GameResponsePacket;
 
         /**
-         * Creates a plain object from a WSGameResponsePacket message. Also converts values to other types if specified.
-         * @param message WSGameResponsePacket
+         * Creates a plain object from a GameResponsePacket message. Also converts values to other types if specified.
+         * @param message GameResponsePacket
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.WSGameResponsePacket, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameResponsePacket, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this WSGameResponsePacket to JSON.
+         * Converts this GameResponsePacket to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for WSGameResponsePacket
+         * Gets the default type url for GameResponsePacket
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -2885,10 +2783,11 @@ export namespace ws {
     /** LobbyResponses enum. */
     enum LobbyResponses {
         LOBBY_RESPONSES_UNSPECIFIED = 0,
-        LOBBY_RESPONSES_JOIN = 1,
-        LOBBY_RESPONSES_LEAVE = 2,
-        LOBBY_RESPONSES_CHANGE_PLAYER = 3,
-        LOBBY_RESPONSES_START_GAME = 4
+        LOBBY_RESPONSES_ERROR = 1,
+        LOBBY_RESPONSES_JOIN = 2,
+        LOBBY_RESPONSES_LEAVE = 3,
+        LOBBY_RESPONSES_CHANGE_PLAYER = 4,
+        LOBBY_RESPONSES_START_GAME = 5
     }
 
     /** Properties of a LobbyJoin. */
@@ -3188,6 +3087,9 @@ export namespace ws {
         /** LobbyResponsePacket response */
         response?: (ws.LobbyResponses|null);
 
+        /** LobbyResponsePacket error */
+        error?: (shared.ICodedError|null);
+
         /** LobbyResponsePacket join */
         join?: (ws.ILobbyJoin|null);
 
@@ -3210,6 +3112,9 @@ export namespace ws {
         /** LobbyResponsePacket response. */
         public response: ws.LobbyResponses;
 
+        /** LobbyResponsePacket error. */
+        public error?: (shared.ICodedError|null);
+
         /** LobbyResponsePacket join. */
         public join?: (ws.ILobbyJoin|null);
 
@@ -3220,7 +3125,7 @@ export namespace ws {
         public changePlayer?: (ws.ILobbyChangePlayer|null);
 
         /** LobbyResponsePacket data. */
-        public data?: ("join"|"leave"|"changePlayer");
+        public data?: ("error"|"join"|"leave"|"changePlayer");
 
         /**
          * Creates a new LobbyResponsePacket instance using the specified properties.

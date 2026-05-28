@@ -18,27 +18,40 @@ function Game() {
             })),
         })
     );
+    const [canMove, setCanMove] = useState<boolean>(true);
+
+    // Which player's turn it is
+    const [currentTurn, setCurrentTurn] = useState<proto.shared.PlayerIDs>(proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1);
+
+    // The user's assigned player
+    const [userPlayerID, setUserPlayerID] = useState<proto.shared.PlayerIDs>(proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1);
 
     const wsRef = useRef<GameWebSocket | null>(null);
 
     useEffect(() => {
         if (!lobbyCode) return;
+        let cancelled = false;
+        console.log("Test");
 
         GameWebSocket.create(lobbyCode, (packet) => {
             switch (packet.response) {
-                case proto.ws.WSGameResponses.WS_GAME_RESPONSES_UNSPECIFIED:
+                case proto.ws.GameResponses.GAME_RESPONSES_UNSPECIFIED:
                     if (currentTurn === userPlayerID) setCanMove(true);
+                    console.log("unknown");
                     break;
-                case proto.ws.WSGameResponses.WS_GAME_RESPONSES_ERROR:
+                case proto.ws.GameResponses.GAME_RESPONSES_ERROR:
                     if (currentTurn === userPlayerID) setCanMove(true);
+                    console.log(packet.toJSON())
                     break;
-                case proto.ws.WSGameResponses.WS_GAME_RESPONSES_MOVE:
-                    setCurrentTurn(packet.move?.turn!); // temp
-                    setUserPlayerID(packet.move?.turn!); // TESTING
+                case proto.ws.GameResponses.GAME_RESPONSES_MOVE:
+                    console.log(packet)
+                    if (!packet.move?.turn) return;
+                    setCurrentTurn(packet.move?.turn); // temp
+                    setUserPlayerID(packet.move?.turn); // TESTING
                     if (currentTurn === userPlayerID) setCanMove(true);
                     gameCanvasRef.current?.insertToken(packet.move?.column, packet.move?.row, userPlayerID);
                     break;
-                case proto.ws.WSGameResponses.WS_GAME_RESPONSES_END:
+                case proto.ws.GameResponses.GAME_RESPONSES_END:
                     if (packet.end?.draw) {
                         console.log("Draw");
                     }
@@ -48,22 +61,19 @@ function Game() {
                     break;
             }
         }).then((instance) => {
-            wsRef.current = instance;
+            if (cancelled)
+                instance.ws.close();
+            else
+                wsRef.current = instance;
         });
 
         return () => {
             wsRef.current?.ws.close();
             wsRef.current = null;
+            cancelled = true;
         };
     }, []);
 
-    const [canMove, setCanMove] = useState<boolean>(true);
-
-    // Which player's turn it is
-    const [currentTurn, setCurrentTurn] = useState<proto.shared.PlayerIDs>(proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1);
-
-    // The user's assigned player
-    const [userPlayerID, setUserPlayerID] = useState<proto.shared.PlayerIDs>(proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1);
 
     const handleMakeMove = (column: number) => {
         if (userPlayerID !== currentTurn || !canMove) return;

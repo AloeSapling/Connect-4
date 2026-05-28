@@ -17,7 +17,7 @@ import { CLIENT_URL, REDIS_HOST, REDIS_PORT, SERVER_PORT } from './config.ts';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { setupGameWSServer } from './routes/ws/game.ts';
-import { P_CodedError, P_ErrorCodes, type WsAuthArgs } from './lib/types.ts';
+import { P_CodedError, P_ErrorCodes, type WsArgs, type WsAuthArgs } from './lib/types.ts';
 
 import { setupLobbyWSServer } from './routes/ws/lobby.ts';
 
@@ -91,7 +91,7 @@ app.use('/game', gameRouter);
 const wsRoutes = {
     game: {
         wss: new WebSocketServer({ noServer: true }),
-        auth: [wsAuthUser],
+        auth: [wsIsLobbyMember],
     },
     lobby: {
         wss: new WebSocketServer({ noServer: true }),
@@ -123,33 +123,30 @@ server.on('upgrade', async (req, socket, head) => {
 
     console.log(pathname, routePath);
 
-    const authArgs: WsAuthArgs = {
+    const wsArgs: WsArgs = {
         req: req,
     };
-    // eslint-disable-next-line
-    const wsArgs: any[] = [req];
 
     if (routePath in wsRoutes) {
-        authArgs.req.params = {};
+        wsArgs.req.params = {};
 
         // Paths with a lobby code argument
-        if (routePath === 'lobby') {
+        if (routePath === 'lobby' || routePath === 'game') {
             const lobbyCode = pathArguments[2];
-            authArgs.lobbyCode = lobbyCode;
-            wsArgs[1] = lobbyCode;
+            wsArgs.lobbyCode = lobbyCode;
         }
 
         // Check if the user is authorised to connect to the given path
-        await wsRoutes[routePath as keyof typeof wsRoutes].auth.forEach(async (authFn) => {
-            if (!(await authFn(authArgs))) {
+        for (const authFn of wsRoutes[routePath as keyof typeof wsRoutes].auth) {
+            if (!(await authFn(wsArgs))) {
                 writeUnauthorisedError();
                 return;
             }
-        });
+        }
 
         // Establish the connection with the appropriate arguments
         wsRoutes[routePath as keyof typeof wsRoutes].wss.handleUpgrade(req, socket, head, (ws) => {
-            wsRoutes[routePath as keyof typeof wsRoutes].wss.emit('connection', ws, ...wsArgs);
+            wsRoutes[routePath as keyof typeof wsRoutes].wss.emit('connection', ws, wsArgs);
         });
     } else {
         socket.destroy();

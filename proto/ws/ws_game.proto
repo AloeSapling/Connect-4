@@ -6,25 +6,20 @@ import "shared/shared.proto";
 
 // Request / client packets
 
-message WSGameInit {
-  string lobby_code = 1;
-}
-
-message WSGameInsertTile {
+message GameInsertTile {
   int32 column = 1;
 }
 
-enum WSGameActions {
-  WS_GAME_ACTIONS_UNSPECIFIED = 0;
-  WS_GAME_ACTIONS_INIT = 1;
-  WS_GAME_ACTIONS_INSERT_TILE = 2;
+enum GameActions {
+  GAME_ACTIONS_UNSPECIFIED = 0;
+  GAME_ACTIONS_INIT = 1;
+  GAME_ACTIONS_INSERT_TILE = 2;
 }
 
-message WSGamePacket {
-  WSGameActions action = 1;
+message GamePacket {
+  GameActions action = 1;
   oneof data {
-    WSGameInit init = 2;
-    WSGameInsertTile insert_tile = 3;
+    GameInsertTile insert_tile = 2;
   }
 }
 
@@ -34,32 +29,32 @@ message PartialUser {
   string username = 1;
 }
 
-message WSGameEnd {
+message GameEnd {
   oneof winner {
     PartialUser user = 1;
     bool draw = 2;
   }
 }
 
-message WSGameMove {
+message GameMove {
   int32 row = 1;
   int32 column = 2;
   shared.GameBoard board = 3;
   shared.PlayerIDs turn = 4;
 }
 
-enum WSGameResponses {
-  WS_GAME_RESPONSES_UNSPECIFIED = 0;
-  WS_GAME_RESPONSES_ERROR = 1;
-  WS_GAME_RESPONSES_MOVE = 2;
-  WS_GAME_RESPONSES_END = 3;
+enum GameResponses {
+  GAME_RESPONSES_UNSPECIFIED = 0;
+  GAME_RESPONSES_ERROR = 1;
+  GAME_RESPONSES_MOVE = 2;
+  GAME_RESPONSES_END = 3;
 }
 
-message WSGameResponsePacket {
-  WSGameResponses response = 1;
+message GameResponsePacket {
+  GameResponses response = 1;
   oneof data {
     shared.CodedError error = 2;
-    WSGameMove move = 3;
-    WSGameEnd end = 4;
+    GameMove move = 3;
+    GameEnd end = 4;
   }
 }
