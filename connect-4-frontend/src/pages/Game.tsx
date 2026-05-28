@@ -2,9 +2,10 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_ROWS, GAME_COLUMNS } from '@/lib/config.js';
 import { GameWebSocket } from '@/lib/websockets.js';
-import { makeMove } from '../lib/gameLogic';
-import GameCanvas from '../lib/canvasLogic.js';
-import * as proto from '../lib/proto.js';
+// import { makeMove } from '@/lib/gameLogic';
+import GameCanvas from '@/lib/canvasLogic.js';
+import * as proto from '@/lib/proto.js';
+import * as types from '@/lib/types.js';
 
 function Game() {
     const { lobbyCode } = useParams();
@@ -14,17 +15,17 @@ function Game() {
     const [currentBoardState, setCurrentBoardState] = useState(
         proto.shared.GameBoard.create({
             rows: Array.from({ length: GAME_ROWS }, () => ({
-                columns: Array.from({ length: GAME_COLUMNS }, () => proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED),
+                columns: Array.from({ length: GAME_COLUMNS }, () => types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED),
             })),
         })
     );
     const [canMove, setCanMove] = useState<boolean>(true);
 
     // Which player's turn it is
-    const [currentTurn, setCurrentTurn] = useState<proto.shared.PlayerIDs>(proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1);
+    const [currentTurn, setCurrentTurn] = useState<types.TPlayerIDs>(types.P_PlayerIDs.PLAYER_IDS_PLAYER1);
 
     // The user's assigned player
-    const [userPlayerID, setUserPlayerID] = useState<proto.shared.PlayerIDs>(proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1);
+    const [userPlayerID, setUserPlayerID] = useState<types.TPlayerIDs>(types.P_PlayerIDs.PLAYER_IDS_PLAYER1);
 
     const wsRef = useRef<GameWebSocket | null>(null);
 
@@ -44,12 +45,15 @@ function Game() {
                     console.log(packet.toJSON())
                     break;
                 case proto.ws.GameResponses.GAME_RESPONSES_MOVE:
-                    console.log(packet)
+                    console.log(packet);
                     if (!packet.move?.turn) return;
+                    
                     setCurrentTurn(packet.move?.turn); // temp
                     setUserPlayerID(packet.move?.turn); // TESTING
-                    if (currentTurn === userPlayerID) setCanMove(true);
-                    gameCanvasRef.current?.insertToken(packet.move?.column, packet.move?.row, userPlayerID);
+
+                    if (packet.move.turn === userPlayerID) setCanMove(true);
+                    const insertedToken: types.TPlayerIDs = (packet.move.turn == types.P_PlayerIDs.PLAYER_IDS_PLAYER1) ? types.P_PlayerIDs.PLAYER_IDS_PLAYER2 : types.P_PlayerIDs.PLAYER_IDS_PLAYER1
+                    gameCanvasRef.current?.insertToken(packet.move?.column!, packet.move?.row!, insertedToken);
                     break;
                 case proto.ws.GameResponses.GAME_RESPONSES_END:
                     if (packet.end?.draw) {
@@ -82,6 +86,14 @@ function Game() {
         wsRef.current?.insertTile(column);
     };
 
+    const handleColumnEnter = (column: number) => {
+        gameCanvasRef.current?.displayColumnIndicator(true, column);
+    }
+
+    const handleColumnLeave = () => {
+        gameCanvasRef.current?.displayColumnIndicator(false, 0);
+    }
+
     // Get canvas and start animation
     const canvasRef = useCallback((canvas: HTMLCanvasElement | null) => {
         if (!canvas) return;
@@ -106,12 +118,14 @@ function Game() {
     return (
         <>
             {/* column buttons */}
-            {userPlayerID !== proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED &&
+            {userPlayerID !== types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED &&
                 <div className="absolute top-[4%] left-[27.3%] w-[45.85%] h-[80%] flex">
                     {Array.from({ length: GAME_COLUMNS }, (_, col) => (
                         <button
                             key={col}
                             onClick={() => handleMakeMove(col)}
+                            onMouseEnter={() => handleColumnEnter(col)}
+                            onMouseOut={() => handleColumnLeave()}
                             className="pointer-events-auto z-50 flex-1 h-full cursor-pointer"
                         />
                     ))}

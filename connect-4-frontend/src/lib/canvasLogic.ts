@@ -21,10 +21,19 @@ type FallingToken = {
     velocity: number;
 };
 
+type ColumnIndicator = {
+    display: boolean;
+    column: number;
+}
+
 class GameCanvas {
     private readonly canvas: HTMLCanvasElement;
     private readonly ctx: CanvasRenderingContext2D;
     private fallingTokens: FallingToken[] = [];
+    private columnIndicator: ColumnIndicator = {
+        display: false,
+        column: 0,
+    }
 
     private boardTable = new Image();
     private boardFront = new Image();
@@ -72,23 +81,39 @@ class GameCanvas {
     private accumulator: number = 0;
 
     ///// Square animation; for testing animation, delta, framerate etc.
-    private x: number = 50;
-    private speed: number = 120; // px/sec
-    private updateSquare = (dt: number) => {
-        this.x += this.speed * dt;
-        if (this.x > this.canvas.width - 50 || this.x < 0) {
-            this.speed *= -1;
-        }
-    };
+    // private x: number = 50;
+    // private speed: number = 120; // px/sec
+    // private updateSquare = (dt: number) => {
+    //     this.x += this.speed * dt;
+    //     if (this.x > this.canvas.width - 50 || this.x < 0) {
+    //         this.speed *= -1;
+    //     }
+    // };
     ///// ***************************************************************
 
+    public displayColumnIndicator(
+        display: boolean,
+        column: number,
+    ) {
+        this.columnIndicator.display = display;
+        this.columnIndicator.column = column;
+    }
+
+    private drawColumnIndicator() {
+        if (this.columnIndicator.display === false) return;
+
+        this.ctx.drawImage(
+            this.colIndic,
+            ((this.columnIndicator.column * BOARD_SLOT_DISTANCE) + BOARD_START_WIDTH + 4),
+            20
+        )
+    }
+
     public insertToken(
-        column: number | null | undefined,
-        row: number | null | undefined,
+        column: number,
+        row: number,
         player: types.TPlayerIDs,
     ) {
-        if (!column || !row) return;
-        
         const x = (column * BOARD_SLOT_DISTANCE) + BOARD_START_WIDTH;
     
         // Starting position
@@ -154,10 +179,13 @@ class GameCanvas {
 
         this.drawTokens();
         this.drawFallingTokens();
+        this.drawColumnIndicator();
 
         this.ctx.drawImage(this.boardFront, 0, 0);
-        this.ctx.fillStyle = "blue";
-        this.ctx.fillRect(this.x, 50, 50, 50);
+
+        // square anim
+        // this.ctx.fillStyle = "blue";
+        // this.ctx.fillRect(this.x, 50, 50, 50);
     };
 
     private drawTokens = () => {
@@ -190,8 +218,10 @@ class GameCanvas {
         // Updates board state until it is up-to-date
         while (this.accumulator >= STEP) {
             // ms -> seconds
-            this.updateSquare(STEP / 1000);
+            // square anim
+            // this.updateSquare(STEP / 1000);
             this.updateFallingTokens(STEP / 1000);
+
             this.accumulator -= STEP;
         }
         this.drawGame();
