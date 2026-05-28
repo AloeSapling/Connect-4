@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -49,7 +49,7 @@ function Lobby() {
                     setLobbyMembersData(packet.changePlayer?.users!);
                     break;
                 case proto.ws.LobbyResponses.LOBBY_RESPONSES_START_GAME:
-                    navigate('/game');
+                    navigate(`/game/${lobbyCode}`);
                     break;
             }
         }).then((instance) => {
@@ -91,7 +91,7 @@ function Lobby() {
         createGame_m.mutate(lobbyCode);
 
     useEffect(() => {
-        if (queryData?.lobbyDetails?.hasGame) navigate('/game');
+        if (queryData?.lobbyDetails?.hasGame) navigate(`/game/${lobbyCode}`);
     }, [queryData?.lobbyDetails?.hasGame, navigate])
 
     const langCtx = useContext(langContext);

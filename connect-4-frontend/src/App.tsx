@@ -50,7 +50,7 @@ function App() {
 
                                         <Route path="lobby/:lobbyCode" element={<Lobby />} />
 
-                                        <Route path="game" element={<Game />} />
+                                        <Route path="game/:lobbyCode" element={<Game />} />
 
                                         <Route path="settings" element={<Settings />} />
 

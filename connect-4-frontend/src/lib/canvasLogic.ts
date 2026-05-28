@@ -83,10 +83,12 @@ class GameCanvas {
     ///// ***************************************************************
 
     public insertToken(
-        column: number,
-        row: number,
+        column: number | null | undefined,
+        row: number | null | undefined,
         player: types.TPlayerIDs,
     ) {
+        if (!column || !row) return;
+        
         const x = (column * BOARD_SLOT_DISTANCE) + BOARD_START_WIDTH;
     
         // Starting position
