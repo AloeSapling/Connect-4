@@ -32,6 +32,7 @@ function setupGameWSServer(WSServer: WebSocketServer) {
             console.log('connection closed');
         });
 
+        // Validate the websocket connection
         if (!lobbyCode) {
             ws.send(
                 wsEncode({
@@ -58,6 +59,7 @@ function setupGameWSServer(WSServer: WebSocketServer) {
             return;
         }
 
+        // Setup the data used by the websocket
         try {
             const pID = await getPlayerID(lobbyCode, reqUser.id);
 
@@ -92,6 +94,7 @@ function setupGameWSServer(WSServer: WebSocketServer) {
 
         const wsPlayerID = ws['playerID'];
 
+        // Handle incomming messages / packets
         ws.on('message', async (data) => {
             const packet = p_ws.GamePacket.decode(new Uint8Array(data as Buffer));
 
