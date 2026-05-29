@@ -9,7 +9,6 @@ import {
     type GameState,
     type TPlayerIDs,
 } from '../lib/types.ts';
-import * as proto from '../lib/proto.js';
 import { getNextPlayer } from '../lib/lib.ts';
 
 /** The game state used when creating a new game */
@@ -97,6 +96,7 @@ export async function getGameState(lobbyCode: string): Promise<GameState> {
         throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
     }
 }
+
 /** Takes in the selected column and calculates the game's state after inserting a tile in that column.
  *
  * Automatically calculates which cell it will fall into
@@ -112,20 +112,26 @@ export async function insertTile(lobbyCode: string, playerID: TPlayerIDs, column
     if (column < 0 || column > GAME_COLUMNS - 1) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
     if (await redis.exists(`GameState_${lobbyCode}:lock`)) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_LOCKED);
 
+    // Lock the game from being updated until the turn calculations finish
+    await redis.set(`GameState_${lobbyCode}:lock`, '1', {
+        EX: 5, // Expires in 5 seconds
+    });
+
     const board = await redis.get(`GameState_${lobbyCode}:board`);
     const turn = await redis.get(`GameState_${lobbyCode}:turn`);
 
-    // Exit early if there was an error getting the board or turn or if it's not this player's turn
-    if (!board || !turn) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_EXPIRED);
+    // Exit early if there was an error getting the board or turn
+    if (!board || !turn) {
+        await redis.del(`GameState_${lobbyCode}:lock`);
+        throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_EXPIRED);
+    }
 
+    // Make sure it's this player's turn
     const turnData = Number(turn) as TPlayerIDs;
-    if (turnData !== playerID) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_TURN);
-
-    // Lock the game from being updated until the turn calculations finish
-    await redis.set(`GameState_${lobbyCode}:lock`, '1', {
-        NX: true,
-        EX: 5, // Expires in 5 seconds
-    });
+    if (turnData !== playerID) {
+        await redis.del(`GameState_${lobbyCode}:lock`);
+        throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_TURN);
+    }
 
     try {
         const boardData = (await JSON.parse(board)) as GameBoard;

@@ -69,6 +69,7 @@ export async function changeUsername(username: string) {
 export async function createGame(lobbyCode: string) {
     await api.post<ArrayBuffer>(`/game/${lobbyCode}/create`);
 }
+
 /** Gets the current state of the game
  * @param lobbyCode Used to determine which lobby's game state to get
  * */

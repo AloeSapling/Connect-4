@@ -2308,14 +2308,14 @@ export const ws = $root.ws = (() => {
      * @name ws.GameActions
      * @enum {number}
      * @property {number} GAME_ACTIONS_UNSPECIFIED=0 GAME_ACTIONS_UNSPECIFIED value
-     * @property {number} GAME_ACTIONS_INIT=1 GAME_ACTIONS_INIT value
-     * @property {number} GAME_ACTIONS_INSERT_TILE=2 GAME_ACTIONS_INSERT_TILE value
+     * @property {number} GAME_ACTIONS_INSERT_TILE=1 GAME_ACTIONS_INSERT_TILE value
+     * @property {number} GAME_ACTIONS_FORFEIT=2 GAME_ACTIONS_FORFEIT value
      */
     ws.GameActions = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "GAME_ACTIONS_UNSPECIFIED"] = 0;
-        values[valuesById[1] = "GAME_ACTIONS_INIT"] = 1;
-        values[valuesById[2] = "GAME_ACTIONS_INSERT_TILE"] = 2;
+        values[valuesById[1] = "GAME_ACTIONS_INSERT_TILE"] = 1;
+        values[valuesById[2] = "GAME_ACTIONS_FORFEIT"] = 2;
         return values;
     })();
 
@@ -2537,11 +2537,11 @@ export const ws = $root.ws = (() => {
             case 0:
                 message.action = 0;
                 break;
-            case "GAME_ACTIONS_INIT":
+            case "GAME_ACTIONS_INSERT_TILE":
             case 1:
                 message.action = 1;
                 break;
-            case "GAME_ACTIONS_INSERT_TILE":
+            case "GAME_ACTIONS_FORFEIT":
             case 2:
                 message.action = 2;
                 break;
@@ -2614,6 +2614,7 @@ export const ws = $root.ws = (() => {
          * Properties of a PartialUser.
          * @memberof ws
          * @interface IPartialUser
+         * @property {number|null} [id] PartialUser id
          * @property {string|null} [username] PartialUser username
          */
 
@@ -2631,6 +2632,14 @@ export const ws = $root.ws = (() => {
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
                         this[keys[i]] = properties[keys[i]];
         }
+
+        /**
+         * PartialUser id.
+         * @member {number} id
+         * @memberof ws.PartialUser
+         * @instance
+         */
+        PartialUser.prototype.id = 0;
 
         /**
          * PartialUser username.
@@ -2664,8 +2673,10 @@ export const ws = $root.ws = (() => {
         PartialUser.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
+            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
             if (message.username != null && Object.hasOwnProperty.call(message, "username"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.username);
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.username);
             return writer;
         };
 
@@ -2707,6 +2718,10 @@ export const ws = $root.ws = (() => {
                     break;
                 switch (tag >>> 3) {
                 case 1: {
+                        message.id = reader.int32();
+                        break;
+                    }
+                case 2: {
                         message.username = reader.string();
                         break;
                     }
@@ -2749,6 +2764,9 @@ export const ws = $root.ws = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
+            if (message.id != null && message.hasOwnProperty("id"))
+                if (!$util.isInteger(message.id))
+                    return "id: integer expected";
             if (message.username != null && message.hasOwnProperty("username"))
                 if (!$util.isString(message.username))
                     return "username: string expected";
@@ -2771,6 +2789,8 @@ export const ws = $root.ws = (() => {
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
             let message = new $root.ws.PartialUser();
+            if (object.id != null)
+                message.id = object.id | 0;
             if (object.username != null)
                 message.username = String(object.username);
             return message;
@@ -2789,8 +2809,12 @@ export const ws = $root.ws = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults)
+            if (options.defaults) {
+                object.id = 0;
                 object.username = "";
+            }
+            if (message.id != null && message.hasOwnProperty("id"))
+                object.id = message.id;
             if (message.username != null && message.hasOwnProperty("username"))
                 object.username = message.username;
             return object;
@@ -2825,6 +2849,24 @@ export const ws = $root.ws = (() => {
         return PartialUser;
     })();
 
+    /**
+     * GameEndTypes enum.
+     * @name ws.GameEndTypes
+     * @enum {number}
+     * @property {number} GAME_END_TYPES_UNSPECIFIED=0 GAME_END_TYPES_UNSPECIFIED value
+     * @property {number} GAME_END_TYPES_STANDARD_WIN=1 GAME_END_TYPES_STANDARD_WIN value
+     * @property {number} GAME_END_TYPES_FORFEITED=2 GAME_END_TYPES_FORFEITED value
+     * @property {number} GAME_END_TYPES_DRAW=3 GAME_END_TYPES_DRAW value
+     */
+    ws.GameEndTypes = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "GAME_END_TYPES_UNSPECIFIED"] = 0;
+        values[valuesById[1] = "GAME_END_TYPES_STANDARD_WIN"] = 1;
+        values[valuesById[2] = "GAME_END_TYPES_FORFEITED"] = 2;
+        values[valuesById[3] = "GAME_END_TYPES_DRAW"] = 3;
+        return values;
+    })();
+
     ws.GameEnd = (function() {
 
         /**
@@ -2833,8 +2875,8 @@ export const ws = $root.ws = (() => {
          * @interface IGameEnd
          * @property {number|null} [row] GameEnd row
          * @property {number|null} [column] GameEnd column
+         * @property {ws.GameEndTypes|null} [endType] GameEnd endType
          * @property {ws.IPartialUser|null} [user] GameEnd user
-         * @property {boolean|null} [draw] GameEnd draw
          */
 
         /**
@@ -2854,19 +2896,27 @@ export const ws = $root.ws = (() => {
 
         /**
          * GameEnd row.
-         * @member {number} row
+         * @member {number|null|undefined} row
          * @memberof ws.GameEnd
          * @instance
          */
-        GameEnd.prototype.row = 0;
+        GameEnd.prototype.row = null;
 
         /**
          * GameEnd column.
-         * @member {number} column
+         * @member {number|null|undefined} column
          * @memberof ws.GameEnd
          * @instance
          */
-        GameEnd.prototype.column = 0;
+        GameEnd.prototype.column = null;
+
+        /**
+         * GameEnd endType.
+         * @member {ws.GameEndTypes} endType
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.endType = 0;
 
         /**
          * GameEnd user.
@@ -2876,25 +2926,29 @@ export const ws = $root.ws = (() => {
          */
         GameEnd.prototype.user = null;
 
-        /**
-         * GameEnd draw.
-         * @member {boolean|null|undefined} draw
-         * @memberof ws.GameEnd
-         * @instance
-         */
-        GameEnd.prototype.draw = null;
-
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(GameEnd.prototype, "_row", {
+            get: $util.oneOfGetter($oneOfFields = ["row"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(GameEnd.prototype, "_column", {
+            get: $util.oneOfGetter($oneOfFields = ["column"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
         /**
          * GameEnd winner.
-         * @member {"user"|"draw"|undefined} winner
+         * @member {"user"|undefined} winner
          * @memberof ws.GameEnd
          * @instance
          */
         Object.defineProperty(GameEnd.prototype, "winner", {
-            get: $util.oneOfGetter($oneOfFields = ["user", "draw"]),
+            get: $util.oneOfGetter($oneOfFields = ["user"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -2926,10 +2980,10 @@ export const ws = $root.ws = (() => {
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.row);
             if (message.column != null && Object.hasOwnProperty.call(message, "column"))
                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.column);
+            if (message.endType != null && Object.hasOwnProperty.call(message, "endType"))
+                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.endType);
             if (message.user != null && Object.hasOwnProperty.call(message, "user"))
-                $root.ws.PartialUser.encode(message.user, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-            if (message.draw != null && Object.hasOwnProperty.call(message, "draw"))
-                writer.uint32(/* id 4, wireType 0 =*/32).bool(message.draw);
+                $root.ws.PartialUser.encode(message.user, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             return writer;
         };
 
@@ -2979,11 +3033,11 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 3: {
-                        message.user = $root.ws.PartialUser.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.endType = reader.int32();
                         break;
                     }
                 case 4: {
-                        message.draw = reader.bool();
+                        message.user = $root.ws.PartialUser.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 default:
@@ -3026,12 +3080,26 @@ export const ws = $root.ws = (() => {
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
             let properties = {};
-            if (message.row != null && message.hasOwnProperty("row"))
+            if (message.row != null && message.hasOwnProperty("row")) {
+                properties._row = 1;
                 if (!$util.isInteger(message.row))
                     return "row: integer expected";
-            if (message.column != null && message.hasOwnProperty("column"))
+            }
+            if (message.column != null && message.hasOwnProperty("column")) {
+                properties._column = 1;
                 if (!$util.isInteger(message.column))
                     return "column: integer expected";
+            }
+            if (message.endType != null && message.hasOwnProperty("endType"))
+                switch (message.endType) {
+                default:
+                    return "endType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    break;
+                }
             if (message.user != null && message.hasOwnProperty("user")) {
                 properties.winner = 1;
                 {
@@ -3039,13 +3107,6 @@ export const ws = $root.ws = (() => {
                     if (error)
                         return "user." + error;
                 }
-            }
-            if (message.draw != null && message.hasOwnProperty("draw")) {
-                if (properties.winner === 1)
-                    return "winner: multiple values";
-                properties.winner = 1;
-                if (typeof message.draw !== "boolean")
-                    return "draw: boolean expected";
             }
             return null;
         };
@@ -3070,13 +3131,35 @@ export const ws = $root.ws = (() => {
                 message.row = object.row | 0;
             if (object.column != null)
                 message.column = object.column | 0;
+            switch (object.endType) {
+            default:
+                if (typeof object.endType === "number") {
+                    message.endType = object.endType;
+                    break;
+                }
+                break;
+            case "GAME_END_TYPES_UNSPECIFIED":
+            case 0:
+                message.endType = 0;
+                break;
+            case "GAME_END_TYPES_STANDARD_WIN":
+            case 1:
+                message.endType = 1;
+                break;
+            case "GAME_END_TYPES_FORFEITED":
+            case 2:
+                message.endType = 2;
+                break;
+            case "GAME_END_TYPES_DRAW":
+            case 3:
+                message.endType = 3;
+                break;
+            }
             if (object.user != null) {
                 if (typeof object.user !== "object")
                     throw TypeError(".ws.GameEnd.user: object expected");
                 message.user = $root.ws.PartialUser.fromObject(object.user, long + 1);
             }
-            if (object.draw != null)
-                message.draw = Boolean(object.draw);
             return message;
         };
 
@@ -3093,23 +3176,24 @@ export const ws = $root.ws = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults) {
-                object.row = 0;
-                object.column = 0;
-            }
-            if (message.row != null && message.hasOwnProperty("row"))
+            if (options.defaults)
+                object.endType = options.enums === String ? "GAME_END_TYPES_UNSPECIFIED" : 0;
+            if (message.row != null && message.hasOwnProperty("row")) {
                 object.row = message.row;
-            if (message.column != null && message.hasOwnProperty("column"))
+                if (options.oneofs)
+                    object._row = "row";
+            }
+            if (message.column != null && message.hasOwnProperty("column")) {
                 object.column = message.column;
+                if (options.oneofs)
+                    object._column = "column";
+            }
+            if (message.endType != null && message.hasOwnProperty("endType"))
+                object.endType = options.enums === String ? $root.ws.GameEndTypes[message.endType] === undefined ? message.endType : $root.ws.GameEndTypes[message.endType] : message.endType;
             if (message.user != null && message.hasOwnProperty("user")) {
                 object.user = $root.ws.PartialUser.toObject(message.user, options);
                 if (options.oneofs)
                     object.winner = "user";
-            }
-            if (message.draw != null && message.hasOwnProperty("draw")) {
-                object.draw = message.draw;
-                if (options.oneofs)
-                    object.winner = "draw";
             }
             return object;
         };

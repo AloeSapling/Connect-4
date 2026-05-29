@@ -96,11 +96,13 @@ function setupGameWSServer(WSServer: WebSocketServer) {
 
         // Handle incomming messages / packets
         ws.on('message', async (data) => {
+            if (!rooms[lobbyCode]) return;
+
             const packet = p_ws.GamePacket.decode(new Uint8Array(data as Buffer));
 
             switch (packet.action) {
                 case p_ws.GameActions.GAME_ACTIONS_INSERT_TILE: {
-                    if (!wsPlayerID || packet.insertTile?.column === null || packet.insertTile?.column === undefined) {
+                    if (packet.insertTile?.column === null || packet.insertTile?.column === undefined) {
                         ws.send(
                             wsEncode({
                                 response: p_ws.GameResponses.GAME_RESPONSES_ERROR,
@@ -126,14 +128,16 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                             await gameRedis.deleteGame(lobbyCode);
 
                             broadcastToRoom(
-                                rooms[lobbyCode] as Room,
+                                rooms[lobbyCode],
                                 wsEncode({
                                     response: p_ws.GameResponses.GAME_RESPONSES_END,
                                     end: {
                                         row: row,
                                         column: column,
+                                        endType: p_ws.GameEndTypes.GAME_END_TYPES_STANDARD_WIN,
                                         user: {
-                                            username: reqUser.id.toString(),
+                                            id: reqUser.id,
+                                            username: reqUser.username,
                                         },
                                     },
                                 })
@@ -145,13 +149,13 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                         // Check for draws
                         if (TileChecker.checkForDraw(gameState.board)) {
                             broadcastToRoom(
-                                rooms[lobbyCode] as Room,
+                                rooms[lobbyCode],
                                 wsEncode({
                                     response: p_ws.GameResponses.GAME_RESPONSES_END,
                                     end: {
                                         row: row,
                                         column: column,
-                                        draw: true,
+                                        endType: p_ws.GameEndTypes.GAME_END_TYPES_DRAW,
                                     },
                                 })
                             );
@@ -159,7 +163,7 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                         }
 
                         broadcastToRoom(
-                            rooms[lobbyCode] as Room,
+                            rooms[lobbyCode],
                             wsEncode({
                                 response: p_ws.GameResponses.GAME_RESPONSES_MOVE,
                                 move: {
@@ -184,6 +188,36 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                     }
                     break;
                 }
+
+                case p_ws.GameActions.GAME_ACTIONS_FORFEIT:
+                    try {
+                        // End the game
+                        await gameRedis.deleteGame(lobbyCode);
+
+                        broadcastToRoom(rooms[lobbyCode], wsEncode({
+                            response: p_ws.GameResponses.GAME_RESPONSES_END,
+                            end: {
+                                endType: p_ws.GameEndTypes.GAME_END_TYPES_FORFEITED,
+                                user: {
+                                    id: reqUser.id,
+                                    username: reqUser.username,
+                                },
+                            }
+                        })
+                        )
+                    } catch (err) {
+                        const formattedError = {
+                            code: (err as CodedError).code,
+                            error: (err as CodedError).error.toString(),
+                        };
+                        ws.send(
+                            wsEncode({
+                                response: p_ws.GameResponses.GAME_RESPONSES_ERROR,
+                                error: formattedError,
+                            })
+                        );
+                    }
+                    break;
             }
         });
     });

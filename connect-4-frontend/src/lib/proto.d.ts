@@ -862,8 +862,8 @@ export namespace ws {
     /** GameActions enum. */
     enum GameActions {
         GAME_ACTIONS_UNSPECIFIED = 0,
-        GAME_ACTIONS_INIT = 1,
-        GAME_ACTIONS_INSERT_TILE = 2
+        GAME_ACTIONS_INSERT_TILE = 1,
+        GAME_ACTIONS_FORFEIT = 2
     }
 
     /** Properties of a GamePacket. */
@@ -975,6 +975,9 @@ export namespace ws {
     /** Properties of a PartialUser. */
     interface IPartialUser {
 
+        /** PartialUser id */
+        id?: (number|null);
+
         /** PartialUser username */
         username?: (string|null);
     }
@@ -987,6 +990,9 @@ export namespace ws {
          * @param [properties] Properties to set
          */
         constructor(properties?: ws.IPartialUser);
+
+        /** PartialUser id. */
+        public id: number;
 
         /** PartialUser username. */
         public username: string;
@@ -1069,6 +1075,14 @@ export namespace ws {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** GameEndTypes enum. */
+    enum GameEndTypes {
+        GAME_END_TYPES_UNSPECIFIED = 0,
+        GAME_END_TYPES_STANDARD_WIN = 1,
+        GAME_END_TYPES_FORFEITED = 2,
+        GAME_END_TYPES_DRAW = 3
+    }
+
     /** Properties of a GameEnd. */
     interface IGameEnd {
 
@@ -1078,11 +1092,11 @@ export namespace ws {
         /** GameEnd column */
         column?: (number|null);
 
+        /** GameEnd endType */
+        endType?: (ws.GameEndTypes|null);
+
         /** GameEnd user */
         user?: (ws.IPartialUser|null);
-
-        /** GameEnd draw */
-        draw?: (boolean|null);
     }
 
     /** Represents a GameEnd. */
@@ -1095,19 +1109,19 @@ export namespace ws {
         constructor(properties?: ws.IGameEnd);
 
         /** GameEnd row. */
-        public row: number;
+        public row?: (number|null);
 
         /** GameEnd column. */
-        public column: number;
+        public column?: (number|null);
+
+        /** GameEnd endType. */
+        public endType: ws.GameEndTypes;
 
         /** GameEnd user. */
         public user?: (ws.IPartialUser|null);
 
-        /** GameEnd draw. */
-        public draw?: (boolean|null);
-
         /** GameEnd winner. */
-        public winner?: ("user"|"draw");
+        public winner?: "user";
 
         /**
          * Creates a new GameEnd instance using the specified properties.

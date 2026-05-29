@@ -12,8 +12,8 @@ message GameInsertTile {
 
 enum GameActions {
   GAME_ACTIONS_UNSPECIFIED = 0;
-  GAME_ACTIONS_INIT = 1;
-  GAME_ACTIONS_INSERT_TILE = 2;
+  GAME_ACTIONS_INSERT_TILE = 1;
+  GAME_ACTIONS_FORFEIT = 2;
 }
 
 message GamePacket {
@@ -26,15 +26,23 @@ message GamePacket {
 // Response / server packets
 
 message PartialUser {
-  string username = 1;
+  int32 id = 1;
+  string username = 2;
+}
+
+enum GameEndTypes {
+  GAME_END_TYPES_UNSPECIFIED = 0;
+  GAME_END_TYPES_STANDARD_WIN = 1;
+  GAME_END_TYPES_FORFEITED = 2;
+  GAME_END_TYPES_DRAW = 3;
 }
 
 message GameEnd {
-  int32 row = 1;
-  int32 column = 2;
+  optional int32 row = 1;
+  optional int32 column = 2;
+  GameEndTypes endType = 3;
   oneof winner {
-    PartialUser user = 3;
-    bool draw = 4;
+    PartialUser user = 4;
   }
 }
 
