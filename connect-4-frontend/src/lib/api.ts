@@ -69,6 +69,14 @@ export async function changeUsername(username: string) {
 export async function createGame(lobbyCode: string) {
     await api.post<ArrayBuffer>(`/game/${lobbyCode}/create`);
 }
+/** Gets the current state of the game
+ * @param lobbyCode Used to determine which lobby's game state to get
+ * */
+export async function getGameState(lobbyCode: string) {
+    const response = await api.get<ArrayBuffer>(`/game/${lobbyCode}/`);
+
+    return routes.GetGameResponse.decode(new Uint8Array(response.data));
+}
 
 /** Joins the lobby associated with the provided code */
 export async function joinLobby(lobbyCode: string) {
