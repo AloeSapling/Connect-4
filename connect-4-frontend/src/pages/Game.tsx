@@ -1,13 +1,19 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useRef, useState, useCallback, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_ROWS, GAME_COLUMNS } from '@/lib/config.js';
+import { useMutation } from '@tanstack/react-query';
+import { leaveLobby } from '@/lib/api';
+import { langContext } from '@/lib/contexts';
+import { toast } from 'sonner';
 import { GameWebSocket } from '@/lib/websockets.js';
 // import { makeMove } from '@/lib/gameLogic';
 import GameCanvas from '@/lib/canvasLogic.js';
 import * as proto from '@/lib/proto.js';
 import * as types from '@/lib/types.js';
+import { Button } from '@/components/ui/button';
 
 function Game() {
+    const navigate = useNavigate();
     const { lobbyCode } = useParams();
     const animationRef = useRef<number | null>(null);
     const gameCanvasRef = useRef<GameCanvas | null>(null);
@@ -26,6 +32,23 @@ function Game() {
 
     // The user's assigned player
     const [userPlayerID, setUserPlayerID] = useState<types.TPlayerIDs>(types.P_PlayerIDs.PLAYER_IDS_PLAYER1);
+
+    const [results, setResults] = useState<string>("");
+
+    const leaveLobby_m = useMutation({
+        mutationFn: leaveLobby,
+        onSuccess: () => {
+            toast.success(`${texts.leaveToast}`);
+            navigate('/lobbylist');
+        },
+        onError: (err) => toast.error(err.message)
+    });
+
+    const leaveLobbyButton = () =>
+        leaveLobby_m.mutate(lobbyCode!);
+
+    const backToLobbyButton = () =>
+        navigate(`/lobby/${lobbyCode}`);
 
     const wsRef = useRef<GameWebSocket | null>(null);
 
@@ -52,15 +75,17 @@ function Game() {
                     setUserPlayerID(packet.move?.turn); // TESTING
 
                     if (packet.move.turn === userPlayerID) setCanMove(true);
+                    
                     const insertedToken: types.TPlayerIDs = (packet.move.turn == types.P_PlayerIDs.PLAYER_IDS_PLAYER1) ? types.P_PlayerIDs.PLAYER_IDS_PLAYER2 : types.P_PlayerIDs.PLAYER_IDS_PLAYER1
                     gameCanvasRef.current?.insertToken(packet.move?.column!, packet.move?.row!, insertedToken);
+
                     break;
                 case proto.ws.GameResponses.GAME_RESPONSES_END:
                     if (packet.end?.draw) {
-                        console.log("Draw");
+                        setResults(texts.resultsDrawText);
                     }
                     else {
-                        console.log(`${packet.end?.user?.username} Wins`);
+                        setResults(`${packet.end?.user?.username} ${texts.resultsWinText}`);
                     }
                     break;
             }
@@ -115,6 +140,12 @@ function Game() {
         };
     }, []);
 
+    const langCtx = useContext(langContext);
+
+    if (!langCtx) return <p>Missing language context!</p>;
+
+    const texts = langCtx.texts.game;
+
     return (
         <>
             {/* column buttons */}
@@ -125,10 +156,42 @@ function Game() {
                             key={col}
                             onClick={() => handleMakeMove(col)}
                             onMouseEnter={() => handleColumnEnter(col)}
-                            onMouseOut={() => handleColumnLeave()}
-                            className="pointer-events-auto z-50 flex-1 h-full cursor-pointer"
+                            onMouseLeave={() => handleColumnLeave()}
+                            className="pointer-events-auto z-30 flex-1 h-full cursor-pointer"
                         />
                     ))}
+                </div>
+            }
+
+            {results !== "" &&
+                <div className="
+                    bg-yellow-800
+                    text-white
+                    text-center
+                    justify-between
+                    content-center
+                    items-center-safe
+                    text-xl
+                    rounded-md
+                    flex flex-col
+                    gap-y-2
+                    z-50
+                    m-4
+                    absolute w-[300px] md:w-[350px]
+                    h-[150px] md:h-[200px]
+                    top-[50%] left-[50%]
+                    translate-x-[-50%] translate-y-[-50%]
+                ">
+                    <h1 className='text-3xl'>{results}</h1>
+
+                    <div className="flex flex-row justify-between">
+                        <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer" onClick={leaveLobbyButton}>
+                            {texts.resultsLeaveButton}
+                        </Button>
+                        <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer" onClick={backToLobbyButton}>
+                            {texts.resultsBackToLobbyButton}
+                        </Button>
+                    </div>
                 </div>
             }
 

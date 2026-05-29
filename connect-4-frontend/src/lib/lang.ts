@@ -61,7 +61,12 @@ export type PageTexts = {
         changePlayerIDToast: string;
     };
     game: {
+        resultsWinText: string;
+        resultsDrawText: string;
+        resultsLeaveButton: string;
+        resultsBackToLobbyButton: string;
 
+        leaveToast: string;
     };
 };
 

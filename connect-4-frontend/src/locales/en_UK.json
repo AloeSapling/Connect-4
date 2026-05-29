@@ -58,6 +58,11 @@
         "changePlayerIDToast": "Player ID changed successfully!"
     },
     "game": {
+        "resultsWinText": "Won!",
+        "resultsDrawText": "Draw!",
+        "resultsLeaveButton": "Back to Lobby List",
+        "resultsBackToLobbyButton": "Back to Lobby",
 
+        "leaveToast": "Leaving lobby..."
     }
 }

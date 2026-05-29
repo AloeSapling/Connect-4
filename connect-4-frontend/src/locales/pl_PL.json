@@ -58,6 +58,11 @@
         "changePlayerIDToast": "Zmieniono ID gracza!"
     },
     "game": {
+        "resultsWinText": "Wygrał/a!",
+        "resultsDrawText": "Remis!",
+        "resultsLeaveButton": "Wróć do Listy Pokoi",
+        "resultsBackToLobbyButton": "Wróć do Pokoju",
 
+        "leaveToast": "Opuszczanie pokoju..."
     }
 }
