@@ -1,7 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from './database.ts';
 import { P_PlayerIDs, P_PlayerTypes, type TPlayerIDs, type TPlayerTypes } from '../lib/types.ts';
-import * as proto from '../lib/proto.js';
 
 export class User extends Model {
     declare id: number;

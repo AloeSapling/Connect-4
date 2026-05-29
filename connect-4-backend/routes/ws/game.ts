@@ -9,10 +9,11 @@ import {
     P_ErrorCodes,
     type WsArgs,
 } from '../../lib/types.ts';
-import { getPlayerID } from '../../database-sqllite/lobbyMembers.ts';
-import { broadcastToRoom } from '../../lib/lib.ts';
+import { getPartialUserDataByPlayerID, getPlayerID } from '../../database-sqllite/lobbyMembers.ts';
+import { broadcastToRoom, getNextPlayer } from '../../lib/lib.ts';
 import { TileChecker } from '../../lib/game.ts';
 import { ws as p_ws } from '../../lib/proto.js';
+import { getUserByID } from '../../database-sqllite/user.ts';
 
 type GameWebSocket = WebSocket & { lobbyCode?: string; playerID?: TPlayerIDs };
 
@@ -135,7 +136,7 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                                         row: row,
                                         column: column,
                                         endType: p_ws.GameEndTypes.GAME_END_TYPES_STANDARD_WIN,
-                                        user: {
+                                        winner: {
                                             id: reqUser.id,
                                             username: reqUser.username,
                                         },
@@ -194,14 +195,18 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                         // End the game
                         await gameRedis.deleteGame(lobbyCode);
 
+                        // Get theb winner's data
+                        const winnerUser = await getPartialUserDataByPlayerID(lobbyCode, getNextPlayer(wsPlayerID));
+
                         broadcastToRoom(rooms[lobbyCode], wsEncode({
                             response: p_ws.GameResponses.GAME_RESPONSES_END,
                             end: {
                                 endType: p_ws.GameEndTypes.GAME_END_TYPES_FORFEITED,
-                                user: {
+                                loser: {
                                     id: reqUser.id,
                                     username: reqUser.username,
                                 },
+                                winner: winnerUser
                             }
                         })
                         )

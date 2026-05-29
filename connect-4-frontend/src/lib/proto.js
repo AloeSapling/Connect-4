@@ -2608,247 +2608,6 @@ export const ws = $root.ws = (() => {
         return GamePacket;
     })();
 
-    ws.PartialUser = (function() {
-
-        /**
-         * Properties of a PartialUser.
-         * @memberof ws
-         * @interface IPartialUser
-         * @property {number|null} [id] PartialUser id
-         * @property {string|null} [username] PartialUser username
-         */
-
-        /**
-         * Constructs a new PartialUser.
-         * @memberof ws
-         * @classdesc Represents a PartialUser.
-         * @implements IPartialUser
-         * @constructor
-         * @param {ws.IPartialUser=} [properties] Properties to set
-         */
-        function PartialUser(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * PartialUser id.
-         * @member {number} id
-         * @memberof ws.PartialUser
-         * @instance
-         */
-        PartialUser.prototype.id = 0;
-
-        /**
-         * PartialUser username.
-         * @member {string} username
-         * @memberof ws.PartialUser
-         * @instance
-         */
-        PartialUser.prototype.username = "";
-
-        /**
-         * Creates a new PartialUser instance using the specified properties.
-         * @function create
-         * @memberof ws.PartialUser
-         * @static
-         * @param {ws.IPartialUser=} [properties] Properties to set
-         * @returns {ws.PartialUser} PartialUser instance
-         */
-        PartialUser.create = function create(properties) {
-            return new PartialUser(properties);
-        };
-
-        /**
-         * Encodes the specified PartialUser message. Does not implicitly {@link ws.PartialUser.verify|verify} messages.
-         * @function encode
-         * @memberof ws.PartialUser
-         * @static
-         * @param {ws.IPartialUser} message PartialUser message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        PartialUser.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
-                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
-            if (message.username != null && Object.hasOwnProperty.call(message, "username"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.username);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified PartialUser message, length delimited. Does not implicitly {@link ws.PartialUser.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof ws.PartialUser
-         * @static
-         * @param {ws.IPartialUser} message PartialUser message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        PartialUser.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a PartialUser message from the specified reader or buffer.
-         * @function decode
-         * @memberof ws.PartialUser
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {ws.PartialUser} PartialUser
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        PartialUser.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.PartialUser();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.id = reader.int32();
-                        break;
-                    }
-                case 2: {
-                        message.username = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a PartialUser message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof ws.PartialUser
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.PartialUser} PartialUser
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        PartialUser.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a PartialUser message.
-         * @function verify
-         * @memberof ws.PartialUser
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        PartialUser.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.id != null && message.hasOwnProperty("id"))
-                if (!$util.isInteger(message.id))
-                    return "id: integer expected";
-            if (message.username != null && message.hasOwnProperty("username"))
-                if (!$util.isString(message.username))
-                    return "username: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a PartialUser message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof ws.PartialUser
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {ws.PartialUser} PartialUser
-         */
-        PartialUser.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.PartialUser)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.PartialUser();
-            if (object.id != null)
-                message.id = object.id | 0;
-            if (object.username != null)
-                message.username = String(object.username);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a PartialUser message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof ws.PartialUser
-         * @static
-         * @param {ws.PartialUser} message PartialUser
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        PartialUser.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults) {
-                object.id = 0;
-                object.username = "";
-            }
-            if (message.id != null && message.hasOwnProperty("id"))
-                object.id = message.id;
-            if (message.username != null && message.hasOwnProperty("username"))
-                object.username = message.username;
-            return object;
-        };
-
-        /**
-         * Converts this PartialUser to JSON.
-         * @function toJSON
-         * @memberof ws.PartialUser
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        PartialUser.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for PartialUser
-         * @function getTypeUrl
-         * @memberof ws.PartialUser
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        PartialUser.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/ws.PartialUser";
-        };
-
-        return PartialUser;
-    })();
-
     /**
      * GameEndTypes enum.
      * @name ws.GameEndTypes
@@ -2876,7 +2635,8 @@ export const ws = $root.ws = (() => {
          * @property {number|null} [row] GameEnd row
          * @property {number|null} [column] GameEnd column
          * @property {ws.GameEndTypes|null} [endType] GameEnd endType
-         * @property {ws.IPartialUser|null} [user] GameEnd user
+         * @property {models.IPartialUser|null} [winner] GameEnd winner
+         * @property {models.IPartialUser|null} [loser] GameEnd loser
          */
 
         /**
@@ -2919,12 +2679,20 @@ export const ws = $root.ws = (() => {
         GameEnd.prototype.endType = 0;
 
         /**
-         * GameEnd user.
-         * @member {ws.IPartialUser|null|undefined} user
+         * GameEnd winner.
+         * @member {models.IPartialUser|null|undefined} winner
          * @memberof ws.GameEnd
          * @instance
          */
-        GameEnd.prototype.user = null;
+        GameEnd.prototype.winner = null;
+
+        /**
+         * GameEnd loser.
+         * @member {models.IPartialUser|null|undefined} loser
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.loser = null;
 
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
@@ -2941,14 +2709,15 @@ export const ws = $root.ws = (() => {
             set: $util.oneOfSetter($oneOfFields)
         });
 
-        /**
-         * GameEnd winner.
-         * @member {"user"|undefined} winner
-         * @memberof ws.GameEnd
-         * @instance
-         */
-        Object.defineProperty(GameEnd.prototype, "winner", {
-            get: $util.oneOfGetter($oneOfFields = ["user"]),
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(GameEnd.prototype, "_winner", {
+            get: $util.oneOfGetter($oneOfFields = ["winner"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(GameEnd.prototype, "_loser", {
+            get: $util.oneOfGetter($oneOfFields = ["loser"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -2982,8 +2751,10 @@ export const ws = $root.ws = (() => {
                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.column);
             if (message.endType != null && Object.hasOwnProperty.call(message, "endType"))
                 writer.uint32(/* id 3, wireType 0 =*/24).int32(message.endType);
-            if (message.user != null && Object.hasOwnProperty.call(message, "user"))
-                $root.ws.PartialUser.encode(message.user, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            if (message.winner != null && Object.hasOwnProperty.call(message, "winner"))
+                $root.models.PartialUser.encode(message.winner, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            if (message.loser != null && Object.hasOwnProperty.call(message, "loser"))
+                $root.models.PartialUser.encode(message.loser, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
             return writer;
         };
 
@@ -3037,7 +2808,11 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 4: {
-                        message.user = $root.ws.PartialUser.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.winner = $root.models.PartialUser.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 5: {
+                        message.loser = $root.models.PartialUser.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 default:
@@ -3100,12 +2875,20 @@ export const ws = $root.ws = (() => {
                 case 3:
                     break;
                 }
-            if (message.user != null && message.hasOwnProperty("user")) {
-                properties.winner = 1;
+            if (message.winner != null && message.hasOwnProperty("winner")) {
+                properties._winner = 1;
                 {
-                    let error = $root.ws.PartialUser.verify(message.user, long + 1);
+                    let error = $root.models.PartialUser.verify(message.winner, long + 1);
                     if (error)
-                        return "user." + error;
+                        return "winner." + error;
+                }
+            }
+            if (message.loser != null && message.hasOwnProperty("loser")) {
+                properties._loser = 1;
+                {
+                    let error = $root.models.PartialUser.verify(message.loser, long + 1);
+                    if (error)
+                        return "loser." + error;
                 }
             }
             return null;
@@ -3155,10 +2938,15 @@ export const ws = $root.ws = (() => {
                 message.endType = 3;
                 break;
             }
-            if (object.user != null) {
-                if (typeof object.user !== "object")
-                    throw TypeError(".ws.GameEnd.user: object expected");
-                message.user = $root.ws.PartialUser.fromObject(object.user, long + 1);
+            if (object.winner != null) {
+                if (typeof object.winner !== "object")
+                    throw TypeError(".ws.GameEnd.winner: object expected");
+                message.winner = $root.models.PartialUser.fromObject(object.winner, long + 1);
+            }
+            if (object.loser != null) {
+                if (typeof object.loser !== "object")
+                    throw TypeError(".ws.GameEnd.loser: object expected");
+                message.loser = $root.models.PartialUser.fromObject(object.loser, long + 1);
             }
             return message;
         };
@@ -3190,10 +2978,15 @@ export const ws = $root.ws = (() => {
             }
             if (message.endType != null && message.hasOwnProperty("endType"))
                 object.endType = options.enums === String ? $root.ws.GameEndTypes[message.endType] === undefined ? message.endType : $root.ws.GameEndTypes[message.endType] : message.endType;
-            if (message.user != null && message.hasOwnProperty("user")) {
-                object.user = $root.ws.PartialUser.toObject(message.user, options);
+            if (message.winner != null && message.hasOwnProperty("winner")) {
+                object.winner = $root.models.PartialUser.toObject(message.winner, options);
                 if (options.oneofs)
-                    object.winner = "user";
+                    object._winner = "winner";
+            }
+            if (message.loser != null && message.hasOwnProperty("loser")) {
+                object.loser = $root.models.PartialUser.toObject(message.loser, options);
+                if (options.oneofs)
+                    object._loser = "loser";
             }
             return object;
         };
@@ -4469,6 +4262,247 @@ export const models = $root.models = (() => {
         };
 
         return Game;
+    })();
+
+    models.PartialUser = (function() {
+
+        /**
+         * Properties of a PartialUser.
+         * @memberof models
+         * @interface IPartialUser
+         * @property {number|null} [id] PartialUser id
+         * @property {string|null} [username] PartialUser username
+         */
+
+        /**
+         * Constructs a new PartialUser.
+         * @memberof models
+         * @classdesc Represents a PartialUser.
+         * @implements IPartialUser
+         * @constructor
+         * @param {models.IPartialUser=} [properties] Properties to set
+         */
+        function PartialUser(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * PartialUser id.
+         * @member {number} id
+         * @memberof models.PartialUser
+         * @instance
+         */
+        PartialUser.prototype.id = 0;
+
+        /**
+         * PartialUser username.
+         * @member {string} username
+         * @memberof models.PartialUser
+         * @instance
+         */
+        PartialUser.prototype.username = "";
+
+        /**
+         * Creates a new PartialUser instance using the specified properties.
+         * @function create
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.IPartialUser=} [properties] Properties to set
+         * @returns {models.PartialUser} PartialUser instance
+         */
+        PartialUser.create = function create(properties) {
+            return new PartialUser(properties);
+        };
+
+        /**
+         * Encodes the specified PartialUser message. Does not implicitly {@link models.PartialUser.verify|verify} messages.
+         * @function encode
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.IPartialUser} message PartialUser message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        PartialUser.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
+            if (message.username != null && Object.hasOwnProperty.call(message, "username"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.username);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified PartialUser message, length delimited. Does not implicitly {@link models.PartialUser.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.IPartialUser} message PartialUser message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        PartialUser.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a PartialUser message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.PartialUser
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.PartialUser} PartialUser
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        PartialUser.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.PartialUser();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.id = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.username = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a PartialUser message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.PartialUser
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.PartialUser} PartialUser
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        PartialUser.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a PartialUser message.
+         * @function verify
+         * @memberof models.PartialUser
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        PartialUser.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.id != null && message.hasOwnProperty("id"))
+                if (!$util.isInteger(message.id))
+                    return "id: integer expected";
+            if (message.username != null && message.hasOwnProperty("username"))
+                if (!$util.isString(message.username))
+                    return "username: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a PartialUser message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.PartialUser
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.PartialUser} PartialUser
+         */
+        PartialUser.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.PartialUser)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.PartialUser();
+            if (object.id != null)
+                message.id = object.id | 0;
+            if (object.username != null)
+                message.username = String(object.username);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a PartialUser message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.PartialUser} message PartialUser
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        PartialUser.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.id = 0;
+                object.username = "";
+            }
+            if (message.id != null && message.hasOwnProperty("id"))
+                object.id = message.id;
+            if (message.username != null && message.hasOwnProperty("username"))
+                object.username = message.username;
+            return object;
+        };
+
+        /**
+         * Converts this PartialUser to JSON.
+         * @function toJSON
+         * @memberof models.PartialUser
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        PartialUser.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for PartialUser
+         * @function getTypeUrl
+         * @memberof models.PartialUser
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        PartialUser.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.PartialUser";
+        };
+
+        return PartialUser;
     })();
 
     models.Lobby = (function() {

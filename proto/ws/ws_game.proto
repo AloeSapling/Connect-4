@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package ws;
 
+import "models/user.proto";
 import "shared/shared.proto";
 
 // Request / client packets
@@ -25,11 +26,6 @@ message GamePacket {
 
 // Response / server packets
 
-message PartialUser {
-  int32 id = 1;
-  string username = 2;
-}
-
 enum GameEndTypes {
   GAME_END_TYPES_UNSPECIFIED = 0;
   GAME_END_TYPES_STANDARD_WIN = 1;
@@ -41,9 +37,8 @@ message GameEnd {
   optional int32 row = 1;
   optional int32 column = 2;
   GameEndTypes endType = 3;
-  oneof winner {
-    PartialUser user = 4;
-  }
+  optional models.PartialUser winner = 4;
+  optional models.PartialUser loser = 5;
 }
 
 message GameMove {

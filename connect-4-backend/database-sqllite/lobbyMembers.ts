@@ -162,10 +162,32 @@ export async function getLobbyHostMemberData(lobbyCode: string): Promise<models.
     };
 }
 
-/** Get a list of the lobby members along with some additional data
- *
- * @returns A list of detailed lobby member data, formatted appropriately
- * */
+/** @param playerID Specifies which player's data should be returned
+ * @returns Partial user data about the specified player
+* */
+export async function getPartialUserDataByPlayerID(lobbyCode: string, playerID: TPlayerIDs): Promise<models.IPartialUser> {
+    // Get all the necessary data
+    const memberData: LobbyMemberSelectResult = (await LobbyMember.findOne({
+        where: {
+            lobby_code: lobbyCode,
+            player_id: playerID,
+        },
+        include: [
+            {
+                model: User,
+            },
+        ],
+        raw: true,
+    })) as LobbyMemberSelectResult;
+
+    // Organise the gotten data in the appropriate format
+    return {
+        id: memberData['User.id'],
+        username: memberData['User.username'],
+    };
+}
+
+/** @returns Detailed data about the given, formatted appropriately */
 export async function getDetailedLobbyMemberData(lobbyCode: string, userID: number): Promise<models.IDetailedLobbyMemberData> {
     // Get all the necessary data
     const memberData: LobbyMemberSelectResult = (await LobbyMember.findOne({
