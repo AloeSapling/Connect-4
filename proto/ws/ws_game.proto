@@ -30,9 +30,11 @@ message PartialUser {
 }
 
 message GameEnd {
+  int32 row = 1;
+  int32 column = 2;
   oneof winner {
-    PartialUser user = 1;
-    bool draw = 2;
+    PartialUser user = 3;
+    bool draw = 4;
   }
 }
 

@@ -127,6 +127,8 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                                 wsEncode({
                                     response: p_ws.GameResponses.GAME_RESPONSES_END,
                                     end: {
+                                        row: row,
+                                        column: column,
                                         user: {
                                             username: reqUser.id.toString(),
                                         },
@@ -136,6 +138,7 @@ function setupGameWSServer(WSServer: WebSocketServer) {
 
                             break;
                         }
+
                         // Check for draws
                         if (TileChecker.checkForDraw(gameState.board)) {
                             broadcastToRoom(
@@ -143,6 +146,8 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                                 wsEncode({
                                     response: p_ws.GameResponses.GAME_RESPONSES_END,
                                     end: {
+                                        row: row,
+                                        column: column,
                                         draw: true,
                                     },
                                 })
