@@ -43,7 +43,7 @@ async function createWebsocketConnection(
             if (onMessage) ws.onmessage = onMessage;
             if (onError) ws.onerror = onError;
 
-            ws.onclose = () => {};
+            ws.onclose = () => { };
 
             resolve(ws);
         };
@@ -87,6 +87,16 @@ export class GameWebSocket {
                 },
             }).finish()
         );
+    }
+
+    /** Forfeits the game */
+    forfeit() {
+        this.ws.send(
+            p_ws.GamePacket.encode({
+                action: p_ws.GameActions.GAME_ACTIONS_FORFEIT,
+            }).finish()
+
+        )
     }
 }
 
