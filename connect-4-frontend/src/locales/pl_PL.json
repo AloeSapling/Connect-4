@@ -5,7 +5,8 @@
         "thisPage": "Ta Strona"
     },
     "home": {
-        "play": "Graj"
+        "play": "Graj",
+        "settings": "Ustawienia"
     },
     "username": {
         "chooseYourUsername": "Wybierz nazwę użytkownika",
@@ -39,7 +40,7 @@
     },
     "lobby": {
         "lobby": "Pokój:",
-        "lobbyCode": "Kod Pokoju:",
+        "lobbyCode": "Kod Pokoju: ",
 
         "players": "Gracze",
         "labelYou": "(ty)",

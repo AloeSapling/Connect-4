@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import HostControls from '@/components/lobby/HostControls.js';
 import MemberTable from '@/components/lobby/MemberTable.js';
+import { Copy, Check } from "lucide-react";
 import * as proto from '@/lib/proto.js';
 
 function Lobby() {
@@ -90,6 +91,10 @@ function Lobby() {
     const createGameButton = (lobbyCode: string) =>
         createGame_m.mutate(lobbyCode);
 
+    const copyLobbyCode = (lobbyCode: string) => {
+        navigator.clipboard.writeText(lobbyCode);
+    }
+
     useEffect(() => {
         if (queryData?.lobbyDetails?.hasGame) navigate(`/game/${lobbyCode}`);
     }, [queryData?.lobbyDetails?.hasGame, navigate])
@@ -119,7 +124,14 @@ function Lobby() {
         >
             <div className="mb-3 border-b-[2px] border-amber-950 pb-2 flex justify-between">
                 <p>{texts.lobby} {queryData?.lobbyDetails?.lobbyName}</p>
-                <p>{texts.lobbyCode} {queryData?.lobbyDetails?.code}</p>
+                <p>
+                    {texts.lobbyCode}
+                    <span onClick={() => copyLobbyCode(queryData.lobbyDetails?.code!)}
+                        className="cursor-pointer"
+                    >
+                        {queryData?.lobbyDetails?.code} <Copy size={16} className='inline-block' />
+                    </span>
+                </p>
             </div>
 
             {/* Top */}
