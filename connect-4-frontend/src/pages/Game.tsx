@@ -93,17 +93,15 @@ function Game() {
                     setUserPlayerID(packet.move?.turn); // TESTING
 
                     if (packet.move.turn === userPlayerID) setCanMove(true);
-                    
-                    const insertedToken: types.TPlayerIDs = (packet.move.turn === types.P_PlayerIDs.PLAYER_IDS_PLAYER1) ? types.P_PlayerIDs.PLAYER_IDS_PLAYER2 : types.P_PlayerIDs.PLAYER_IDS_PLAYER1
-                    gameCanvasRef.current?.insertToken(packet.move?.column!, packet.move?.row!, insertedToken);
+
+                    gameCanvasRef.current?.insertToken(packet.move?.token?.column!, packet.move?.token?.row!, packet.move.token?.playerID!);
 
                     break;
                 case proto.ws.GameResponses.GAME_RESPONSES_END:
                     console.log(packet.toJSON());
                     if (!packet.end) return;
 
-                    const finalToken: types.TPlayerIDs = types.P_PlayerIDs.PLAYER_IDS_PLAYER1;
-                    gameCanvasRef.current?.insertToken(packet.end?.column!, packet.end?.row!, finalToken);
+                    gameCanvasRef.current?.insertToken(packet.end?.token?.column!, packet.end?.token?.row!, packet.end.token?.playerID!);
 
                     if (packet.end?.draw) {
                         setResults(texts.resultsDrawText);
