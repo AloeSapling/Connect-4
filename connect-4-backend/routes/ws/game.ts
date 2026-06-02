@@ -130,8 +130,11 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                                 wsEncode({
                                     response: p_ws.GameResponses.GAME_RESPONSES_END,
                                     end: {
-                                        row: row,
-                                        column: column,
+                                        token: {
+                                            row: row,
+                                            column: column,
+                                            playerID: wsPlayerID,
+                                        },
                                         user: {
                                             username: reqUser.id.toString(),
                                         },
@@ -149,8 +152,11 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                                 wsEncode({
                                     response: p_ws.GameResponses.GAME_RESPONSES_END,
                                     end: {
-                                        row: row,
-                                        column: column,
+                                        token: {
+                                            row: row,
+                                            column: column,
+                                            playerID: wsPlayerID,
+                                        },
                                         draw: true,
                                     },
                                 })
@@ -164,8 +170,11 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                                 response: p_ws.GameResponses.GAME_RESPONSES_MOVE,
                                 move: {
                                     board: gameState.board,
-                                    column: column,
-                                    row: row,
+                                    token: {
+                                        row: row,
+                                        column: column,
+                                        playerID: wsPlayerID,
+                                    },
                                     turn: gameState.turn,
                                 },
                             })
