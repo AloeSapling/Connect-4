@@ -29,20 +29,24 @@ message PartialUser {
   string username = 1;
 }
 
-message GameEnd {
+message Token {
   int32 row = 1;
   int32 column = 2;
+  shared.PlayerIDs playerID = 3;
+}
+
+message GameEnd {
+  Token token = 1;
   oneof winner {
-    PartialUser user = 3;
-    bool draw = 4;
+    PartialUser user = 2;
+    bool draw = 3;
   }
 }
 
 message GameMove {
-  int32 row = 1;
-  int32 column = 2;
-  shared.GameBoard board = 3;
-  shared.PlayerIDs turn = 4;
+  Token token = 1;
+  shared.GameBoard board = 2;
+  shared.PlayerIDs turn = 3;
 }
 
 enum GameResponses {
