@@ -20,6 +20,7 @@ import { setupGameWSServer } from './routes/ws/game.ts';
 import { P_CodedError, P_ErrorCodes, type WsArgs } from './lib/types.ts';
 
 import { setupLobbyWSServer } from './routes/ws/lobby.ts';
+import onRedisExpire from './database-redis/expired.ts';
 
 // Set up Redis database
 export const redis = createClient({
@@ -29,6 +30,18 @@ export const redis = createClient({
 redis.on('error', (err) => console.error('Redis error:', err));
 
 await redis.connect();
+
+// Listen and handle key expiration
+const subscriber = createClient({
+    url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
+});
+await subscriber.connect();
+
+// Subscribe to the key expiration event (listens for all keys)
+await subscriber.subscribe('__keyevent@0__:expired', (key) => {
+    console.log(`Key expired: ${key}`);
+    onRedisExpire(key);
+});
 
 // Set up SQL database
 await setupDatabase();

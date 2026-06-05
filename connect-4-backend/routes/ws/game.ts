@@ -9,8 +9,8 @@ import {
     P_ErrorCodes,
     type WsArgs,
 } from '../../lib/types.ts';
-import { getPartialUserDataByPlayerID, getPlayerID } from '../../database-sqllite/lobbyMembers.ts';
-import { broadcastToRoom, getNextPlayer } from '../../lib/lib.ts';
+import { getPlayerID } from '../../database-sqllite/lobbyMembers.ts';
+import { broadcastToRoom } from '../../lib/lib.ts';
 import { TileChecker } from '../../lib/game.ts';
 import { ws as p_ws } from '../../lib/proto.js';
 
@@ -21,7 +21,7 @@ const rooms: Record<string, Room> = {};
 /** Proto encode wrapper to ensure the sent packages match the schema */
 const wsEncode = (packet: p_ws.IGameResponsePacket) => p_ws.GameResponsePacket.encode(packet).finish();
 
-function setupGameWSServer(WSServer: WebSocketServer) {
+export function setupGameWSServer(WSServer: WebSocketServer) {
     WSServer.on('connection', async (ws: GameWebSocket, { req, lobbyCode }: WsArgs) => {
         console.log('New connection: ', req.socket.remoteAddress);
 
@@ -151,6 +151,8 @@ function setupGameWSServer(WSServer: WebSocketServer) {
 
                         // Check for draws
                         if (TileChecker.checkForDraw(gameState.board)) {
+                            await gameRedis.deleteGame(lobbyCode);
+
                             broadcastToRoom(
                                 rooms[lobbyCode],
                                 wsEncode({
@@ -200,11 +202,7 @@ function setupGameWSServer(WSServer: WebSocketServer) {
 
                 case p_ws.GameActions.GAME_ACTIONS_FORFEIT:
                     try {
-                        // End the game
-                        await gameRedis.deleteGame(lobbyCode);
-
-                        // Get theb winner's data
-                        const winnerUser = await getPartialUserDataByPlayerID(lobbyCode, getNextPlayer(wsPlayerID));
+                        const [winner, loser] = await gameRedis.forfeitGame(lobbyCode, wsPlayerID);
 
                         broadcastToRoom(
                             rooms[lobbyCode],
@@ -212,11 +210,8 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                                 response: p_ws.GameResponses.GAME_RESPONSES_END,
                                 end: {
                                     endType: p_ws.GameEndTypes.GAME_END_TYPES_FORFEITED,
-                                    loser: {
-                                        id: reqUser.id,
-                                        username: reqUser.username,
-                                    },
-                                    winner: winnerUser,
+                                    winner: winner,
+                                    loser: loser,
                                 },
                             })
                         );
@@ -238,4 +233,8 @@ function setupGameWSServer(WSServer: WebSocketServer) {
     });
 }
 
-export { setupGameWSServer };
+export function broadcastToGameRoom(lobbyCode: string, packet: p_ws.IGameResponsePacket) {
+    rooms[lobbyCode]?.forEach((ws) => {
+        ws.send(wsEncode(packet));
+    });
+}

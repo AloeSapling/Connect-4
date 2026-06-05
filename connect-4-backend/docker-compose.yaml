@@ -16,6 +16,7 @@ services:
 
   redis:
       image: redis:alpine
+      command: redis-server --notify-keyspace-events Ex
       ports:
         - "${REDIS_PORT}:6379"
 

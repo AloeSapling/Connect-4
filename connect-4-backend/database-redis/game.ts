@@ -10,6 +10,8 @@ import {
     type TPlayerIDs,
 } from '../lib/types.ts';
 import { getNextPlayer } from '../lib/lib.ts';
+import { getPartialUserDataByPlayerID } from '../database-sqllite/lobbyMembers.ts';
+import type { models } from '../lib/proto.js';
 
 /** The game state used when creating a new game */
 const initialGameState: GameState = {
@@ -30,12 +32,14 @@ export async function createGame(lobbyCode: string) {
 
     await redis.set(
         `GameState_${lobbyCode}:board`,
-        JSON.stringify(initialGameState.board), // Set initial board state
-        {
-            EX: GAME_EXPIRY_TIME, // In seconds
-        }
+        JSON.stringify(initialGameState.board) // Set initial board state
     );
-    await redis.set(`GameState_${lobbyCode}:turn`, initialGameState.turn, {
+    await redis.set(`GameState_${lobbyCode}:turn`, initialGameState.turn);
+
+    // This entry is used to handle the game expiration logic
+    // Games expire when they don't receive any moves for a certain amount of time
+    // Letting the game expire on your turn is treated the same as forfeiting
+    await redis.set(`GameState_${lobbyCode}:turnTime`, 1, {
         EX: GAME_EXPIRY_TIME, // In seconds
     });
 }
@@ -43,7 +47,9 @@ export async function createGame(lobbyCode: string) {
 /** Checks if a game exists for the given lobby */
 export async function gameExists(lobbyCode: string): Promise<boolean> {
     return (
-        (await redis.exists(`GameState_${lobbyCode}:board`)) === 1 && (await redis.exists(`GameState_${lobbyCode}:turn`)) === 1
+        Boolean(await redis.exists(`GameState_${lobbyCode}:board`)) &&
+        Boolean(await redis.exists(`GameState_${lobbyCode}:turn`)) &&
+        Boolean(await redis.exists(`GameState_${lobbyCode}:turnTime`))
     );
 }
 
@@ -57,19 +63,35 @@ export async function gamesExist(lobbyCodes: string[]): Promise<boolean[]> {
     lobbyCodes.forEach((code) => {
         pipeline.exists(`GameState_${code}:board`);
         pipeline.exists(`GameState_${code}:turn`);
+        pipeline.exists(`GameState_${code}:turnTime`);
     });
 
-    const res = (await pipeline.exec()) as unknown as [Error | null, number][];
+    const results = (await pipeline.exec()) as unknown as [Error | null, number][];
 
     return lobbyCodes.map((_, i) => {
-        return Boolean(res[i * 2] && res[i * 2 + 1] && res[i * 2]![1] === 1 && res[i * 2 + 1]![1] === 1);
+        const base = i * 3;
+        return results[base]?.[1] === 1 && results[base + 1]?.[1] === 1 && results[base + 2]?.[1] === 1;
     });
 }
 
 /** Deletes all data associated with the game in the redis storage */
 export async function deleteGame(lobbyCode: string) {
     await redis.del(`GameState_${lobbyCode}:board`);
-    await redis.del(`GameState_${lobbyCode}:turn)`);
+    await redis.del(`GameState_${lobbyCode}:turn`);
+    await redis.del(`GameState_${lobbyCode}:turnTime`);
+}
+
+/** Forfeits the game as the provided player in the given lobby
+ * @param playerID - The playerID of the forfeiting player
+ * @returns A tuple containing partial user data of the winner and loser. In that order
+ * */
+export async function forfeitGame(lobbyCode: string, playerID: TPlayerIDs): Promise<[models.IPartialUser, models.IPartialUser]> {
+    const winner = await getPartialUserDataByPlayerID(lobbyCode, getNextPlayer(playerID));
+    const loser = await getPartialUserDataByPlayerID(lobbyCode, playerID);
+
+    deleteGame(lobbyCode); // Ends the game
+
+    return [winner, loser];
 }
 
 /** @returns The game's state
@@ -154,6 +176,11 @@ export async function insertTile(lobbyCode: string, playerID: TPlayerIDs, column
         // Set the next player's turn
         // Sets it to the next playerID in the list of playerIDs. The fallback if something goes wrong is the first element
         await redis.set(`GameState_${lobbyCode}:turn`, getNextPlayer(playerID));
+
+        // Reset the game's expiry timer
+        await redis.set(`GameState_${lobbyCode}:turnTime`, 1, {
+            EX: GAME_EXPIRY_TIME,
+        });
 
         return i;
     } catch {
