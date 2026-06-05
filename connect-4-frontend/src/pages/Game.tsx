@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, useCallback, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_ROWS, GAME_COLUMNS } from '@/lib/config.js';
-import { useMutation } from '@tanstack/react-query';
-import { leaveLobby } from '@/lib/api';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getGameState, leaveLobby } from '@/lib/api';
 import { langContext } from '@/lib/contexts';
 import { toast } from 'sonner';
 import { GameWebSocket } from '@/lib/websockets.js';
@@ -18,13 +18,31 @@ function Game() {
     const animationRef = useRef<number | null>(null);
     const gameCanvasRef = useRef<GameCanvas | null>(null);
 
-    const [currentBoardState, setCurrentBoardState] = useState(
+    const { data: queryData, isLoading } = useQuery({
+        queryKey: ['lobby', lobbyCode],
+        queryFn: () => getGameState(lobbyCode!),
+    });
+
+    const [currentBoardState, setCurrentBoardState] = useState(queryData?.game?.board ??
         proto.shared.GameBoard.create({
             rows: Array.from({ length: GAME_ROWS }, () => ({
                 columns: Array.from({ length: GAME_COLUMNS }, () => types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED),
             })),
         })
     );
+
+    useEffect(() => {
+        if (queryData?.game?.board) {
+            setCurrentBoardState(queryData.game.board);
+        }
+    }, [queryData]);
+
+    useEffect(() => {
+        if (!gameCanvasRef.current) return;
+
+        gameCanvasRef.current.setBoardState(currentBoardState);
+    }, [currentBoardState]);
+
     const [canMove, setCanMove] = useState<boolean>(true);
 
     // Which player's turn it is
@@ -68,19 +86,23 @@ function Game() {
                     console.log(packet.toJSON())
                     break;
                 case proto.ws.GameResponses.GAME_RESPONSES_MOVE:
-                    console.log(packet);
+                    console.log(packet.toJSON());
                     if (!packet.move?.turn) return;
                     
                     setCurrentTurn(packet.move?.turn); // temp
                     setUserPlayerID(packet.move?.turn); // TESTING
 
                     if (packet.move.turn === userPlayerID) setCanMove(true);
-                    
-                    const insertedToken: types.TPlayerIDs = (packet.move.turn == types.P_PlayerIDs.PLAYER_IDS_PLAYER1) ? types.P_PlayerIDs.PLAYER_IDS_PLAYER2 : types.P_PlayerIDs.PLAYER_IDS_PLAYER1
-                    gameCanvasRef.current?.insertToken(packet.move?.column!, packet.move?.row!, insertedToken);
+
+                    gameCanvasRef.current?.insertToken(packet.move?.token?.column!, packet.move?.token?.row!, packet.move.token?.playerID!);
 
                     break;
                 case proto.ws.GameResponses.GAME_RESPONSES_END:
+                    console.log(packet.toJSON());
+                    if (!packet.end) return;
+
+                    gameCanvasRef.current?.insertToken(packet.end?.token?.column!, packet.end?.token?.row!, packet.end.token?.playerID!);
+
                     if (packet.end?.draw) {
                         setResults(texts.resultsDrawText);
                     }
@@ -130,6 +152,7 @@ function Game() {
 
         const gameCanvas = new GameCanvas(canvas, ctx);
         gameCanvasRef.current = gameCanvas;
+        gameCanvasRef.current.setBoardState(currentBoardState);
 
         animationRef.current = requestAnimationFrame(gameCanvas.gameLoop);
 
@@ -145,6 +168,10 @@ function Game() {
     if (!langCtx) return <p>Missing language context!</p>;
 
     const texts = langCtx.texts.game;
+
+    if (isLoading || !queryData) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <>
@@ -168,15 +195,14 @@ function Game() {
                     bg-yellow-800
                     text-white
                     text-center
-                    justify-between
+                    justify-center
                     content-center
                     items-center-safe
                     text-xl
                     rounded-md
                     flex flex-col
-                    gap-y-2
+                    gap-y-10
                     z-50
-                    m-4
                     absolute w-[300px] md:w-[350px]
                     h-[150px] md:h-[200px]
                     top-[50%] left-[50%]

@@ -64,15 +64,15 @@ class GameCanvas {
         [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenP2]
     ]);
 
-    private currentBoardState: proto.shared.GameBoard =
+    private currentBoardState: proto.shared.IGameBoard =
     proto.shared.GameBoard.create({
         rows: Array.from({ length: GAME_ROWS }, () => ({
             columns: Array.from({ length: GAME_COLUMNS }, () => types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED)
         }))
     });
 
-    public setBoardState(board: proto.shared.GameBoard) {
-        this.currentBoardState = board;
+    public setBoardState(board: proto.shared.IGameBoard) {
+        this.currentBoardState = structuredClone(board);
     }
 
     // Last time that the loop was called 
@@ -147,7 +147,7 @@ class GameCanvas {
                 token.y = token.targetY;
 
                 // Commit token to board state
-                this.currentBoardState.rows[token.targetRow]
+                this.currentBoardState.rows![token.targetRow]
                     .columns![token.column] = token.player;
 
                 this.fallingTokens.splice(i, 1);
@@ -189,14 +189,14 @@ class GameCanvas {
     };
 
     private drawTokens = () => {
-        for (let i = 0; i < this.currentBoardState.rows.length; i++) {
-            for (let j = 0; j < this.currentBoardState.rows[i].columns!.length; j++) {
-                const token = this.currentBoardState.rows[i].columns![j];
+        for (let i = 0; i < this.currentBoardState.rows!.length; i++) {
+            for (let j = 0; j < this.currentBoardState.rows![i].columns!.length; j++) {
+                const token = this.currentBoardState.rows![i].columns![j];
                 if (token) {
                     this.ctx.drawImage(
-                        this.tokenMap.get(this.currentBoardState.rows[i].columns![j])!,
+                        this.tokenMap.get(this.currentBoardState.rows![i].columns![j])!,
                         ((j * BOARD_SLOT_DISTANCE) + BOARD_START_WIDTH),
-                        ((((this.currentBoardState.rows.length - 1) - i) * BOARD_SLOT_DISTANCE) + BOARD_START_HEIGHT));
+                        ((((this.currentBoardState.rows!.length - 1) - i) * BOARD_SLOT_DISTANCE) + BOARD_START_HEIGHT));
                 }
             }
         }

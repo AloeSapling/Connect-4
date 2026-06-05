@@ -133,13 +133,16 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                                 wsEncode({
                                     response: p_ws.GameResponses.GAME_RESPONSES_END,
                                     end: {
-                                        row: row,
-                                        column: column,
                                         endType: p_ws.GameEndTypes.GAME_END_TYPES_STANDARD_WIN,
+                                        token: {
+                                            row: row,
+                                            column: column,
+                                            playerID: wsPlayerID,
+                                        },
                                         winner: {
                                             id: reqUser.id,
-                                            username: reqUser.username,
-                                        },
+                                            username: reqUser.username
+                                        }
                                     },
                                 })
                             );
@@ -154,9 +157,12 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                                 wsEncode({
                                     response: p_ws.GameResponses.GAME_RESPONSES_END,
                                     end: {
-                                        row: row,
-                                        column: column,
                                         endType: p_ws.GameEndTypes.GAME_END_TYPES_DRAW,
+                                        token: {
+                                            row: row,
+                                            column: column,
+                                            playerID: wsPlayerID,
+                                        },
                                     },
                                 })
                             );
@@ -168,9 +174,12 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                             wsEncode({
                                 response: p_ws.GameResponses.GAME_RESPONSES_MOVE,
                                 move: {
+                                    token: {
+                                        row: row,
+                                        column: column,
+                                        playerID: wsPlayerID,
+                                    },
                                     board: gameState.board,
-                                    column: column,
-                                    row: row,
                                     turn: gameState.turn,
                                 },
                             })

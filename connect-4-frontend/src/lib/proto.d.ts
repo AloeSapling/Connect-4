@@ -980,17 +980,123 @@ export namespace ws {
         GAME_END_TYPES_DRAW = 3
     }
 
+    /** Properties of a Token. */
+    interface IToken {
+
+        /** Token row */
+        row?: (number|null);
+
+        /** Token column */
+        column?: (number|null);
+
+        /** Token playerID */
+        playerID?: (shared.PlayerIDs|null);
+    }
+
+    /** Represents a Token. */
+    class Token implements IToken {
+
+        /**
+         * Constructs a new Token.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.IToken);
+
+        /** Token row. */
+        public row: number;
+
+        /** Token column. */
+        public column: number;
+
+        /** Token playerID. */
+        public playerID: shared.PlayerIDs;
+
+        /**
+         * Creates a new Token instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Token instance
+         */
+        public static create(properties?: ws.IToken): ws.Token;
+
+        /**
+         * Encodes the specified Token message. Does not implicitly {@link ws.Token.verify|verify} messages.
+         * @param message Token message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Token message, length delimited. Does not implicitly {@link ws.Token.verify|verify} messages.
+         * @param message Token message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Token message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.Token;
+
+        /**
+         * Decodes a Token message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.Token;
+
+        /**
+         * Verifies a Token message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Token message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Token
+         */
+        public static fromObject(object: { [k: string]: any }): ws.Token;
+
+        /**
+         * Creates a plain object from a Token message. Also converts values to other types if specified.
+         * @param message Token
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.Token, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Token to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Token
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a GameEnd. */
     interface IGameEnd {
 
-        /** GameEnd row */
-        row?: (number|null);
-
-        /** GameEnd column */
-        column?: (number|null);
-
         /** GameEnd endType */
         endType?: (ws.GameEndTypes|null);
+
+        /** GameEnd token */
+        token?: (ws.IToken|null);
 
         /** GameEnd winner */
         winner?: (models.IPartialUser|null);
@@ -1008,14 +1114,11 @@ export namespace ws {
          */
         constructor(properties?: ws.IGameEnd);
 
-        /** GameEnd row. */
-        public row?: (number|null);
-
-        /** GameEnd column. */
-        public column?: (number|null);
-
         /** GameEnd endType. */
         public endType: ws.GameEndTypes;
+
+        /** GameEnd token. */
+        public token?: (ws.IToken|null);
 
         /** GameEnd winner. */
         public winner?: (models.IPartialUser|null);
@@ -1104,11 +1207,8 @@ export namespace ws {
     /** Properties of a GameMove. */
     interface IGameMove {
 
-        /** GameMove row */
-        row?: (number|null);
-
-        /** GameMove column */
-        column?: (number|null);
+        /** GameMove token */
+        token?: (ws.IToken|null);
 
         /** GameMove board */
         board?: (shared.IGameBoard|null);
@@ -1126,11 +1226,8 @@ export namespace ws {
          */
         constructor(properties?: ws.IGameMove);
 
-        /** GameMove row. */
-        public row: number;
-
-        /** GameMove column. */
-        public column: number;
+        /** GameMove token. */
+        public token?: (ws.IToken|null);
 
         /** GameMove board. */
         public board?: (shared.IGameBoard|null);

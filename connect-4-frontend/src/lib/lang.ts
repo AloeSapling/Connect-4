@@ -9,6 +9,7 @@ export type PageTexts = {
     };
     home: {
         play: string;
+        settings: string;
     };
     username: {
         chooseYourUsername: string;

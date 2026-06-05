@@ -33,19 +33,23 @@ enum GameEndTypes {
   GAME_END_TYPES_DRAW = 3;
 }
 
+message Token {
+  int32 row = 1;
+  int32 column = 2;
+  shared.PlayerIDs playerID = 3;
+}
+
 message GameEnd {
-  optional int32 row = 1;
-  optional int32 column = 2;
-  GameEndTypes endType = 3;
-  optional models.PartialUser winner = 4;
-  optional models.PartialUser loser = 5;
+  GameEndTypes endType = 1;
+  optional Token token = 2;
+  optional models.PartialUser winner = 3;
+  optional models.PartialUser loser = 4;
 }
 
 message GameMove {
-  int32 row = 1;
-  int32 column = 2;
-  shared.GameBoard board = 3;
-  shared.PlayerIDs turn = 4;
+  Token token = 1;
+  shared.GameBoard board = 2;
+  shared.PlayerIDs turn = 3;
 }
 
 enum GameResponses {

@@ -5,7 +5,8 @@
         "thisPage": "This Page"
     },
     "home": {
-        "play": "Play"
+        "play": "Play",
+        "settings": "Settings"
     },
     "username": {
         "chooseYourUsername": "Choose your username",
@@ -39,7 +40,7 @@
     },
     "lobby": {
         "lobby": "Lobby:",
-        "lobbyCode": "Lobby Code:",
+        "lobbyCode": "Lobby Code: ",
         
         "players": "Players",
         "labelYou": "(you)",
