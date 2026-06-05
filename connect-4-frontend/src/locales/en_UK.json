@@ -61,9 +61,9 @@
     "game": {
         "forfeitButton": "Forfeit",
 
-        "resultsWinText": "Won!",
+        "resultsWinText": "won!",
         "resultsDrawText": "Draw!",
-        "resultsForfeitText": "Forfeited!",
+        "resultsForfeitText": "forfeited!",
         "resultsLeaveButton": "Back to Lobby List",
         "resultsBackToLobbyButton": "Back to Lobby",
 

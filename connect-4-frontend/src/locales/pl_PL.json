@@ -61,9 +61,9 @@
     "game": {
         "forfeitButton": "Poddaj się",
 
-        "resultsWinText": "Wygrał/a!",
+        "resultsWinText": "wygrał/a!",
         "resultsDrawText": "Remis!",
-        "resultsForfeitText": "się Poddał!",
+        "resultsForfeitText": "się poddał!",
         "resultsLeaveButton": "Wróć do Listy Pokoi",
         "resultsBackToLobbyButton": "Wróć do Pokoju",
 
