@@ -11,13 +11,13 @@ import usersRouter from './routes/users.ts';
 import lobbyRouter from './routes/lobby.ts';
 
 import { createClient } from 'redis';
-import { authUser, wsAuthUser, wsIsLobbyMember } from './lib/auth.ts';
+import { authUser, wsIsLobbyMember } from './lib/auth.ts';
 import { setupDatabase } from './database-sqllite/database.ts';
 import { CLIENT_URL, REDIS_HOST, REDIS_PORT, SERVER_PORT } from './config.ts';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { setupGameWSServer } from './routes/ws/game.ts';
-import { P_CodedError, P_ErrorCodes, type WsArgs, type WsAuthArgs } from './lib/types.ts';
+import { P_CodedError, P_ErrorCodes, type WsArgs } from './lib/types.ts';
 
 import { setupLobbyWSServer } from './routes/ws/lobby.ts';
 
