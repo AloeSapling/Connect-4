@@ -13,7 +13,6 @@ import { getPartialUserDataByPlayerID, getPlayerID } from '../../database-sqllit
 import { broadcastToRoom, getNextPlayer } from '../../lib/lib.ts';
 import { TileChecker } from '../../lib/game.ts';
 import { ws as p_ws } from '../../lib/proto.js';
-import { getUserByID } from '../../database-sqllite/user.ts';
 
 type GameWebSocket = WebSocket & { lobbyCode?: string; playerID?: TPlayerIDs };
 
@@ -141,8 +140,8 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                                         },
                                         winner: {
                                             id: reqUser.id,
-                                            username: reqUser.username
-                                        }
+                                            username: reqUser.username,
+                                        },
                                     },
                                 })
                             );
@@ -207,18 +206,20 @@ function setupGameWSServer(WSServer: WebSocketServer) {
                         // Get theb winner's data
                         const winnerUser = await getPartialUserDataByPlayerID(lobbyCode, getNextPlayer(wsPlayerID));
 
-                        broadcastToRoom(rooms[lobbyCode], wsEncode({
-                            response: p_ws.GameResponses.GAME_RESPONSES_END,
-                            end: {
-                                endType: p_ws.GameEndTypes.GAME_END_TYPES_FORFEITED,
-                                loser: {
-                                    id: reqUser.id,
-                                    username: reqUser.username,
+                        broadcastToRoom(
+                            rooms[lobbyCode],
+                            wsEncode({
+                                response: p_ws.GameResponses.GAME_RESPONSES_END,
+                                end: {
+                                    endType: p_ws.GameEndTypes.GAME_END_TYPES_FORFEITED,
+                                    loser: {
+                                        id: reqUser.id,
+                                        username: reqUser.username,
+                                    },
+                                    winner: winnerUser,
                                 },
-                                winner: winnerUser
-                            }
-                        })
-                        )
+                            })
+                        );
                     } catch (err) {
                         const formattedError = {
                             code: (err as CodedError).code,
