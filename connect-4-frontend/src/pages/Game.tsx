@@ -68,6 +68,9 @@ function Game() {
     const backToLobbyButton = () =>
         navigate(`/lobby/${lobbyCode}`);
 
+    const forfeitGameButton = () =>
+        wsRef.current?.forfeit();
+
     const wsRef = useRef<GameWebSocket | null>(null);
 
     useEffect(() => {
@@ -101,13 +104,23 @@ function Game() {
                     console.log(packet.toJSON());
                     if (!packet.end) return;
 
-                    gameCanvasRef.current?.insertToken(packet.end?.token?.column!, packet.end?.token?.row!, packet.end.token?.playerID!);
+                    if (packet.end.token) gameCanvasRef.current?.insertToken(packet.end?.token?.column!, packet.end?.token?.row!, packet.end.token?.playerID!);
 
-                    if (packet.end?.draw) {
-                        setResults(texts.resultsDrawText);
-                    }
-                    else {
-                        setResults(`${packet.end?.user?.username} ${texts.resultsWinText}`);
+                    switch (packet.end.endType) {
+                        case proto.ws.GameEndTypes.GAME_END_TYPES_DRAW:
+                            setResults(texts.resultsDrawText);
+                            break;
+                        case proto.ws.GameEndTypes.GAME_END_TYPES_STANDARD_WIN:
+                            setResults(`${packet.end?.winner?.username} ${texts.resultsWinText}`);
+                            break;
+                        case proto.ws.GameEndTypes.GAME_END_TYPES_FORFEITED:
+                            setResults(`${packet.end.loser?.username} ${texts.resultsForfeitText} ${packet.end.winner?.username} ${texts.resultsWinText}`);
+                            break;
+                        case proto.ws.GameEndTypes.GAME_END_TYPES_UNSPECIFIED:
+                            setResults(`unspecified`);
+                            break;
+                        default:
+                            setResults(`default`);
                     }
                     break;
             }
@@ -189,6 +202,21 @@ function Game() {
                     ))}
                 </div>
             }
+
+            {userPlayerID !== types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED ?
+            <>
+                {results === "" &&
+                    <Button className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer" onClick={forfeitGameButton}>
+                        {texts.forfeitButton}
+                    </Button>
+                }
+            </>
+            :
+            <Button className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer" onClick={leaveLobbyButton}>
+                {texts.resultsLeaveButton}
+            </Button>
+            }
+                
 
             {results !== "" &&
                 <div className="

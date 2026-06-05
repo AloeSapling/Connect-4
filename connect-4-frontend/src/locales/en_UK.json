@@ -59,8 +59,11 @@
         "changePlayerIDToast": "Player ID changed successfully!"
     },
     "game": {
+        "forfeitButton": "Forfeit",
+
         "resultsWinText": "Won!",
         "resultsDrawText": "Draw!",
+        "resultsForfeitText": "Forfeited!",
         "resultsLeaveButton": "Back to Lobby List",
         "resultsBackToLobbyButton": "Back to Lobby",
 

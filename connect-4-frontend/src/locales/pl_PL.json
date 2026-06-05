@@ -59,8 +59,11 @@
         "changePlayerIDToast": "Zmieniono ID gracza!"
     },
     "game": {
+        "forfeitButton": "Poddaj się",
+
         "resultsWinText": "Wygrał/a!",
         "resultsDrawText": "Remis!",
+        "resultsForfeitText": "się Poddał!",
         "resultsLeaveButton": "Wróć do Listy Pokoi",
         "resultsBackToLobbyButton": "Wróć do Pokoju",
 
