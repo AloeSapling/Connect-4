@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createLobby, getAllLobbiesData, getDetailedLobbyData, lobbyExists } from '../database-sqllite/lobby.ts';
+import { createLobby, deleteLobby, getAllLobbiesData, getDetailedLobbyData, lobbyExists } from '../database-sqllite/lobby.ts';
 import { P_CodedError, P_ErrorCodes, P_PlayerIDs, P_PlayerTypes, type UserRequest } from '../lib/types.ts';
 import { addRouteWithMethods } from '../lib/lib.ts';
 import {
@@ -141,6 +141,18 @@ addRouteWithMethods(
                 return;
             }
 
+            // If the host leaves the lobby, the lobby gets deleted
+            if (await lm_isLobbyHost(code, (req as UserRequest).user.id)) {
+                await deleteLobby(code);
+
+                broadcastToLobbyRoom(code, {
+                    response: ws.LobbyResponses.LOBBY_RESPONSES_HOST_LEFT,
+                });
+
+                res.status(204).send();
+                return; // Return early to not send more data to the websocket
+            }
+
             await leaveLobby(code, user.id);
 
             broadcastToLobbyRoom(code, {
@@ -246,6 +258,7 @@ addRouteWithMethods(
     async (req, res) => {
         // Get lobby details
         const code = req.params.code as string;
+        const user = (req as UserRequest).user;
 
         try {
             if (!(await lobbyExists(code))) {
@@ -258,7 +271,7 @@ addRouteWithMethods(
             }
 
             // Lobbies are prevented from expiring if the host goes back to the lobby's details page
-            if (await lm_isLobbyHost(code, (req as UserRequest).user.id)) {
+            if (await lm_isLobbyHost(code, user.id)) {
                 preventLobbyExpiry(code);
             }
 
