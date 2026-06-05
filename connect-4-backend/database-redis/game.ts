@@ -58,15 +58,15 @@ export async function gameExists(lobbyCode: string): Promise<boolean> {
  * @returns A list where each value indicates if a game exists for the code at the same index in the provided list of code
  * */
 export async function gamesExist(lobbyCodes: string[]): Promise<boolean[]> {
-    const pipeline = redis.multi();
+    const transaction = redis.multi();
 
     lobbyCodes.forEach((code) => {
-        pipeline.exists(`GameState_${code}:board`);
-        pipeline.exists(`GameState_${code}:turn`);
-        pipeline.exists(`GameState_${code}:turnTime`);
+        transaction.exists(`GameState_${code}:board`);
+        transaction.exists(`GameState_${code}:turn`);
+        transaction.exists(`GameState_${code}:turnTime`);
     });
 
-    const results = (await pipeline.exec()) as unknown as [Error | null, number][];
+    const results = (await transaction.exec()) as unknown as [Error | null, number][];
 
     return lobbyCodes.map((_, i) => {
         const base = i * 3;
@@ -88,9 +88,16 @@ export async function deleteGame(lobbyCode: string) {
 export async function endGame(lobbyCode: string) {
     await deleteGame(lobbyCode);
 
-    await redis.set(`Lobby_${lobbyCode}:expireTimer`, 1, {
+    // Use watch + transactions for entry locking
+    await redis.watch(`Lobby_${lobbyCode}:expireTimer`);
+
+    const transaction = redis.multi();
+
+    transaction.set(`Lobby_${lobbyCode}:expireTimer`, 1, {
         EX: LOBBY_KEEP_ALIVE_TIME, // In seconds
     });
+
+    transaction.exec();
 }
 
 /** Forfeits the game as the provided player in the given lobby
@@ -115,8 +122,6 @@ export async function getGameState(lobbyCode: string): Promise<GameState> {
     const turn = await redis.get(`GameState_${lobbyCode}:turn`);
 
     if (!board || !turn) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_EXPIRED);
-
-    if (await redis.exists(`GameState_${lobbyCode}:lock`)) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_LOCKED);
 
     try {
         const boardData = (await JSON.parse(board)) as GameBoard;
@@ -144,31 +149,34 @@ export async function getGameState(lobbyCode: string): Promise<GameState> {
  * */
 export async function insertTile(lobbyCode: string, playerID: TPlayerIDs, column: number): Promise<number> {
     if (column < 0 || column > GAME_COLUMNS - 1) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
-    if (await redis.exists(`GameState_${lobbyCode}:lock`)) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_LOCKED);
 
-    // Lock the game from being updated until the turn calculations finish
-    await redis.set(`GameState_${lobbyCode}:lock`, '1', {
-        EX: 5, // Expires in 5 seconds
-    });
+    // Watch for changes to implement entry locking
+    await redis.watch(`GameState_${lobbyCode}:board`);
+    await redis.watch(`GameState_${lobbyCode}:turn`);
 
     const board = await redis.get(`GameState_${lobbyCode}:board`);
     const turn = await redis.get(`GameState_${lobbyCode}:turn`);
 
-    // Exit early if there was an error getting the board or turn
-    if (!board || !turn) {
-        await redis.del(`GameState_${lobbyCode}:lock`);
-        throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_EXPIRED);
-    }
-
-    // Make sure it's this player's turn
-    const turnData = Number(turn) as TPlayerIDs;
-    if (turnData !== playerID) {
-        await redis.del(`GameState_${lobbyCode}:lock`);
-        throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_TURN);
-    }
-
     try {
-        const boardData = (await JSON.parse(board)) as GameBoard;
+        /// ** Initial validation
+
+        // Exit early if there was an error getting the board or turn
+        if (!board || !turn) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_EXPIRED);
+
+        // Make sure it's this player's turn
+        const turnData = Number(turn) as TPlayerIDs;
+        if (turnData !== playerID) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_TURN);
+
+        let boardData: GameBoard;
+        try {
+            boardData = (await JSON.parse(board)) as GameBoard;
+        } catch {
+            throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
+        }
+
+        /// **
+
+        /// ** Tile insertion logic
 
         let i = boardData.rows.length - 1;
         // Find the height of the lowest open cell in this column
@@ -184,21 +192,35 @@ export async function insertTile(lobbyCode: string, playerID: TPlayerIDs, column
         // Update the cell
         (boardData.rows[i] as GameRow).columns[column] = playerID;
 
-        await redis.set(`GameState_${lobbyCode}:board`, JSON.stringify(boardData));
+        /// **
+
+        /// ** Redis database update
+
+        // Use a transaction with .exec() to handle locking redis entries
+        const transaction = redis.multi();
+
+        try {
+            transaction.set(`GameState_${lobbyCode}:board`, JSON.stringify(boardData));
+        } catch {
+            throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
+        }
+
         // Set the next player's turn
         // Sets it to the next playerID in the list of playerIDs. The fallback if something goes wrong is the first element
-        await redis.set(`GameState_${lobbyCode}:turn`, getNextPlayer(playerID));
+        transaction.set(`GameState_${lobbyCode}:turn`, getNextPlayer(playerID));
 
         // Reset the game's expiry timer
-        await redis.set(`GameState_${lobbyCode}:turnTime`, 1, {
+        transaction.set(`GameState_${lobbyCode}:turnTime`, 1, {
             EX: GAME_EXPIRY_TIME,
         });
 
+        if (transaction.exec() === null) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_LOCKED);
+
+        /// **
+
         return i;
-    } catch {
-        throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
     } finally {
-        // Unlock the game / allow the game's state to be updated again
-        await redis.del(`GameState_${lobbyCode}:lock`);
+        // Unwatch to prevent the locking detection from leaking into the next request
+        await redis.unwatch();
     }
 }
