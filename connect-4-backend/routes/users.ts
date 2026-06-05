@@ -120,7 +120,7 @@ addRouteWithMethods(
 
         res.status(200).send(
             routes.GetLoggedInData.encode({
-                user: user,
+                user: user.dataValues,
             }).finish()
         );
     },
