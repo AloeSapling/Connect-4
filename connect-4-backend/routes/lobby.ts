@@ -11,10 +11,12 @@ import {
     joinLobby,
     leaveLobby,
     unsetPlayerIDAndType,
+    isLobbyHost as lm_isLobbyHost,
 } from '../database-sqllite/lobbyMembers.ts';
 import { routes, ws } from '../lib/proto.js';
-import { isLobbyMember } from '../lib/auth.ts';
+import { isLobbyHost, isLobbyMember } from '../lib/auth.ts';
 import { broadcastToLobbyRoom } from './ws/lobby.ts';
+import { preventLobbyExpiry } from '../database-redis/lobby.ts';
 
 const router = Router();
 
@@ -253,6 +255,11 @@ addRouteWithMethods(
                     }).finish()
                 );
                 return;
+            }
+
+            // Lobbies are prevented from expiring if the host goes back to the lobby's details page
+            if (await lm_isLobbyHost(code, (req as UserRequest).user.id)) {
+                preventLobbyExpiry(code);
             }
 
             const lobbyDetails = await getDetailedLobbyData(code);

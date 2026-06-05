@@ -2,7 +2,9 @@ import 'dotenv/config';
 
 export const GAME_COLUMNS = 7 as const;
 export const GAME_ROWS = 6 as const;
-export const GAME_EXPIRY_TIME = 300 as const; // 5 minutes (60 * 5)
+export const GAME_EXPIRY_TIME = 300 as const; // 5 minutes (60 seconds * 5)
+
+export const LOBBY_KEEP_ALIVE_TIME = 60 as const; // 1 minute (60 seconds)
 
 export const GAME_WIN_LENGTH = 4 as const; // Amount of consecutive tiles needed to win
 

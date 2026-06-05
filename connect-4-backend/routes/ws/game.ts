@@ -125,7 +125,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
 
                         // Check for a win
                         if (tileChecker.checkForWin()) {
-                            await gameRedis.deleteGame(lobbyCode);
+                            await gameRedis.endGame(lobbyCode);
 
                             broadcastToRoom(
                                 rooms[lobbyCode],
@@ -151,7 +151,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
 
                         // Check for draws
                         if (TileChecker.checkForDraw(gameState.board)) {
-                            await gameRedis.deleteGame(lobbyCode);
+                            await gameRedis.endGame(lobbyCode);
 
                             broadcastToRoom(
                                 rooms[lobbyCode],

@@ -1,5 +1,5 @@
 import { redis } from '../app.ts';
-import { GAME_COLUMNS, GAME_EXPIRY_TIME, GAME_ROWS } from '../config.ts';
+import { GAME_COLUMNS, GAME_EXPIRY_TIME, GAME_ROWS, LOBBY_KEEP_ALIVE_TIME } from '../config.ts';
 import {
     CodedError,
     P_ErrorCodes,
@@ -81,6 +81,18 @@ export async function deleteGame(lobbyCode: string) {
     await redis.del(`GameState_${lobbyCode}:turnTime`);
 }
 
+/** Deletes the game and starts a timer to delete the associated lobby
+ *
+ * The lobby's deletion is aborted if the host joins back into the lobby
+ * */
+export async function endGame(lobbyCode: string) {
+    await deleteGame(lobbyCode);
+
+    await redis.set(`Lobby_${lobbyCode}:expireTimer`, 1, {
+        EX: LOBBY_KEEP_ALIVE_TIME, // In seconds
+    });
+}
+
 /** Forfeits the game as the provided player in the given lobby
  * @param playerID - The playerID of the forfeiting player
  * @returns A tuple containing partial user data of the winner and loser. In that order
@@ -89,7 +101,7 @@ export async function forfeitGame(lobbyCode: string, playerID: TPlayerIDs): Prom
     const winner = await getPartialUserDataByPlayerID(lobbyCode, getNextPlayer(playerID));
     const loser = await getPartialUserDataByPlayerID(lobbyCode, playerID);
 
-    deleteGame(lobbyCode); // Ends the game
+    await endGame(lobbyCode);
 
     return [winner, loser];
 }

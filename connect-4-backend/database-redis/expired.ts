@@ -1,8 +1,10 @@
 import { redis } from '../app.ts';
 import { CODE_LENGTH } from '../config.ts';
+import { deleteLobby } from '../database-sqllite/lobby.ts';
 import { ws } from '../lib/proto.js';
 import type { TPlayerIDs } from '../lib/types.ts';
 import { broadcastToGameRoom } from '../routes/ws/game.ts';
+import { broadcastToLobbyRoom } from '../routes/ws/lobby.ts';
 import * as gameRedis from './game.ts';
 
 /** A function used to handle a redis entry expiring
@@ -27,6 +29,17 @@ export default async function onRedisExpire(key: string) {
                 winner: winner,
                 loser: loser,
             },
+        });
+    }
+
+    // Handle lobby expiration
+    else if (key.startsWith('Lobby_') && key.endsWith('expireTimer')) {
+        const lobbyCode = key.slice(6, 6 + CODE_LENGTH); // "Lobby_" is 6 characters long, this extracts the lobby code that is directly after the 'Lobby_' prefix
+
+        await deleteLobby(lobbyCode);
+
+        broadcastToLobbyRoom(lobbyCode, {
+            response: ws.LobbyResponses.LOBBY_RESPONSES_HOST_LEFT,
         });
     }
 }
