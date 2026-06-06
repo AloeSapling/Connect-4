@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package models;
 
-import 'models/lobbyMember.proto';
+import 'models/models.proto';
 
 message Lobby {
   string code = 1;
@@ -16,6 +16,10 @@ message LobbyData {
   bool has_game = 4;
 }
 
+message LobbySettings {
+  int32 turn_time = 1;
+}
+
 message DetailedLobbyData {
   string code = 1;
   string lobby_name = 2;
@@ -23,4 +27,5 @@ message DetailedLobbyData {
   bool has_game = 4;
   models.DetailedLobbyMemberData host = 5;
   repeated models.DetailedLobbyMemberData lobby_members = 6;
+  LobbySettings settings = 7;
 }

@@ -488,6 +488,103 @@ export namespace routes {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a ChangeLobbySettingsRequest. */
+    interface IChangeLobbySettingsRequest {
+
+        /** ChangeLobbySettingsRequest settings */
+        settings?: (models.ILobbySettings|null);
+    }
+
+    /** Represents a ChangeLobbySettingsRequest. */
+    class ChangeLobbySettingsRequest implements IChangeLobbySettingsRequest {
+
+        /**
+         * Constructs a new ChangeLobbySettingsRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: routes.IChangeLobbySettingsRequest);
+
+        /** ChangeLobbySettingsRequest settings. */
+        public settings?: (models.ILobbySettings|null);
+
+        /**
+         * Creates a new ChangeLobbySettingsRequest instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns ChangeLobbySettingsRequest instance
+         */
+        public static create(properties?: routes.IChangeLobbySettingsRequest): routes.ChangeLobbySettingsRequest;
+
+        /**
+         * Encodes the specified ChangeLobbySettingsRequest message. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
+         * @param message ChangeLobbySettingsRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: routes.IChangeLobbySettingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified ChangeLobbySettingsRequest message, length delimited. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
+         * @param message ChangeLobbySettingsRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: routes.IChangeLobbySettingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns ChangeLobbySettingsRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.ChangeLobbySettingsRequest;
+
+        /**
+         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns ChangeLobbySettingsRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.ChangeLobbySettingsRequest;
+
+        /**
+         * Verifies a ChangeLobbySettingsRequest message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a ChangeLobbySettingsRequest message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns ChangeLobbySettingsRequest
+         */
+        public static fromObject(object: { [k: string]: any }): routes.ChangeLobbySettingsRequest;
+
+        /**
+         * Creates a plain object from a ChangeLobbySettingsRequest message. Also converts values to other types if specified.
+         * @param message ChangeLobbySettingsRequest
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: routes.ChangeLobbySettingsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this ChangeLobbySettingsRequest to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for ChangeLobbySettingsRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a KickPlayerRequest. */
     interface IKickPlayerRequest {
 
@@ -1613,6 +1710,103 @@ export namespace models {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a LobbySettings. */
+    interface ILobbySettings {
+
+        /** LobbySettings turnTime */
+        turnTime?: (number|null);
+    }
+
+    /** Represents a LobbySettings. */
+    class LobbySettings implements ILobbySettings {
+
+        /**
+         * Constructs a new LobbySettings.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.ILobbySettings);
+
+        /** LobbySettings turnTime. */
+        public turnTime: number;
+
+        /**
+         * Creates a new LobbySettings instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LobbySettings instance
+         */
+        public static create(properties?: models.ILobbySettings): models.LobbySettings;
+
+        /**
+         * Encodes the specified LobbySettings message. Does not implicitly {@link models.LobbySettings.verify|verify} messages.
+         * @param message LobbySettings message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.ILobbySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LobbySettings message, length delimited. Does not implicitly {@link models.LobbySettings.verify|verify} messages.
+         * @param message LobbySettings message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.ILobbySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LobbySettings message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LobbySettings
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.LobbySettings;
+
+        /**
+         * Decodes a LobbySettings message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LobbySettings
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.LobbySettings;
+
+        /**
+         * Verifies a LobbySettings message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LobbySettings message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LobbySettings
+         */
+        public static fromObject(object: { [k: string]: any }): models.LobbySettings;
+
+        /**
+         * Creates a plain object from a LobbySettings message. Also converts values to other types if specified.
+         * @param message LobbySettings
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.LobbySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LobbySettings to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LobbySettings
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a DetailedLobbyData. */
     interface IDetailedLobbyData {
 
@@ -1633,6 +1827,9 @@ export namespace models {
 
         /** DetailedLobbyData lobbyMembers */
         lobbyMembers?: (models.IDetailedLobbyMemberData[]|null);
+
+        /** DetailedLobbyData settings */
+        settings?: (models.ILobbySettings|null);
     }
 
     /** Represents a DetailedLobbyData. */
@@ -1661,6 +1858,9 @@ export namespace models {
 
         /** DetailedLobbyData lobbyMembers. */
         public lobbyMembers: models.IDetailedLobbyMemberData[];
+
+        /** DetailedLobbyData settings. */
+        public settings?: (models.ILobbySettings|null);
 
         /**
          * Creates a new DetailedLobbyData instance using the specified properties.
@@ -3012,7 +3212,8 @@ export namespace ws {
         LOBBY_RESPONSES_LEAVE = 3,
         LOBBY_RESPONSES_CHANGE_PLAYER = 4,
         LOBBY_RESPONSES_START_GAME = 5,
-        LOBBY_RESPONSES_HOST_LEFT = 6
+        LOBBY_RESPONSES_HOST_LEFT = 6,
+        LOBBY_RESPONSES_SETTINGS_CHANGED = 7
     }
 
     /** Properties of a LobbyJoin. */
@@ -3323,6 +3524,9 @@ export namespace ws {
 
         /** LobbyResponsePacket changePlayer */
         changePlayer?: (ws.ILobbyChangePlayer|null);
+
+        /** LobbyResponsePacket settings */
+        settings?: (models.ILobbySettings|null);
     }
 
     /** Represents a LobbyResponsePacket. */
@@ -3349,8 +3553,11 @@ export namespace ws {
         /** LobbyResponsePacket changePlayer. */
         public changePlayer?: (ws.ILobbyChangePlayer|null);
 
+        /** LobbyResponsePacket settings. */
+        public settings?: (models.ILobbySettings|null);
+
         /** LobbyResponsePacket data. */
-        public data?: ("error"|"join"|"leave"|"changePlayer");
+        public data?: ("error"|"join"|"leave"|"changePlayer"|"settings");
 
         /**
          * Creates a new LobbyResponsePacket instance using the specified properties.

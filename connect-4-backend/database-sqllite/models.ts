@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from './database.ts';
 import { P_PlayerIDs, P_PlayerTypes, type TPlayerIDs, type TPlayerTypes } from '../lib/types.ts';
+import { DEFAULT_TURN_TIME } from '../config.ts';
 
 export class User extends Model {
     declare id: number;
@@ -36,6 +37,7 @@ User.init(
 export class Lobby extends Model {
     declare code: string;
     declare name: string;
+    declare turnTime: number;
 }
 
 Lobby.init(
@@ -46,6 +48,10 @@ Lobby.init(
         },
         name: {
             type: DataTypes.STRING,
+        },
+        turnTime: {
+            type: DataTypes.INTEGER,
+            defaultValue: DEFAULT_TURN_TIME,
         },
     },
     {

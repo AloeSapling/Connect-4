@@ -1160,6 +1160,228 @@ export const routes = $root.routes = (() => {
         return GetLobbyDetailsResponse;
     })();
 
+    routes.ChangeLobbySettingsRequest = (function() {
+
+        /**
+         * Properties of a ChangeLobbySettingsRequest.
+         * @memberof routes
+         * @interface IChangeLobbySettingsRequest
+         * @property {models.ILobbySettings|null} [settings] ChangeLobbySettingsRequest settings
+         */
+
+        /**
+         * Constructs a new ChangeLobbySettingsRequest.
+         * @memberof routes
+         * @classdesc Represents a ChangeLobbySettingsRequest.
+         * @implements IChangeLobbySettingsRequest
+         * @constructor
+         * @param {routes.IChangeLobbySettingsRequest=} [properties] Properties to set
+         */
+        function ChangeLobbySettingsRequest(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * ChangeLobbySettingsRequest settings.
+         * @member {models.ILobbySettings|null|undefined} settings
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @instance
+         */
+        ChangeLobbySettingsRequest.prototype.settings = null;
+
+        /**
+         * Creates a new ChangeLobbySettingsRequest instance using the specified properties.
+         * @function create
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {routes.IChangeLobbySettingsRequest=} [properties] Properties to set
+         * @returns {routes.ChangeLobbySettingsRequest} ChangeLobbySettingsRequest instance
+         */
+        ChangeLobbySettingsRequest.create = function create(properties) {
+            return new ChangeLobbySettingsRequest(properties);
+        };
+
+        /**
+         * Encodes the specified ChangeLobbySettingsRequest message. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
+         * @function encode
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {routes.IChangeLobbySettingsRequest} message ChangeLobbySettingsRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ChangeLobbySettingsRequest.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.settings != null && Object.hasOwnProperty.call(message, "settings"))
+                $root.models.LobbySettings.encode(message.settings, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified ChangeLobbySettingsRequest message, length delimited. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {routes.IChangeLobbySettingsRequest} message ChangeLobbySettingsRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ChangeLobbySettingsRequest.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.ChangeLobbySettingsRequest} ChangeLobbySettingsRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ChangeLobbySettingsRequest.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.ChangeLobbySettingsRequest();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.settings = $root.models.LobbySettings.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.ChangeLobbySettingsRequest} ChangeLobbySettingsRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ChangeLobbySettingsRequest.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a ChangeLobbySettingsRequest message.
+         * @function verify
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        ChangeLobbySettingsRequest.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.settings != null && message.hasOwnProperty("settings")) {
+                let error = $root.models.LobbySettings.verify(message.settings, long + 1);
+                if (error)
+                    return "settings." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates a ChangeLobbySettingsRequest message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.ChangeLobbySettingsRequest} ChangeLobbySettingsRequest
+         */
+        ChangeLobbySettingsRequest.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.ChangeLobbySettingsRequest)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.ChangeLobbySettingsRequest();
+            if (object.settings != null) {
+                if (typeof object.settings !== "object")
+                    throw TypeError(".routes.ChangeLobbySettingsRequest.settings: object expected");
+                message.settings = $root.models.LobbySettings.fromObject(object.settings, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a ChangeLobbySettingsRequest message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {routes.ChangeLobbySettingsRequest} message ChangeLobbySettingsRequest
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        ChangeLobbySettingsRequest.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.settings = null;
+            if (message.settings != null && message.hasOwnProperty("settings"))
+                object.settings = $root.models.LobbySettings.toObject(message.settings, options);
+            return object;
+        };
+
+        /**
+         * Converts this ChangeLobbySettingsRequest to JSON.
+         * @function toJSON
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        ChangeLobbySettingsRequest.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for ChangeLobbySettingsRequest
+         * @function getTypeUrl
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        ChangeLobbySettingsRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.ChangeLobbySettingsRequest";
+        };
+
+        return ChangeLobbySettingsRequest;
+    })();
+
     routes.KickPlayerRequest = (function() {
 
         /**
@@ -3835,6 +4057,223 @@ export const models = $root.models = (() => {
         return LobbyData;
     })();
 
+    models.LobbySettings = (function() {
+
+        /**
+         * Properties of a LobbySettings.
+         * @memberof models
+         * @interface ILobbySettings
+         * @property {number|null} [turnTime] LobbySettings turnTime
+         */
+
+        /**
+         * Constructs a new LobbySettings.
+         * @memberof models
+         * @classdesc Represents a LobbySettings.
+         * @implements ILobbySettings
+         * @constructor
+         * @param {models.ILobbySettings=} [properties] Properties to set
+         */
+        function LobbySettings(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * LobbySettings turnTime.
+         * @member {number} turnTime
+         * @memberof models.LobbySettings
+         * @instance
+         */
+        LobbySettings.prototype.turnTime = 0;
+
+        /**
+         * Creates a new LobbySettings instance using the specified properties.
+         * @function create
+         * @memberof models.LobbySettings
+         * @static
+         * @param {models.ILobbySettings=} [properties] Properties to set
+         * @returns {models.LobbySettings} LobbySettings instance
+         */
+        LobbySettings.create = function create(properties) {
+            return new LobbySettings(properties);
+        };
+
+        /**
+         * Encodes the specified LobbySettings message. Does not implicitly {@link models.LobbySettings.verify|verify} messages.
+         * @function encode
+         * @memberof models.LobbySettings
+         * @static
+         * @param {models.ILobbySettings} message LobbySettings message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbySettings.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.turnTime != null && Object.hasOwnProperty.call(message, "turnTime"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.turnTime);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified LobbySettings message, length delimited. Does not implicitly {@link models.LobbySettings.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.LobbySettings
+         * @static
+         * @param {models.ILobbySettings} message LobbySettings message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbySettings.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a LobbySettings message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.LobbySettings
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.LobbySettings} LobbySettings
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbySettings.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.LobbySettings();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.turnTime = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a LobbySettings message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.LobbySettings
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.LobbySettings} LobbySettings
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbySettings.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a LobbySettings message.
+         * @function verify
+         * @memberof models.LobbySettings
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        LobbySettings.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.turnTime != null && message.hasOwnProperty("turnTime"))
+                if (!$util.isInteger(message.turnTime))
+                    return "turnTime: integer expected";
+            return null;
+        };
+
+        /**
+         * Creates a LobbySettings message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.LobbySettings
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.LobbySettings} LobbySettings
+         */
+        LobbySettings.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.LobbySettings)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.LobbySettings();
+            if (object.turnTime != null)
+                message.turnTime = object.turnTime | 0;
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a LobbySettings message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.LobbySettings
+         * @static
+         * @param {models.LobbySettings} message LobbySettings
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        LobbySettings.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.turnTime = 0;
+            if (message.turnTime != null && message.hasOwnProperty("turnTime"))
+                object.turnTime = message.turnTime;
+            return object;
+        };
+
+        /**
+         * Converts this LobbySettings to JSON.
+         * @function toJSON
+         * @memberof models.LobbySettings
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        LobbySettings.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for LobbySettings
+         * @function getTypeUrl
+         * @memberof models.LobbySettings
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        LobbySettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.LobbySettings";
+        };
+
+        return LobbySettings;
+    })();
+
     models.DetailedLobbyData = (function() {
 
         /**
@@ -3847,6 +4286,7 @@ export const models = $root.models = (() => {
          * @property {boolean|null} [hasGame] DetailedLobbyData hasGame
          * @property {models.IDetailedLobbyMemberData|null} [host] DetailedLobbyData host
          * @property {Array.<models.IDetailedLobbyMemberData>|null} [lobbyMembers] DetailedLobbyData lobbyMembers
+         * @property {models.ILobbySettings|null} [settings] DetailedLobbyData settings
          */
 
         /**
@@ -3914,6 +4354,14 @@ export const models = $root.models = (() => {
         DetailedLobbyData.prototype.lobbyMembers = $util.emptyArray;
 
         /**
+         * DetailedLobbyData settings.
+         * @member {models.ILobbySettings|null|undefined} settings
+         * @memberof models.DetailedLobbyData
+         * @instance
+         */
+        DetailedLobbyData.prototype.settings = null;
+
+        /**
          * Creates a new DetailedLobbyData instance using the specified properties.
          * @function create
          * @memberof models.DetailedLobbyData
@@ -3950,6 +4398,8 @@ export const models = $root.models = (() => {
             if (message.lobbyMembers != null && message.lobbyMembers.length)
                 for (let i = 0; i < message.lobbyMembers.length; ++i)
                     $root.models.DetailedLobbyMemberData.encode(message.lobbyMembers[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+            if (message.settings != null && Object.hasOwnProperty.call(message, "settings"))
+                $root.models.LobbySettings.encode(message.settings, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
             return writer;
         };
 
@@ -4014,6 +4464,10 @@ export const models = $root.models = (() => {
                         if (!(message.lobbyMembers && message.lobbyMembers.length))
                             message.lobbyMembers = [];
                         message.lobbyMembers.push($root.models.DetailedLobbyMemberData.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 7: {
+                        message.settings = $root.models.LobbySettings.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 default:
@@ -4081,6 +4535,11 @@ export const models = $root.models = (() => {
                         return "lobbyMembers." + error;
                 }
             }
+            if (message.settings != null && message.hasOwnProperty("settings")) {
+                let error = $root.models.LobbySettings.verify(message.settings, long + 1);
+                if (error)
+                    return "settings." + error;
+            }
             return null;
         };
 
@@ -4123,6 +4582,11 @@ export const models = $root.models = (() => {
                     message.lobbyMembers[i] = $root.models.DetailedLobbyMemberData.fromObject(object.lobbyMembers[i], long + 1);
                 }
             }
+            if (object.settings != null) {
+                if (typeof object.settings !== "object")
+                    throw TypeError(".models.DetailedLobbyData.settings: object expected");
+                message.settings = $root.models.LobbySettings.fromObject(object.settings, long + 1);
+            }
             return message;
         };
 
@@ -4147,6 +4611,7 @@ export const models = $root.models = (() => {
                 object.memberCount = 0;
                 object.hasGame = false;
                 object.host = null;
+                object.settings = null;
             }
             if (message.code != null && message.hasOwnProperty("code"))
                 object.code = message.code;
@@ -4163,6 +4628,8 @@ export const models = $root.models = (() => {
                 for (let j = 0; j < message.lobbyMembers.length; ++j)
                     object.lobbyMembers[j] = $root.models.DetailedLobbyMemberData.toObject(message.lobbyMembers[j], options);
             }
+            if (message.settings != null && message.hasOwnProperty("settings"))
+                object.settings = $root.models.LobbySettings.toObject(message.settings, options);
             return object;
         };
 
@@ -7764,6 +8231,7 @@ export const ws = $root.ws = (() => {
      * @property {number} LOBBY_RESPONSES_CHANGE_PLAYER=4 LOBBY_RESPONSES_CHANGE_PLAYER value
      * @property {number} LOBBY_RESPONSES_START_GAME=5 LOBBY_RESPONSES_START_GAME value
      * @property {number} LOBBY_RESPONSES_HOST_LEFT=6 LOBBY_RESPONSES_HOST_LEFT value
+     * @property {number} LOBBY_RESPONSES_SETTINGS_CHANGED=7 LOBBY_RESPONSES_SETTINGS_CHANGED value
      */
     ws.LobbyResponses = (function() {
         const valuesById = {}, values = Object.create(valuesById);
@@ -7774,6 +8242,7 @@ export const ws = $root.ws = (() => {
         values[valuesById[4] = "LOBBY_RESPONSES_CHANGE_PLAYER"] = 4;
         values[valuesById[5] = "LOBBY_RESPONSES_START_GAME"] = 5;
         values[valuesById[6] = "LOBBY_RESPONSES_HOST_LEFT"] = 6;
+        values[valuesById[7] = "LOBBY_RESPONSES_SETTINGS_CHANGED"] = 7;
         return values;
     })();
 
@@ -8502,6 +8971,7 @@ export const ws = $root.ws = (() => {
          * @property {ws.ILobbyJoin|null} [join] LobbyResponsePacket join
          * @property {ws.ILobbyLeave|null} [leave] LobbyResponsePacket leave
          * @property {ws.ILobbyChangePlayer|null} [changePlayer] LobbyResponsePacket changePlayer
+         * @property {models.ILobbySettings|null} [settings] LobbyResponsePacket settings
          */
 
         /**
@@ -8559,17 +9029,25 @@ export const ws = $root.ws = (() => {
          */
         LobbyResponsePacket.prototype.changePlayer = null;
 
+        /**
+         * LobbyResponsePacket settings.
+         * @member {models.ILobbySettings|null|undefined} settings
+         * @memberof ws.LobbyResponsePacket
+         * @instance
+         */
+        LobbyResponsePacket.prototype.settings = null;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
          * LobbyResponsePacket data.
-         * @member {"error"|"join"|"leave"|"changePlayer"|undefined} data
+         * @member {"error"|"join"|"leave"|"changePlayer"|"settings"|undefined} data
          * @memberof ws.LobbyResponsePacket
          * @instance
          */
         Object.defineProperty(LobbyResponsePacket.prototype, "data", {
-            get: $util.oneOfGetter($oneOfFields = ["error", "join", "leave", "changePlayer"]),
+            get: $util.oneOfGetter($oneOfFields = ["error", "join", "leave", "changePlayer", "settings"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -8607,6 +9085,8 @@ export const ws = $root.ws = (() => {
                 $root.ws.LobbyLeave.encode(message.leave, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             if (message.changePlayer != null && Object.hasOwnProperty.call(message, "changePlayer"))
                 $root.ws.LobbyChangePlayer.encode(message.changePlayer, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.settings != null && Object.hasOwnProperty.call(message, "settings"))
+                $root.models.LobbySettings.encode(message.settings, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
             return writer;
         };
 
@@ -8667,6 +9147,10 @@ export const ws = $root.ws = (() => {
                         message.changePlayer = $root.ws.LobbyChangePlayer.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
+                case 6: {
+                        message.settings = $root.models.LobbySettings.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7, long);
                     break;
@@ -8718,6 +9202,7 @@ export const ws = $root.ws = (() => {
                 case 4:
                 case 5:
                 case 6:
+                case 7:
                     break;
                 }
             if (message.error != null && message.hasOwnProperty("error")) {
@@ -8756,6 +9241,16 @@ export const ws = $root.ws = (() => {
                     let error = $root.ws.LobbyChangePlayer.verify(message.changePlayer, long + 1);
                     if (error)
                         return "changePlayer." + error;
+                }
+            }
+            if (message.settings != null && message.hasOwnProperty("settings")) {
+                if (properties.data === 1)
+                    return "data: multiple values";
+                properties.data = 1;
+                {
+                    let error = $root.models.LobbySettings.verify(message.settings, long + 1);
+                    if (error)
+                        return "settings." + error;
                 }
             }
             return null;
@@ -8812,6 +9307,10 @@ export const ws = $root.ws = (() => {
             case 6:
                 message.response = 6;
                 break;
+            case "LOBBY_RESPONSES_SETTINGS_CHANGED":
+            case 7:
+                message.response = 7;
+                break;
             }
             if (object.error != null) {
                 if (typeof object.error !== "object")
@@ -8832,6 +9331,11 @@ export const ws = $root.ws = (() => {
                 if (typeof object.changePlayer !== "object")
                     throw TypeError(".ws.LobbyResponsePacket.changePlayer: object expected");
                 message.changePlayer = $root.ws.LobbyChangePlayer.fromObject(object.changePlayer, long + 1);
+            }
+            if (object.settings != null) {
+                if (typeof object.settings !== "object")
+                    throw TypeError(".ws.LobbyResponsePacket.settings: object expected");
+                message.settings = $root.models.LobbySettings.fromObject(object.settings, long + 1);
             }
             return message;
         };
@@ -8872,6 +9376,11 @@ export const ws = $root.ws = (() => {
                 object.changePlayer = $root.ws.LobbyChangePlayer.toObject(message.changePlayer, options);
                 if (options.oneofs)
                     object.data = "changePlayer";
+            }
+            if (message.settings != null && message.hasOwnProperty("settings")) {
+                object.settings = $root.models.LobbySettings.toObject(message.settings, options);
+                if (options.oneofs)
+                    object.data = "settings";
             }
             return object;
         };

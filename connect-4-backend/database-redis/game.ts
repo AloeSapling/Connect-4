@@ -26,7 +26,7 @@ const initialGameState: GameState = {
 /** Create a new game using the provided lobby code
  * @throws Error code "GameAlreadyExists"
  * */
-export async function createGame(lobbyCode: string) {
+export async function createGame(lobbyCode: string, settings: models.ILobbySettings) {
     // Don't accidentally overwrite an existing game
     if (await gameExists(lobbyCode)) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_ALREADY_EXISTS);
 
@@ -39,8 +39,9 @@ export async function createGame(lobbyCode: string) {
     // This entry is used to handle the game expiration logic
     // Games expire when they don't receive any moves for a certain amount of time
     // Letting the game expire on your turn is treated the same as forfeiting
-    await redis.set(`GameState_${lobbyCode}:turnTime`, 1, {
-        EX: GAME_EXPIRY_TIME, // In seconds
+    // The time for each turn is stored inside of the entry so that the expiration can be reset later
+    await redis.set(`GameState_${lobbyCode}:turnTime`, settings.turnTime || 0, {
+        EX: settings.turnTime || 0, // In seconds
     });
 }
 
@@ -210,8 +211,9 @@ export async function insertTile(lobbyCode: string, playerID: TPlayerIDs, column
         transaction.set(`GameState_${lobbyCode}:turn`, getNextPlayer(playerID));
 
         // Reset the game's expiry timer
-        transaction.set(`GameState_${lobbyCode}:turnTime`, 1, {
-            EX: GAME_EXPIRY_TIME,
+        const turnTime = Number(await redis.get(`GameState_${lobbyCode}:turnTime`)); // The time for each turn is stored inside of the entry
+        transaction.set(`GameState_${lobbyCode}:turnTime`, turnTime || 0, {
+            EX: turnTime || 0,
         });
 
         if (transaction.exec() === null) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_LOCKED);

@@ -1,6 +1,6 @@
 import * as GameRedis from '../database-redis/game.ts';
 import { Router } from 'express';
-import { lobbyExists } from '../database-sqllite/lobby.ts';
+import { getLobbySettings, lobbyExists } from '../database-sqllite/lobby.ts';
 import { CodedError, P_CodedError, P_ErrorCodes, P_PlayerIDs } from '../lib/types.ts';
 import { addRouteWithMethods } from '../lib/lib.ts';
 import { routes, ws } from '../lib/proto.js';
@@ -41,7 +41,10 @@ addRouteWithMethods(
             }
 
             try {
-                await GameRedis.createGame(code);
+                // Get the settings used as parameters for creating the game
+                const settings = await getLobbySettings(code);
+
+                await GameRedis.createGame(code, settings);
 
                 broadcastToLobbyRoom(code, {
                     response: ws.LobbyResponses.LOBBY_RESPONSES_START_GAME,

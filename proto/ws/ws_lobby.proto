@@ -12,6 +12,7 @@ enum LobbyResponses {
   LOBBY_RESPONSES_CHANGE_PLAYER = 4;
   LOBBY_RESPONSES_START_GAME = 5;
   LOBBY_RESPONSES_HOST_LEFT = 6;
+  LOBBY_RESPONSES_SETTINGS_CHANGED = 7;
 }
 
 message LobbyJoin {
@@ -33,5 +34,6 @@ message LobbyResponsePacket {
     LobbyJoin join = 3;
     LobbyLeave leave = 4;
     LobbyChangePlayer changePlayer = 5;
+    models.LobbySettings settings = 6;
   }
 }

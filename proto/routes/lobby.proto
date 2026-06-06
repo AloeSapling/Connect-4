@@ -25,6 +25,10 @@ message GetLobbyDetailsResponse {
   optional models.DetailedLobbyData lobby_details = 1;
 }
 
+message ChangeLobbySettingsRequest {
+  models.LobbySettings settings = 1;
+}
+
 message KickPlayerRequest {
   int32 user_id = 1;
 }

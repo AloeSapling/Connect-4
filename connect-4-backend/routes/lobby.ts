@@ -1,5 +1,12 @@
 import { Router } from 'express';
-import { createLobby, deleteLobby, getAllLobbiesData, getDetailedLobbyData, lobbyExists } from '../database-sqllite/lobby.ts';
+import {
+    changeLobbySettings,
+    createLobby,
+    deleteLobby,
+    getAllLobbiesData,
+    getDetailedLobbyData,
+    lobbyExists,
+} from '../database-sqllite/lobby.ts';
 import { P_CodedError, P_ErrorCodes, P_PlayerIDs, P_PlayerTypes, type UserRequest } from '../lib/types.ts';
 import { addRouteWithMethods } from '../lib/lib.ts';
 import {
@@ -86,6 +93,65 @@ addRouteWithMethods(
         }
     },
     ['POST', 'PUT']
+);
+
+addRouteWithMethods(
+    router,
+    '/:code/changeSettings',
+    async (req, res) => {
+        const code = req.params.code as string;
+
+        let body: routes.ChangeLobbySettingsRequest;
+        try {
+            body = routes.ChangeLobbySettingsRequest.decode(req.body);
+        } catch {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
+                }).finish()
+            );
+            return;
+        }
+
+        if (!body.settings) {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
+                }).finish()
+            );
+            return;
+        }
+
+        const settings = body.settings;
+
+        try {
+            if (!(await lobbyExists(code))) {
+                res.status(400).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_DOESNT_EXIST,
+                    }).finish()
+                );
+                return;
+            }
+
+            await changeLobbySettings(code, settings);
+
+            broadcastToLobbyRoom(code, {
+                response: ws.LobbyResponses.LOBBY_RESPONSES_SETTINGS_CHANGED,
+                settings: {
+                    turnTime: settings.turnTime || -1,
+                },
+            });
+        } catch {
+            res.status(500).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_SERVER_ERROR,
+                }).finish()
+            );
+        }
+    },
+    ['POST', 'PATCH'],
+    [isLobbyHost]
 );
 
 addRouteWithMethods(
@@ -216,19 +282,36 @@ addRouteWithMethods(
             return;
         }
 
-        // Remove the user from the lobby
-        await leaveLobby(code, body.userId);
+        try {
+            if (!(await lobbyExists(code))) {
+                res.status(400).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_DOESNT_EXIST,
+                    }).finish()
+                );
+                return;
+            }
 
-        // Ban the user from rejoining
-        tempBanUser(code, body.userId, TEMP_BAN_TIME);
+            // Remove the user from the lobby
+            await leaveLobby(code, body.userId);
 
-        broadcastToLobbyRoom(code, {
-            response: ws.LobbyResponses.LOBBY_RESPONSES_LEAVE,
-            leave: {
-                users: await getDetailedLobbyMembersData(code),
-            },
-        });
-        res.status(204).send();
+            // Ban the user from rejoining
+            tempBanUser(code, body.userId, TEMP_BAN_TIME);
+
+            broadcastToLobbyRoom(code, {
+                response: ws.LobbyResponses.LOBBY_RESPONSES_LEAVE,
+                leave: {
+                    users: await getDetailedLobbyMembersData(code),
+                },
+            });
+            res.status(204).send();
+        } catch {
+            res.status(500).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_SERVER_ERROR,
+                }).finish()
+            );
+        }
     },
     ['POST', 'PUT', 'DELETE'],
     [isLobbyHost]
