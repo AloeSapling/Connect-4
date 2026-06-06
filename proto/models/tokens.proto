@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package models;
+
+import 'shared/shared.proto';
+
+enum TokenTypes {
+  TOKEN_TYPES_UNSPECIFIED = 0;
+  TOKEN_TYPES_STANDARD = 1;
+  TOKEN_TYPES_NEGATIVE = 2;
+  TOKEN_TYPES_AURA = 3;
+  TOKEN_TYPES_BOMB = 4;
+  TOKEN_TYPES_SPLIT = 5;
+  TOKEN_TYPES_FREEZE = 6;
+  TOKEN_TYPES_BURN = 7;
+  TOKEN_TYPES_REVERSE = 8;
+  TOKEN_TYPES_DOUBLE = 9;
+}
+
+message Token {
+  shared.PlayerIDs player_id = 1;
+  TokenTypes token_type = 2;
+}

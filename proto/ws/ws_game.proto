@@ -33,21 +33,21 @@ enum GameEndTypes {
   GAME_END_TYPES_DRAW = 3;
 }
 
-message Token {
+message Tile {
   int32 row = 1;
   int32 column = 2;
-  shared.PlayerIDs playerID = 3;
+  optional models.Token token = 3;
 }
 
 message GameEnd {
   GameEndTypes endType = 1;
-  optional Token token = 2;
+  optional Tile tile = 2;
   optional models.PartialUser winner = 3;
   optional models.PartialUser loser = 4;
 }
 
 message GameMove {
-  Token token = 1;
+  Tile tile = 1;
   shared.GameBoard board = 2;
   shared.PlayerIDs turn = 3;
 }
