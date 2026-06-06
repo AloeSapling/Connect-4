@@ -18,9 +18,11 @@ function Game() {
     const animationRef = useRef<number | null>(null);
     const gameCanvasRef = useRef<GameCanvas | null>(null);
 
-    const { data: queryData, isLoading } = useQuery({
+    const { data: queryData, isLoading, error } = useQuery({
         queryKey: ['lobby', lobbyCode],
         queryFn: () => getGameState(lobbyCode!),
+        refetchOnWindowFocus: false,
+        retry: 1,
     });
 
     const [currentBoardState, setCurrentBoardState] = useState(queryData?.game?.board ??
@@ -42,6 +44,21 @@ function Game() {
 
         gameCanvasRef.current.setBoardState(currentBoardState);
     }, [currentBoardState]);
+
+    useEffect(() => {
+        if (!error) return;
+
+        const err = error as any;
+
+        if (err.code === types.P_ErrorCodes.ERROR_CODES_UNAUTHORISED ||
+            err.code === types.P_ErrorCodes.ERROR_CODES_GAME_EXPIRED ||
+            err.code === types.P_ErrorCodes.ERROR_CODES_GAME_LOCKED ||
+            err.code === types.P_ErrorCodes.ERROR_CODES_DOESNT_EXIST ||
+            err.status === 400) {
+            wsRef.current?.ws.close();
+            navigate(`/lobby/${lobbyCode}`);
+        }
+    }, [error, navigate, lobbyCode]);
 
     const [canMove, setCanMove] = useState<boolean>(true);
 

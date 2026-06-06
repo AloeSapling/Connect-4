@@ -10,8 +10,9 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import HostControls from '@/components/lobby/HostControls.js';
 import MemberTable from '@/components/lobby/MemberTable.js';
-import { Copy, Check } from "lucide-react";
+import { Copy } from "lucide-react";
 import * as proto from '@/lib/proto.js';
+import * as types from '@/lib/types.js';
 
 function Lobby() {
     const navigate = useNavigate();
@@ -19,9 +20,10 @@ function Lobby() {
     const user = useContext(UserContext);
     const queryClient = useQueryClient();
 
-    const { data: queryData, isLoading } = useQuery({
+    const { data: queryData, isLoading, error } = useQuery({
         queryKey: ['lobby', lobbyCode],
         queryFn: () => getLobbyDetails(lobbyCode!),
+        retry: 1
     });
 
     const [lobbyMembersData, setLobbyMembersData] = useState(queryData?.lobbyDetails?.lobbyMembers ?? []);
@@ -31,6 +33,17 @@ function Lobby() {
             setLobbyMembersData(queryData.lobbyDetails.lobbyMembers);
         }
     }, [queryData]);
+
+    useEffect(() => {
+            if (!error) return;
+    
+            const err = error as any;
+    
+            if (err.code === types.P_ErrorCodes.ERROR_CODES_UNAUTHORISED ||
+                err.code === types.P_ErrorCodes.ERROR_CODES_DOESNT_EXIST ) {
+                navigate(`/lobbylist`);
+            }
+        }, [error, navigate]);
 
     useEffect(() => {
         if (!lobbyCode) return;
