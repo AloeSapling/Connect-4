@@ -16,7 +16,8 @@ import {
 import { routes, ws } from '../lib/proto.js';
 import { isLobbyHost, isLobbyMember } from '../lib/auth.ts';
 import { broadcastToLobbyRoom } from './ws/lobby.ts';
-import { preventLobbyExpiry } from '../database-redis/lobby.ts';
+import { isUserBanned, preventLobbyExpiry, tempBanUser } from '../database-redis/lobby.ts';
+import { TEMP_BAN_TIME } from '../config.ts';
 
 const router = Router();
 
@@ -104,6 +105,16 @@ addRouteWithMethods(
                 return;
             }
 
+            // While a user is banned, they are not allowed to rejoin the lobby
+            if (await isUserBanned(code, user.id)) {
+                res.status(403).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_USER_BANNED,
+                    }).finish()
+                );
+                return;
+            }
+
             await joinLobby(code, user.id);
 
             broadcastToLobbyRoom(code, {
@@ -176,6 +187,55 @@ addRouteWithMethods(
 
 addRouteWithMethods(
     router,
+    '/:code/tempBanUser',
+    async (req, res) => {
+        // Temporarilly bans a player from joining the lobby
+        const code = req.params.code as string;
+
+        const user = (req as UserRequest).user;
+
+        let body: routes.KickPlayerRequest;
+        try {
+            body = routes.KickPlayerRequest.decode(req.body);
+        } catch {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
+                }).finish()
+            );
+            return;
+        }
+
+        // Prevent the host from kicking themselves from the lobby
+        if (body.userId === user.id) {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_USER,
+                }).finish()
+            );
+            return;
+        }
+
+        // Remove the user from the lobby
+        await leaveLobby(code, body.userId);
+
+        // Ban the user from rejoining
+        tempBanUser(code, body.userId, TEMP_BAN_TIME);
+
+        broadcastToLobbyRoom(code, {
+            response: ws.LobbyResponses.LOBBY_RESPONSES_LEAVE,
+            leave: {
+                users: await getDetailedLobbyMembersData(code),
+            },
+        });
+        res.status(204).send();
+    },
+    ['POST', 'PUT', 'DELETE'],
+    [isLobbyHost]
+);
+
+addRouteWithMethods(
+    router,
     '/:code/changePlayerID',
     async (req, res) => {
         // Sets the player id of the specified player to the provided player id
@@ -231,7 +291,7 @@ addRouteWithMethods(
 
             // Assign the appropriate player type
             if (playerID === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED)
-                await assignPlayerType(code, userID, P_PlayerTypes.PLAYER_TYPES_SPECTATOR);
+                await assignPlayerType(code, userID, P_PlayerTypes.PLAYER_TYPES_SPECTATOR); // Spectator is the default player type
             else await assignPlayerType(code, userID, P_PlayerTypes.PLAYER_TYPES_PLAYER);
 
             broadcastToLobbyRoom(code, {

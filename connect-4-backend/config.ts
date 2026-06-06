@@ -6,6 +6,8 @@ export const GAME_EXPIRY_TIME = 300 as const; // 5 minutes (60 seconds * 5)
 
 export const LOBBY_KEEP_ALIVE_TIME = 60 as const; // 1 minute (60 seconds)
 
+export const TEMP_BAN_TIME = 300 as const; // 5 minutes (60 seconds * 5)
+
 export const GAME_WIN_LENGTH = 4 as const; // Amount of consecutive tiles needed to win
 
 export const ALL_CODE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789' as const;

@@ -1160,6 +1160,223 @@ export const routes = $root.routes = (() => {
         return GetLobbyDetailsResponse;
     })();
 
+    routes.KickPlayerRequest = (function() {
+
+        /**
+         * Properties of a KickPlayerRequest.
+         * @memberof routes
+         * @interface IKickPlayerRequest
+         * @property {number|null} [userId] KickPlayerRequest userId
+         */
+
+        /**
+         * Constructs a new KickPlayerRequest.
+         * @memberof routes
+         * @classdesc Represents a KickPlayerRequest.
+         * @implements IKickPlayerRequest
+         * @constructor
+         * @param {routes.IKickPlayerRequest=} [properties] Properties to set
+         */
+        function KickPlayerRequest(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * KickPlayerRequest userId.
+         * @member {number} userId
+         * @memberof routes.KickPlayerRequest
+         * @instance
+         */
+        KickPlayerRequest.prototype.userId = 0;
+
+        /**
+         * Creates a new KickPlayerRequest instance using the specified properties.
+         * @function create
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {routes.IKickPlayerRequest=} [properties] Properties to set
+         * @returns {routes.KickPlayerRequest} KickPlayerRequest instance
+         */
+        KickPlayerRequest.create = function create(properties) {
+            return new KickPlayerRequest(properties);
+        };
+
+        /**
+         * Encodes the specified KickPlayerRequest message. Does not implicitly {@link routes.KickPlayerRequest.verify|verify} messages.
+         * @function encode
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {routes.IKickPlayerRequest} message KickPlayerRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        KickPlayerRequest.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.userId);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified KickPlayerRequest message, length delimited. Does not implicitly {@link routes.KickPlayerRequest.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {routes.IKickPlayerRequest} message KickPlayerRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        KickPlayerRequest.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a KickPlayerRequest message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.KickPlayerRequest} KickPlayerRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        KickPlayerRequest.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.KickPlayerRequest();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.userId = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a KickPlayerRequest message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.KickPlayerRequest} KickPlayerRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        KickPlayerRequest.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a KickPlayerRequest message.
+         * @function verify
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        KickPlayerRequest.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.userId != null && message.hasOwnProperty("userId"))
+                if (!$util.isInteger(message.userId))
+                    return "userId: integer expected";
+            return null;
+        };
+
+        /**
+         * Creates a KickPlayerRequest message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.KickPlayerRequest} KickPlayerRequest
+         */
+        KickPlayerRequest.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.KickPlayerRequest)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.KickPlayerRequest();
+            if (object.userId != null)
+                message.userId = object.userId | 0;
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a KickPlayerRequest message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {routes.KickPlayerRequest} message KickPlayerRequest
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        KickPlayerRequest.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.userId = 0;
+            if (message.userId != null && message.hasOwnProperty("userId"))
+                object.userId = message.userId;
+            return object;
+        };
+
+        /**
+         * Converts this KickPlayerRequest to JSON.
+         * @function toJSON
+         * @memberof routes.KickPlayerRequest
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        KickPlayerRequest.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for KickPlayerRequest
+         * @function getTypeUrl
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        KickPlayerRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.KickPlayerRequest";
+        };
+
+        return KickPlayerRequest;
+    })();
+
     routes.ChangePlayerIDRequest = (function() {
 
         /**
@@ -5283,6 +5500,7 @@ export const shared = $root.shared = (() => {
      * @property {number} ERROR_CODES_DOESNT_EXIST=12 ERROR_CODES_DOESNT_EXIST value
      * @property {number} ERROR_CODES_USER_ALREADY_EXISTS=13 ERROR_CODES_USER_ALREADY_EXISTS value
      * @property {number} ERROR_CODES_BAD_SETUP=14 ERROR_CODES_BAD_SETUP value
+     * @property {number} ERROR_CODES_USER_BANNED=15 ERROR_CODES_USER_BANNED value
      */
     shared.ErrorCodes = (function() {
         const valuesById = {}, values = Object.create(valuesById);
@@ -5301,6 +5519,7 @@ export const shared = $root.shared = (() => {
         values[valuesById[12] = "ERROR_CODES_DOESNT_EXIST"] = 12;
         values[valuesById[13] = "ERROR_CODES_USER_ALREADY_EXISTS"] = 13;
         values[valuesById[14] = "ERROR_CODES_BAD_SETUP"] = 14;
+        values[valuesById[15] = "ERROR_CODES_USER_BANNED"] = 15;
         return values;
     })();
 
@@ -5489,6 +5708,7 @@ export const shared = $root.shared = (() => {
                 case 12:
                 case 13:
                 case 14:
+                case 15:
                     break;
                 }
             if (message.error != null && message.hasOwnProperty("error")) {
@@ -5581,6 +5801,10 @@ export const shared = $root.shared = (() => {
             case "ERROR_CODES_BAD_SETUP":
             case 14:
                 message.code = 14;
+                break;
+            case "ERROR_CODES_USER_BANNED":
+            case 15:
+                message.code = 15;
                 break;
             }
             if (object.error != null)

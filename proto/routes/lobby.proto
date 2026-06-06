@@ -25,6 +25,10 @@ message GetLobbyDetailsResponse {
   optional models.DetailedLobbyData lobby_details = 1;
 }
 
+message KickPlayerRequest {
+  int32 user_id = 1;
+}
+
 message ChangePlayerIDRequest {
   int32 user_id = 1;
   shared.PlayerIDs player_id = 2;
