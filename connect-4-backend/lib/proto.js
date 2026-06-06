@@ -3529,6 +3529,360 @@ export const models = $root.models = (() => {
         return PartialUser;
     })();
 
+    /**
+     * TokenTypes enum.
+     * @name models.TokenTypes
+     * @enum {number}
+     * @property {number} TOKEN_TYPES_UNSPECIFIED=0 TOKEN_TYPES_UNSPECIFIED value
+     * @property {number} TOKEN_TYPES_STANDARD=1 TOKEN_TYPES_STANDARD value
+     * @property {number} TOKEN_TYPES_NEGATIVE=2 TOKEN_TYPES_NEGATIVE value
+     * @property {number} TOKEN_TYPES_AURA=3 TOKEN_TYPES_AURA value
+     * @property {number} TOKEN_TYPES_BOMB=4 TOKEN_TYPES_BOMB value
+     * @property {number} TOKEN_TYPES_SPLIT=5 TOKEN_TYPES_SPLIT value
+     * @property {number} TOKEN_TYPES_FREEZE=6 TOKEN_TYPES_FREEZE value
+     * @property {number} TOKEN_TYPES_BURN=7 TOKEN_TYPES_BURN value
+     * @property {number} TOKEN_TYPES_REVERSE=8 TOKEN_TYPES_REVERSE value
+     * @property {number} TOKEN_TYPES_DOUBLE=9 TOKEN_TYPES_DOUBLE value
+     */
+    models.TokenTypes = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "TOKEN_TYPES_UNSPECIFIED"] = 0;
+        values[valuesById[1] = "TOKEN_TYPES_STANDARD"] = 1;
+        values[valuesById[2] = "TOKEN_TYPES_NEGATIVE"] = 2;
+        values[valuesById[3] = "TOKEN_TYPES_AURA"] = 3;
+        values[valuesById[4] = "TOKEN_TYPES_BOMB"] = 4;
+        values[valuesById[5] = "TOKEN_TYPES_SPLIT"] = 5;
+        values[valuesById[6] = "TOKEN_TYPES_FREEZE"] = 6;
+        values[valuesById[7] = "TOKEN_TYPES_BURN"] = 7;
+        values[valuesById[8] = "TOKEN_TYPES_REVERSE"] = 8;
+        values[valuesById[9] = "TOKEN_TYPES_DOUBLE"] = 9;
+        return values;
+    })();
+
+    models.Token = (function() {
+
+        /**
+         * Properties of a Token.
+         * @memberof models
+         * @interface IToken
+         * @property {shared.PlayerIDs|null} [playerId] Token playerId
+         * @property {models.TokenTypes|null} [tokenType] Token tokenType
+         */
+
+        /**
+         * Constructs a new Token.
+         * @memberof models
+         * @classdesc Represents a Token.
+         * @implements IToken
+         * @constructor
+         * @param {models.IToken=} [properties] Properties to set
+         */
+        function Token(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * Token playerId.
+         * @member {shared.PlayerIDs} playerId
+         * @memberof models.Token
+         * @instance
+         */
+        Token.prototype.playerId = 0;
+
+        /**
+         * Token tokenType.
+         * @member {models.TokenTypes} tokenType
+         * @memberof models.Token
+         * @instance
+         */
+        Token.prototype.tokenType = 0;
+
+        /**
+         * Creates a new Token instance using the specified properties.
+         * @function create
+         * @memberof models.Token
+         * @static
+         * @param {models.IToken=} [properties] Properties to set
+         * @returns {models.Token} Token instance
+         */
+        Token.create = function create(properties) {
+            return new Token(properties);
+        };
+
+        /**
+         * Encodes the specified Token message. Does not implicitly {@link models.Token.verify|verify} messages.
+         * @function encode
+         * @memberof models.Token
+         * @static
+         * @param {models.IToken} message Token message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Token.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.playerId != null && Object.hasOwnProperty.call(message, "playerId"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.playerId);
+            if (message.tokenType != null && Object.hasOwnProperty.call(message, "tokenType"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.tokenType);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified Token message, length delimited. Does not implicitly {@link models.Token.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.Token
+         * @static
+         * @param {models.IToken} message Token message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Token.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a Token message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.Token
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.Token} Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Token.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.Token();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.playerId = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.tokenType = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a Token message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.Token
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.Token} Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Token.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a Token message.
+         * @function verify
+         * @memberof models.Token
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        Token.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                switch (message.playerId) {
+                default:
+                    return "playerId: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                    break;
+                }
+            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
+                switch (message.tokenType) {
+                default:
+                    return "tokenType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    break;
+                }
+            return null;
+        };
+
+        /**
+         * Creates a Token message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.Token
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.Token} Token
+         */
+        Token.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.Token)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.Token();
+            switch (object.playerId) {
+            default:
+                if (typeof object.playerId === "number") {
+                    message.playerId = object.playerId;
+                    break;
+                }
+                break;
+            case "PLAYER_IDS_UNSPECIFIED":
+            case 0:
+                message.playerId = 0;
+                break;
+            case "PLAYER_IDS_PLAYER1":
+            case 1:
+                message.playerId = 1;
+                break;
+            case "PLAYER_IDS_PLAYER2":
+            case 2:
+                message.playerId = 2;
+                break;
+            }
+            switch (object.tokenType) {
+            default:
+                if (typeof object.tokenType === "number") {
+                    message.tokenType = object.tokenType;
+                    break;
+                }
+                break;
+            case "TOKEN_TYPES_UNSPECIFIED":
+            case 0:
+                message.tokenType = 0;
+                break;
+            case "TOKEN_TYPES_STANDARD":
+            case 1:
+                message.tokenType = 1;
+                break;
+            case "TOKEN_TYPES_NEGATIVE":
+            case 2:
+                message.tokenType = 2;
+                break;
+            case "TOKEN_TYPES_AURA":
+            case 3:
+                message.tokenType = 3;
+                break;
+            case "TOKEN_TYPES_BOMB":
+            case 4:
+                message.tokenType = 4;
+                break;
+            case "TOKEN_TYPES_SPLIT":
+            case 5:
+                message.tokenType = 5;
+                break;
+            case "TOKEN_TYPES_FREEZE":
+            case 6:
+                message.tokenType = 6;
+                break;
+            case "TOKEN_TYPES_BURN":
+            case 7:
+                message.tokenType = 7;
+                break;
+            case "TOKEN_TYPES_REVERSE":
+            case 8:
+                message.tokenType = 8;
+                break;
+            case "TOKEN_TYPES_DOUBLE":
+            case 9:
+                message.tokenType = 9;
+                break;
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a Token message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.Token
+         * @static
+         * @param {models.Token} message Token
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        Token.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.playerId = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
+                object.tokenType = options.enums === String ? "TOKEN_TYPES_UNSPECIFIED" : 0;
+            }
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                object.playerId = options.enums === String ? $root.shared.PlayerIDs[message.playerId] === undefined ? message.playerId : $root.shared.PlayerIDs[message.playerId] : message.playerId;
+            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
+                object.tokenType = options.enums === String ? $root.models.TokenTypes[message.tokenType] === undefined ? message.tokenType : $root.models.TokenTypes[message.tokenType] : message.tokenType;
+            return object;
+        };
+
+        /**
+         * Converts this Token to JSON.
+         * @function toJSON
+         * @memberof models.Token
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        Token.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Token
+         * @function getTypeUrl
+         * @memberof models.Token
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Token.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.Token";
+        };
+
+        return Token;
+    })();
+
     models.Lobby = (function() {
 
         /**
@@ -6885,26 +7239,26 @@ export const ws = $root.ws = (() => {
         return values;
     })();
 
-    ws.Token = (function() {
+    ws.Tile = (function() {
 
         /**
-         * Properties of a Token.
+         * Properties of a Tile.
          * @memberof ws
-         * @interface IToken
-         * @property {number|null} [row] Token row
-         * @property {number|null} [column] Token column
-         * @property {shared.PlayerIDs|null} [playerID] Token playerID
+         * @interface ITile
+         * @property {number|null} [row] Tile row
+         * @property {number|null} [column] Tile column
+         * @property {models.IToken|null} [token] Tile token
          */
 
         /**
-         * Constructs a new Token.
+         * Constructs a new Tile.
          * @memberof ws
-         * @classdesc Represents a Token.
-         * @implements IToken
+         * @classdesc Represents a Tile.
+         * @implements ITile
          * @constructor
-         * @param {ws.IToken=} [properties] Properties to set
+         * @param {ws.ITile=} [properties] Properties to set
          */
-        function Token(properties) {
+        function Tile(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -6912,94 +7266,103 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * Token row.
+         * Tile row.
          * @member {number} row
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @instance
          */
-        Token.prototype.row = 0;
+        Tile.prototype.row = 0;
 
         /**
-         * Token column.
+         * Tile column.
          * @member {number} column
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @instance
          */
-        Token.prototype.column = 0;
+        Tile.prototype.column = 0;
 
         /**
-         * Token playerID.
-         * @member {shared.PlayerIDs} playerID
-         * @memberof ws.Token
+         * Tile token.
+         * @member {models.IToken|null|undefined} token
+         * @memberof ws.Tile
          * @instance
          */
-        Token.prototype.playerID = 0;
+        Tile.prototype.token = null;
+
+        // OneOf field names bound to virtual getters and setters
+        let $oneOfFields;
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(Tile.prototype, "_token", {
+            get: $util.oneOfGetter($oneOfFields = ["token"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
 
         /**
-         * Creates a new Token instance using the specified properties.
+         * Creates a new Tile instance using the specified properties.
          * @function create
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @static
-         * @param {ws.IToken=} [properties] Properties to set
-         * @returns {ws.Token} Token instance
+         * @param {ws.ITile=} [properties] Properties to set
+         * @returns {ws.Tile} Tile instance
          */
-        Token.create = function create(properties) {
-            return new Token(properties);
+        Tile.create = function create(properties) {
+            return new Tile(properties);
         };
 
         /**
-         * Encodes the specified Token message. Does not implicitly {@link ws.Token.verify|verify} messages.
+         * Encodes the specified Tile message. Does not implicitly {@link ws.Tile.verify|verify} messages.
          * @function encode
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @static
-         * @param {ws.IToken} message Token message or plain object to encode
+         * @param {ws.ITile} message Tile message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        Token.encode = function encode(message, writer) {
+        Tile.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.row != null && Object.hasOwnProperty.call(message, "row"))
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.row);
             if (message.column != null && Object.hasOwnProperty.call(message, "column"))
                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.column);
-            if (message.playerID != null && Object.hasOwnProperty.call(message, "playerID"))
-                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.playerID);
+            if (message.token != null && Object.hasOwnProperty.call(message, "token"))
+                $root.models.Token.encode(message.token, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             return writer;
         };
 
         /**
-         * Encodes the specified Token message, length delimited. Does not implicitly {@link ws.Token.verify|verify} messages.
+         * Encodes the specified Tile message, length delimited. Does not implicitly {@link ws.Tile.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @static
-         * @param {ws.IToken} message Token message or plain object to encode
+         * @param {ws.ITile} message Tile message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        Token.encodeDelimited = function encodeDelimited(message, writer) {
+        Tile.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a Token message from the specified reader or buffer.
+         * Decodes a Tile message from the specified reader or buffer.
          * @function decode
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {ws.Token} Token
+         * @returns {ws.Tile} Tile
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        Token.decode = function decode(reader, length, error, long) {
+        Tile.decode = function decode(reader, length, error, long) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             if (long === undefined)
                 long = 0;
             if (long > $Reader.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.Token();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.Tile();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 if (tag === error)
@@ -7014,7 +7377,7 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 3: {
-                        message.playerID = reader.int32();
+                        message.token = $root.models.Token.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 default:
@@ -7026,151 +7389,138 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Decodes a Token message from the specified reader or buffer, length delimited.
+         * Decodes a Tile message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.Token} Token
+         * @returns {ws.Tile} Tile
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        Token.decodeDelimited = function decodeDelimited(reader) {
+        Tile.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a Token message.
+         * Verifies a Tile message.
          * @function verify
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        Token.verify = function verify(message, long) {
+        Tile.verify = function verify(message, long) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (long === undefined)
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
+            let properties = {};
             if (message.row != null && message.hasOwnProperty("row"))
                 if (!$util.isInteger(message.row))
                     return "row: integer expected";
             if (message.column != null && message.hasOwnProperty("column"))
                 if (!$util.isInteger(message.column))
                     return "column: integer expected";
-            if (message.playerID != null && message.hasOwnProperty("playerID"))
-                switch (message.playerID) {
-                default:
-                    return "playerID: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                    break;
+            if (message.token != null && message.hasOwnProperty("token")) {
+                properties._token = 1;
+                {
+                    let error = $root.models.Token.verify(message.token, long + 1);
+                    if (error)
+                        return "token." + error;
                 }
+            }
             return null;
         };
 
         /**
-         * Creates a Token message from a plain object. Also converts values to their respective internal types.
+         * Creates a Tile message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {ws.Token} Token
+         * @returns {ws.Tile} Tile
          */
-        Token.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.Token)
+        Tile.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.Tile)
                 return object;
             if (long === undefined)
                 long = 0;
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.Token();
+            let message = new $root.ws.Tile();
             if (object.row != null)
                 message.row = object.row | 0;
             if (object.column != null)
                 message.column = object.column | 0;
-            switch (object.playerID) {
-            default:
-                if (typeof object.playerID === "number") {
-                    message.playerID = object.playerID;
-                    break;
-                }
-                break;
-            case "PLAYER_IDS_UNSPECIFIED":
-            case 0:
-                message.playerID = 0;
-                break;
-            case "PLAYER_IDS_PLAYER1":
-            case 1:
-                message.playerID = 1;
-                break;
-            case "PLAYER_IDS_PLAYER2":
-            case 2:
-                message.playerID = 2;
-                break;
+            if (object.token != null) {
+                if (typeof object.token !== "object")
+                    throw TypeError(".ws.Tile.token: object expected");
+                message.token = $root.models.Token.fromObject(object.token, long + 1);
             }
             return message;
         };
 
         /**
-         * Creates a plain object from a Token message. Also converts values to other types if specified.
+         * Creates a plain object from a Tile message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @static
-         * @param {ws.Token} message Token
+         * @param {ws.Tile} message Tile
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        Token.toObject = function toObject(message, options) {
+        Tile.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
             if (options.defaults) {
                 object.row = 0;
                 object.column = 0;
-                object.playerID = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
             }
             if (message.row != null && message.hasOwnProperty("row"))
                 object.row = message.row;
             if (message.column != null && message.hasOwnProperty("column"))
                 object.column = message.column;
-            if (message.playerID != null && message.hasOwnProperty("playerID"))
-                object.playerID = options.enums === String ? $root.shared.PlayerIDs[message.playerID] === undefined ? message.playerID : $root.shared.PlayerIDs[message.playerID] : message.playerID;
+            if (message.token != null && message.hasOwnProperty("token")) {
+                object.token = $root.models.Token.toObject(message.token, options);
+                if (options.oneofs)
+                    object._token = "token";
+            }
             return object;
         };
 
         /**
-         * Converts this Token to JSON.
+         * Converts this Tile to JSON.
          * @function toJSON
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        Token.prototype.toJSON = function toJSON() {
+        Tile.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for Token
+         * Gets the default type url for Tile
          * @function getTypeUrl
-         * @memberof ws.Token
+         * @memberof ws.Tile
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        Token.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        Tile.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/ws.Token";
+            return typeUrlPrefix + "/ws.Tile";
         };
 
-        return Token;
+        return Tile;
     })();
 
     ws.GameEnd = (function() {
@@ -7180,7 +7530,7 @@ export const ws = $root.ws = (() => {
          * @memberof ws
          * @interface IGameEnd
          * @property {ws.GameEndTypes|null} [endType] GameEnd endType
-         * @property {ws.IToken|null} [token] GameEnd token
+         * @property {ws.ITile|null} [tile] GameEnd tile
          * @property {models.IPartialUser|null} [winner] GameEnd winner
          * @property {models.IPartialUser|null} [loser] GameEnd loser
          */
@@ -7209,12 +7559,12 @@ export const ws = $root.ws = (() => {
         GameEnd.prototype.endType = 0;
 
         /**
-         * GameEnd token.
-         * @member {ws.IToken|null|undefined} token
+         * GameEnd tile.
+         * @member {ws.ITile|null|undefined} tile
          * @memberof ws.GameEnd
          * @instance
          */
-        GameEnd.prototype.token = null;
+        GameEnd.prototype.tile = null;
 
         /**
          * GameEnd winner.
@@ -7236,8 +7586,8 @@ export const ws = $root.ws = (() => {
         let $oneOfFields;
 
         // Virtual OneOf for proto3 optional field
-        Object.defineProperty(GameEnd.prototype, "_token", {
-            get: $util.oneOfGetter($oneOfFields = ["token"]),
+        Object.defineProperty(GameEnd.prototype, "_tile", {
+            get: $util.oneOfGetter($oneOfFields = ["tile"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -7279,8 +7629,8 @@ export const ws = $root.ws = (() => {
                 writer = $Writer.create();
             if (message.endType != null && Object.hasOwnProperty.call(message, "endType"))
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.endType);
-            if (message.token != null && Object.hasOwnProperty.call(message, "token"))
-                $root.ws.Token.encode(message.token, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.tile != null && Object.hasOwnProperty.call(message, "tile"))
+                $root.ws.Tile.encode(message.tile, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.winner != null && Object.hasOwnProperty.call(message, "winner"))
                 $root.models.PartialUser.encode(message.winner, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.loser != null && Object.hasOwnProperty.call(message, "loser"))
@@ -7330,7 +7680,7 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 2: {
-                        message.token = $root.ws.Token.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.tile = $root.ws.Tile.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 case 3: {
@@ -7391,12 +7741,12 @@ export const ws = $root.ws = (() => {
                 case 3:
                     break;
                 }
-            if (message.token != null && message.hasOwnProperty("token")) {
-                properties._token = 1;
+            if (message.tile != null && message.hasOwnProperty("tile")) {
+                properties._tile = 1;
                 {
-                    let error = $root.ws.Token.verify(message.token, long + 1);
+                    let error = $root.ws.Tile.verify(message.tile, long + 1);
                     if (error)
-                        return "token." + error;
+                        return "tile." + error;
                 }
             }
             if (message.winner != null && message.hasOwnProperty("winner")) {
@@ -7458,10 +7808,10 @@ export const ws = $root.ws = (() => {
                 message.endType = 3;
                 break;
             }
-            if (object.token != null) {
-                if (typeof object.token !== "object")
-                    throw TypeError(".ws.GameEnd.token: object expected");
-                message.token = $root.ws.Token.fromObject(object.token, long + 1);
+            if (object.tile != null) {
+                if (typeof object.tile !== "object")
+                    throw TypeError(".ws.GameEnd.tile: object expected");
+                message.tile = $root.ws.Tile.fromObject(object.tile, long + 1);
             }
             if (object.winner != null) {
                 if (typeof object.winner !== "object")
@@ -7493,10 +7843,10 @@ export const ws = $root.ws = (() => {
                 object.endType = options.enums === String ? "GAME_END_TYPES_UNSPECIFIED" : 0;
             if (message.endType != null && message.hasOwnProperty("endType"))
                 object.endType = options.enums === String ? $root.ws.GameEndTypes[message.endType] === undefined ? message.endType : $root.ws.GameEndTypes[message.endType] : message.endType;
-            if (message.token != null && message.hasOwnProperty("token")) {
-                object.token = $root.ws.Token.toObject(message.token, options);
+            if (message.tile != null && message.hasOwnProperty("tile")) {
+                object.tile = $root.ws.Tile.toObject(message.tile, options);
                 if (options.oneofs)
-                    object._token = "token";
+                    object._tile = "tile";
             }
             if (message.winner != null && message.hasOwnProperty("winner")) {
                 object.winner = $root.models.PartialUser.toObject(message.winner, options);
@@ -7546,7 +7896,7 @@ export const ws = $root.ws = (() => {
          * Properties of a GameMove.
          * @memberof ws
          * @interface IGameMove
-         * @property {ws.IToken|null} [token] GameMove token
+         * @property {ws.ITile|null} [tile] GameMove tile
          * @property {shared.IGameBoard|null} [board] GameMove board
          * @property {shared.PlayerIDs|null} [turn] GameMove turn
          */
@@ -7567,12 +7917,12 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * GameMove token.
-         * @member {ws.IToken|null|undefined} token
+         * GameMove tile.
+         * @member {ws.ITile|null|undefined} tile
          * @memberof ws.GameMove
          * @instance
          */
-        GameMove.prototype.token = null;
+        GameMove.prototype.tile = null;
 
         /**
          * GameMove board.
@@ -7614,8 +7964,8 @@ export const ws = $root.ws = (() => {
         GameMove.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.token != null && Object.hasOwnProperty.call(message, "token"))
-                $root.ws.Token.encode(message.token, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.tile != null && Object.hasOwnProperty.call(message, "tile"))
+                $root.ws.Tile.encode(message.tile, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             if (message.board != null && Object.hasOwnProperty.call(message, "board"))
                 $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.turn != null && Object.hasOwnProperty.call(message, "turn"))
@@ -7661,7 +8011,7 @@ export const ws = $root.ws = (() => {
                     break;
                 switch (tag >>> 3) {
                 case 1: {
-                        message.token = $root.ws.Token.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.tile = $root.ws.Tile.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 case 2: {
@@ -7711,10 +8061,10 @@ export const ws = $root.ws = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            if (message.token != null && message.hasOwnProperty("token")) {
-                let error = $root.ws.Token.verify(message.token, long + 1);
+            if (message.tile != null && message.hasOwnProperty("tile")) {
+                let error = $root.ws.Tile.verify(message.tile, long + 1);
                 if (error)
-                    return "token." + error;
+                    return "tile." + error;
             }
             if (message.board != null && message.hasOwnProperty("board")) {
                 let error = $root.shared.GameBoard.verify(message.board, long + 1);
@@ -7749,10 +8099,10 @@ export const ws = $root.ws = (() => {
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
             let message = new $root.ws.GameMove();
-            if (object.token != null) {
-                if (typeof object.token !== "object")
-                    throw TypeError(".ws.GameMove.token: object expected");
-                message.token = $root.ws.Token.fromObject(object.token, long + 1);
+            if (object.tile != null) {
+                if (typeof object.tile !== "object")
+                    throw TypeError(".ws.GameMove.tile: object expected");
+                message.tile = $root.ws.Tile.fromObject(object.tile, long + 1);
             }
             if (object.board != null) {
                 if (typeof object.board !== "object")
@@ -7796,12 +8146,12 @@ export const ws = $root.ws = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.token = null;
+                object.tile = null;
                 object.board = null;
                 object.turn = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
             }
-            if (message.token != null && message.hasOwnProperty("token"))
-                object.token = $root.ws.Token.toObject(message.token, options);
+            if (message.tile != null && message.hasOwnProperty("tile"))
+                object.tile = $root.ws.Tile.toObject(message.tile, options);
             if (message.board != null && message.hasOwnProperty("board"))
                 object.board = $root.shared.GameBoard.toObject(message.board, options);
             if (message.turn != null && message.hasOwnProperty("turn"))

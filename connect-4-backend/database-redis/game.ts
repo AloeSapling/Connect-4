@@ -1,5 +1,5 @@
 import { redis } from '../app.ts';
-import { GAME_COLUMNS, GAME_EXPIRY_TIME, GAME_ROWS, LOBBY_KEEP_ALIVE_TIME } from '../config.ts';
+import { GAME_COLUMNS, GAME_ROWS, LOBBY_KEEP_ALIVE_TIME } from '../config.ts';
 import {
     CodedError,
     P_ErrorCodes,

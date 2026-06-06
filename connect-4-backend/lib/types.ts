@@ -5,22 +5,18 @@ import * as proto from './proto.js';
 import type { IncomingMessage } from 'http';
 
 // Protobuf type and value aliases
-/** Alias for equivalent protobuf type */
-export type TPlayerTypes = proto.shared.PlayerTypes;
-/** Alias for equivalent protobuf type */
-export type TPlayerIDs = proto.shared.PlayerIDs;
-/** Alias for equivalent protobuf type */
-export type TErrorCodes = proto.shared.ErrorCodes;
-/** Alias for equivalent protobuf type */
-export type TCodedError = proto.shared.CodedError;
 
-/** Alias for equivalent protobuf value */
+/** Aliases for equivalent protobuf types */
+export type TPlayerTypes = proto.shared.PlayerTypes;
+export type TPlayerIDs = proto.shared.PlayerIDs;
+export type TErrorCodes = proto.shared.ErrorCodes;
+export type TCodedError = proto.shared.CodedError;
+export type TTokenTypes = proto.models.TokenTypes;
+
+/** Aliases for equivalent protobuf values */
 export const P_PlayerTypes = proto.shared.PlayerTypes;
-/** Alias for equivalent protobuf value */
 export const P_PlayerIDs = proto.shared.PlayerIDs;
-/** Alias for equivalent protobuf value */
 export const P_ErrorCodes = proto.shared.ErrorCodes;
-/** Alias for equivalent protobuf value */
 export const P_CodedError = proto.shared.CodedError;
 
 // Game types
@@ -35,6 +31,8 @@ export type GameState = {
     board: GameBoard;
     turn: TPlayerIDs;
 };
+
+export type WinCheckFunction = (count: number, playerID: TPlayerIDs) => void;
 
 // Websocket types
 export type WsArgs = {

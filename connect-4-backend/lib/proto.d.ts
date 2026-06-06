@@ -1492,6 +1492,123 @@ export namespace models {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** TokenTypes enum. */
+    enum TokenTypes {
+        TOKEN_TYPES_UNSPECIFIED = 0,
+        TOKEN_TYPES_STANDARD = 1,
+        TOKEN_TYPES_NEGATIVE = 2,
+        TOKEN_TYPES_AURA = 3,
+        TOKEN_TYPES_BOMB = 4,
+        TOKEN_TYPES_SPLIT = 5,
+        TOKEN_TYPES_FREEZE = 6,
+        TOKEN_TYPES_BURN = 7,
+        TOKEN_TYPES_REVERSE = 8,
+        TOKEN_TYPES_DOUBLE = 9
+    }
+
+    /** Properties of a Token. */
+    interface IToken {
+
+        /** Token playerId */
+        playerId?: (shared.PlayerIDs|null);
+
+        /** Token tokenType */
+        tokenType?: (models.TokenTypes|null);
+    }
+
+    /** Represents a Token. */
+    class Token implements IToken {
+
+        /**
+         * Constructs a new Token.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.IToken);
+
+        /** Token playerId. */
+        public playerId: shared.PlayerIDs;
+
+        /** Token tokenType. */
+        public tokenType: models.TokenTypes;
+
+        /**
+         * Creates a new Token instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Token instance
+         */
+        public static create(properties?: models.IToken): models.Token;
+
+        /**
+         * Encodes the specified Token message. Does not implicitly {@link models.Token.verify|verify} messages.
+         * @param message Token message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Token message, length delimited. Does not implicitly {@link models.Token.verify|verify} messages.
+         * @param message Token message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Token message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.Token;
+
+        /**
+         * Decodes a Token message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.Token;
+
+        /**
+         * Verifies a Token message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Token message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Token
+         */
+        public static fromObject(object: { [k: string]: any }): models.Token;
+
+        /**
+         * Creates a plain object from a Token message. Also converts values to other types if specified.
+         * @param message Token
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.Token, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Token to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Token
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a Lobby. */
     interface ILobby {
 
@@ -2745,109 +2862,109 @@ export namespace ws {
         GAME_END_TYPES_DRAW = 3
     }
 
-    /** Properties of a Token. */
-    interface IToken {
+    /** Properties of a Tile. */
+    interface ITile {
 
-        /** Token row */
+        /** Tile row */
         row?: (number|null);
 
-        /** Token column */
+        /** Tile column */
         column?: (number|null);
 
-        /** Token playerID */
-        playerID?: (shared.PlayerIDs|null);
+        /** Tile token */
+        token?: (models.IToken|null);
     }
 
-    /** Represents a Token. */
-    class Token implements IToken {
+    /** Represents a Tile. */
+    class Tile implements ITile {
 
         /**
-         * Constructs a new Token.
+         * Constructs a new Tile.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IToken);
+        constructor(properties?: ws.ITile);
 
-        /** Token row. */
+        /** Tile row. */
         public row: number;
 
-        /** Token column. */
+        /** Tile column. */
         public column: number;
 
-        /** Token playerID. */
-        public playerID: shared.PlayerIDs;
+        /** Tile token. */
+        public token?: (models.IToken|null);
 
         /**
-         * Creates a new Token instance using the specified properties.
+         * Creates a new Tile instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns Token instance
+         * @returns Tile instance
          */
-        public static create(properties?: ws.IToken): ws.Token;
+        public static create(properties?: ws.ITile): ws.Tile;
 
         /**
-         * Encodes the specified Token message. Does not implicitly {@link ws.Token.verify|verify} messages.
-         * @param message Token message or plain object to encode
+         * Encodes the specified Tile message. Does not implicitly {@link ws.Tile.verify|verify} messages.
+         * @param message Tile message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.ITile, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified Token message, length delimited. Does not implicitly {@link ws.Token.verify|verify} messages.
-         * @param message Token message or plain object to encode
+         * Encodes the specified Tile message, length delimited. Does not implicitly {@link ws.Tile.verify|verify} messages.
+         * @param message Tile message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.ITile, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a Token message from the specified reader or buffer.
+         * Decodes a Tile message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns Token
+         * @returns Tile
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.Token;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.Tile;
 
         /**
-         * Decodes a Token message from the specified reader or buffer, length delimited.
+         * Decodes a Tile message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns Token
+         * @returns Tile
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.Token;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.Tile;
 
         /**
-         * Verifies a Token message.
+         * Verifies a Tile message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a Token message from a plain object. Also converts values to their respective internal types.
+         * Creates a Tile message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns Token
+         * @returns Tile
          */
-        public static fromObject(object: { [k: string]: any }): ws.Token;
+        public static fromObject(object: { [k: string]: any }): ws.Tile;
 
         /**
-         * Creates a plain object from a Token message. Also converts values to other types if specified.
-         * @param message Token
+         * Creates a plain object from a Tile message. Also converts values to other types if specified.
+         * @param message Tile
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.Token, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.Tile, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this Token to JSON.
+         * Converts this Tile to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for Token
+         * Gets the default type url for Tile
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -2860,8 +2977,8 @@ export namespace ws {
         /** GameEnd endType */
         endType?: (ws.GameEndTypes|null);
 
-        /** GameEnd token */
-        token?: (ws.IToken|null);
+        /** GameEnd tile */
+        tile?: (ws.ITile|null);
 
         /** GameEnd winner */
         winner?: (models.IPartialUser|null);
@@ -2882,8 +2999,8 @@ export namespace ws {
         /** GameEnd endType. */
         public endType: ws.GameEndTypes;
 
-        /** GameEnd token. */
-        public token?: (ws.IToken|null);
+        /** GameEnd tile. */
+        public tile?: (ws.ITile|null);
 
         /** GameEnd winner. */
         public winner?: (models.IPartialUser|null);
@@ -2972,8 +3089,8 @@ export namespace ws {
     /** Properties of a GameMove. */
     interface IGameMove {
 
-        /** GameMove token */
-        token?: (ws.IToken|null);
+        /** GameMove tile */
+        tile?: (ws.ITile|null);
 
         /** GameMove board */
         board?: (shared.IGameBoard|null);
@@ -2991,8 +3108,8 @@ export namespace ws {
          */
         constructor(properties?: ws.IGameMove);
 
-        /** GameMove token. */
-        public token?: (ws.IToken|null);
+        /** GameMove tile. */
+        public tile?: (ws.ITile|null);
 
         /** GameMove board. */
         public board?: (shared.IGameBoard|null);
