@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 export const GAME_COLUMNS = 7 as const;
 export const GAME_ROWS = 6 as const;
-export const GAME_WIN_LENGTH = 4 as const; // Amount of consecutive tiles needed to win
+export const GAME_WIN_COUNT = 4 as const; // Amount of consecutive tiles needed to win
 
 export const DEFAULT_TURN_TIME = 300 as const; // 5 minutes (60 seconds * 5)
 
