@@ -2991,6 +2991,9 @@ export namespace ws {
 
         /** GameEnd loser */
         loser?: (models.IPartialUser|null);
+
+        /** GameEnd board */
+        board?: (shared.IGameBoard|null);
     }
 
     /** Represents a GameEnd. */
@@ -3013,6 +3016,9 @@ export namespace ws {
 
         /** GameEnd loser. */
         public loser?: (models.IPartialUser|null);
+
+        /** GameEnd board. */
+        public board?: (shared.IGameBoard|null);
 
         /**
          * Creates a new GameEnd instance using the specified properties.

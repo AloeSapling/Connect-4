@@ -29,7 +29,7 @@ export type GameData = {
     turn: TPlayerIDs;
 };
 
-export type GameStates = 'NOT_FINISHED' | 'WON' | 'DRAW';
+export type GameStates = 'NOT_FINISHED' | 'WIN' | 'DRAW';
 
 // Websocket types
 export type WsArgs = {

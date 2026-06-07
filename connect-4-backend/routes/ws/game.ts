@@ -9,10 +9,11 @@ import {
     P_ErrorCodes,
     type WsArgs,
 } from '../../lib/types.ts';
-import { getPlayerID } from '../../database-sqllite/lobbyMembers.ts';
+import { getPartialUserDataByPlayerID, getPlayerID } from '../../database-sqllite/lobbyMembers.ts';
 import { broadcastToRoom } from '../../lib/lib.ts';
 import { TileChecker } from '../../lib/game.ts';
 import { ws as p_ws } from '../../lib/proto.js';
+import { boardDataToProtobufBoard, checkGameState, getNextPlayer } from '../../lib/game/lib.ts';
 
 type GameWebSocket = WebSocket & { lobbyCode?: string; playerID?: TPlayerIDs };
 
@@ -101,8 +102,15 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
             const packet = p_ws.GamePacket.decode(new Uint8Array(data as Buffer));
 
             switch (packet.action) {
-                case p_ws.GameActions.GAME_ACTIONS_INSERT_TILE: {
-                    if (packet.insertTile?.column === null || packet.insertTile?.column === undefined) {
+                case p_ws.GameActions.GAME_ACTIONS_INSERT_TOKEN: {
+                    // Validation
+                    if (
+                        !packet.insertToken ||
+                        packet.insertToken.column === null ||
+                        packet.insertToken.column === undefined ||
+                        packet.insertToken.tokenType === null ||
+                        packet.insertToken.tokenType === undefined
+                    ) {
                         ws.send(
                             wsEncode({
                                 response: p_ws.GameResponses.GAME_RESPONSES_ERROR,
@@ -115,17 +123,26 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                     }
 
                     try {
-                        const column = packet.insertTile!.column;
+                        // Get data from the packet
+                        const column = packet.insertToken.column;
+                        const tokenType = packet.insertToken.tokenType;
 
-                        const row = await gameRedis.insertTile(lobbyCode, wsPlayerID, column);
+                        const row = await gameRedis.insertToken(lobbyCode, column, wsPlayerID, tokenType);
 
-                        const gameState = await gameRedis.getGameState(lobbyCode);
+                        const gameData = await gameRedis.getGameData(lobbyCode);
 
-                        const tileChecker = new TileChecker(gameState.board, column, row);
+                        // Format the game's board to be sent to the client
+                        const protoBoard = boardDataToProtobufBoard(gameData.board);
 
-                        // Check for a win
-                        if (tileChecker.checkForWin()) {
+                        // Check for wins and draws
+                        const gameState = checkGameState(gameData.board);
+
+                        // Handle a win
+                        if (gameState.state === 'WIN' && gameState.winner) {
                             await gameRedis.endGame(lobbyCode);
+
+                            const winnerData = await getPartialUserDataByPlayerID(lobbyCode, gameState.winner);
+                            const loserData = await getPartialUserDataByPlayerID(lobbyCode, getNextPlayer(gameState.winner));
 
                             broadcastToRoom(
                                 rooms[lobbyCode],
@@ -133,15 +150,17 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                     response: p_ws.GameResponses.GAME_RESPONSES_END,
                                     end: {
                                         endType: p_ws.GameEndTypes.GAME_END_TYPES_STANDARD_WIN,
-                                        token: {
+                                        tile: {
                                             row: row,
                                             column: column,
-                                            playerID: wsPlayerID,
+                                            token: {
+                                                playerId: wsPlayerID,
+                                                tokenType: tokenType,
+                                            },
                                         },
-                                        winner: {
-                                            id: reqUser.id,
-                                            username: reqUser.username,
-                                        },
+                                        board: protoBoard,
+                                        winner: winnerData,
+                                        loser: loserData,
                                     },
                                 })
                             );
@@ -150,7 +169,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                         }
 
                         // Check for draws
-                        if (TileChecker.checkForDraw(gameState.board)) {
+                        if (gameState.state === 'DRAW') {
                             await gameRedis.endGame(lobbyCode);
 
                             broadcastToRoom(
@@ -159,11 +178,15 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                     response: p_ws.GameResponses.GAME_RESPONSES_END,
                                     end: {
                                         endType: p_ws.GameEndTypes.GAME_END_TYPES_DRAW,
-                                        token: {
+                                        tile: {
                                             row: row,
                                             column: column,
-                                            playerID: wsPlayerID,
+                                            token: {
+                                                playerId: wsPlayerID,
+                                                tokenType: tokenType,
+                                            },
                                         },
+                                        board: protoBoard,
                                     },
                                 })
                             );
@@ -175,13 +198,16 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                             wsEncode({
                                 response: p_ws.GameResponses.GAME_RESPONSES_MOVE,
                                 move: {
-                                    token: {
+                                    tile: {
                                         row: row,
                                         column: column,
-                                        playerID: wsPlayerID,
+                                        token: {
+                                            playerId: wsPlayerID,
+                                            tokenType: tokenType,
+                                        },
                                     },
-                                    board: gameState.board,
-                                    turn: gameState.turn,
+                                    board: protoBoard,
+                                    turn: gameData.turn,
                                 },
                             })
                         );
@@ -190,6 +216,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                             code: (err as CodedError).code,
                             error: (err as CodedError).error.toString(),
                         };
+
                         ws.send(
                             wsEncode({
                                 response: p_ws.GameResponses.GAME_RESPONSES_ERROR,
@@ -220,6 +247,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                             code: (err as CodedError).code,
                             error: (err as CodedError).error.toString(),
                         };
+
                         ws.send(
                             wsEncode({
                                 response: p_ws.GameResponses.GAME_RESPONSES_ERROR,

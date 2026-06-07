@@ -4,9 +4,8 @@ import {
     CodedError,
     P_ErrorCodes,
     P_PlayerIDs,
-    P_TokenTypes,
     type GameBoard,
-    type GameState,
+    type GameData,
     type TPlayerIDs,
     type TTokenTypes,
 } from '../lib/types.ts';
@@ -15,7 +14,6 @@ import type { models } from '../lib/proto.js';
 import Token from '../lib/game/tokens/base.ts';
 import { EmptyToken } from '../lib/game/tokens/empty.ts';
 import { getNextPlayer } from '../lib/game/lib.ts';
-import { StandardToken } from '../lib/game/tokens/regular.ts';
 
 /** The board used when creating a new game */
 const initialBoard: Token[][] = [];
@@ -24,7 +22,7 @@ for (let i = 0; i < GAME_ROWS; i++) {
 }
 
 /** The game state used when creating a new game */
-const initialGameState: GameState = {
+const initialGameData: GameData = {
     board: initialBoard,
     turn: P_PlayerIDs.PLAYER_IDS_PLAYER1,
 };
@@ -37,16 +35,16 @@ export async function createGame(lobbyCode: string, settings: models.ILobbySetti
     if (await gameExists(lobbyCode)) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_ALREADY_EXISTS);
 
     await redis.set(
-        `GameState_${lobbyCode}:board`,
-        JSON.stringify(initialGameState.board) // Set initial board state
+        `GameData_${lobbyCode}:board`,
+        JSON.stringify(initialGameData.board) // Set initial board state
     );
-    await redis.set(`GameState_${lobbyCode}:turn`, initialGameState.turn);
+    await redis.set(`GameData_${lobbyCode}:turn`, initialGameData.turn);
 
     // This entry is used to handle the game expiration logic
     // Games expire when they don't receive any moves for a certain amount of time
     // Letting the game expire on your turn is treated the same as forfeiting
     // The time for each turn is stored inside of the entry so that the expiration can be reset later
-    await redis.set(`GameState_${lobbyCode}:turnTime`, settings.turnTime || 0, {
+    await redis.set(`GameData_${lobbyCode}:turnTime`, settings.turnTime || 0, {
         EX: settings.turnTime || 0, // In seconds
     });
 }
@@ -54,9 +52,9 @@ export async function createGame(lobbyCode: string, settings: models.ILobbySetti
 /** Checks if a game exists for the given lobby */
 export async function gameExists(lobbyCode: string): Promise<boolean> {
     return (
-        Boolean(await redis.exists(`GameState_${lobbyCode}:board`)) &&
-        Boolean(await redis.exists(`GameState_${lobbyCode}:turn`)) &&
-        Boolean(await redis.exists(`GameState_${lobbyCode}:turnTime`))
+        Boolean(await redis.exists(`GameData_${lobbyCode}:board`)) &&
+        Boolean(await redis.exists(`GameData_${lobbyCode}:turn`)) &&
+        Boolean(await redis.exists(`GameData_${lobbyCode}:turnTime`))
     );
 }
 
@@ -68,9 +66,9 @@ export async function gamesExist(lobbyCodes: string[]): Promise<boolean[]> {
     const transaction = redis.multi();
 
     lobbyCodes.forEach((code) => {
-        transaction.exists(`GameState_${code}:board`);
-        transaction.exists(`GameState_${code}:turn`);
-        transaction.exists(`GameState_${code}:turnTime`);
+        transaction.exists(`GameData_${code}:board`);
+        transaction.exists(`GameData_${code}:turn`);
+        transaction.exists(`GameData_${code}:turnTime`);
     });
 
     const results = (await transaction.exec()) as unknown as [Error | null, number][];
@@ -83,9 +81,9 @@ export async function gamesExist(lobbyCodes: string[]): Promise<boolean[]> {
 
 /** Deletes all data associated with the game in the redis storage */
 export async function deleteGame(lobbyCode: string) {
-    await redis.del(`GameState_${lobbyCode}:board`);
-    await redis.del(`GameState_${lobbyCode}:turn`);
-    await redis.del(`GameState_${lobbyCode}:turnTime`);
+    await redis.del(`GameData_${lobbyCode}:board`);
+    await redis.del(`GameData_${lobbyCode}:turn`);
+    await redis.del(`GameData_${lobbyCode}:turnTime`);
 }
 
 /** Deletes the game and starts a timer to delete the associated lobby
@@ -124,9 +122,9 @@ export async function forfeitGame(lobbyCode: string, playerID: TPlayerIDs): Prom
  * @throws Error code "GameExpired" if game wasn't found
  * @throws Error code "ServerError"
  * */
-export async function getGameState(lobbyCode: string): Promise<GameState> {
-    const board = await redis.get(`GameState_${lobbyCode}:board`);
-    const turn = await redis.get(`GameState_${lobbyCode}:turn`);
+export async function getGameData(lobbyCode: string): Promise<GameData> {
+    const board = await redis.get(`GameData_${lobbyCode}:board`);
+    const turn = await redis.get(`GameData_${lobbyCode}:turn`);
 
     if (!board || !turn) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_EXPIRED);
 
@@ -164,11 +162,11 @@ export async function insertToken(
     if (column < 0 || column > GAME_COLUMNS - 1) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
 
     // Watch for changes to implement entry locking
-    await redis.watch(`GameState_${lobbyCode}:board`);
-    await redis.watch(`GameState_${lobbyCode}:turn`);
+    await redis.watch(`GameData_${lobbyCode}:board`);
+    await redis.watch(`GameData_${lobbyCode}:turn`);
 
-    const board = await redis.get(`GameState_${lobbyCode}:board`);
-    const turn = await redis.get(`GameState_${lobbyCode}:turn`);
+    const board = await redis.get(`GameData_${lobbyCode}:board`);
+    const turn = await redis.get(`GameData_${lobbyCode}:turn`);
 
     try {
         /// ** Initial validation
@@ -217,18 +215,18 @@ export async function insertToken(
         const transaction = redis.multi();
 
         try {
-            transaction.set(`GameState_${lobbyCode}:board`, JSON.stringify(boardData));
+            transaction.set(`GameData_${lobbyCode}:board`, JSON.stringify(boardData));
         } catch {
             throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
         }
 
         // Set the next player's turn
         // Sets it to the next playerID in the list of playerIDs. The fallback if something goes wrong is the first element
-        transaction.set(`GameState_${lobbyCode}:turn`, getNextPlayer(playerID));
+        transaction.set(`GameData_${lobbyCode}:turn`, getNextPlayer(playerID));
 
         // Reset the game's expiry timer
-        const turnTime = Number(await redis.get(`GameState_${lobbyCode}:turnTime`)); // The time for each turn is stored inside of the entry
-        transaction.set(`GameState_${lobbyCode}:turnTime`, turnTime || 0, {
+        const turnTime = Number(await redis.get(`GameData_${lobbyCode}:turnTime`)); // The time for each turn is stored inside of the entry
+        transaction.set(`GameData_${lobbyCode}:turnTime`, turnTime || 0, {
             EX: turnTime || 0,
         });
 

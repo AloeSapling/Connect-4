@@ -7574,6 +7574,7 @@ export const ws = $root.ws = (() => {
          * @property {ws.ITile|null} [tile] GameEnd tile
          * @property {models.IPartialUser|null} [winner] GameEnd winner
          * @property {models.IPartialUser|null} [loser] GameEnd loser
+         * @property {shared.IGameBoard|null} [board] GameEnd board
          */
 
         /**
@@ -7623,6 +7624,14 @@ export const ws = $root.ws = (() => {
          */
         GameEnd.prototype.loser = null;
 
+        /**
+         * GameEnd board.
+         * @member {shared.IGameBoard|null|undefined} board
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.board = null;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
@@ -7641,6 +7650,12 @@ export const ws = $root.ws = (() => {
         // Virtual OneOf for proto3 optional field
         Object.defineProperty(GameEnd.prototype, "_loser", {
             get: $util.oneOfGetter($oneOfFields = ["loser"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(GameEnd.prototype, "_board", {
+            get: $util.oneOfGetter($oneOfFields = ["board"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -7676,6 +7691,8 @@ export const ws = $root.ws = (() => {
                 $root.models.PartialUser.encode(message.winner, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.loser != null && Object.hasOwnProperty.call(message, "loser"))
                 $root.models.PartialUser.encode(message.loser, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            if (message.board != null && Object.hasOwnProperty.call(message, "board"))
+                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
             return writer;
         };
 
@@ -7730,6 +7747,10 @@ export const ws = $root.ws = (() => {
                     }
                 case 4: {
                         message.loser = $root.models.PartialUser.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 5: {
+                        message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 default:
@@ -7806,6 +7827,14 @@ export const ws = $root.ws = (() => {
                         return "loser." + error;
                 }
             }
+            if (message.board != null && message.hasOwnProperty("board")) {
+                properties._board = 1;
+                {
+                    let error = $root.shared.GameBoard.verify(message.board, long + 1);
+                    if (error)
+                        return "board." + error;
+                }
+            }
             return null;
         };
 
@@ -7864,6 +7893,11 @@ export const ws = $root.ws = (() => {
                     throw TypeError(".ws.GameEnd.loser: object expected");
                 message.loser = $root.models.PartialUser.fromObject(object.loser, long + 1);
             }
+            if (object.board != null) {
+                if (typeof object.board !== "object")
+                    throw TypeError(".ws.GameEnd.board: object expected");
+                message.board = $root.shared.GameBoard.fromObject(object.board, long + 1);
+            }
             return message;
         };
 
@@ -7898,6 +7932,11 @@ export const ws = $root.ws = (() => {
                 object.loser = $root.models.PartialUser.toObject(message.loser, options);
                 if (options.oneofs)
                     object._loser = "loser";
+            }
+            if (message.board != null && message.hasOwnProperty("board")) {
+                object.board = $root.shared.GameBoard.toObject(message.board, options);
+                if (options.oneofs)
+                    object._board = "board";
             }
             return object;
         };
