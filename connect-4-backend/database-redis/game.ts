@@ -4,22 +4,28 @@ import {
     CodedError,
     P_ErrorCodes,
     P_PlayerIDs,
+    P_TokenTypes,
     type GameBoard,
-    type GameRow,
     type GameState,
     type TPlayerIDs,
+    type TTokenTypes,
 } from '../lib/types.ts';
-import { getNextPlayer } from '../lib/lib.ts';
 import { getPartialUserDataByPlayerID } from '../database-sqllite/lobbyMembers.ts';
 import type { models } from '../lib/proto.js';
+import type Token from '../lib/game/tokens/base.ts';
+import { EmptyToken } from '../lib/game/tokens/empty.ts';
+import { getNextPlayer } from '../lib/game/lib.ts';
+import { StandardToken } from '../lib/game/tokens/regular.ts';
+
+/** The board used when creating a new game */
+const initialBoard: Token[][] = [];
+for (let i = 0; i < GAME_ROWS; i++) {
+    initialBoard[i] = Array.from({ length: GAME_COLUMNS }, () => new EmptyToken());
+}
 
 /** The game state used when creating a new game */
 const initialGameState: GameState = {
-    board: {
-        rows: Array.from({ length: GAME_ROWS }, () => ({
-            columns: Array.from({ length: GAME_COLUMNS }, () => P_PlayerIDs.PLAYER_IDS_UNSPECIFIED),
-        })),
-    },
+    board: initialBoard,
     turn: P_PlayerIDs.PLAYER_IDS_PLAYER1,
 };
 
@@ -137,10 +143,11 @@ export async function getGameState(lobbyCode: string): Promise<GameState> {
     }
 }
 
-/** Takes in the selected column and calculates the game's state after inserting a tile in that column.
+/** Takes in the selected column and calculates the game's state after inserting a token in that column.
  *
  * Automatically calculates which cell it will fall into
- * @param playerID The identifier of the player who performed the move
+ * @param playerID - The identifier of the player who performed the move
+ * @param tokenType - The type of token inserted into the column
  * @returns The row where the tile ended up
  * @throws Error code "BadData" if the column provided is invalid
  * @throws Error code "BadTurn" if it's not this player's turn
@@ -148,7 +155,12 @@ export async function getGameState(lobbyCode: string): Promise<GameState> {
  * @throws Error code "GameLocked"
  * @throws Error code "ServerError"
  * */
-export async function insertTile(lobbyCode: string, playerID: TPlayerIDs, column: number): Promise<number> {
+export async function insertToken(
+    lobbyCode: string,
+    column: number,
+    playerID: TPlayerIDs,
+    tokenType: TTokenTypes
+): Promise<number> {
     if (column < 0 || column > GAME_COLUMNS - 1) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
 
     // Watch for changes to implement entry locking
@@ -179,19 +191,20 @@ export async function insertTile(lobbyCode: string, playerID: TPlayerIDs, column
 
         /// ** Tile insertion logic
 
-        let i = boardData.rows.length - 1;
+        let i = boardData.length;
         // Find the height of the lowest open cell in this column
-        while (i >= 0 && (boardData.rows[i] as GameRow).columns[column] === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED) {
+        while (i >= 0 && boardData[i]?.[column]?.playerID === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED) {
             i--;
         }
         i++; // i is the highest *non*-empty position. Shift it up to the lowest *empty* position
+        let row: Token[] | undefined;
 
-        // i === boardData.length means that there are no empty cells in this column,
+        // i >= boardData.length means that there are no empty cells in this column,
         // This means an invalid input was given, so just exit early
-        if (i === boardData.rows.length || !boardData.rows[i]) throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
+        if (i >= boardData.length || !(row = boardData[i])) throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
 
         // Update the cell
-        (boardData.rows[i] as GameRow).columns[column] = playerID;
+        row[column] = new StandardToken(playerID);
 
         /// **
 
