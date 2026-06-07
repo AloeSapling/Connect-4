@@ -21,16 +21,6 @@ export const P_ErrorCodes = proto.shared.ErrorCodes;
 export const P_CodedError = proto.shared.CodedError;
 export const P_TokenTypes = proto.models.TokenTypes;
 
-// Game types
-export type GameBoard = Token[][];
-
-export type GameData = {
-    board: GameBoard;
-    turn: TPlayerIDs;
-};
-
-export type GameStates = 'NOT_FINISHED' | 'WIN' | 'DRAW';
-
 // Websocket types
 export type WsArgs = {
     req: IncomingMessage & { params?: Record<string, string | undefined> };

@@ -1,16 +1,9 @@
-import {
-    CodedError,
-    P_ErrorCodes,
-    P_PlayerIDs,
-    P_TokenTypes,
-    type GameBoard,
-    type TPlayerIDs,
-    type TTokenTypes,
-} from '../../types.ts';
+import { CodedError, P_ErrorCodes, P_PlayerIDs, P_TokenTypes, type TPlayerIDs, type TTokenTypes } from '../../types.ts';
 import { EmptyToken } from './empty.ts';
 import { StandardToken } from './regular.ts';
-import { DirectionToLine, DirectionVectors, Lines, type TDirections, type TLines } from '../constants.ts';
-import { dir } from 'console';
+import type { GameBoard } from '../gameBoard.ts';
+import { LineObj } from '../lineObj.ts';
+import { DirectionVectors, Lines, LineToDirections, type TDirections, type TLines } from '../types.ts';
 
 export default abstract class Token {
     // ** Public properties
@@ -21,6 +14,15 @@ export default abstract class Token {
             [line]: 1,
         }),
         {} as Record<TLines, number>
+    );
+
+    /** A map of line axis to its index in the GameBoard object (if it exists) */
+    public lines: Record<TLines, number | null> = Lines.reduce(
+        (acc: Record<TLines, number | null>, line: TLines) => ({
+            ...acc,
+            [line]: null,
+        }),
+        {} as Record<TLines, number | null>
     );
 
     public type: TTokenTypes = P_TokenTypes.TOKEN_TYPES_UNSPECIFIED;
@@ -105,12 +107,64 @@ export default abstract class Token {
         }
     }
 
-    /** Private helper function to shorten repeated logic */
-    private performInDirection(
-        gameBoard: GameBoard,
-        func: (token: Token, direction: TDirections) => void,
-        direction: TDirections
-    ) {
+    addSelfToLines(gameBoard: GameBoard) {
+        for (const line of Lines) {
+            this.addSelfToLineObj(gameBoard, line);
+        }
+    }
+
+    addSelfToLineObj(gameBoard: GameBoard, line: TLines) {
+        let lineObj: LineObj | null = null;
+
+        const directions = LineToDirections[line];
+
+        for (const direction of directions) {
+            const offsetCol = this.column + DirectionVectors[direction][0];
+            const offsetRow = this.row + DirectionVectors[direction][1];
+
+            // Bounds checking
+            if (offsetRow < 0 || offsetRow >= gameBoard.tokens.length) continue;
+
+            const tempRow = gameBoard.tokens[offsetRow];
+            // Bounds checking
+            if (!tempRow || offsetCol < 0 || offsetCol >= tempRow.length) continue;
+
+            const offsetToken = tempRow[offsetCol];
+            if (offsetToken && offsetToken.playerID === this.playerID) {
+                const lineObjIdx = offsetToken.lines[line];
+
+                if (lineObjIdx === null && lineObj === null) lineObj = new LineObj(gameBoard, line);
+                else if (lineObjIdx !== null) {
+                    const tempLineObj = gameBoard.lines[lineObjIdx];
+
+                    if (lineObj === null) {
+                        if (tempLineObj) lineObj = tempLineObj;
+                        else lineObj = new LineObj(gameBoard, line);
+                    } else if (tempLineObj) {
+                        lineObj.merge(tempLineObj);
+                    }
+                }
+            }
+        }
+
+        if (lineObj !== null) {
+            lineObj.tokenCoordinates.push([this.column, this.row]);
+
+            // Sort the coordinates from the left-most or bottom-most token. Left-most is prioritised over bottom-most
+            const directionVector = DirectionVectors[directions[0]];
+            lineObj.tokenCoordinates.sort((a, b) => {
+                const val1 = a[0] * directionVector[0] + a[1] * directionVector[1];
+                const val2 = b[0] * directionVector[0] + b[1] * directionVector[1];
+
+                return val2 - val1;
+            });
+
+            this.lines[line] = lineObj.boardIdx;
+        }
+    }
+
+    /** Helper method to shorten repeated logic */
+    performInDirection(gameBoard: GameBoard, func: (token: Token, direction: TDirections) => void, direction: TDirections) {
         let offset = 1;
 
         const directionVector = DirectionVectors[direction];
