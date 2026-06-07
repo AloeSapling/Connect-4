@@ -39,6 +39,9 @@ export default abstract class Token {
     /** The function called whenever the token is removed from its current position */
     abstract remove(gameBoard: GameBoard): void;
 
+    /** The function called whenever a turn ends */
+    abstract tickTurn(gameBoard: GameBoard): void;
+
     /** The function called whenever the token is placed in a new position */
     place(gameBoard: GameBoard, newRow: number, newColumn: number): void {
         // Validation
@@ -143,7 +146,7 @@ export default abstract class Token {
     /** Performs an act..ion on the tiles / tokens in a diagonal line
      * The diagonal goes from North-West to South-East
      * */
-    performOnConsecutiveDiagonalNWSE(gameBoard: GameBoard, func: (token: Token) => void) {
+    performOnConsecutiveDiagonalNWSE(gameBoard: GameBoard, func: (token: Token, direction: TDirections) => void) {
         // From token to NW
         this.performInDirection(gameBoard, func, 'NW');
         // From token to SE
@@ -153,7 +156,7 @@ export default abstract class Token {
     /** Performs an act..ion on the tiles / tokens in a diagonal line
      * The diagonal goes from North-East to South-West
      * */
-    performOnConsecutiveDiagonalNESW(gameBoard: GameBoard, func: (token: Token) => void) {
+    performOnConsecutiveDiagonalNESW(gameBoard: GameBoard, func: (token: Token, direction: TDirections) => void) {
         // From token to NE
         this.performInDirection(gameBoard, func, 'NE');
         // From token to SW
@@ -162,7 +165,7 @@ export default abstract class Token {
 
     /** Performs an act..ion on the tiles / tokens in a horizontal line
      * */
-    performOnConsecutiveHorizontal(gameBoard: GameBoard, func: (token: Token) => void) {
+    performOnConsecutiveHorizontal(gameBoard: GameBoard, func: (token: Token, direction: TDirections) => void) {
         // From token to West
         this.performInDirection(gameBoard, func, 'W');
         // From token to East
@@ -171,7 +174,7 @@ export default abstract class Token {
 
     /** Performs an act..ion on the tiles / tokens in a vertical line
      * */
-    performOnConsecutiveVertical(gameBoard: GameBoard, func: (token: Token) => void) {
+    performOnConsecutiveVertical(gameBoard: GameBoard, func: (token: Token, direction: TDirections) => void) {
         // From token to North
         this.performInDirection(gameBoard, func, 'N');
         // From token to South

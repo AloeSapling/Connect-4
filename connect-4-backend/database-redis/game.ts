@@ -141,6 +141,40 @@ export async function getGameData(lobbyCode: string): Promise<GameData> {
     }
 }
 
+/** Performs all the actions that happen whenever a turn ends */
+async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPlayerIDs) {
+    for (let i = 0; i < gameBoard.length; i++) {
+        for (let j = 0; j < (gameBoard[i]?.length || 0); j++) {
+            gameBoard[i]?.[j]?.tickTurn(gameBoard);
+        }
+    }
+
+    /// ** Redis database update
+
+    // Use a transaction with .exec() to handle locking redis entries
+    const transaction = redis.multi();
+
+    try {
+        transaction.set(`GameData_${lobbyCode}:board`, JSON.stringify(gameBoard));
+    } catch {
+        throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
+    }
+
+    // Set the next player's turn
+    // Sets it to the next playerID in the list of playerIDs. The fallback if something goes wrong is the first element
+    transaction.set(`GameData_${lobbyCode}:turn`, getNextPlayer(currentTurn));
+
+    // Reset the game's expiry timer
+    const turnTime = Number(await redis.get(`GameData_${lobbyCode}:turnTime`)); // The time for each turn is stored inside of the entry
+    transaction.set(`GameData_${lobbyCode}:turnTime`, turnTime || 0, {
+        EX: turnTime || 0,
+    });
+
+    if (transaction.exec() === null) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_LOCKED);
+
+    /// **
+}
+
 /** Takes in the selected column and calculates the game's state after inserting a token in that column.
  *
  * Automatically calculates which cell it will fall into
@@ -195,44 +229,18 @@ export async function insertToken(
             i--;
         }
         i++; // i is the highest *non*-empty position. Shift it up to the lowest *empty* position
-        let row: Token[] | undefined;
 
         // i >= boardData.length means that there are no empty cells in this column,
         // This means an invalid input was given, so just exit early
-        if (i >= boardData.length || !(row = boardData[i])) throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
+        if (i >= boardData.length) throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
 
-        // Create a new token
+        // Create a new token and add it to the game board
         const token = Token.createToken(tokenType, playerID);
+        token.place(boardData, i, column);
 
-        // Update the cell
-        row[column] = token;
+        // **
 
-        /// **
-
-        /// ** Redis database update
-
-        // Use a transaction with .exec() to handle locking redis entries
-        const transaction = redis.multi();
-
-        try {
-            transaction.set(`GameData_${lobbyCode}:board`, JSON.stringify(boardData));
-        } catch {
-            throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
-        }
-
-        // Set the next player's turn
-        // Sets it to the next playerID in the list of playerIDs. The fallback if something goes wrong is the first element
-        transaction.set(`GameData_${lobbyCode}:turn`, getNextPlayer(playerID));
-
-        // Reset the game's expiry timer
-        const turnTime = Number(await redis.get(`GameData_${lobbyCode}:turnTime`)); // The time for each turn is stored inside of the entry
-        transaction.set(`GameData_${lobbyCode}:turnTime`, turnTime || 0, {
-            EX: turnTime || 0,
-        });
-
-        if (transaction.exec() === null) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_LOCKED);
-
-        /// **
+        await endTurn(lobbyCode, boardData, playerID);
 
         return i;
     } finally {
