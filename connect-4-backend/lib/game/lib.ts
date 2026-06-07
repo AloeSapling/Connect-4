@@ -51,8 +51,14 @@ function checkGameState(gameBoard: GameBoard): {
             // Check if any tile is empty
             if (token.type === P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) isFull = false;
 
+            // We only need to know if the *highest* count passes the check
+            const maxCount = Object.values(token.count).reduce((acc, cur) => {
+                if (cur > acc) return cur;
+                return acc;
+            }, 0);
+
             // Check if a token is connected with enough other tokens
-            if (token.count >= GAME_WIN_COUNT) {
+            if (maxCount >= GAME_WIN_COUNT) {
                 // If both players win at the same time then it is considered a draw
                 if (gameState.state === 'WIN' && gameState.winner === token.playerID) {
                     gameState.state = 'DRAW';

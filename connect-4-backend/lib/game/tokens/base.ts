@@ -9,13 +9,23 @@ import {
 } from '../../types.ts';
 import { EmptyToken } from './empty.ts';
 import { StandardToken } from './regular.ts';
-import { DirectionVectors } from '../constants.ts';
+import { DirectionToLine, DirectionVectors, Lines, type TDirections, type TLines } from '../constants.ts';
+import { dir } from 'console';
 
 export default abstract class Token {
-    // Public properties
-    public count: number = 1;
+    // ** Public properties
+    // Initialise all the counts as 1
+    public count: Record<TLines, number> = Lines.reduce(
+        (acc: Record<TLines, number>, line: TLines) => ({
+            ...acc,
+            [line]: 1,
+        }),
+        {} as Record<TLines, number>
+    );
+
     public type: TTokenTypes = P_TokenTypes.TOKEN_TYPES_UNSPECIFIED;
     public playerID: TPlayerIDs = P_PlayerIDs.PLAYER_IDS_UNSPECIFIED;
+    // **
 
     // Private properties
     private row: number = -1;
@@ -45,8 +55,10 @@ export default abstract class Token {
     }
 
     /** Adds to the total count of consecutive tiles */
-    addCount(addedCount: number) {
-        this.count += addedCount;
+    addCount(addedCount: number, direction: TDirections) {
+        const line: TLines = DirectionToLine[direction];
+
+        this.count[line] += addedCount;
     }
 
     /** Moves the token to the new position and handles the count changes appropriately */
@@ -91,12 +103,18 @@ export default abstract class Token {
     }
 
     /** Private helper function to shorten repeated logic */
-    private performInDirection(gameBoard: GameBoard, func: (token: Token) => void, direction: readonly [number, number]) {
+    private performInDirection(
+        gameBoard: GameBoard,
+        func: (token: Token, direction: TDirections) => void,
+        direction: TDirections
+    ) {
         let offset = 1;
+
+        const directionVector = DirectionVectors[direction];
         while (true) {
             // Calculated offset values for the row and column indexes
-            const offsetCol = this.column + direction[0] * offset;
-            const offsetRow = this.row + direction[1] * offset;
+            const offsetCol = this.column + directionVector[0] * offset;
+            const offsetRow = this.row + directionVector[1] * offset;
 
             // Bounds checking
             if (offsetRow < 0 || offsetRow >= gameBoard.length) break;
@@ -116,47 +134,47 @@ export default abstract class Token {
                 // Break when the line is no longer consecutive
                 if (offsetToken.playerID != this.playerID) break;
 
-                func(offsetToken);
+                func(offsetToken, direction);
             }
             offset++;
         }
     }
 
-    /** Performs an action on the tiles / tokens in a diagonal line
+    /** Performs an act..ion on the tiles / tokens in a diagonal line
      * The diagonal goes from North-West to South-East
      * */
     performOnConsecutiveDiagonalNWSE(gameBoard: GameBoard, func: (token: Token) => void) {
         // From token to NW
-        this.performInDirection(gameBoard, func, DirectionVectors.NW);
+        this.performInDirection(gameBoard, func, 'NW');
         // From token to SE
-        this.performInDirection(gameBoard, func, DirectionVectors.SE);
+        this.performInDirection(gameBoard, func, 'SE');
     }
 
-    /** Performs an action on the tiles / tokens in a diagonal line
+    /** Performs an act..ion on the tiles / tokens in a diagonal line
      * The diagonal goes from North-East to South-West
      * */
     performOnConsecutiveDiagonalNESW(gameBoard: GameBoard, func: (token: Token) => void) {
         // From token to NE
-        this.performInDirection(gameBoard, func, DirectionVectors.NE);
+        this.performInDirection(gameBoard, func, 'NE');
         // From token to SW
-        this.performInDirection(gameBoard, func, DirectionVectors.SW);
+        this.performInDirection(gameBoard, func, 'SW');
     }
 
-    /** Performs an action on the tiles / tokens in a horizontal line
+    /** Performs an act..ion on the tiles / tokens in a horizontal line
      * */
     performOnConsecutiveHorizontal(gameBoard: GameBoard, func: (token: Token) => void) {
         // From token to West
-        this.performInDirection(gameBoard, func, DirectionVectors.W);
+        this.performInDirection(gameBoard, func, 'W');
         // From token to East
-        this.performInDirection(gameBoard, func, DirectionVectors.E);
+        this.performInDirection(gameBoard, func, 'E');
     }
 
-    /** Performs an action on the tiles / tokens in a vertical line
+    /** Performs an act..ion on the tiles / tokens in a vertical line
      * */
     performOnConsecutiveVertical(gameBoard: GameBoard, func: (token: Token) => void) {
         // From token to North
-        this.performInDirection(gameBoard, func, DirectionVectors.N);
+        this.performInDirection(gameBoard, func, 'N');
         // From token to South
-        this.performInDirection(gameBoard, func, DirectionVectors.S);
+        this.performInDirection(gameBoard, func, 'S');
     }
 }
