@@ -12,7 +12,7 @@ import {
 } from '../lib/types.ts';
 import { getPartialUserDataByPlayerID } from '../database-sqllite/lobbyMembers.ts';
 import type { models } from '../lib/proto.js';
-import type Token from '../lib/game/tokens/base.ts';
+import Token from '../lib/game/tokens/base.ts';
 import { EmptyToken } from '../lib/game/tokens/empty.ts';
 import { getNextPlayer } from '../lib/game/lib.ts';
 import { StandardToken } from '../lib/game/tokens/regular.ts';
@@ -203,8 +203,11 @@ export async function insertToken(
         // This means an invalid input was given, so just exit early
         if (i >= boardData.length || !(row = boardData[i])) throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
 
+        // Create a new token
+        const token = Token.createToken(tokenType, playerID);
+
         // Update the cell
-        row[column] = new StandardToken(playerID);
+        row[column] = token;
 
         /// **
 

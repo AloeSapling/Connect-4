@@ -1389,109 +1389,6 @@ export namespace models {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a PartialUser. */
-    interface IPartialUser {
-
-        /** PartialUser id */
-        id?: (number|null);
-
-        /** PartialUser username */
-        username?: (string|null);
-    }
-
-    /** Represents a PartialUser. */
-    class PartialUser implements IPartialUser {
-
-        /**
-         * Constructs a new PartialUser.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: models.IPartialUser);
-
-        /** PartialUser id. */
-        public id: number;
-
-        /** PartialUser username. */
-        public username: string;
-
-        /**
-         * Creates a new PartialUser instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns PartialUser instance
-         */
-        public static create(properties?: models.IPartialUser): models.PartialUser;
-
-        /**
-         * Encodes the specified PartialUser message. Does not implicitly {@link models.PartialUser.verify|verify} messages.
-         * @param message PartialUser message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: models.IPartialUser, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified PartialUser message, length delimited. Does not implicitly {@link models.PartialUser.verify|verify} messages.
-         * @param message PartialUser message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: models.IPartialUser, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a PartialUser message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns PartialUser
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.PartialUser;
-
-        /**
-         * Decodes a PartialUser message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns PartialUser
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.PartialUser;
-
-        /**
-         * Verifies a PartialUser message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a PartialUser message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns PartialUser
-         */
-        public static fromObject(object: { [k: string]: any }): models.PartialUser;
-
-        /**
-         * Creates a plain object from a PartialUser message. Also converts values to other types if specified.
-         * @param message PartialUser
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: models.PartialUser, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this PartialUser to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for PartialUser
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
     /** TokenTypes enum. */
     enum TokenTypes {
         TOKEN_TYPES_UNSPECIFIED = 0,
@@ -2057,6 +1954,109 @@ export namespace models {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a PartialUser. */
+    interface IPartialUser {
+
+        /** PartialUser id */
+        id?: (number|null);
+
+        /** PartialUser username */
+        username?: (string|null);
+    }
+
+    /** Represents a PartialUser. */
+    class PartialUser implements IPartialUser {
+
+        /**
+         * Constructs a new PartialUser.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.IPartialUser);
+
+        /** PartialUser id. */
+        public id: number;
+
+        /** PartialUser username. */
+        public username: string;
+
+        /**
+         * Creates a new PartialUser instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns PartialUser instance
+         */
+        public static create(properties?: models.IPartialUser): models.PartialUser;
+
+        /**
+         * Encodes the specified PartialUser message. Does not implicitly {@link models.PartialUser.verify|verify} messages.
+         * @param message PartialUser message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.IPartialUser, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified PartialUser message, length delimited. Does not implicitly {@link models.PartialUser.verify|verify} messages.
+         * @param message PartialUser message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.IPartialUser, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a PartialUser message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns PartialUser
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.PartialUser;
+
+        /**
+         * Decodes a PartialUser message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns PartialUser
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.PartialUser;
+
+        /**
+         * Verifies a PartialUser message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a PartialUser message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns PartialUser
+         */
+        public static fromObject(object: { [k: string]: any }): models.PartialUser;
+
+        /**
+         * Creates a plain object from a PartialUser message. Also converts values to other types if specified.
+         * @param message PartialUser
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.PartialUser, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this PartialUser to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for PartialUser
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a DetailedLobbyMemberData. */
     interface IDetailedLobbyMemberData {
 
@@ -2326,8 +2326,8 @@ export namespace shared {
     /** Properties of a GameRow. */
     interface IGameRow {
 
-        /** GameRow columns */
-        columns?: (shared.PlayerIDs[]|null);
+        /** GameRow tokens */
+        tokens?: (models.IToken[]|null);
     }
 
     /** Represents a GameRow. */
@@ -2339,8 +2339,8 @@ export namespace shared {
          */
         constructor(properties?: shared.IGameRow);
 
-        /** GameRow columns. */
-        public columns: shared.PlayerIDs[];
+        /** GameRow tokens. */
+        public tokens: models.IToken[];
 
         /**
          * Creates a new GameRow instance using the specified properties.
@@ -3089,8 +3089,14 @@ export namespace ws {
     /** Properties of a GameMove. */
     interface IGameMove {
 
-        /** GameMove tile */
-        tile?: (ws.ITile|null);
+        /** GameMove row */
+        row?: (number|null);
+
+        /** GameMove column */
+        column?: (number|null);
+
+        /** GameMove tokenType */
+        tokenType?: (models.TokenTypes|null);
 
         /** GameMove board */
         board?: (shared.IGameBoard|null);
@@ -3108,8 +3114,14 @@ export namespace ws {
          */
         constructor(properties?: ws.IGameMove);
 
-        /** GameMove tile. */
-        public tile?: (ws.ITile|null);
+        /** GameMove row. */
+        public row: number;
+
+        /** GameMove column. */
+        public column: number;
+
+        /** GameMove tokenType. */
+        public tokenType: models.TokenTypes;
 
         /** GameMove board. */
         public board?: (shared.IGameBoard|null);

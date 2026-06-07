@@ -3288,247 +3288,6 @@ export const models = $root.models = (() => {
         return Game;
     })();
 
-    models.PartialUser = (function() {
-
-        /**
-         * Properties of a PartialUser.
-         * @memberof models
-         * @interface IPartialUser
-         * @property {number|null} [id] PartialUser id
-         * @property {string|null} [username] PartialUser username
-         */
-
-        /**
-         * Constructs a new PartialUser.
-         * @memberof models
-         * @classdesc Represents a PartialUser.
-         * @implements IPartialUser
-         * @constructor
-         * @param {models.IPartialUser=} [properties] Properties to set
-         */
-        function PartialUser(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * PartialUser id.
-         * @member {number} id
-         * @memberof models.PartialUser
-         * @instance
-         */
-        PartialUser.prototype.id = 0;
-
-        /**
-         * PartialUser username.
-         * @member {string} username
-         * @memberof models.PartialUser
-         * @instance
-         */
-        PartialUser.prototype.username = "";
-
-        /**
-         * Creates a new PartialUser instance using the specified properties.
-         * @function create
-         * @memberof models.PartialUser
-         * @static
-         * @param {models.IPartialUser=} [properties] Properties to set
-         * @returns {models.PartialUser} PartialUser instance
-         */
-        PartialUser.create = function create(properties) {
-            return new PartialUser(properties);
-        };
-
-        /**
-         * Encodes the specified PartialUser message. Does not implicitly {@link models.PartialUser.verify|verify} messages.
-         * @function encode
-         * @memberof models.PartialUser
-         * @static
-         * @param {models.IPartialUser} message PartialUser message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        PartialUser.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
-                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
-            if (message.username != null && Object.hasOwnProperty.call(message, "username"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.username);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified PartialUser message, length delimited. Does not implicitly {@link models.PartialUser.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof models.PartialUser
-         * @static
-         * @param {models.IPartialUser} message PartialUser message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        PartialUser.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a PartialUser message from the specified reader or buffer.
-         * @function decode
-         * @memberof models.PartialUser
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {models.PartialUser} PartialUser
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        PartialUser.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.PartialUser();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.id = reader.int32();
-                        break;
-                    }
-                case 2: {
-                        message.username = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a PartialUser message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof models.PartialUser
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {models.PartialUser} PartialUser
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        PartialUser.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a PartialUser message.
-         * @function verify
-         * @memberof models.PartialUser
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        PartialUser.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.id != null && message.hasOwnProperty("id"))
-                if (!$util.isInteger(message.id))
-                    return "id: integer expected";
-            if (message.username != null && message.hasOwnProperty("username"))
-                if (!$util.isString(message.username))
-                    return "username: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a PartialUser message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof models.PartialUser
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {models.PartialUser} PartialUser
-         */
-        PartialUser.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.models.PartialUser)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.models.PartialUser();
-            if (object.id != null)
-                message.id = object.id | 0;
-            if (object.username != null)
-                message.username = String(object.username);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a PartialUser message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof models.PartialUser
-         * @static
-         * @param {models.PartialUser} message PartialUser
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        PartialUser.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults) {
-                object.id = 0;
-                object.username = "";
-            }
-            if (message.id != null && message.hasOwnProperty("id"))
-                object.id = message.id;
-            if (message.username != null && message.hasOwnProperty("username"))
-                object.username = message.username;
-            return object;
-        };
-
-        /**
-         * Converts this PartialUser to JSON.
-         * @function toJSON
-         * @memberof models.PartialUser
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        PartialUser.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for PartialUser
-         * @function getTypeUrl
-         * @memberof models.PartialUser
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        PartialUser.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/models.PartialUser";
-        };
-
-        return PartialUser;
-    })();
-
     /**
      * TokenTypes enum.
      * @name models.TokenTypes
@@ -5016,6 +4775,247 @@ export const models = $root.models = (() => {
         return DetailedLobbyData;
     })();
 
+    models.PartialUser = (function() {
+
+        /**
+         * Properties of a PartialUser.
+         * @memberof models
+         * @interface IPartialUser
+         * @property {number|null} [id] PartialUser id
+         * @property {string|null} [username] PartialUser username
+         */
+
+        /**
+         * Constructs a new PartialUser.
+         * @memberof models
+         * @classdesc Represents a PartialUser.
+         * @implements IPartialUser
+         * @constructor
+         * @param {models.IPartialUser=} [properties] Properties to set
+         */
+        function PartialUser(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * PartialUser id.
+         * @member {number} id
+         * @memberof models.PartialUser
+         * @instance
+         */
+        PartialUser.prototype.id = 0;
+
+        /**
+         * PartialUser username.
+         * @member {string} username
+         * @memberof models.PartialUser
+         * @instance
+         */
+        PartialUser.prototype.username = "";
+
+        /**
+         * Creates a new PartialUser instance using the specified properties.
+         * @function create
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.IPartialUser=} [properties] Properties to set
+         * @returns {models.PartialUser} PartialUser instance
+         */
+        PartialUser.create = function create(properties) {
+            return new PartialUser(properties);
+        };
+
+        /**
+         * Encodes the specified PartialUser message. Does not implicitly {@link models.PartialUser.verify|verify} messages.
+         * @function encode
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.IPartialUser} message PartialUser message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        PartialUser.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
+            if (message.username != null && Object.hasOwnProperty.call(message, "username"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.username);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified PartialUser message, length delimited. Does not implicitly {@link models.PartialUser.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.IPartialUser} message PartialUser message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        PartialUser.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a PartialUser message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.PartialUser
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.PartialUser} PartialUser
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        PartialUser.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.PartialUser();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.id = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.username = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a PartialUser message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.PartialUser
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.PartialUser} PartialUser
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        PartialUser.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a PartialUser message.
+         * @function verify
+         * @memberof models.PartialUser
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        PartialUser.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.id != null && message.hasOwnProperty("id"))
+                if (!$util.isInteger(message.id))
+                    return "id: integer expected";
+            if (message.username != null && message.hasOwnProperty("username"))
+                if (!$util.isString(message.username))
+                    return "username: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a PartialUser message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.PartialUser
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.PartialUser} PartialUser
+         */
+        PartialUser.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.PartialUser)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.PartialUser();
+            if (object.id != null)
+                message.id = object.id | 0;
+            if (object.username != null)
+                message.username = String(object.username);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a PartialUser message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.PartialUser} message PartialUser
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        PartialUser.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.id = 0;
+                object.username = "";
+            }
+            if (message.id != null && message.hasOwnProperty("id"))
+                object.id = message.id;
+            if (message.username != null && message.hasOwnProperty("username"))
+                object.username = message.username;
+            return object;
+        };
+
+        /**
+         * Converts this PartialUser to JSON.
+         * @function toJSON
+         * @memberof models.PartialUser
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        PartialUser.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for PartialUser
+         * @function getTypeUrl
+         * @memberof models.PartialUser
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        PartialUser.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.PartialUser";
+        };
+
+        return PartialUser;
+    })();
+
     models.DetailedLobbyMemberData = (function() {
 
         /**
@@ -5805,7 +5805,7 @@ export const shared = $root.shared = (() => {
          * Properties of a GameRow.
          * @memberof shared
          * @interface IGameRow
-         * @property {Array.<shared.PlayerIDs>|null} [columns] GameRow columns
+         * @property {Array.<models.IToken>|null} [tokens] GameRow tokens
          */
 
         /**
@@ -5817,7 +5817,7 @@ export const shared = $root.shared = (() => {
          * @param {shared.IGameRow=} [properties] Properties to set
          */
         function GameRow(properties) {
-            this.columns = [];
+            this.tokens = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -5825,12 +5825,12 @@ export const shared = $root.shared = (() => {
         }
 
         /**
-         * GameRow columns.
-         * @member {Array.<shared.PlayerIDs>} columns
+         * GameRow tokens.
+         * @member {Array.<models.IToken>} tokens
          * @memberof shared.GameRow
          * @instance
          */
-        GameRow.prototype.columns = $util.emptyArray;
+        GameRow.prototype.tokens = $util.emptyArray;
 
         /**
          * Creates a new GameRow instance using the specified properties.
@@ -5856,12 +5856,9 @@ export const shared = $root.shared = (() => {
         GameRow.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.columns != null && message.columns.length) {
-                writer.uint32(/* id 1, wireType 2 =*/10).fork();
-                for (let i = 0; i < message.columns.length; ++i)
-                    writer.int32(message.columns[i]);
-                writer.ldelim();
-            }
+            if (message.tokens != null && message.tokens.length)
+                for (let i = 0; i < message.tokens.length; ++i)
+                    $root.models.Token.encode(message.tokens[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             return writer;
         };
 
@@ -5903,14 +5900,9 @@ export const shared = $root.shared = (() => {
                     break;
                 switch (tag >>> 3) {
                 case 1: {
-                        if (!(message.columns && message.columns.length))
-                            message.columns = [];
-                        if ((tag & 7) === 2) {
-                            let end2 = reader.uint32() + reader.pos;
-                            while (reader.pos < end2)
-                                message.columns.push(reader.int32());
-                        } else
-                            message.columns.push(reader.int32());
+                        if (!(message.tokens && message.tokens.length))
+                            message.tokens = [];
+                        message.tokens.push($root.models.Token.decode(reader, reader.uint32(), undefined, long + 1));
                         break;
                     }
                 default:
@@ -5952,18 +5944,14 @@ export const shared = $root.shared = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            if (message.columns != null && message.hasOwnProperty("columns")) {
-                if (!Array.isArray(message.columns))
-                    return "columns: array expected";
-                for (let i = 0; i < message.columns.length; ++i)
-                    switch (message.columns[i]) {
-                    default:
-                        return "columns: enum value[] expected";
-                    case 0:
-                    case 1:
-                    case 2:
-                        break;
-                    }
+            if (message.tokens != null && message.hasOwnProperty("tokens")) {
+                if (!Array.isArray(message.tokens))
+                    return "tokens: array expected";
+                for (let i = 0; i < message.tokens.length; ++i) {
+                    let error = $root.models.Token.verify(message.tokens[i], long + 1);
+                    if (error)
+                        return "tokens." + error;
+                }
             }
             return null;
         };
@@ -5984,30 +5972,15 @@ export const shared = $root.shared = (() => {
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
             let message = new $root.shared.GameRow();
-            if (object.columns) {
-                if (!Array.isArray(object.columns))
-                    throw TypeError(".shared.GameRow.columns: array expected");
-                message.columns = [];
-                for (let i = 0; i < object.columns.length; ++i)
-                    switch (object.columns[i]) {
-                    default:
-                        if (typeof object.columns[i] === "number") {
-                            message.columns[i] = object.columns[i];
-                            break;
-                        }
-                    case "PLAYER_IDS_UNSPECIFIED":
-                    case 0:
-                        message.columns[i] = 0;
-                        break;
-                    case "PLAYER_IDS_PLAYER1":
-                    case 1:
-                        message.columns[i] = 1;
-                        break;
-                    case "PLAYER_IDS_PLAYER2":
-                    case 2:
-                        message.columns[i] = 2;
-                        break;
-                    }
+            if (object.tokens) {
+                if (!Array.isArray(object.tokens))
+                    throw TypeError(".shared.GameRow.tokens: array expected");
+                message.tokens = [];
+                for (let i = 0; i < object.tokens.length; ++i) {
+                    if (typeof object.tokens[i] !== "object")
+                        throw TypeError(".shared.GameRow.tokens: object expected");
+                    message.tokens[i] = $root.models.Token.fromObject(object.tokens[i], long + 1);
+                }
             }
             return message;
         };
@@ -6026,11 +5999,11 @@ export const shared = $root.shared = (() => {
                 options = {};
             let object = {};
             if (options.arrays || options.defaults)
-                object.columns = [];
-            if (message.columns && message.columns.length) {
-                object.columns = [];
-                for (let j = 0; j < message.columns.length; ++j)
-                    object.columns[j] = options.enums === String ? $root.shared.PlayerIDs[message.columns[j]] === undefined ? message.columns[j] : $root.shared.PlayerIDs[message.columns[j]] : message.columns[j];
+                object.tokens = [];
+            if (message.tokens && message.tokens.length) {
+                object.tokens = [];
+                for (let j = 0; j < message.tokens.length; ++j)
+                    object.tokens[j] = $root.models.Token.toObject(message.tokens[j], options);
             }
             return object;
         };
@@ -7289,15 +7262,6 @@ export const ws = $root.ws = (() => {
          */
         Tile.prototype.token = null;
 
-        // OneOf field names bound to virtual getters and setters
-        let $oneOfFields;
-
-        // Virtual OneOf for proto3 optional field
-        Object.defineProperty(Tile.prototype, "_token", {
-            get: $util.oneOfGetter($oneOfFields = ["token"]),
-            set: $util.oneOfSetter($oneOfFields)
-        });
-
         /**
          * Creates a new Tile instance using the specified properties.
          * @function create
@@ -7419,7 +7383,6 @@ export const ws = $root.ws = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            let properties = {};
             if (message.row != null && message.hasOwnProperty("row"))
                 if (!$util.isInteger(message.row))
                     return "row: integer expected";
@@ -7427,12 +7390,9 @@ export const ws = $root.ws = (() => {
                 if (!$util.isInteger(message.column))
                     return "column: integer expected";
             if (message.token != null && message.hasOwnProperty("token")) {
-                properties._token = 1;
-                {
-                    let error = $root.models.Token.verify(message.token, long + 1);
-                    if (error)
-                        return "token." + error;
-                }
+                let error = $root.models.Token.verify(message.token, long + 1);
+                if (error)
+                    return "token." + error;
             }
             return null;
         };
@@ -7481,16 +7441,14 @@ export const ws = $root.ws = (() => {
             if (options.defaults) {
                 object.row = 0;
                 object.column = 0;
+                object.token = null;
             }
             if (message.row != null && message.hasOwnProperty("row"))
                 object.row = message.row;
             if (message.column != null && message.hasOwnProperty("column"))
                 object.column = message.column;
-            if (message.token != null && message.hasOwnProperty("token")) {
+            if (message.token != null && message.hasOwnProperty("token"))
                 object.token = $root.models.Token.toObject(message.token, options);
-                if (options.oneofs)
-                    object._token = "token";
-            }
             return object;
         };
 
@@ -7896,7 +7854,9 @@ export const ws = $root.ws = (() => {
          * Properties of a GameMove.
          * @memberof ws
          * @interface IGameMove
-         * @property {ws.ITile|null} [tile] GameMove tile
+         * @property {number|null} [row] GameMove row
+         * @property {number|null} [column] GameMove column
+         * @property {models.TokenTypes|null} [tokenType] GameMove tokenType
          * @property {shared.IGameBoard|null} [board] GameMove board
          * @property {shared.PlayerIDs|null} [turn] GameMove turn
          */
@@ -7917,12 +7877,28 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * GameMove tile.
-         * @member {ws.ITile|null|undefined} tile
+         * GameMove row.
+         * @member {number} row
          * @memberof ws.GameMove
          * @instance
          */
-        GameMove.prototype.tile = null;
+        GameMove.prototype.row = 0;
+
+        /**
+         * GameMove column.
+         * @member {number} column
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.column = 0;
+
+        /**
+         * GameMove tokenType.
+         * @member {models.TokenTypes} tokenType
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.tokenType = 0;
 
         /**
          * GameMove board.
@@ -7964,12 +7940,16 @@ export const ws = $root.ws = (() => {
         GameMove.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.tile != null && Object.hasOwnProperty.call(message, "tile"))
-                $root.ws.Tile.encode(message.tile, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.row != null && Object.hasOwnProperty.call(message, "row"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.row);
+            if (message.column != null && Object.hasOwnProperty.call(message, "column"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.column);
+            if (message.tokenType != null && Object.hasOwnProperty.call(message, "tokenType"))
+                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.tokenType);
             if (message.board != null && Object.hasOwnProperty.call(message, "board"))
-                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             if (message.turn != null && Object.hasOwnProperty.call(message, "turn"))
-                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.turn);
+                writer.uint32(/* id 5, wireType 0 =*/40).int32(message.turn);
             return writer;
         };
 
@@ -8011,14 +7991,22 @@ export const ws = $root.ws = (() => {
                     break;
                 switch (tag >>> 3) {
                 case 1: {
-                        message.tile = $root.ws.Tile.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.row = reader.int32();
                         break;
                     }
                 case 2: {
-                        message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.column = reader.int32();
                         break;
                     }
                 case 3: {
+                        message.tokenType = reader.int32();
+                        break;
+                    }
+                case 4: {
+                        message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 5: {
                         message.turn = reader.int32();
                         break;
                     }
@@ -8061,11 +8049,28 @@ export const ws = $root.ws = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            if (message.tile != null && message.hasOwnProperty("tile")) {
-                let error = $root.ws.Tile.verify(message.tile, long + 1);
-                if (error)
-                    return "tile." + error;
-            }
+            if (message.row != null && message.hasOwnProperty("row"))
+                if (!$util.isInteger(message.row))
+                    return "row: integer expected";
+            if (message.column != null && message.hasOwnProperty("column"))
+                if (!$util.isInteger(message.column))
+                    return "column: integer expected";
+            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
+                switch (message.tokenType) {
+                default:
+                    return "tokenType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    break;
+                }
             if (message.board != null && message.hasOwnProperty("board")) {
                 let error = $root.shared.GameBoard.verify(message.board, long + 1);
                 if (error)
@@ -8099,10 +8104,57 @@ export const ws = $root.ws = (() => {
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
             let message = new $root.ws.GameMove();
-            if (object.tile != null) {
-                if (typeof object.tile !== "object")
-                    throw TypeError(".ws.GameMove.tile: object expected");
-                message.tile = $root.ws.Tile.fromObject(object.tile, long + 1);
+            if (object.row != null)
+                message.row = object.row | 0;
+            if (object.column != null)
+                message.column = object.column | 0;
+            switch (object.tokenType) {
+            default:
+                if (typeof object.tokenType === "number") {
+                    message.tokenType = object.tokenType;
+                    break;
+                }
+                break;
+            case "TOKEN_TYPES_UNSPECIFIED":
+            case 0:
+                message.tokenType = 0;
+                break;
+            case "TOKEN_TYPES_STANDARD":
+            case 1:
+                message.tokenType = 1;
+                break;
+            case "TOKEN_TYPES_NEGATIVE":
+            case 2:
+                message.tokenType = 2;
+                break;
+            case "TOKEN_TYPES_AURA":
+            case 3:
+                message.tokenType = 3;
+                break;
+            case "TOKEN_TYPES_BOMB":
+            case 4:
+                message.tokenType = 4;
+                break;
+            case "TOKEN_TYPES_SPLIT":
+            case 5:
+                message.tokenType = 5;
+                break;
+            case "TOKEN_TYPES_FREEZE":
+            case 6:
+                message.tokenType = 6;
+                break;
+            case "TOKEN_TYPES_BURN":
+            case 7:
+                message.tokenType = 7;
+                break;
+            case "TOKEN_TYPES_REVERSE":
+            case 8:
+                message.tokenType = 8;
+                break;
+            case "TOKEN_TYPES_DOUBLE":
+            case 9:
+                message.tokenType = 9;
+                break;
             }
             if (object.board != null) {
                 if (typeof object.board !== "object")
@@ -8146,12 +8198,18 @@ export const ws = $root.ws = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.tile = null;
+                object.row = 0;
+                object.column = 0;
+                object.tokenType = options.enums === String ? "TOKEN_TYPES_UNSPECIFIED" : 0;
                 object.board = null;
                 object.turn = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
             }
-            if (message.tile != null && message.hasOwnProperty("tile"))
-                object.tile = $root.ws.Tile.toObject(message.tile, options);
+            if (message.row != null && message.hasOwnProperty("row"))
+                object.row = message.row;
+            if (message.column != null && message.hasOwnProperty("column"))
+                object.column = message.column;
+            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
+                object.tokenType = options.enums === String ? $root.models.TokenTypes[message.tokenType] === undefined ? message.tokenType : $root.models.TokenTypes[message.tokenType] : message.tokenType;
             if (message.board != null && message.hasOwnProperty("board"))
                 object.board = $root.shared.GameBoard.toObject(message.board, options);
             if (message.turn != null && message.hasOwnProperty("turn"))
