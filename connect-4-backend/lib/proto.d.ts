@@ -2644,97 +2644,103 @@ export namespace shared {
 /** Namespace ws. */
 export namespace ws {
 
-    /** Properties of a GameInsertTile. */
-    interface IGameInsertTile {
+    /** Properties of a GameInsertToken. */
+    interface IGameInsertToken {
 
-        /** GameInsertTile column */
+        /** GameInsertToken column */
         column?: (number|null);
+
+        /** GameInsertToken tokenType */
+        tokenType?: (models.TokenTypes|null);
     }
 
-    /** Represents a GameInsertTile. */
-    class GameInsertTile implements IGameInsertTile {
+    /** Represents a GameInsertToken. */
+    class GameInsertToken implements IGameInsertToken {
 
         /**
-         * Constructs a new GameInsertTile.
+         * Constructs a new GameInsertToken.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IGameInsertTile);
+        constructor(properties?: ws.IGameInsertToken);
 
-        /** GameInsertTile column. */
+        /** GameInsertToken column. */
         public column: number;
 
+        /** GameInsertToken tokenType. */
+        public tokenType: models.TokenTypes;
+
         /**
-         * Creates a new GameInsertTile instance using the specified properties.
+         * Creates a new GameInsertToken instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GameInsertTile instance
+         * @returns GameInsertToken instance
          */
-        public static create(properties?: ws.IGameInsertTile): ws.GameInsertTile;
+        public static create(properties?: ws.IGameInsertToken): ws.GameInsertToken;
 
         /**
-         * Encodes the specified GameInsertTile message. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
-         * @param message GameInsertTile message or plain object to encode
+         * Encodes the specified GameInsertToken message. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
+         * @param message GameInsertToken message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IGameInsertTile, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameInsertToken, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GameInsertTile message, length delimited. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
-         * @param message GameInsertTile message or plain object to encode
+         * Encodes the specified GameInsertToken message, length delimited. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
+         * @param message GameInsertToken message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IGameInsertTile, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameInsertToken, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GameInsertTile message from the specified reader or buffer.
+         * Decodes a GameInsertToken message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GameInsertTile
+         * @returns GameInsertToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameInsertTile;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameInsertToken;
 
         /**
-         * Decodes a GameInsertTile message from the specified reader or buffer, length delimited.
+         * Decodes a GameInsertToken message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GameInsertTile
+         * @returns GameInsertToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameInsertTile;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameInsertToken;
 
         /**
-         * Verifies a GameInsertTile message.
+         * Verifies a GameInsertToken message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GameInsertTile message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameInsertToken message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GameInsertTile
+         * @returns GameInsertToken
          */
-        public static fromObject(object: { [k: string]: any }): ws.GameInsertTile;
+        public static fromObject(object: { [k: string]: any }): ws.GameInsertToken;
 
         /**
-         * Creates a plain object from a GameInsertTile message. Also converts values to other types if specified.
-         * @param message GameInsertTile
+         * Creates a plain object from a GameInsertToken message. Also converts values to other types if specified.
+         * @param message GameInsertToken
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.GameInsertTile, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameInsertToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GameInsertTile to JSON.
+         * Converts this GameInsertToken to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GameInsertTile
+         * Gets the default type url for GameInsertToken
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -2744,7 +2750,7 @@ export namespace ws {
     /** GameActions enum. */
     enum GameActions {
         GAME_ACTIONS_UNSPECIFIED = 0,
-        GAME_ACTIONS_INSERT_TILE = 1,
+        GAME_ACTIONS_INSERT_TOKEN = 1,
         GAME_ACTIONS_FORFEIT = 2
     }
 
@@ -2754,8 +2760,8 @@ export namespace ws {
         /** GamePacket action */
         action?: (ws.GameActions|null);
 
-        /** GamePacket insertTile */
-        insertTile?: (ws.IGameInsertTile|null);
+        /** GamePacket insertToken */
+        insertToken?: (ws.IGameInsertToken|null);
     }
 
     /** Represents a GamePacket. */
@@ -2770,11 +2776,11 @@ export namespace ws {
         /** GamePacket action. */
         public action: ws.GameActions;
 
-        /** GamePacket insertTile. */
-        public insertTile?: (ws.IGameInsertTile|null);
+        /** GamePacket insertToken. */
+        public insertToken?: (ws.IGameInsertToken|null);
 
         /** GamePacket data. */
-        public data?: "insertTile";
+        public data?: "insertToken";
 
         /**
          * Creates a new GamePacket instance using the specified properties.
@@ -3089,14 +3095,8 @@ export namespace ws {
     /** Properties of a GameMove. */
     interface IGameMove {
 
-        /** GameMove row */
-        row?: (number|null);
-
-        /** GameMove column */
-        column?: (number|null);
-
-        /** GameMove tokenType */
-        tokenType?: (models.TokenTypes|null);
+        /** GameMove tile */
+        tile?: (ws.ITile|null);
 
         /** GameMove board */
         board?: (shared.IGameBoard|null);
@@ -3114,14 +3114,8 @@ export namespace ws {
          */
         constructor(properties?: ws.IGameMove);
 
-        /** GameMove row. */
-        public row: number;
-
-        /** GameMove column. */
-        public column: number;
-
-        /** GameMove tokenType. */
-        public tokenType: models.TokenTypes;
+        /** GameMove tile. */
+        public tile?: (ws.ITile|null);
 
         /** GameMove board. */
         public board?: (shared.IGameBoard|null);

@@ -6672,24 +6672,25 @@ export const ws = $root.ws = (() => {
      */
     const ws = {};
 
-    ws.GameInsertTile = (function() {
+    ws.GameInsertToken = (function() {
 
         /**
-         * Properties of a GameInsertTile.
+         * Properties of a GameInsertToken.
          * @memberof ws
-         * @interface IGameInsertTile
-         * @property {number|null} [column] GameInsertTile column
+         * @interface IGameInsertToken
+         * @property {number|null} [column] GameInsertToken column
+         * @property {models.TokenTypes|null} [tokenType] GameInsertToken tokenType
          */
 
         /**
-         * Constructs a new GameInsertTile.
+         * Constructs a new GameInsertToken.
          * @memberof ws
-         * @classdesc Represents a GameInsertTile.
-         * @implements IGameInsertTile
+         * @classdesc Represents a GameInsertToken.
+         * @implements IGameInsertToken
          * @constructor
-         * @param {ws.IGameInsertTile=} [properties] Properties to set
+         * @param {ws.IGameInsertToken=} [properties] Properties to set
          */
-        function GameInsertTile(properties) {
+        function GameInsertToken(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -6697,74 +6698,84 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * GameInsertTile column.
+         * GameInsertToken column.
          * @member {number} column
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @instance
          */
-        GameInsertTile.prototype.column = 0;
+        GameInsertToken.prototype.column = 0;
 
         /**
-         * Creates a new GameInsertTile instance using the specified properties.
-         * @function create
-         * @memberof ws.GameInsertTile
-         * @static
-         * @param {ws.IGameInsertTile=} [properties] Properties to set
-         * @returns {ws.GameInsertTile} GameInsertTile instance
+         * GameInsertToken tokenType.
+         * @member {models.TokenTypes} tokenType
+         * @memberof ws.GameInsertToken
+         * @instance
          */
-        GameInsertTile.create = function create(properties) {
-            return new GameInsertTile(properties);
+        GameInsertToken.prototype.tokenType = 0;
+
+        /**
+         * Creates a new GameInsertToken instance using the specified properties.
+         * @function create
+         * @memberof ws.GameInsertToken
+         * @static
+         * @param {ws.IGameInsertToken=} [properties] Properties to set
+         * @returns {ws.GameInsertToken} GameInsertToken instance
+         */
+        GameInsertToken.create = function create(properties) {
+            return new GameInsertToken(properties);
         };
 
         /**
-         * Encodes the specified GameInsertTile message. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
+         * Encodes the specified GameInsertToken message. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
          * @function encode
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
-         * @param {ws.IGameInsertTile} message GameInsertTile message or plain object to encode
+         * @param {ws.IGameInsertToken} message GameInsertToken message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        GameInsertTile.encode = function encode(message, writer) {
+        GameInsertToken.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.column != null && Object.hasOwnProperty.call(message, "column"))
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.column);
+            if (message.tokenType != null && Object.hasOwnProperty.call(message, "tokenType"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.tokenType);
             return writer;
         };
 
         /**
-         * Encodes the specified GameInsertTile message, length delimited. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
+         * Encodes the specified GameInsertToken message, length delimited. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
-         * @param {ws.IGameInsertTile} message GameInsertTile message or plain object to encode
+         * @param {ws.IGameInsertToken} message GameInsertToken message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        GameInsertTile.encodeDelimited = function encodeDelimited(message, writer) {
+        GameInsertToken.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a GameInsertTile message from the specified reader or buffer.
+         * Decodes a GameInsertToken message from the specified reader or buffer.
          * @function decode
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {ws.GameInsertTile} GameInsertTile
+         * @returns {ws.GameInsertToken} GameInsertToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        GameInsertTile.decode = function decode(reader, length, error, long) {
+        GameInsertToken.decode = function decode(reader, length, error, long) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             if (long === undefined)
                 long = 0;
             if (long > $Reader.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameInsertTile();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameInsertToken();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 if (tag === error)
@@ -6772,6 +6783,10 @@ export const ws = $root.ws = (() => {
                 switch (tag >>> 3) {
                 case 1: {
                         message.column = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.tokenType = reader.int32();
                         break;
                     }
                 default:
@@ -6783,30 +6798,30 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Decodes a GameInsertTile message from the specified reader or buffer, length delimited.
+         * Decodes a GameInsertToken message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.GameInsertTile} GameInsertTile
+         * @returns {ws.GameInsertToken} GameInsertToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        GameInsertTile.decodeDelimited = function decodeDelimited(reader) {
+        GameInsertToken.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a GameInsertTile message.
+         * Verifies a GameInsertToken message.
          * @function verify
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        GameInsertTile.verify = function verify(message, long) {
+        GameInsertToken.verify = function verify(message, long) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (long === undefined)
@@ -6816,77 +6831,145 @@ export const ws = $root.ws = (() => {
             if (message.column != null && message.hasOwnProperty("column"))
                 if (!$util.isInteger(message.column))
                     return "column: integer expected";
+            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
+                switch (message.tokenType) {
+                default:
+                    return "tokenType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    break;
+                }
             return null;
         };
 
         /**
-         * Creates a GameInsertTile message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameInsertToken message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {ws.GameInsertTile} GameInsertTile
+         * @returns {ws.GameInsertToken} GameInsertToken
          */
-        GameInsertTile.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.GameInsertTile)
+        GameInsertToken.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.GameInsertToken)
                 return object;
             if (long === undefined)
                 long = 0;
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.GameInsertTile();
+            let message = new $root.ws.GameInsertToken();
             if (object.column != null)
                 message.column = object.column | 0;
+            switch (object.tokenType) {
+            default:
+                if (typeof object.tokenType === "number") {
+                    message.tokenType = object.tokenType;
+                    break;
+                }
+                break;
+            case "TOKEN_TYPES_UNSPECIFIED":
+            case 0:
+                message.tokenType = 0;
+                break;
+            case "TOKEN_TYPES_STANDARD":
+            case 1:
+                message.tokenType = 1;
+                break;
+            case "TOKEN_TYPES_NEGATIVE":
+            case 2:
+                message.tokenType = 2;
+                break;
+            case "TOKEN_TYPES_AURA":
+            case 3:
+                message.tokenType = 3;
+                break;
+            case "TOKEN_TYPES_BOMB":
+            case 4:
+                message.tokenType = 4;
+                break;
+            case "TOKEN_TYPES_SPLIT":
+            case 5:
+                message.tokenType = 5;
+                break;
+            case "TOKEN_TYPES_FREEZE":
+            case 6:
+                message.tokenType = 6;
+                break;
+            case "TOKEN_TYPES_BURN":
+            case 7:
+                message.tokenType = 7;
+                break;
+            case "TOKEN_TYPES_REVERSE":
+            case 8:
+                message.tokenType = 8;
+                break;
+            case "TOKEN_TYPES_DOUBLE":
+            case 9:
+                message.tokenType = 9;
+                break;
+            }
             return message;
         };
 
         /**
-         * Creates a plain object from a GameInsertTile message. Also converts values to other types if specified.
+         * Creates a plain object from a GameInsertToken message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
-         * @param {ws.GameInsertTile} message GameInsertTile
+         * @param {ws.GameInsertToken} message GameInsertToken
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        GameInsertTile.toObject = function toObject(message, options) {
+        GameInsertToken.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults)
+            if (options.defaults) {
                 object.column = 0;
+                object.tokenType = options.enums === String ? "TOKEN_TYPES_UNSPECIFIED" : 0;
+            }
             if (message.column != null && message.hasOwnProperty("column"))
                 object.column = message.column;
+            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
+                object.tokenType = options.enums === String ? $root.models.TokenTypes[message.tokenType] === undefined ? message.tokenType : $root.models.TokenTypes[message.tokenType] : message.tokenType;
             return object;
         };
 
         /**
-         * Converts this GameInsertTile to JSON.
+         * Converts this GameInsertToken to JSON.
          * @function toJSON
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        GameInsertTile.prototype.toJSON = function toJSON() {
+        GameInsertToken.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for GameInsertTile
+         * Gets the default type url for GameInsertToken
          * @function getTypeUrl
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        GameInsertTile.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        GameInsertToken.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/ws.GameInsertTile";
+            return typeUrlPrefix + "/ws.GameInsertToken";
         };
 
-        return GameInsertTile;
+        return GameInsertToken;
     })();
 
     /**
@@ -6894,13 +6977,13 @@ export const ws = $root.ws = (() => {
      * @name ws.GameActions
      * @enum {number}
      * @property {number} GAME_ACTIONS_UNSPECIFIED=0 GAME_ACTIONS_UNSPECIFIED value
-     * @property {number} GAME_ACTIONS_INSERT_TILE=1 GAME_ACTIONS_INSERT_TILE value
+     * @property {number} GAME_ACTIONS_INSERT_TOKEN=1 GAME_ACTIONS_INSERT_TOKEN value
      * @property {number} GAME_ACTIONS_FORFEIT=2 GAME_ACTIONS_FORFEIT value
      */
     ws.GameActions = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "GAME_ACTIONS_UNSPECIFIED"] = 0;
-        values[valuesById[1] = "GAME_ACTIONS_INSERT_TILE"] = 1;
+        values[valuesById[1] = "GAME_ACTIONS_INSERT_TOKEN"] = 1;
         values[valuesById[2] = "GAME_ACTIONS_FORFEIT"] = 2;
         return values;
     })();
@@ -6912,7 +6995,7 @@ export const ws = $root.ws = (() => {
          * @memberof ws
          * @interface IGamePacket
          * @property {ws.GameActions|null} [action] GamePacket action
-         * @property {ws.IGameInsertTile|null} [insertTile] GamePacket insertTile
+         * @property {ws.IGameInsertToken|null} [insertToken] GamePacket insertToken
          */
 
         /**
@@ -6939,24 +7022,24 @@ export const ws = $root.ws = (() => {
         GamePacket.prototype.action = 0;
 
         /**
-         * GamePacket insertTile.
-         * @member {ws.IGameInsertTile|null|undefined} insertTile
+         * GamePacket insertToken.
+         * @member {ws.IGameInsertToken|null|undefined} insertToken
          * @memberof ws.GamePacket
          * @instance
          */
-        GamePacket.prototype.insertTile = null;
+        GamePacket.prototype.insertToken = null;
 
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
          * GamePacket data.
-         * @member {"insertTile"|undefined} data
+         * @member {"insertToken"|undefined} data
          * @memberof ws.GamePacket
          * @instance
          */
         Object.defineProperty(GamePacket.prototype, "data", {
-            get: $util.oneOfGetter($oneOfFields = ["insertTile"]),
+            get: $util.oneOfGetter($oneOfFields = ["insertToken"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -6986,8 +7069,8 @@ export const ws = $root.ws = (() => {
                 writer = $Writer.create();
             if (message.action != null && Object.hasOwnProperty.call(message, "action"))
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.action);
-            if (message.insertTile != null && Object.hasOwnProperty.call(message, "insertTile"))
-                $root.ws.GameInsertTile.encode(message.insertTile, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.insertToken != null && Object.hasOwnProperty.call(message, "insertToken"))
+                $root.ws.GameInsertToken.encode(message.insertToken, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             return writer;
         };
 
@@ -7033,7 +7116,7 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 2: {
-                        message.insertTile = $root.ws.GameInsertTile.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.insertToken = $root.ws.GameInsertToken.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 default:
@@ -7085,12 +7168,12 @@ export const ws = $root.ws = (() => {
                 case 2:
                     break;
                 }
-            if (message.insertTile != null && message.hasOwnProperty("insertTile")) {
+            if (message.insertToken != null && message.hasOwnProperty("insertToken")) {
                 properties.data = 1;
                 {
-                    let error = $root.ws.GameInsertTile.verify(message.insertTile, long + 1);
+                    let error = $root.ws.GameInsertToken.verify(message.insertToken, long + 1);
                     if (error)
-                        return "insertTile." + error;
+                        return "insertToken." + error;
                 }
             }
             return null;
@@ -7123,7 +7206,7 @@ export const ws = $root.ws = (() => {
             case 0:
                 message.action = 0;
                 break;
-            case "GAME_ACTIONS_INSERT_TILE":
+            case "GAME_ACTIONS_INSERT_TOKEN":
             case 1:
                 message.action = 1;
                 break;
@@ -7132,10 +7215,10 @@ export const ws = $root.ws = (() => {
                 message.action = 2;
                 break;
             }
-            if (object.insertTile != null) {
-                if (typeof object.insertTile !== "object")
-                    throw TypeError(".ws.GamePacket.insertTile: object expected");
-                message.insertTile = $root.ws.GameInsertTile.fromObject(object.insertTile, long + 1);
+            if (object.insertToken != null) {
+                if (typeof object.insertToken !== "object")
+                    throw TypeError(".ws.GamePacket.insertToken: object expected");
+                message.insertToken = $root.ws.GameInsertToken.fromObject(object.insertToken, long + 1);
             }
             return message;
         };
@@ -7157,10 +7240,10 @@ export const ws = $root.ws = (() => {
                 object.action = options.enums === String ? "GAME_ACTIONS_UNSPECIFIED" : 0;
             if (message.action != null && message.hasOwnProperty("action"))
                 object.action = options.enums === String ? $root.ws.GameActions[message.action] === undefined ? message.action : $root.ws.GameActions[message.action] : message.action;
-            if (message.insertTile != null && message.hasOwnProperty("insertTile")) {
-                object.insertTile = $root.ws.GameInsertTile.toObject(message.insertTile, options);
+            if (message.insertToken != null && message.hasOwnProperty("insertToken")) {
+                object.insertToken = $root.ws.GameInsertToken.toObject(message.insertToken, options);
                 if (options.oneofs)
-                    object.data = "insertTile";
+                    object.data = "insertToken";
             }
             return object;
         };
@@ -7854,9 +7937,7 @@ export const ws = $root.ws = (() => {
          * Properties of a GameMove.
          * @memberof ws
          * @interface IGameMove
-         * @property {number|null} [row] GameMove row
-         * @property {number|null} [column] GameMove column
-         * @property {models.TokenTypes|null} [tokenType] GameMove tokenType
+         * @property {ws.ITile|null} [tile] GameMove tile
          * @property {shared.IGameBoard|null} [board] GameMove board
          * @property {shared.PlayerIDs|null} [turn] GameMove turn
          */
@@ -7877,28 +7958,12 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * GameMove row.
-         * @member {number} row
+         * GameMove tile.
+         * @member {ws.ITile|null|undefined} tile
          * @memberof ws.GameMove
          * @instance
          */
-        GameMove.prototype.row = 0;
-
-        /**
-         * GameMove column.
-         * @member {number} column
-         * @memberof ws.GameMove
-         * @instance
-         */
-        GameMove.prototype.column = 0;
-
-        /**
-         * GameMove tokenType.
-         * @member {models.TokenTypes} tokenType
-         * @memberof ws.GameMove
-         * @instance
-         */
-        GameMove.prototype.tokenType = 0;
+        GameMove.prototype.tile = null;
 
         /**
          * GameMove board.
@@ -7940,16 +8005,12 @@ export const ws = $root.ws = (() => {
         GameMove.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.row != null && Object.hasOwnProperty.call(message, "row"))
-                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.row);
-            if (message.column != null && Object.hasOwnProperty.call(message, "column"))
-                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.column);
-            if (message.tokenType != null && Object.hasOwnProperty.call(message, "tokenType"))
-                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.tokenType);
+            if (message.tile != null && Object.hasOwnProperty.call(message, "tile"))
+                $root.ws.Tile.encode(message.tile, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             if (message.board != null && Object.hasOwnProperty.call(message, "board"))
-                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.turn != null && Object.hasOwnProperty.call(message, "turn"))
-                writer.uint32(/* id 5, wireType 0 =*/40).int32(message.turn);
+                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.turn);
             return writer;
         };
 
@@ -7991,22 +8052,14 @@ export const ws = $root.ws = (() => {
                     break;
                 switch (tag >>> 3) {
                 case 1: {
-                        message.row = reader.int32();
+                        message.tile = $root.ws.Tile.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 case 2: {
-                        message.column = reader.int32();
-                        break;
-                    }
-                case 3: {
-                        message.tokenType = reader.int32();
-                        break;
-                    }
-                case 4: {
                         message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
-                case 5: {
+                case 3: {
                         message.turn = reader.int32();
                         break;
                     }
@@ -8049,28 +8102,11 @@ export const ws = $root.ws = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            if (message.row != null && message.hasOwnProperty("row"))
-                if (!$util.isInteger(message.row))
-                    return "row: integer expected";
-            if (message.column != null && message.hasOwnProperty("column"))
-                if (!$util.isInteger(message.column))
-                    return "column: integer expected";
-            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
-                switch (message.tokenType) {
-                default:
-                    return "tokenType: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                    break;
-                }
+            if (message.tile != null && message.hasOwnProperty("tile")) {
+                let error = $root.ws.Tile.verify(message.tile, long + 1);
+                if (error)
+                    return "tile." + error;
+            }
             if (message.board != null && message.hasOwnProperty("board")) {
                 let error = $root.shared.GameBoard.verify(message.board, long + 1);
                 if (error)
@@ -8104,57 +8140,10 @@ export const ws = $root.ws = (() => {
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
             let message = new $root.ws.GameMove();
-            if (object.row != null)
-                message.row = object.row | 0;
-            if (object.column != null)
-                message.column = object.column | 0;
-            switch (object.tokenType) {
-            default:
-                if (typeof object.tokenType === "number") {
-                    message.tokenType = object.tokenType;
-                    break;
-                }
-                break;
-            case "TOKEN_TYPES_UNSPECIFIED":
-            case 0:
-                message.tokenType = 0;
-                break;
-            case "TOKEN_TYPES_STANDARD":
-            case 1:
-                message.tokenType = 1;
-                break;
-            case "TOKEN_TYPES_NEGATIVE":
-            case 2:
-                message.tokenType = 2;
-                break;
-            case "TOKEN_TYPES_AURA":
-            case 3:
-                message.tokenType = 3;
-                break;
-            case "TOKEN_TYPES_BOMB":
-            case 4:
-                message.tokenType = 4;
-                break;
-            case "TOKEN_TYPES_SPLIT":
-            case 5:
-                message.tokenType = 5;
-                break;
-            case "TOKEN_TYPES_FREEZE":
-            case 6:
-                message.tokenType = 6;
-                break;
-            case "TOKEN_TYPES_BURN":
-            case 7:
-                message.tokenType = 7;
-                break;
-            case "TOKEN_TYPES_REVERSE":
-            case 8:
-                message.tokenType = 8;
-                break;
-            case "TOKEN_TYPES_DOUBLE":
-            case 9:
-                message.tokenType = 9;
-                break;
+            if (object.tile != null) {
+                if (typeof object.tile !== "object")
+                    throw TypeError(".ws.GameMove.tile: object expected");
+                message.tile = $root.ws.Tile.fromObject(object.tile, long + 1);
             }
             if (object.board != null) {
                 if (typeof object.board !== "object")
@@ -8198,18 +8187,12 @@ export const ws = $root.ws = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.row = 0;
-                object.column = 0;
-                object.tokenType = options.enums === String ? "TOKEN_TYPES_UNSPECIFIED" : 0;
+                object.tile = null;
                 object.board = null;
                 object.turn = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
             }
-            if (message.row != null && message.hasOwnProperty("row"))
-                object.row = message.row;
-            if (message.column != null && message.hasOwnProperty("column"))
-                object.column = message.column;
-            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
-                object.tokenType = options.enums === String ? $root.models.TokenTypes[message.tokenType] === undefined ? message.tokenType : $root.models.TokenTypes[message.tokenType] : message.tokenType;
+            if (message.tile != null && message.hasOwnProperty("tile"))
+                object.tile = $root.ws.Tile.toObject(message.tile, options);
             if (message.board != null && message.hasOwnProperty("board"))
                 object.board = $root.shared.GameBoard.toObject(message.board, options);
             if (message.turn != null && message.hasOwnProperty("turn"))

@@ -24,10 +24,12 @@ export const P_TokenTypes = proto.models.TokenTypes;
 // Game types
 export type GameBoard = Token[][];
 
-export type GameState = {
+export type GameData = {
     board: GameBoard;
     turn: TPlayerIDs;
 };
+
+export type GameStates = 'NOT_FINISHED' | 'WON' | 'DRAW';
 
 // Websocket types
 export type WsArgs = {

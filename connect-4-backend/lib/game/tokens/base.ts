@@ -9,6 +9,7 @@ import {
 } from '../../types.ts';
 import { EmptyToken } from './empty.ts';
 import { StandardToken } from './regular.ts';
+import { DirectionVectors } from '../constants.ts';
 
 export default abstract class Token {
     // Public properties
@@ -89,187 +90,73 @@ export default abstract class Token {
         }
     }
 
+    /** Private helper function to shorten repeated logic */
+    private performInDirection(gameBoard: GameBoard, func: (token: Token) => void, direction: readonly [number, number]) {
+        let offset = 1;
+        while (true) {
+            // Calculated offset values for the row and column indexes
+            const offsetCol = this.column + direction[0] * offset;
+            const offsetRow = this.row + direction[1] * offset;
+
+            // Bounds checking
+            if (offsetRow < 0 || offsetRow >= gameBoard.length) break;
+            if (offsetCol < 0) break;
+
+            const tempRow = gameBoard[offsetRow];
+            if (tempRow) {
+                // Bounds checking
+                if (offsetCol >= tempRow.length) break;
+
+                const offsetToken = tempRow[offsetCol];
+                if (!offsetToken) {
+                    offset++;
+                    continue;
+                }
+
+                // Break when the line is no longer consecutive
+                if (offsetToken.playerID != this.playerID) break;
+
+                func(offsetToken);
+            }
+            offset++;
+        }
+    }
+
     /** Performs an action on the tiles / tokens in a diagonal line
      * The diagonal goes from North-West to South-East
-     * @param length - Length of the line (including the token) to check
      * */
-    performOnConsecutiveDiagonalNWSE(gameBoard: GameBoard, func: (token: Token) => void, length: number) {
+    performOnConsecutiveDiagonalNWSE(gameBoard: GameBoard, func: (token: Token) => void) {
         // From token to NW
-        for (let offset = 1; offset < length; offset++) {
-            // Calculated offset values for the row and column indexes
-            const offsetRow = this.row + offset;
-            const offsetCol = this.column - offset;
-
-            // Bounds checking
-            if (offsetRow < 0 || offsetRow >= gameBoard.length) break;
-
-            const tempRow = gameBoard[offsetRow];
-            if (tempRow && offsetCol >= 0 && offsetCol < tempRow.length) {
-                const offsetToken = tempRow[offsetCol];
-                if (!offsetToken) continue;
-
-                // Break when the line is no longer consecutive
-                if (offsetToken.type != this.type) break;
-
-                func(offsetToken);
-            }
-        }
-
+        this.performInDirection(gameBoard, func, DirectionVectors.NW);
         // From token to SE
-        for (let offset = 1; offset < length; offset++) {
-            // Calculated offset values for the row and column indexes
-            const offsetRow = this.row - offset;
-            const offsetCol = this.column + offset;
-
-            // Bounds checking
-            if (offsetRow < 0 || offsetRow >= gameBoard.length) break;
-
-            const tempRow = gameBoard[offsetRow];
-            if (tempRow && offsetCol >= 0 && offsetCol < tempRow.length) {
-                const offsetToken = tempRow[offsetCol];
-                if (!offsetToken) continue;
-
-                // Break when the line is no longer consecutive
-                if (offsetToken.type != this.type) break;
-
-                func(offsetToken);
-            }
-        }
+        this.performInDirection(gameBoard, func, DirectionVectors.SE);
     }
 
     /** Performs an action on the tiles / tokens in a diagonal line
      * The diagonal goes from North-East to South-West
-     * @param length - Length of the line (including the token) to check
      * */
-    performOnConsecutiveDiagonalNESW(gameBoard: GameBoard, func: (token: Token) => void, length: number) {
+    performOnConsecutiveDiagonalNESW(gameBoard: GameBoard, func: (token: Token) => void) {
         // From token to NE
-        for (let offset = 1; offset < length; offset++) {
-            // Calculated offset values for the row and column indexes
-            const offsetRow = this.row + offset;
-            const offsetCol = this.column + offset;
-
-            // Bounds checking
-            if (offsetRow < 0 || offsetRow >= gameBoard.length) break;
-
-            const tempRow = gameBoard[offsetRow];
-            if (tempRow && offsetCol >= 0 && offsetCol < tempRow.length) {
-                const offsetToken = tempRow[offsetCol];
-                if (!offsetToken) continue;
-
-                // Break when the line is no longer consecutive
-                if (offsetToken.type != this.type) break;
-
-                func(offsetToken);
-            }
-        }
-
+        this.performInDirection(gameBoard, func, DirectionVectors.NE);
         // From token to SW
-        for (let offset = 1; offset < length; offset++) {
-            // Calculated offset values for the row and column indexes
-            const offsetRow = this.row - offset;
-            const offsetCol = this.column - offset;
-
-            // Bounds checking
-            if (offsetRow < 0 || offsetRow >= gameBoard.length) break;
-
-            const tempRow = gameBoard[offsetRow];
-            if (tempRow && offsetCol >= 0 && offsetCol < tempRow.length) {
-                const offsetToken = tempRow[offsetCol];
-                if (!offsetToken) continue;
-
-                // Break when the line is no longer consecutive
-                if (offsetToken.type != this.type) break;
-
-                func(offsetToken);
-            }
-        }
+        this.performInDirection(gameBoard, func, DirectionVectors.SW);
     }
 
     /** Performs an action on the tiles / tokens in a horizontal line
-     * @param length - Length of the line (including the token) to check
      * */
-    performOnConsecutiveHorizontal(gameBoard: GameBoard, func: (token: Token) => void, length: number) {
-        if (this.row < 0 || this.row >= gameBoard.length) return;
-
+    performOnConsecutiveHorizontal(gameBoard: GameBoard, func: (token: Token) => void) {
         // From token to West
-        for (let colOffset = 1; colOffset < length; colOffset++) {
-            // Calculated offset values for the column index
-            const offsetCol = this.column - colOffset;
-
-            const tempRow = gameBoard[this.row];
-            if (tempRow && offsetCol >= 0 && offsetCol < tempRow.length) {
-                const offsetToken = tempRow[offsetCol];
-                if (!offsetToken) continue;
-
-                // Break when the line is no longer consecutive
-                if (offsetToken.type != this.type) break;
-
-                func(offsetToken);
-            }
-        }
-
+        this.performInDirection(gameBoard, func, DirectionVectors.W);
         // From token to East
-        for (let colOffset = 1; colOffset < length; colOffset++) {
-            // Calculated offset values for the column index
-            const offsetCol = this.column + colOffset;
-
-            const tempRow = gameBoard[this.row];
-            if (tempRow && offsetCol >= 0 && offsetCol < tempRow.length) {
-                const offsetToken = tempRow[offsetCol];
-                if (!offsetToken) continue;
-
-                // Break when the line is no longer consecutive
-                if (offsetToken.type != this.type) break;
-
-                func(offsetToken);
-            }
-        }
+        this.performInDirection(gameBoard, func, DirectionVectors.E);
     }
 
     /** Performs an action on the tiles / tokens in a vertical line
-     * @param length - Length of the line (including the token) to check
      * */
-    performOnConsecutiveVertical(gameBoard: GameBoard, func: (token: Token) => void, length: number) {
-        if (this.column < 0) return;
-
+    performOnConsecutiveVertical(gameBoard: GameBoard, func: (token: Token) => void) {
         // From token to North
-        for (let rowOffset = 1; rowOffset < length; rowOffset++) {
-            // Calculated offset values for the row index
-            const offsetRow = this.row + rowOffset;
-
-            // Bounds checking
-            if (offsetRow < 0 || offsetRow >= gameBoard.length) break;
-
-            const tempRow = gameBoard[offsetRow];
-            if (tempRow && this.column < tempRow.length) {
-                const offsetToken = tempRow[this.column];
-                if (!offsetToken) continue;
-
-                // Break when the line is no longer consecutive
-                if (offsetToken.type != this.type) break;
-
-                func(offsetToken);
-            }
-        }
-
+        this.performInDirection(gameBoard, func, DirectionVectors.N);
         // From token to South
-        for (let rowOffset = 1; rowOffset < length; rowOffset++) {
-            // Calculated offset values for the row index
-            const offsetRow = this.row - rowOffset;
-
-            // Bounds checking
-            if (offsetRow < 0 || offsetRow >= gameBoard.length) break;
-
-            const tempRow = gameBoard[offsetRow];
-            if (tempRow && this.column < tempRow.length) {
-                const offsetToken = tempRow[this.column];
-                if (!offsetToken) continue;
-
-                // Break when the line is no longer consecutive
-                if (offsetToken.type != this.type) break;
-
-                func(offsetToken);
-            }
-        }
+        this.performInDirection(gameBoard, func, DirectionVectors.S);
     }
 }
