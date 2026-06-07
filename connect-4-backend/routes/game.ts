@@ -7,6 +7,7 @@ import { routes, ws } from '../lib/proto.js';
 import { isLobbyHost, isLobbyMember } from '../lib/auth.ts';
 import { lobbyHasPlayerWithID } from '../database-sqllite/lobbyMembers.ts';
 import { broadcastToLobbyRoom } from './ws/lobby.ts';
+import { boardDataToProtobufBoard } from '../lib/game/lib.ts';
 
 const router = Router();
 
@@ -87,9 +88,17 @@ addRouteWithMethods(
             }
 
             try {
+                const gameData = await GameRedis.getGameData(code);
+
+                // Format the game's board to be sent to the client
+                const protoBoard = boardDataToProtobufBoard(gameData.board);
+
                 res.status(200).send(
                     routes.GetGameResponse.encode({
-                        game: await GameRedis.getGameState(code),
+                        game: {
+                            board: protoBoard,
+                            turn: gameData.turn,
+                        },
                     }).finish()
                 );
             } catch (err) {
