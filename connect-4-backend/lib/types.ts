@@ -3,6 +3,7 @@ import type { LobbyMember, User } from '../database-sqllite/models.ts';
 import type { WebSocket } from 'ws';
 import * as proto from './proto.js';
 import type { IncomingMessage } from 'http';
+import type Token from './game/tokens/base.ts';
 
 // Protobuf type and value aliases
 
@@ -18,21 +19,15 @@ export const P_PlayerTypes = proto.shared.PlayerTypes;
 export const P_PlayerIDs = proto.shared.PlayerIDs;
 export const P_ErrorCodes = proto.shared.ErrorCodes;
 export const P_CodedError = proto.shared.CodedError;
+export const P_TokenTypes = proto.models.TokenTypes;
 
 // Game types
-export type GameRow = {
-    columns: Array<TPlayerIDs>;
-};
-export type GameBoard = {
-    rows: Array<GameRow>;
-};
+export type GameBoard = Token[][];
 
 export type GameState = {
     board: GameBoard;
     turn: TPlayerIDs;
 };
-
-export type WinCheckFunction = (count: number, playerID: TPlayerIDs) => void;
 
 // Websocket types
 export type WsArgs = {
