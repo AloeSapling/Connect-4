@@ -1,25 +1,22 @@
 import { redis } from '../app.ts';
 import { GAME_COLUMNS, GAME_ROWS, LOBBY_KEEP_ALIVE_TIME } from '../config.ts';
-import {
-    CodedError,
-    P_ErrorCodes,
-    P_PlayerIDs,
-    type GameBoard,
-    type GameData,
-    type TPlayerIDs,
-    type TTokenTypes,
-} from '../lib/types.ts';
+import { CodedError, P_ErrorCodes, P_PlayerIDs, type TPlayerIDs, type TTokenTypes } from '../lib/types.ts';
 import { getPartialUserDataByPlayerID } from '../database-sqllite/lobbyMembers.ts';
 import type { models } from '../lib/proto.js';
 import Token from '../lib/game/tokens/base.ts';
 import { EmptyToken } from '../lib/game/tokens/empty.ts';
 import { getNextPlayer } from '../lib/game/lib.ts';
+import type { GameData } from '../lib/game/types.ts';
+import { GameBoard } from '../lib/game/gameBoard.ts';
+
+/** The list of tokens used to instantiate the initial game board */
+const initialTokens: Token[][] = [];
+for (let i = 0; i < GAME_ROWS; i++) {
+    initialTokens[i] = Array.from({ length: GAME_COLUMNS }, () => new EmptyToken());
+}
 
 /** The board used when creating a new game */
-const initialBoard: Token[][] = [];
-for (let i = 0; i < GAME_ROWS; i++) {
-    initialBoard[i] = Array.from({ length: GAME_COLUMNS }, () => new EmptyToken());
-}
+const initialBoard: GameBoard = new GameBoard(initialTokens);
 
 /** The game state used when creating a new game */
 const initialGameData: GameData = {
@@ -143,9 +140,9 @@ export async function getGameData(lobbyCode: string): Promise<GameData> {
 
 /** Performs all the actions that happen whenever a turn ends */
 async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPlayerIDs) {
-    for (let i = 0; i < gameBoard.length; i++) {
-        for (let j = 0; j < (gameBoard[i]?.length || 0); j++) {
-            gameBoard[i]?.[j]?.tickTurn(gameBoard);
+    for (let i = 0; i < gameBoard.tokens.length; i++) {
+        for (let j = 0; j < (gameBoard.tokens[i]?.length || 0); j++) {
+            gameBoard.tokens[i]?.[j]?.tickTurn(gameBoard);
         }
     }
 
@@ -223,16 +220,16 @@ export async function insertToken(
 
         /// ** Tile insertion logic
 
-        let i = boardData.length;
+        let i = boardData.tokens.length;
         // Find the height of the lowest open cell in this column
-        while (i >= 0 && boardData[i]?.[column]?.playerID === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED) {
+        while (i >= 0 && boardData.tokens[i]?.[column]?.playerID === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED) {
             i--;
         }
         i++; // i is the highest *non*-empty position. Shift it up to the lowest *empty* position
 
         // i >= boardData.length means that there are no empty cells in this column,
         // This means an invalid input was given, so just exit early
-        if (i >= boardData.length) throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
+        if (i >= boardData.tokens.length) throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
 
         // Create a new token and add it to the game board
         const token = Token.createToken(tokenType, playerID);

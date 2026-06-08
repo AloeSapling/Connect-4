@@ -1,30 +1,19 @@
-import { P_TokenTypes, type GameBoard, type TTokenTypes } from '../../types.ts';
-import type { TDirections } from '../constants.ts';
+import { P_TokenTypes, type TTokenTypes } from '../../types.ts';
+import type { GameBoard } from '../gameBoard.ts';
 import Token from './base.ts';
 
 export class StandardToken extends Token {
     public tokenType: TTokenTypes = P_TokenTypes.TOKEN_TYPES_STANDARD;
+    public count: number = 1;
 
     remove(gameBoard: GameBoard) {
-        const decrementCount = (token: Token, direction: TDirections) => token.addCount(-1, direction);
-
-        // Decrement the count of all connected tiles
-        this.performOnConsecutiveDiagonalNWSE(gameBoard, decrementCount);
-        this.performOnConsecutiveDiagonalNESW(gameBoard, decrementCount);
-        this.performOnConsecutiveHorizontal(gameBoard, decrementCount);
-        this.performOnConsecutiveVertical(gameBoard, decrementCount);
+        this.removeSelfFromLines(gameBoard);
     }
 
     place(gameBoard: GameBoard, newRow: number, newColumn: number) {
         super.place(gameBoard, newRow, newColumn);
 
-        const incrementCount = (token: Token, direction: TDirections) => token.addCount(1, direction);
-
-        // Increment the count of all connected tiles
-        this.performOnConsecutiveDiagonalNWSE(gameBoard, incrementCount);
-        this.performOnConsecutiveDiagonalNESW(gameBoard, incrementCount);
-        this.performOnConsecutiveHorizontal(gameBoard, incrementCount);
-        this.performOnConsecutiveVertical(gameBoard, incrementCount);
+        this.addSelfToLines(gameBoard);
     }
 
     tickTurn() {}

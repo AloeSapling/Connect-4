@@ -1,14 +1,16 @@
 import { GAME_WIN_COUNT } from '../../config.ts';
 import type { shared } from '../proto.js';
-import { P_TokenTypes, type GameBoard, type GameStates, type TPlayerIDs } from '../types.ts';
+import { P_TokenTypes, type TPlayerIDs } from '../types.ts';
+import type { GameBoard } from './gameBoard.ts';
 import type Token from './tokens/base.ts';
+import type { GameStates } from './types.ts';
 
 /** Formats the boardData found on the server into the appropriate protobuf message
  * @returns The formatted data
  * */
 function boardDataToProtobufBoard(boardData: GameBoard): shared.IGameBoard {
     return {
-        rows: boardData.map((columns: Token[]) => ({
+        rows: boardData.tokens.map((columns: Token[]) => ({
             tokens: columns.map((token: Token) => ({
                 playerId: token.playerID,
                 tokenType: token.type,
@@ -40,33 +42,38 @@ function checkGameState(gameBoard: GameBoard): {
         state: 'NOT_FINISHED',
     };
 
+    // Check if the board is full
     let isFull = true;
+    for (let i = 0; i < gameBoard.tokens.length; i++) {
+        for (let j = 0; j < (gameBoard.tokens[i]?.length || 0); j++) {
+            const tokenRow = gameBoard.tokens[i];
+            if (!tokenRow) continue;
 
-    for (let i = 0; i < gameBoard.length; i++) {
-        for (let j = 0; j < (gameBoard[i]?.length || 0); j++) {
-            const token = gameBoard[i]?.[j];
+            const token = tokenRow[j];
 
             if (!token) continue;
 
             // Check if any tile is empty
             if (token.type === P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) isFull = false;
+        }
+    }
 
-            // We only need to know if the *highest* count passes the check
-            const maxCount = Object.values(token.count).reduce((acc, cur) => {
-                if (cur > acc) return cur;
-                return acc;
-            }, 0);
+    for (const line of gameBoard.lines) {
+        if (line.tokenCoordinates.length >= 1 && line.countTotal >= GAME_WIN_COUNT) {
+            const tokenCoords = line.tokenCoordinates[0];
+            if (!tokenCoords) continue;
 
-            // Check if a token is connected with enough other tokens
-            if (maxCount >= GAME_WIN_COUNT) {
-                // If both players win at the same time then it is considered a draw
-                if (gameState.state === 'WIN' && gameState.winner === token.playerID) {
-                    gameState.state = 'DRAW';
-                    return gameState;
-                } else {
-                    gameState.state = 'WIN';
-                    gameState.winner = token.playerID;
-                }
+            const tokenRow = gameBoard.tokens[tokenCoords[1]];
+            if (!tokenRow) continue;
+
+            const token = tokenRow[tokenCoords[0]];
+            if (!token) continue;
+
+            if (gameState.state === 'WIN') {
+                if (gameState.winner !== token.playerID) gameState.state = 'DRAW';
+            } else {
+                gameState.state = 'WIN';
+                gameState.winner = token.playerID;
             }
         }
     }

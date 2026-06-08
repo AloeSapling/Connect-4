@@ -7,6 +7,8 @@ export class LineObj {
     public tokenCoordinates: Coordinate[] = [];
     /** A map of token to its count bonus / penalty */
     public countEffects: Record<string, number> = {};
+    /** The total counts summed up from the tokens in this line */
+    public countTotal: number = 0;
     /** The index of this line in the game board */
     public boardIdx: number;
 

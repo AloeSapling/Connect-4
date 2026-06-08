@@ -11,7 +11,6 @@ import {
 } from '../../lib/types.ts';
 import { getPartialUserDataByPlayerID, getPlayerID } from '../../database-sqllite/lobbyMembers.ts';
 import { broadcastToRoom } from '../../lib/lib.ts';
-import { TileChecker } from '../../lib/game.ts';
 import { ws as p_ws } from '../../lib/proto.js';
 import { boardDataToProtobufBoard, checkGameState, getNextPlayer } from '../../lib/game/lib.ts';
 
