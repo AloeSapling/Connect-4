@@ -99,6 +99,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
             if (!rooms[lobbyCode]) return;
 
             const packet = p_ws.GamePacket.decode(new Uint8Array(data as Buffer));
+            console.log(packet.toJSON());
 
             switch (packet.action) {
                 case p_ws.GameActions.GAME_ACTIONS_INSERT_TOKEN: {
@@ -133,6 +134,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                         // Format the game's board to be sent to the client
                         const protoBoard = boardDataToProtobufBoard(gameData.board);
 
+
                         // Check for wins and draws
                         const gameState = checkGameState(gameData.board);
 
@@ -157,9 +159,9 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                                 tokenType: tokenType,
                                             },
                                         },
-                                        board: protoBoard,
                                         winner: winnerData,
                                         loser: loserData,
+                                        board: protoBoard,
                                     },
                                 })
                             );
@@ -211,17 +213,19 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                             })
                         );
                     } catch (err) {
-                        const formattedError = {
-                            code: (err as CodedError).code,
-                            error: (err as CodedError).error.toString(),
-                        };
+                        if ((err as CodedError).code && (err as CodedError).error) {
+                            const formattedError = {
+                                code: (err as CodedError).code,
+                                error: (err as CodedError).error.toString(),
+                            };
 
-                        ws.send(
-                            wsEncode({
-                                response: p_ws.GameResponses.GAME_RESPONSES_ERROR,
-                                error: formattedError,
-                            })
-                        );
+                            ws.send(
+                                wsEncode({
+                                    response: p_ws.GameResponses.GAME_RESPONSES_ERROR,
+                                    error: formattedError,
+                                })
+                            );
+                        } else console.log(err);
                     }
                     break;
                 }
@@ -229,6 +233,10 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                 case p_ws.GameActions.GAME_ACTIONS_FORFEIT:
                     try {
                         const [winner, loser] = await gameRedis.forfeitGame(lobbyCode, wsPlayerID);
+
+                        const gameData = await gameRedis.getGameData(lobbyCode);
+
+                        const protoBoard = boardDataToProtobufBoard(gameData.board);
 
                         broadcastToRoom(
                             rooms[lobbyCode],
@@ -238,6 +246,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                     endType: p_ws.GameEndTypes.GAME_END_TYPES_FORFEITED,
                                     winner: winner,
                                     loser: loser,
+                                    board: protoBoard,
                                 },
                             })
                         );

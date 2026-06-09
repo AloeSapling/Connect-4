@@ -31,4 +31,5 @@ export class LineObj {
 
         this.tokenCoordinates = [...this.tokenCoordinates, ...other.tokenCoordinates];
     }
+
 }

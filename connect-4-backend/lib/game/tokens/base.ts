@@ -1,11 +1,19 @@
 import { CodedError, P_ErrorCodes, P_PlayerIDs, P_TokenTypes, type TPlayerIDs, type TTokenTypes } from '../../types.ts';
-import { EmptyToken } from './empty.ts';
-import { StandardToken } from './regular.ts';
 import type { GameBoard } from '../gameBoard.ts';
 import { LineObj } from '../lineObj.ts';
-import { DirectionVectors, Lines, LineToDirections, type TDirections, type TLines } from '../types.ts';
+import { DirectionVectors, Lines, LineToDirections, type TLines } from '../types.ts';
 
 export default abstract class Token {
+    private static prototypeMap: Record<number, object> = {};
+
+    static register(tokenType: number, proto: object) {
+        Token.prototypeMap[tokenType] = proto;
+    }
+
+    static getPrototype(type: number): object | undefined {
+        return Token.prototypeMap[type];
+    }
+
     // ** Public properties
     /** The count added to a line whenever this adds itself to a line */
     public count: number = 0;
@@ -21,11 +29,11 @@ export default abstract class Token {
 
     public type: TTokenTypes = P_TokenTypes.TOKEN_TYPES_UNSPECIFIED;
     public playerID: TPlayerIDs = P_PlayerIDs.PLAYER_IDS_UNSPECIFIED;
-    // **
 
-    // Private properties
     private row: number = -1;
     private column: number = -1;
+    // **
+
 
     constructor(_playerID?: TPlayerIDs, _type?: TTokenTypes) {
         if (_playerID) this.playerID = _playerID;
@@ -66,15 +74,6 @@ export default abstract class Token {
         this.remove(gameBoard);
 
         this.place(gameBoard, newRow, newColumn);
-    }
-
-    static createToken(tokenType: TTokenTypes, playerID: TPlayerIDs): Token {
-        switch (tokenType) {
-            case P_TokenTypes.TOKEN_TYPES_STANDARD:
-                return new StandardToken(playerID);
-            default:
-                return new EmptyToken();
-        }
     }
 
     // /** Performs an action on the 8 tiles / tokens surrounding this one

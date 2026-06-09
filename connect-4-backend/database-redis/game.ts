@@ -1,18 +1,18 @@
 import { redis } from '../app.ts';
 import { GAME_COLUMNS, GAME_ROWS, LOBBY_KEEP_ALIVE_TIME } from '../config.ts';
-import { CodedError, P_ErrorCodes, P_PlayerIDs, type TPlayerIDs, type TTokenTypes } from '../lib/types.ts';
+import { CodedError, P_ErrorCodes, P_PlayerIDs, P_TokenTypes, type TPlayerIDs, type TTokenTypes } from '../lib/types.ts';
 import { getPartialUserDataByPlayerID } from '../database-sqllite/lobbyMembers.ts';
 import type { models } from '../lib/proto.js';
 import Token from '../lib/game/tokens/base.ts';
-import { EmptyToken } from '../lib/game/tokens/empty.ts';
 import { getNextPlayer } from '../lib/game/lib.ts';
 import type { GameData } from '../lib/game/types.ts';
 import { GameBoard } from '../lib/game/gameBoard.ts';
+import { TokenFactory } from '../lib/game/tokens/tokenFactory.ts';
 
 /** The list of tokens used to instantiate the initial game board */
 const initialTokens: Token[][] = [];
 for (let i = 0; i < GAME_ROWS; i++) {
-    initialTokens[i] = Array.from({ length: GAME_COLUMNS }, () => new EmptyToken());
+    initialTokens[i] = Array.from({ length: GAME_COLUMNS }, () => TokenFactory.createToken(P_TokenTypes.TOKEN_TYPES_UNSPECIFIED));
 }
 
 /** The board used when creating a new game */
@@ -126,7 +126,7 @@ export async function getGameData(lobbyCode: string): Promise<GameData> {
     if (!board || !turn) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_EXPIRED);
 
     try {
-        const boardData = (await JSON.parse(board)) as GameBoard;
+        const boardData = GameBoard.revive(JSON.parse(board));
         const turnData = Number(turn) as TPlayerIDs;
 
         return {
@@ -211,7 +211,7 @@ export async function insertToken(
 
         let boardData: GameBoard;
         try {
-            boardData = (await JSON.parse(board)) as GameBoard;
+            boardData = GameBoard.revive(JSON.parse(board));
         } catch {
             throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
         }
@@ -220,9 +220,10 @@ export async function insertToken(
 
         /// ** Tile insertion logic
 
-        let i = boardData.tokens.length;
+        let i = boardData.tokens.length - 1;
         // Find the height of the lowest open cell in this column
         while (i >= 0 && boardData.tokens[i]?.[column]?.playerID === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED) {
+            console.log(boardData.tokens[i]?.[column]);
             i--;
         }
         i++; // i is the highest *non*-empty position. Shift it up to the lowest *empty* position
@@ -232,8 +233,10 @@ export async function insertToken(
         if (i >= boardData.tokens.length) throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
 
         // Create a new token and add it to the game board
-        const token = Token.createToken(tokenType, playerID);
+        const token = TokenFactory.createToken(tokenType, playerID);
         token.place(boardData, i, column);
+
+        console.log(token);
 
         // **
 

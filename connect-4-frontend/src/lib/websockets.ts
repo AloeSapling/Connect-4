@@ -1,6 +1,6 @@
 import { SERVER_URL_WS } from './config.js';
-import { ws as p_ws } from './proto.js';
-import { P_CodedError, P_ErrorCodes } from './types.js';
+import { models, ws as p_ws } from './proto.js';
+import { P_CodedError, P_ErrorCodes, P_TokenTypes } from './types.js';
 
 /** Helper functions that initialises a websocket connection
  *
@@ -78,12 +78,13 @@ export class GameWebSocket {
     }
 
     /** Inserts a tile at the given column */
-    insertTile(column: number) {
+    insertToken(column: number) {
         this.ws.send(
             p_ws.GamePacket.encode({
-                action: p_ws.GameActions.GAME_ACTIONS_INSERT_TILE,
-                insertTile: {
+                action: p_ws.GameActions.GAME_ACTIONS_INSERT_TOKEN,
+                insertToken: {
                     column: column,
+                    tokenType: P_TokenTypes.TOKEN_TYPES_STANDARD,
                 },
             }).finish()
         );

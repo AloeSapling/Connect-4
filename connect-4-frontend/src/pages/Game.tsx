@@ -96,6 +96,8 @@ function Game() {
         console.log("Test");
 
         GameWebSocket.create(lobbyCode, (packet) => {
+
+            console.log(packet.toJSON());
             switch (packet.response) {
                 case proto.ws.GameResponses.GAME_RESPONSES_UNSPECIFIED:
                     if (currentTurn === userPlayerID) setCanMove(true);
@@ -108,20 +110,20 @@ function Game() {
                 case proto.ws.GameResponses.GAME_RESPONSES_MOVE:
                     console.log(packet.toJSON());
                     if (!packet.move?.turn) return;
-                    
+
                     setCurrentTurn(packet.move?.turn); // temp
                     setUserPlayerID(packet.move?.turn); // TESTING
 
                     if (packet.move.turn === userPlayerID) setCanMove(true);
 
-                    gameCanvasRef.current?.insertToken(packet.move?.token?.column!, packet.move?.token?.row!, packet.move.token?.playerID!);
+                    gameCanvasRef.current?.insertToken(packet.move?.tile?.column!, packet.move?.tile?.row!, packet.move.tile.token?.playerId!);
 
                     break;
                 case proto.ws.GameResponses.GAME_RESPONSES_END:
                     console.log(packet.toJSON());
                     if (!packet.end) return;
 
-                    if (packet.end.token) gameCanvasRef.current?.insertToken(packet.end?.token?.column!, packet.end?.token?.row!, packet.end.token?.playerID!);
+                    if (packet.end.tile?.token) gameCanvasRef.current?.insertToken(packet.end?.tile?.column!, packet.end?.tile?.row!, packet.end.tile.token?.playerId!);
 
                     switch (packet.end.endType) {
                         case proto.ws.GameEndTypes.GAME_END_TYPES_DRAW:
@@ -157,10 +159,15 @@ function Game() {
 
 
     const handleMakeMove = (column: number) => {
+        console.log(currentTurn, userPlayerID, canMove);
+        console.log(currentTurn !== currentTurn);
+        console.log(!canMove);
         if (userPlayerID !== currentTurn || !canMove) return;
 
+        console.log(column);
+
         setCanMove(false);
-        wsRef.current?.insertTile(column);
+        wsRef.current?.insertToken(column);
     };
 
     const handleColumnEnter = (column: number) => {
@@ -211,7 +218,10 @@ function Game() {
                     {Array.from({ length: GAME_COLUMNS }, (_, col) => (
                         <button
                             key={col}
-                            onClick={() => handleMakeMove(col)}
+                            onClick={() => {
+                                console.log("what");
+                                handleMakeMove(col)
+                            }}
                             onMouseEnter={() => handleColumnEnter(col)}
                             onMouseLeave={() => handleColumnLeave()}
                             className="pointer-events-auto z-30 flex-1 h-full cursor-pointer"
@@ -221,19 +231,19 @@ function Game() {
             }
 
             {userPlayerID !== types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED ?
-            <>
-                {results === "" &&
-                    <Button className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20" onClick={forfeitGameButton}>
-                        {texts.forfeitButton}
-                    </Button>
-                }
-            </>
-            :
-            <Button className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20" onClick={leaveLobbyButton}>
-                {texts.resultsLeaveButton}
-            </Button>
+                <>
+                    {results === "" &&
+                        <Button className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20" onClick={forfeitGameButton}>
+                            {texts.forfeitButton}
+                        </Button>
+                    }
+                </>
+                :
+                <Button className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20" onClick={leaveLobbyButton}>
+                    {texts.resultsLeaveButton}
+                </Button>
             }
-                
+
 
             {results !== "" &&
                 <div className="

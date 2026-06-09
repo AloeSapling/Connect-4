@@ -7,20 +7,21 @@ import "shared/shared.proto";
 
 // Request / client packets
 
-message GameInsertTile {
+message GameInsertToken {
   int32 column = 1;
+  models.TokenTypes token_type = 2;
 }
 
 enum GameActions {
   GAME_ACTIONS_UNSPECIFIED = 0;
-  GAME_ACTIONS_INSERT_TILE = 1;
+  GAME_ACTIONS_INSERT_TOKEN = 1;
   GAME_ACTIONS_FORFEIT = 2;
 }
 
 message GamePacket {
   GameActions action = 1;
   oneof data {
-    GameInsertTile insert_tile = 2;
+    GameInsertToken insert_token = 2;
   }
 }
 
@@ -44,6 +45,7 @@ message GameEnd {
   optional Tile tile = 2;
   optional models.PartialUser winner = 3;
   optional models.PartialUser loser = 4;
+  shared.GameBoard board = 5;
 }
 
 message GameMove {
