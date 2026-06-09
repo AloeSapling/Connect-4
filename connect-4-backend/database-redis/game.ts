@@ -8,7 +8,8 @@ import { getNextPlayer } from '../lib/game/lib.ts';
 import type { GameData } from '../lib/game/types.ts';
 import { GameBoard } from '../lib/game/gameBoard.ts';
 import { TokenFactory } from '../lib/game/tokens/tokenFactory.ts';
-import { LineObj } from '../lib/game/lineObj.ts';
+import { NegativeToken } from '../lib/game/tokens/negative.ts';
+import { AuraToken } from '../lib/game/tokens/aura.ts';
 
 /** The list of tokens used to instantiate the initial game board */
 const initialTokens: Token[][] = [];
@@ -143,11 +144,22 @@ export async function getGameData(lobbyCode: string): Promise<GameData> {
 async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPlayerIDs) {
     // ** Game board updates
 
-    for (let i = 0; i < gameBoard.tokens.length; i++) {
-        for (let j = 0; j < (gameBoard.tokens[i]?.length || 0); j++) {
-            gameBoard.tokens[i]?.[j]?.tickTurn(gameBoard);
+    /** A list of tokens that have an effect triggered every time the round ends
+     * The list is comprised in the order that the effects are meant to trigger
+     * */
+    const tokenIndexesWithTurnTick = [NegativeToken.activeInstanceIndexes, AuraToken.activeInstanceIndexes];
+
+    tokenIndexesWithTurnTick.forEach((instanceIndexes) => {
+        for (const coord of instanceIndexes) {
+            const tokenRow = gameBoard.tokens[coord[1]];
+            if (!tokenRow) continue;
+
+            const token = tokenRow[coord[0]];
+            if (!token) continue;
+
+            token.tickTurn(gameBoard);
         }
-    }
+    });
 
     // **
 

@@ -65,7 +65,13 @@ function checkGameState(gameBoard: GameBoard): {
         const line = gameBoard.lines[lineIdx];
         if (!line) continue;
 
-        if (line.tokenCoordinates.length >= 1 && line.countTotal >= GAME_WIN_COUNT) {
+        line.recalculateCountEffects(gameBoard);
+
+        let fullCount = line.countTotal;
+
+        Object.values(line.countEffects).forEach((val) => (fullCount += val));
+
+        if (line.tokenCoordinates.length >= 1 && fullCount >= GAME_WIN_COUNT) {
             const tokenCoords = line.tokenCoordinates[0];
             if (!tokenCoords) continue;
 

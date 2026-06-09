@@ -3,17 +3,17 @@ import type { GameBoard } from '../gameBoard.ts';
 import type { Coordinate } from '../types.ts';
 import Token from './base.ts';
 
-export class AuraToken extends Token {
-    public type: TTokenTypes = P_TokenTypes.TOKEN_TYPES_AURA;
+export class NegativeToken extends Token {
+    public type: TTokenTypes = P_TokenTypes.TOKEN_TYPES_NEGATIVE;
     public count: number = 0;
 
     private countEffectName: string;
-    private countEffectValue: number = 1;
+    private countEffectValue: number = -1;
 
     private static instanceCount = 0;
 
     static {
-        Token.register(P_TokenTypes.TOKEN_TYPES_AURA, AuraToken.prototype);
+        Token.register(P_TokenTypes.TOKEN_TYPES_NEGATIVE, NegativeToken.prototype);
     }
 
     static activeInstanceIndexes: Coordinate[] = [];
@@ -21,21 +21,21 @@ export class AuraToken extends Token {
     constructor(_playerID?: TPlayerIDs, _type?: TTokenTypes) {
         super(_playerID, _type);
 
-        AuraToken.instanceCount++;
-        this.countEffectName = `AuraToken_${AuraToken.instanceCount}`;
+        NegativeToken.instanceCount++;
+        this.countEffectName = `NegativeToken_${NegativeToken.instanceCount}`;
     }
 
     remove(gameBoard: GameBoard) {
         this.removeSelfFromLines(gameBoard);
 
         this.doAround(gameBoard, (token: Token) => {
-            if (token.playerID === this.playerID) {
+            if (token.playerID !== this.playerID) {
                 token.removeCountEffect(this.countEffectName);
             }
         });
 
         // Remove this token from the list of active instances
-        AuraToken.activeInstanceIndexes.filter((elem) => !(elem[0] === this.column && elem[1] === this.row));
+        NegativeToken.activeInstanceIndexes.filter((elem) => !(elem[0] === this.column && elem[1] === this.row));
     }
 
     place(gameBoard: GameBoard, newRow: number, newColumn: number) {
@@ -44,12 +44,12 @@ export class AuraToken extends Token {
         this.addSelfToLines(gameBoard);
 
         // Add this token to the list of active indexes
-        AuraToken.activeInstanceIndexes.push([this.column, this.row]);
+        NegativeToken.activeInstanceIndexes.push([this.column, this.row]);
     }
 
     tickTurn(gameBoard: GameBoard) {
         this.doAround(gameBoard, (token: Token) => {
-            if (token.playerID === this.playerID) {
+            if (token.playerID !== this.playerID) {
                 token.addCountEffect(this.countEffectName, this.countEffectValue);
             }
         });

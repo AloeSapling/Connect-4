@@ -7,7 +7,10 @@ export class LineObj {
     public lineType: TLines;
     /** A list of the indexes of the tokens that form this line */
     public tokenCoordinates: Coordinate[] = [];
-    /** A map of token to its count bonus / penalty */
+    /** A map of token to its count bonus / penalty
+     *
+     * Stored as a map so that the same effect appearing on multiple tokens doesn't count more than once
+     * */
     public countEffects: Record<string, number> = {};
     /** The total counts summed up from the tokens in this line */
     public countTotal: number = 0;
@@ -28,6 +31,28 @@ export class LineObj {
         gameBoard.lines.push(this);
     }
 
+    /** Recalculates this line's count effects */
+    recalculateCountEffects(gameBoard: GameBoard) {
+        this.countEffects = {};
+
+        for (const coord of this.tokenCoordinates) {
+            // Coords are of form [column / x, row / y];
+            const tokenRow = gameBoard.tokens[coord[1]];
+            if (!tokenRow) continue;
+
+            const token = tokenRow[coord[0]];
+            if (!token) continue;
+
+            Object.entries(token.getCountEffects()).forEach(([key, val]) => {
+                this.countEffects[key] = val;
+            });
+        }
+    }
+
+    /** Merges this line with another line
+     *
+     * Removes elements from the other line and adds them to this one
+     * */
     merge(gameBoard: GameBoard, other: LineObj) {
         if (this.lineType !== other.lineType) return;
 
@@ -41,6 +66,8 @@ export class LineObj {
 
             this.addToken(gameBoard, token);
         }
+
+        other.tokenCoordinates = [];
 
         this.lineChanged();
     }
