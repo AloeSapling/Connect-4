@@ -162,12 +162,13 @@ function Game() {
         };
     }, []);
 
+    const [tokenType, setTokenType] = useState(types.P_TokenTypes.TOKEN_TYPES_STANDARD);
 
     const handleMakeMove = (column: number) => {
         if (userPlayerID !== currentTurn || !canMove) return;
 
         setCanMove(false);
-        wsRef.current?.insertToken(column);
+        wsRef.current?.insertToken(column, tokenType);
     };
 
     const handleColumnEnter = (column: number) => {
@@ -236,6 +237,7 @@ function Game() {
                             {texts.forfeitButton}
                         </Button>
                     }
+                    <input value={tokenType} onChange={(e) => setTokenType(Number(e.target.value) as types.TTokenTypes)} />
                 </>
                 :
                 <Button className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20" onClick={leaveLobbyButton}>
