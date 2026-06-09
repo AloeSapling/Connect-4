@@ -28,7 +28,10 @@ function Game() {
     const [currentBoardState, setCurrentBoardState] = useState(queryData?.game?.board ??
         proto.shared.GameBoard.create({
             rows: Array.from({ length: GAME_ROWS }, () => ({
-                columns: Array.from({ length: GAME_COLUMNS }, () => types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED),
+                tokens: Array.from({ length: GAME_COLUMNS }, () => ({
+                    playerId: types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
+                    tokenType: types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
+                })),
             })),
         })
     );
@@ -159,12 +162,7 @@ function Game() {
 
 
     const handleMakeMove = (column: number) => {
-        console.log(currentTurn, userPlayerID, canMove);
-        console.log(currentTurn !== currentTurn);
-        console.log(!canMove);
         if (userPlayerID !== currentTurn || !canMove) return;
-
-        console.log(column);
 
         setCanMove(false);
         wsRef.current?.insertToken(column);
@@ -219,7 +217,6 @@ function Game() {
                         <button
                             key={col}
                             onClick={() => {
-                                console.log("what");
                                 handleMakeMove(col)
                             }}
                             onMouseEnter={() => handleColumnEnter(col)}

@@ -8,6 +8,7 @@ import { getNextPlayer } from '../lib/game/lib.ts';
 import type { GameData } from '../lib/game/types.ts';
 import { GameBoard } from '../lib/game/gameBoard.ts';
 import { TokenFactory } from '../lib/game/tokens/tokenFactory.ts';
+import { LineObj } from '../lib/game/lineObj.ts';
 
 /** The list of tokens used to instantiate the initial game board */
 const initialTokens: Token[][] = [];
@@ -140,11 +141,15 @@ export async function getGameData(lobbyCode: string): Promise<GameData> {
 
 /** Performs all the actions that happen whenever a turn ends */
 async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPlayerIDs) {
+    // ** Game board updates
+
     for (let i = 0; i < gameBoard.tokens.length; i++) {
         for (let j = 0; j < (gameBoard.tokens[i]?.length || 0); j++) {
             gameBoard.tokens[i]?.[j]?.tickTurn(gameBoard);
         }
     }
+
+    // **
 
     /// ** Redis database update
 
@@ -192,6 +197,9 @@ export async function insertToken(
 ): Promise<number> {
     if (column < 0 || column > GAME_COLUMNS - 1) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
 
+    const turnTime = await redis.get(`GameData_${lobbyCode}:turnTime`);
+    if (!turnTime) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_EXPIRED);
+
     // Watch for changes to implement entry locking
     await redis.watch(`GameData_${lobbyCode}:board`);
     await redis.watch(`GameData_${lobbyCode}:turn`);
@@ -223,7 +231,6 @@ export async function insertToken(
         let i = boardData.tokens.length - 1;
         // Find the height of the lowest open cell in this column
         while (i >= 0 && boardData.tokens[i]?.[column]?.playerID === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED) {
-            console.log(boardData.tokens[i]?.[column]);
             i--;
         }
         i++; // i is the highest *non*-empty position. Shift it up to the lowest *empty* position

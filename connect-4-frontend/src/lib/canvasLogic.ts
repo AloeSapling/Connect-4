@@ -1,13 +1,13 @@
-import { BOARD_START_HEIGHT, BOARD_START_WIDTH, BOARD_SLOT_DISTANCE, GAME_ROWS, GAME_COLUMNS, STEP } from "./config.js";
-import * as types from "@/lib/types.js";
-import * as proto from "./proto.js";
+import { BOARD_START_HEIGHT, BOARD_START_WIDTH, BOARD_SLOT_DISTANCE, GAME_ROWS, GAME_COLUMNS, STEP } from './config.js';
+import * as types from '@/lib/types.js';
+import * as proto from './proto.js';
 
-import BoardTable from "../assets/board_table.png";
-import BoardFront from "../assets/board_front.png";
-import BoardBack from "../assets/board_back.png";
-import ColIndic from "../assets/board_indicator.png";
-import TokenP1 from "../assets/board_token1.png";
-import TokenP2 from "../assets/board_token2.png";
+import BoardTable from '../assets/board_table.png';
+import BoardFront from '../assets/board_front.png';
+import BoardBack from '../assets/board_back.png';
+import ColIndic from '../assets/board_indicator.png';
+import TokenP1 from '../assets/board_token1.png';
+import TokenP2 from '../assets/board_token2.png';
 
 type FallingToken = {
     column: number;
@@ -24,7 +24,7 @@ type FallingToken = {
 type ColumnIndicator = {
     display: boolean;
     column: number;
-}
+};
 
 class GameCanvas {
     private readonly canvas: HTMLCanvasElement;
@@ -33,7 +33,7 @@ class GameCanvas {
     private columnIndicator: ColumnIndicator = {
         display: false,
         column: 0,
-    }
+    };
 
     private boardTable = new Image();
     private boardFront = new Image();
@@ -55,27 +55,26 @@ class GameCanvas {
     }
 
     // Map of token sources used for token rendering
-    private tokenMap: Map<
-        proto.shared.PlayerIDs,
-        HTMLImageElement | undefined
-    > = new Map([
+    private tokenMap: Map<proto.shared.PlayerIDs, HTMLImageElement | undefined> = new Map([
         [types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED, undefined],
         [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenP1],
-        [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenP2]
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenP2],
     ]);
 
-    private currentBoardState: proto.shared.IGameBoard =
-    proto.shared.GameBoard.create({
+    private currentBoardState: proto.shared.IGameBoard = proto.shared.GameBoard.create({
         rows: Array.from({ length: GAME_ROWS }, () => ({
-            columns: Array.from({ length: GAME_COLUMNS }, () => types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED)
-        }))
+            tokens: Array.from({ length: GAME_COLUMNS }, () => ({
+                playerId: types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
+                tokenType: types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED,
+            })),
+        })),
     });
 
     public setBoardState(board: proto.shared.IGameBoard) {
         this.currentBoardState = structuredClone(board);
     }
 
-    // Last time that the loop was called 
+    // Last time that the loop was called
     private lastTime: number = 0;
     // How many ms have passed since last game state update
     private accumulator: number = 0;
@@ -91,10 +90,7 @@ class GameCanvas {
     // };
     ///// ***************************************************************
 
-    public displayColumnIndicator(
-        display: boolean,
-        column: number,
-    ) {
+    public displayColumnIndicator(display: boolean, column: number) {
         this.columnIndicator.display = display;
         this.columnIndicator.column = column;
     }
@@ -102,35 +98,27 @@ class GameCanvas {
     private drawColumnIndicator() {
         if (this.columnIndicator.display === false) return;
 
-        this.ctx.drawImage(
-            this.colIndic,
-            ((this.columnIndicator.column * BOARD_SLOT_DISTANCE) + BOARD_START_WIDTH + 4),
-            20
-        )
+        this.ctx.drawImage(this.colIndic, this.columnIndicator.column * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH + 4, 20);
     }
 
-    public insertToken(
-        column: number,
-        row: number,
-        player: types.TPlayerIDs,
-    ) {
-        const x = (column * BOARD_SLOT_DISTANCE) + BOARD_START_WIDTH;
-    
+    public insertToken(column: number, row: number, player: types.TPlayerIDs) {
+        const x = column * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH;
+
         // Starting position
         const startY: number = 0;
-    
-        const targetY = (((GAME_ROWS - 1) - row) * BOARD_SLOT_DISTANCE) + BOARD_START_HEIGHT;
-    
+
+        const targetY = (GAME_ROWS - 1 - row) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT;
+
         this.fallingTokens.push({
             column,
             targetRow: row,
             player,
-        
+
             x,
             y: startY,
             targetY,
-        
-            velocity: 0
+
+            velocity: 0,
         });
     }
 
@@ -147,8 +135,10 @@ class GameCanvas {
                 token.y = token.targetY;
 
                 // Commit token to board state
-                this.currentBoardState.rows![token.targetRow]
-                    .columns![token.column] = token.player;
+                this.currentBoardState.rows![token.targetRow].tokens![token.column] = {
+                    playerId: token.player,
+                    tokenType: types.P_TokenTypes.TOKEN_TYPES_STANDARD,
+                };
 
                 this.fallingTokens.splice(i, 1);
             }
@@ -161,11 +151,7 @@ class GameCanvas {
 
             if (!img) continue;
 
-            this.ctx.drawImage(
-                img,
-                token.x,
-                token.y
-            );
+            this.ctx.drawImage(img, token.x, token.y);
         }
     }
 
@@ -190,17 +176,18 @@ class GameCanvas {
 
     private drawTokens = () => {
         for (let i = 0; i < this.currentBoardState.rows!.length; i++) {
-            for (let j = 0; j < this.currentBoardState.rows![i].columns!.length; j++) {
-                const token = this.currentBoardState.rows![i].columns![j];
-                if (token) {
+            for (let j = 0; j < this.currentBoardState.rows![i].tokens!.length; j++) {
+                const token = this.currentBoardState.rows![i].tokens![j];
+                if (token && token.playerId !== 0) {
                     this.ctx.drawImage(
-                        this.tokenMap.get(this.currentBoardState.rows![i].columns![j])!,
-                        ((j * BOARD_SLOT_DISTANCE) + BOARD_START_WIDTH),
-                        ((((this.currentBoardState.rows!.length - 1) - i) * BOARD_SLOT_DISTANCE) + BOARD_START_HEIGHT));
+                        this.tokenMap.get(this.currentBoardState.rows![i].tokens![j].playerId!)!,
+                        j * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH,
+                        (this.currentBoardState.rows!.length - 1 - i) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT
+                    );
                 }
             }
         }
-    }
+    };
 
     // time - current time of loop update
     public gameLoop = (time: number) => {

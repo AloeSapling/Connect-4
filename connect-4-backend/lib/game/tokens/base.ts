@@ -30,10 +30,9 @@ export default abstract class Token {
     public type: TTokenTypes = P_TokenTypes.TOKEN_TYPES_UNSPECIFIED;
     public playerID: TPlayerIDs = P_PlayerIDs.PLAYER_IDS_UNSPECIFIED;
 
-    private row: number = -1;
-    private column: number = -1;
+    public row: number = -1;
+    public column: number = -1;
     // **
-
 
     constructor(_playerID?: TPlayerIDs, _type?: TTokenTypes) {
         if (_playerID) this.playerID = _playerID;
@@ -128,15 +127,22 @@ export default abstract class Token {
             if (offsetToken && offsetToken.playerID === this.playerID) {
                 const lineObjIdx = offsetToken.lines[line];
 
-                if (lineObjIdx === null && lineObj === null) lineObj = new LineObj(gameBoard, line);
-                else if (lineObjIdx !== null) {
+                if (lineObjIdx === null && lineObj === null) {
+                    lineObj = new LineObj(gameBoard, line);
+
+                    lineObj.addToken(gameBoard, offsetToken);
+                } else if (lineObjIdx !== null) {
                     const tempLineObj = gameBoard.lines[lineObjIdx];
 
                     if (lineObj === null) {
                         if (tempLineObj) lineObj = tempLineObj;
-                        else lineObj = new LineObj(gameBoard, line);
+                        else {
+                            lineObj = new LineObj(gameBoard, line);
+
+                            lineObj.addToken(gameBoard, offsetToken);
+                        }
                     } else if (tempLineObj) {
-                        lineObj.merge(tempLineObj);
+                        lineObj.merge(gameBoard, tempLineObj);
                     }
                 }
             }
@@ -146,18 +152,10 @@ export default abstract class Token {
             // ** Add this token to the line
             lineObj.tokenCoordinates.push([this.column, this.row]);
 
-            // Sort the coordinates from the left-most or bottom-most token. Left-most is prioritised over bottom-most
-            const directionVector = DirectionVectors[directions[0]];
-            lineObj.tokenCoordinates.sort((a, b) => {
-                const val1 = a[0] * directionVector[0] + a[1] * directionVector[1];
-                const val2 = b[0] * directionVector[0] + b[1] * directionVector[1];
+            // Keep the tokens sorted - very important
+            lineObj.sortTokens();
 
-                return val2 - val1;
-            });
-
-            lineObj.countTotal += this.count;
-
-            this.lines[line] = lineObj.boardIdx;
+            lineObj.addToken(gameBoard, this);
 
             // **
         }
@@ -185,28 +183,15 @@ export default abstract class Token {
         // Second line goes first because it removes elements from the current lineObj when it is formed
 
         /** The tokens that will be in the second split list */
-        const tokenCoordinates2 = lineObj.tokenCoordinates.splice(idx + 1);
+        const tokenCoordinates2 = lineObj.removeTokensFromIdx(gameBoard, idx + 1);
 
         // If the line would be composed of only one token
-        // then don't create a line and remove the line from the token
-        if (tokenCoordinates2.length === 1) {
-            const loneTokenCoords = tokenCoordinates2[0];
-
-            const loneTokenRow = gameBoard.tokens[loneTokenCoords![1]];
-            if (loneTokenRow) {
-                const loneTokenObj = loneTokenRow[loneTokenCoords![0]];
-                if (loneTokenObj) {
-                    loneTokenObj.lines[line] = null;
-                }
-            }
-        }
+        // then don't create a line
 
         // If the line would have more than 1 token
         // then create it and update each token appropriately
-        else if (tokenCoordinates2.length !== 0) {
+        if (tokenCoordinates2.length > 1) {
             const lineObj2 = new LineObj(gameBoard, line, tokenCoordinates2);
-
-            gameBoard.lines.push(lineObj2);
 
             for (const coords of tokenCoordinates2) {
                 // Coords are of form [column / x, row / y];
@@ -216,11 +201,7 @@ export default abstract class Token {
                 const tmpToken = tmpTokenRow[coords[0]];
                 if (!tmpToken) continue;
 
-                // Line will be added at the end of gameBoard so it's index will be the last one
-                tmpToken.lines[line] = gameBoard.lines.length - 1;
-
-                lineObj2.countTotal += tmpToken.count;
-                lineObj.countTotal -= tmpToken.count;
+                lineObj2.addToken(gameBoard, tmpToken);
             }
         }
 
@@ -229,10 +210,8 @@ export default abstract class Token {
         // ** The first line formed from the split
         // The lineObj is reused
 
-        // After forming the second line, this token is the last one in the array
-        lineObj.tokenCoordinates.splice(idx);
-
-        lineObj.countTotal -= this.count;
+        // Remove this token from the line
+        lineObj.removeTokenAtIdx(gameBoard, idx);
 
         // The other tokens in the line already have this one set as their line obj
         // It wouldn't be worth removing empty or 1-element lines, so they are kept despite that

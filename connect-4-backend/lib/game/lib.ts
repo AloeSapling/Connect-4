@@ -2,6 +2,7 @@ import { GAME_WIN_COUNT } from '../../config.ts';
 import type { shared } from '../proto.js';
 import { P_TokenTypes, type TPlayerIDs } from '../types.ts';
 import type { GameBoard } from './gameBoard.ts';
+import { LineObj } from './lineObj.ts';
 import type Token from './tokens/base.ts';
 import type { GameStates } from './types.ts';
 
@@ -28,6 +29,8 @@ function getNextPlayer(currentPlayer: TPlayerIDs): TPlayerIDs {
  *
  * A win exists when a token has a high enough count / is connected to enough other consecutive tokens. This count is defined in the config.
  * A draw exists if both players have a win or the board is full
+ *
+ * Resets the list of changed lines
  *
  * @returns An object containing the state and the player ID of the winner if there is a winner
  * */
@@ -58,7 +61,11 @@ function checkGameState(gameBoard: GameBoard): {
         }
     }
 
-    for (const line of gameBoard.lines) {
+    console.log(LineObj.changedLines);
+    for (const lineIdx of LineObj.changedLines) {
+        const line = gameBoard.lines[lineIdx];
+        if (!line) continue;
+
         if (line.tokenCoordinates.length >= 1 && line.countTotal >= GAME_WIN_COUNT) {
             const tokenCoords = line.tokenCoordinates[0];
             if (!tokenCoords) continue;
@@ -77,6 +84,8 @@ function checkGameState(gameBoard: GameBoard): {
             }
         }
     }
+
+    LineObj.resetChangedLines();
 
     if (gameState.state !== 'WIN' && isFull) gameState.state = 'DRAW';
 
