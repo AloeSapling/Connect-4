@@ -94,6 +94,15 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
 
         const wsPlayerID = ws['playerID'];
 
+        ws.send(
+            wsEncode({
+                response: p_ws.GameResponses.GAME_RESPONSES_INIT,
+                init: {
+                    playerId: wsPlayerID,
+                },
+            })
+        );
+
         // Handle incomming messages / packets
         ws.on('message', async (data) => {
             if (!rooms[lobbyCode]) return;
@@ -133,7 +142,6 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
 
                         // Format the game's board to be sent to the client
                         const protoBoard = boardDataToProtobufBoard(gameData.board);
-
 
                         // Check for wins and draws
                         const gameState = checkGameState(gameData.board);

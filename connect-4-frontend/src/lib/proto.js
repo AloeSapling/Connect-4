@@ -7579,6 +7579,545 @@ export const ws = $root.ws = (() => {
         return Tile;
     })();
 
+    ws.GameInit = (function() {
+
+        /**
+         * Properties of a GameInit.
+         * @memberof ws
+         * @interface IGameInit
+         * @property {shared.PlayerIDs|null} [playerId] GameInit playerId
+         */
+
+        /**
+         * Constructs a new GameInit.
+         * @memberof ws
+         * @classdesc Represents a GameInit.
+         * @implements IGameInit
+         * @constructor
+         * @param {ws.IGameInit=} [properties] Properties to set
+         */
+        function GameInit(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * GameInit playerId.
+         * @member {shared.PlayerIDs} playerId
+         * @memberof ws.GameInit
+         * @instance
+         */
+        GameInit.prototype.playerId = 0;
+
+        /**
+         * Creates a new GameInit instance using the specified properties.
+         * @function create
+         * @memberof ws.GameInit
+         * @static
+         * @param {ws.IGameInit=} [properties] Properties to set
+         * @returns {ws.GameInit} GameInit instance
+         */
+        GameInit.create = function create(properties) {
+            return new GameInit(properties);
+        };
+
+        /**
+         * Encodes the specified GameInit message. Does not implicitly {@link ws.GameInit.verify|verify} messages.
+         * @function encode
+         * @memberof ws.GameInit
+         * @static
+         * @param {ws.IGameInit} message GameInit message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GameInit.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.playerId != null && Object.hasOwnProperty.call(message, "playerId"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.playerId);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified GameInit message, length delimited. Does not implicitly {@link ws.GameInit.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof ws.GameInit
+         * @static
+         * @param {ws.IGameInit} message GameInit message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GameInit.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a GameInit message from the specified reader or buffer.
+         * @function decode
+         * @memberof ws.GameInit
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {ws.GameInit} GameInit
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GameInit.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameInit();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.playerId = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a GameInit message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof ws.GameInit
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {ws.GameInit} GameInit
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GameInit.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a GameInit message.
+         * @function verify
+         * @memberof ws.GameInit
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        GameInit.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                switch (message.playerId) {
+                default:
+                    return "playerId: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                    break;
+                }
+            return null;
+        };
+
+        /**
+         * Creates a GameInit message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof ws.GameInit
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {ws.GameInit} GameInit
+         */
+        GameInit.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.GameInit)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.ws.GameInit();
+            switch (object.playerId) {
+            default:
+                if (typeof object.playerId === "number") {
+                    message.playerId = object.playerId;
+                    break;
+                }
+                break;
+            case "PLAYER_IDS_UNSPECIFIED":
+            case 0:
+                message.playerId = 0;
+                break;
+            case "PLAYER_IDS_PLAYER1":
+            case 1:
+                message.playerId = 1;
+                break;
+            case "PLAYER_IDS_PLAYER2":
+            case 2:
+                message.playerId = 2;
+                break;
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a GameInit message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof ws.GameInit
+         * @static
+         * @param {ws.GameInit} message GameInit
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        GameInit.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.playerId = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                object.playerId = options.enums === String ? $root.shared.PlayerIDs[message.playerId] === undefined ? message.playerId : $root.shared.PlayerIDs[message.playerId] : message.playerId;
+            return object;
+        };
+
+        /**
+         * Converts this GameInit to JSON.
+         * @function toJSON
+         * @memberof ws.GameInit
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        GameInit.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for GameInit
+         * @function getTypeUrl
+         * @memberof ws.GameInit
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        GameInit.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/ws.GameInit";
+        };
+
+        return GameInit;
+    })();
+
+    ws.GameMove = (function() {
+
+        /**
+         * Properties of a GameMove.
+         * @memberof ws
+         * @interface IGameMove
+         * @property {ws.ITile|null} [tile] GameMove tile
+         * @property {shared.IGameBoard|null} [board] GameMove board
+         * @property {shared.PlayerIDs|null} [turn] GameMove turn
+         */
+
+        /**
+         * Constructs a new GameMove.
+         * @memberof ws
+         * @classdesc Represents a GameMove.
+         * @implements IGameMove
+         * @constructor
+         * @param {ws.IGameMove=} [properties] Properties to set
+         */
+        function GameMove(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * GameMove tile.
+         * @member {ws.ITile|null|undefined} tile
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.tile = null;
+
+        /**
+         * GameMove board.
+         * @member {shared.IGameBoard|null|undefined} board
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.board = null;
+
+        /**
+         * GameMove turn.
+         * @member {shared.PlayerIDs} turn
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.turn = 0;
+
+        /**
+         * Creates a new GameMove instance using the specified properties.
+         * @function create
+         * @memberof ws.GameMove
+         * @static
+         * @param {ws.IGameMove=} [properties] Properties to set
+         * @returns {ws.GameMove} GameMove instance
+         */
+        GameMove.create = function create(properties) {
+            return new GameMove(properties);
+        };
+
+        /**
+         * Encodes the specified GameMove message. Does not implicitly {@link ws.GameMove.verify|verify} messages.
+         * @function encode
+         * @memberof ws.GameMove
+         * @static
+         * @param {ws.IGameMove} message GameMove message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GameMove.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.tile != null && Object.hasOwnProperty.call(message, "tile"))
+                $root.ws.Tile.encode(message.tile, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.board != null && Object.hasOwnProperty.call(message, "board"))
+                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.turn != null && Object.hasOwnProperty.call(message, "turn"))
+                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.turn);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified GameMove message, length delimited. Does not implicitly {@link ws.GameMove.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof ws.GameMove
+         * @static
+         * @param {ws.IGameMove} message GameMove message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GameMove.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a GameMove message from the specified reader or buffer.
+         * @function decode
+         * @memberof ws.GameMove
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {ws.GameMove} GameMove
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GameMove.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameMove();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.tile = $root.ws.Tile.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 2: {
+                        message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 3: {
+                        message.turn = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a GameMove message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof ws.GameMove
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {ws.GameMove} GameMove
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GameMove.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a GameMove message.
+         * @function verify
+         * @memberof ws.GameMove
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        GameMove.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.tile != null && message.hasOwnProperty("tile")) {
+                let error = $root.ws.Tile.verify(message.tile, long + 1);
+                if (error)
+                    return "tile." + error;
+            }
+            if (message.board != null && message.hasOwnProperty("board")) {
+                let error = $root.shared.GameBoard.verify(message.board, long + 1);
+                if (error)
+                    return "board." + error;
+            }
+            if (message.turn != null && message.hasOwnProperty("turn"))
+                switch (message.turn) {
+                default:
+                    return "turn: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                    break;
+                }
+            return null;
+        };
+
+        /**
+         * Creates a GameMove message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof ws.GameMove
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {ws.GameMove} GameMove
+         */
+        GameMove.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.GameMove)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.ws.GameMove();
+            if (object.tile != null) {
+                if (typeof object.tile !== "object")
+                    throw TypeError(".ws.GameMove.tile: object expected");
+                message.tile = $root.ws.Tile.fromObject(object.tile, long + 1);
+            }
+            if (object.board != null) {
+                if (typeof object.board !== "object")
+                    throw TypeError(".ws.GameMove.board: object expected");
+                message.board = $root.shared.GameBoard.fromObject(object.board, long + 1);
+            }
+            switch (object.turn) {
+            default:
+                if (typeof object.turn === "number") {
+                    message.turn = object.turn;
+                    break;
+                }
+                break;
+            case "PLAYER_IDS_UNSPECIFIED":
+            case 0:
+                message.turn = 0;
+                break;
+            case "PLAYER_IDS_PLAYER1":
+            case 1:
+                message.turn = 1;
+                break;
+            case "PLAYER_IDS_PLAYER2":
+            case 2:
+                message.turn = 2;
+                break;
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a GameMove message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof ws.GameMove
+         * @static
+         * @param {ws.GameMove} message GameMove
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        GameMove.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.tile = null;
+                object.board = null;
+                object.turn = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
+            }
+            if (message.tile != null && message.hasOwnProperty("tile"))
+                object.tile = $root.ws.Tile.toObject(message.tile, options);
+            if (message.board != null && message.hasOwnProperty("board"))
+                object.board = $root.shared.GameBoard.toObject(message.board, options);
+            if (message.turn != null && message.hasOwnProperty("turn"))
+                object.turn = options.enums === String ? $root.shared.PlayerIDs[message.turn] === undefined ? message.turn : $root.shared.PlayerIDs[message.turn] : message.turn;
+            return object;
+        };
+
+        /**
+         * Converts this GameMove to JSON.
+         * @function toJSON
+         * @memberof ws.GameMove
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        GameMove.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for GameMove
+         * @function getTypeUrl
+         * @memberof ws.GameMove
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        GameMove.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/ws.GameMove";
+        };
+
+        return GameMove;
+    })();
+
     ws.GameEnd = (function() {
 
         /**
@@ -7975,319 +8514,23 @@ export const ws = $root.ws = (() => {
         return GameEnd;
     })();
 
-    ws.GameMove = (function() {
-
-        /**
-         * Properties of a GameMove.
-         * @memberof ws
-         * @interface IGameMove
-         * @property {ws.ITile|null} [tile] GameMove tile
-         * @property {shared.IGameBoard|null} [board] GameMove board
-         * @property {shared.PlayerIDs|null} [turn] GameMove turn
-         */
-
-        /**
-         * Constructs a new GameMove.
-         * @memberof ws
-         * @classdesc Represents a GameMove.
-         * @implements IGameMove
-         * @constructor
-         * @param {ws.IGameMove=} [properties] Properties to set
-         */
-        function GameMove(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * GameMove tile.
-         * @member {ws.ITile|null|undefined} tile
-         * @memberof ws.GameMove
-         * @instance
-         */
-        GameMove.prototype.tile = null;
-
-        /**
-         * GameMove board.
-         * @member {shared.IGameBoard|null|undefined} board
-         * @memberof ws.GameMove
-         * @instance
-         */
-        GameMove.prototype.board = null;
-
-        /**
-         * GameMove turn.
-         * @member {shared.PlayerIDs} turn
-         * @memberof ws.GameMove
-         * @instance
-         */
-        GameMove.prototype.turn = 0;
-
-        /**
-         * Creates a new GameMove instance using the specified properties.
-         * @function create
-         * @memberof ws.GameMove
-         * @static
-         * @param {ws.IGameMove=} [properties] Properties to set
-         * @returns {ws.GameMove} GameMove instance
-         */
-        GameMove.create = function create(properties) {
-            return new GameMove(properties);
-        };
-
-        /**
-         * Encodes the specified GameMove message. Does not implicitly {@link ws.GameMove.verify|verify} messages.
-         * @function encode
-         * @memberof ws.GameMove
-         * @static
-         * @param {ws.IGameMove} message GameMove message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GameMove.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.tile != null && Object.hasOwnProperty.call(message, "tile"))
-                $root.ws.Tile.encode(message.tile, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            if (message.board != null && Object.hasOwnProperty.call(message, "board"))
-                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-            if (message.turn != null && Object.hasOwnProperty.call(message, "turn"))
-                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.turn);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified GameMove message, length delimited. Does not implicitly {@link ws.GameMove.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof ws.GameMove
-         * @static
-         * @param {ws.IGameMove} message GameMove message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GameMove.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a GameMove message from the specified reader or buffer.
-         * @function decode
-         * @memberof ws.GameMove
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {ws.GameMove} GameMove
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GameMove.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameMove();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.tile = $root.ws.Tile.decode(reader, reader.uint32(), undefined, long + 1);
-                        break;
-                    }
-                case 2: {
-                        message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
-                        break;
-                    }
-                case 3: {
-                        message.turn = reader.int32();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a GameMove message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof ws.GameMove
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.GameMove} GameMove
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GameMove.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a GameMove message.
-         * @function verify
-         * @memberof ws.GameMove
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        GameMove.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.tile != null && message.hasOwnProperty("tile")) {
-                let error = $root.ws.Tile.verify(message.tile, long + 1);
-                if (error)
-                    return "tile." + error;
-            }
-            if (message.board != null && message.hasOwnProperty("board")) {
-                let error = $root.shared.GameBoard.verify(message.board, long + 1);
-                if (error)
-                    return "board." + error;
-            }
-            if (message.turn != null && message.hasOwnProperty("turn"))
-                switch (message.turn) {
-                default:
-                    return "turn: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                    break;
-                }
-            return null;
-        };
-
-        /**
-         * Creates a GameMove message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof ws.GameMove
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {ws.GameMove} GameMove
-         */
-        GameMove.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.GameMove)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.GameMove();
-            if (object.tile != null) {
-                if (typeof object.tile !== "object")
-                    throw TypeError(".ws.GameMove.tile: object expected");
-                message.tile = $root.ws.Tile.fromObject(object.tile, long + 1);
-            }
-            if (object.board != null) {
-                if (typeof object.board !== "object")
-                    throw TypeError(".ws.GameMove.board: object expected");
-                message.board = $root.shared.GameBoard.fromObject(object.board, long + 1);
-            }
-            switch (object.turn) {
-            default:
-                if (typeof object.turn === "number") {
-                    message.turn = object.turn;
-                    break;
-                }
-                break;
-            case "PLAYER_IDS_UNSPECIFIED":
-            case 0:
-                message.turn = 0;
-                break;
-            case "PLAYER_IDS_PLAYER1":
-            case 1:
-                message.turn = 1;
-                break;
-            case "PLAYER_IDS_PLAYER2":
-            case 2:
-                message.turn = 2;
-                break;
-            }
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a GameMove message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof ws.GameMove
-         * @static
-         * @param {ws.GameMove} message GameMove
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        GameMove.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults) {
-                object.tile = null;
-                object.board = null;
-                object.turn = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
-            }
-            if (message.tile != null && message.hasOwnProperty("tile"))
-                object.tile = $root.ws.Tile.toObject(message.tile, options);
-            if (message.board != null && message.hasOwnProperty("board"))
-                object.board = $root.shared.GameBoard.toObject(message.board, options);
-            if (message.turn != null && message.hasOwnProperty("turn"))
-                object.turn = options.enums === String ? $root.shared.PlayerIDs[message.turn] === undefined ? message.turn : $root.shared.PlayerIDs[message.turn] : message.turn;
-            return object;
-        };
-
-        /**
-         * Converts this GameMove to JSON.
-         * @function toJSON
-         * @memberof ws.GameMove
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        GameMove.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for GameMove
-         * @function getTypeUrl
-         * @memberof ws.GameMove
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        GameMove.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/ws.GameMove";
-        };
-
-        return GameMove;
-    })();
-
     /**
      * GameResponses enum.
      * @name ws.GameResponses
      * @enum {number}
      * @property {number} GAME_RESPONSES_UNSPECIFIED=0 GAME_RESPONSES_UNSPECIFIED value
      * @property {number} GAME_RESPONSES_ERROR=1 GAME_RESPONSES_ERROR value
-     * @property {number} GAME_RESPONSES_MOVE=2 GAME_RESPONSES_MOVE value
-     * @property {number} GAME_RESPONSES_END=3 GAME_RESPONSES_END value
+     * @property {number} GAME_RESPONSES_INIT=2 GAME_RESPONSES_INIT value
+     * @property {number} GAME_RESPONSES_MOVE=3 GAME_RESPONSES_MOVE value
+     * @property {number} GAME_RESPONSES_END=4 GAME_RESPONSES_END value
      */
     ws.GameResponses = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "GAME_RESPONSES_UNSPECIFIED"] = 0;
         values[valuesById[1] = "GAME_RESPONSES_ERROR"] = 1;
-        values[valuesById[2] = "GAME_RESPONSES_MOVE"] = 2;
-        values[valuesById[3] = "GAME_RESPONSES_END"] = 3;
+        values[valuesById[2] = "GAME_RESPONSES_INIT"] = 2;
+        values[valuesById[3] = "GAME_RESPONSES_MOVE"] = 3;
+        values[valuesById[4] = "GAME_RESPONSES_END"] = 4;
         return values;
     })();
 
@@ -8299,6 +8542,7 @@ export const ws = $root.ws = (() => {
          * @interface IGameResponsePacket
          * @property {ws.GameResponses|null} [response] GameResponsePacket response
          * @property {shared.ICodedError|null} [error] GameResponsePacket error
+         * @property {ws.IGameInit|null} [init] GameResponsePacket init
          * @property {ws.IGameMove|null} [move] GameResponsePacket move
          * @property {ws.IGameEnd|null} [end] GameResponsePacket end
          */
@@ -8335,6 +8579,14 @@ export const ws = $root.ws = (() => {
         GameResponsePacket.prototype.error = null;
 
         /**
+         * GameResponsePacket init.
+         * @member {ws.IGameInit|null|undefined} init
+         * @memberof ws.GameResponsePacket
+         * @instance
+         */
+        GameResponsePacket.prototype.init = null;
+
+        /**
          * GameResponsePacket move.
          * @member {ws.IGameMove|null|undefined} move
          * @memberof ws.GameResponsePacket
@@ -8355,12 +8607,12 @@ export const ws = $root.ws = (() => {
 
         /**
          * GameResponsePacket data.
-         * @member {"error"|"move"|"end"|undefined} data
+         * @member {"error"|"init"|"move"|"end"|undefined} data
          * @memberof ws.GameResponsePacket
          * @instance
          */
         Object.defineProperty(GameResponsePacket.prototype, "data", {
-            get: $util.oneOfGetter($oneOfFields = ["error", "move", "end"]),
+            get: $util.oneOfGetter($oneOfFields = ["error", "init", "move", "end"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -8392,10 +8644,12 @@ export const ws = $root.ws = (() => {
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.response);
             if (message.error != null && Object.hasOwnProperty.call(message, "error"))
                 $root.shared.CodedError.encode(message.error, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.init != null && Object.hasOwnProperty.call(message, "init"))
+                $root.ws.GameInit.encode(message.init, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.move != null && Object.hasOwnProperty.call(message, "move"))
-                $root.ws.GameMove.encode(message.move, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                $root.ws.GameMove.encode(message.move, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             if (message.end != null && Object.hasOwnProperty.call(message, "end"))
-                $root.ws.GameEnd.encode(message.end, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                $root.ws.GameEnd.encode(message.end, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
             return writer;
         };
 
@@ -8445,10 +8699,14 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 3: {
-                        message.move = $root.ws.GameMove.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.init = $root.ws.GameInit.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 case 4: {
+                        message.move = $root.ws.GameMove.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 5: {
                         message.end = $root.ws.GameEnd.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
@@ -8500,6 +8758,7 @@ export const ws = $root.ws = (() => {
                 case 1:
                 case 2:
                 case 3:
+                case 4:
                     break;
                 }
             if (message.error != null && message.hasOwnProperty("error")) {
@@ -8508,6 +8767,16 @@ export const ws = $root.ws = (() => {
                     let error = $root.shared.CodedError.verify(message.error, long + 1);
                     if (error)
                         return "error." + error;
+                }
+            }
+            if (message.init != null && message.hasOwnProperty("init")) {
+                if (properties.data === 1)
+                    return "data: multiple values";
+                properties.data = 1;
+                {
+                    let error = $root.ws.GameInit.verify(message.init, long + 1);
+                    if (error)
+                        return "init." + error;
                 }
             }
             if (message.move != null && message.hasOwnProperty("move")) {
@@ -8564,19 +8833,28 @@ export const ws = $root.ws = (() => {
             case 1:
                 message.response = 1;
                 break;
-            case "GAME_RESPONSES_MOVE":
+            case "GAME_RESPONSES_INIT":
             case 2:
                 message.response = 2;
                 break;
-            case "GAME_RESPONSES_END":
+            case "GAME_RESPONSES_MOVE":
             case 3:
                 message.response = 3;
+                break;
+            case "GAME_RESPONSES_END":
+            case 4:
+                message.response = 4;
                 break;
             }
             if (object.error != null) {
                 if (typeof object.error !== "object")
                     throw TypeError(".ws.GameResponsePacket.error: object expected");
                 message.error = $root.shared.CodedError.fromObject(object.error, long + 1);
+            }
+            if (object.init != null) {
+                if (typeof object.init !== "object")
+                    throw TypeError(".ws.GameResponsePacket.init: object expected");
+                message.init = $root.ws.GameInit.fromObject(object.init, long + 1);
             }
             if (object.move != null) {
                 if (typeof object.move !== "object")
@@ -8612,6 +8890,11 @@ export const ws = $root.ws = (() => {
                 object.error = $root.shared.CodedError.toObject(message.error, options);
                 if (options.oneofs)
                     object.data = "error";
+            }
+            if (message.init != null && message.hasOwnProperty("init")) {
+                object.init = $root.ws.GameInit.toObject(message.init, options);
+                if (options.oneofs)
+                    object.data = "init";
             }
             if (message.move != null && message.hasOwnProperty("move")) {
                 object.move = $root.ws.GameMove.toObject(message.move, options);

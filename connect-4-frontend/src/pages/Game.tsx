@@ -69,7 +69,7 @@ function Game() {
     const [currentTurn, setCurrentTurn] = useState<types.TPlayerIDs>(types.P_PlayerIDs.PLAYER_IDS_PLAYER1);
 
     // The user's assigned player
-    const [userPlayerID, setUserPlayerID] = useState<types.TPlayerIDs>(types.P_PlayerIDs.PLAYER_IDS_PLAYER1);
+    const [userPlayerID, setUserPlayerID] = useState<types.TPlayerIDs>(types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED);
 
     const [results, setResults] = useState<string>("");
 
@@ -110,12 +110,14 @@ function Game() {
                     if (currentTurn === userPlayerID) setCanMove(true);
                     console.log(packet.toJSON())
                     break;
+                case proto.ws.GameResponses.GAME_RESPONSES_INIT:
+                    setUserPlayerID(packet.init?.playerId || types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED);
+                    break;
                 case proto.ws.GameResponses.GAME_RESPONSES_MOVE:
                     console.log(packet.toJSON());
                     if (!packet.move?.turn) return;
 
                     setCurrentTurn(packet.move?.turn); // temp
-                    setUserPlayerID(packet.move?.turn); // TESTING
 
                     if (packet.move.turn === userPlayerID) setCanMove(true);
 

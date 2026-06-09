@@ -40,12 +40,8 @@ message Tile {
   optional models.Token token = 3;
 }
 
-message GameEnd {
-  GameEndTypes endType = 1;
-  optional Tile tile = 2;
-  optional models.PartialUser winner = 3;
-  optional models.PartialUser loser = 4;
-  shared.GameBoard board = 5;
+message GameInit {
+  shared.PlayerIDs player_id = 1;
 }
 
 message GameMove {
@@ -54,18 +50,28 @@ message GameMove {
   shared.PlayerIDs turn = 3;
 }
 
+message GameEnd {
+  GameEndTypes endType = 1;
+  optional Tile tile = 2;
+  optional models.PartialUser winner = 3;
+  optional models.PartialUser loser = 4;
+  shared.GameBoard board = 5;
+}
+
 enum GameResponses {
   GAME_RESPONSES_UNSPECIFIED = 0;
   GAME_RESPONSES_ERROR = 1;
-  GAME_RESPONSES_MOVE = 2;
-  GAME_RESPONSES_END = 3;
+  GAME_RESPONSES_INIT = 2;
+  GAME_RESPONSES_MOVE = 3;
+  GAME_RESPONSES_END = 4;
 }
 
 message GameResponsePacket {
   GameResponses response = 1;
   oneof data {
     shared.CodedError error = 2;
-    GameMove move = 3;
-    GameEnd end = 4;
+    GameInit init = 3;
+    GameMove move = 4;
+    GameEnd end = 5;
   }
 }

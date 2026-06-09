@@ -2977,6 +2977,212 @@ export namespace ws {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a GameInit. */
+    interface IGameInit {
+
+        /** GameInit playerId */
+        playerId?: (shared.PlayerIDs|null);
+    }
+
+    /** Represents a GameInit. */
+    class GameInit implements IGameInit {
+
+        /**
+         * Constructs a new GameInit.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.IGameInit);
+
+        /** GameInit playerId. */
+        public playerId: shared.PlayerIDs;
+
+        /**
+         * Creates a new GameInit instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns GameInit instance
+         */
+        public static create(properties?: ws.IGameInit): ws.GameInit;
+
+        /**
+         * Encodes the specified GameInit message. Does not implicitly {@link ws.GameInit.verify|verify} messages.
+         * @param message GameInit message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.IGameInit, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified GameInit message, length delimited. Does not implicitly {@link ws.GameInit.verify|verify} messages.
+         * @param message GameInit message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.IGameInit, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a GameInit message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns GameInit
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameInit;
+
+        /**
+         * Decodes a GameInit message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns GameInit
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameInit;
+
+        /**
+         * Verifies a GameInit message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a GameInit message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns GameInit
+         */
+        public static fromObject(object: { [k: string]: any }): ws.GameInit;
+
+        /**
+         * Creates a plain object from a GameInit message. Also converts values to other types if specified.
+         * @param message GameInit
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.GameInit, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this GameInit to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for GameInit
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GameMove. */
+    interface IGameMove {
+
+        /** GameMove tile */
+        tile?: (ws.ITile|null);
+
+        /** GameMove board */
+        board?: (shared.IGameBoard|null);
+
+        /** GameMove turn */
+        turn?: (shared.PlayerIDs|null);
+    }
+
+    /** Represents a GameMove. */
+    class GameMove implements IGameMove {
+
+        /**
+         * Constructs a new GameMove.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.IGameMove);
+
+        /** GameMove tile. */
+        public tile?: (ws.ITile|null);
+
+        /** GameMove board. */
+        public board?: (shared.IGameBoard|null);
+
+        /** GameMove turn. */
+        public turn: shared.PlayerIDs;
+
+        /**
+         * Creates a new GameMove instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns GameMove instance
+         */
+        public static create(properties?: ws.IGameMove): ws.GameMove;
+
+        /**
+         * Encodes the specified GameMove message. Does not implicitly {@link ws.GameMove.verify|verify} messages.
+         * @param message GameMove message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.IGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified GameMove message, length delimited. Does not implicitly {@link ws.GameMove.verify|verify} messages.
+         * @param message GameMove message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.IGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a GameMove message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns GameMove
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameMove;
+
+        /**
+         * Decodes a GameMove message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns GameMove
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameMove;
+
+        /**
+         * Verifies a GameMove message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a GameMove message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns GameMove
+         */
+        public static fromObject(object: { [k: string]: any }): ws.GameMove;
+
+        /**
+         * Creates a plain object from a GameMove message. Also converts values to other types if specified.
+         * @param message GameMove
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.GameMove, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this GameMove to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for GameMove
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a GameEnd. */
     interface IGameEnd {
 
@@ -3098,121 +3304,13 @@ export namespace ws {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a GameMove. */
-    interface IGameMove {
-
-        /** GameMove tile */
-        tile?: (ws.ITile|null);
-
-        /** GameMove board */
-        board?: (shared.IGameBoard|null);
-
-        /** GameMove turn */
-        turn?: (shared.PlayerIDs|null);
-    }
-
-    /** Represents a GameMove. */
-    class GameMove implements IGameMove {
-
-        /**
-         * Constructs a new GameMove.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: ws.IGameMove);
-
-        /** GameMove tile. */
-        public tile?: (ws.ITile|null);
-
-        /** GameMove board. */
-        public board?: (shared.IGameBoard|null);
-
-        /** GameMove turn. */
-        public turn: shared.PlayerIDs;
-
-        /**
-         * Creates a new GameMove instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns GameMove instance
-         */
-        public static create(properties?: ws.IGameMove): ws.GameMove;
-
-        /**
-         * Encodes the specified GameMove message. Does not implicitly {@link ws.GameMove.verify|verify} messages.
-         * @param message GameMove message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: ws.IGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified GameMove message, length delimited. Does not implicitly {@link ws.GameMove.verify|verify} messages.
-         * @param message GameMove message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: ws.IGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a GameMove message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns GameMove
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameMove;
-
-        /**
-         * Decodes a GameMove message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns GameMove
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameMove;
-
-        /**
-         * Verifies a GameMove message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a GameMove message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns GameMove
-         */
-        public static fromObject(object: { [k: string]: any }): ws.GameMove;
-
-        /**
-         * Creates a plain object from a GameMove message. Also converts values to other types if specified.
-         * @param message GameMove
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: ws.GameMove, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this GameMove to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for GameMove
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
     /** GameResponses enum. */
     enum GameResponses {
         GAME_RESPONSES_UNSPECIFIED = 0,
         GAME_RESPONSES_ERROR = 1,
-        GAME_RESPONSES_MOVE = 2,
-        GAME_RESPONSES_END = 3
+        GAME_RESPONSES_INIT = 2,
+        GAME_RESPONSES_MOVE = 3,
+        GAME_RESPONSES_END = 4
     }
 
     /** Properties of a GameResponsePacket. */
@@ -3223,6 +3321,9 @@ export namespace ws {
 
         /** GameResponsePacket error */
         error?: (shared.ICodedError|null);
+
+        /** GameResponsePacket init */
+        init?: (ws.IGameInit|null);
 
         /** GameResponsePacket move */
         move?: (ws.IGameMove|null);
@@ -3246,6 +3347,9 @@ export namespace ws {
         /** GameResponsePacket error. */
         public error?: (shared.ICodedError|null);
 
+        /** GameResponsePacket init. */
+        public init?: (ws.IGameInit|null);
+
         /** GameResponsePacket move. */
         public move?: (ws.IGameMove|null);
 
@@ -3253,7 +3357,7 @@ export namespace ws {
         public end?: (ws.IGameEnd|null);
 
         /** GameResponsePacket data. */
-        public data?: ("error"|"move"|"end");
+        public data?: ("error"|"init"|"move"|"end");
 
         /**
          * Creates a new GameResponsePacket instance using the specified properties.
