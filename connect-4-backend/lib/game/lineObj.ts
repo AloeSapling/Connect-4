@@ -32,6 +32,7 @@ export class LineObj {
         if (this.lineType !== other.lineType) return;
 
         for (const coord of other.tokenCoordinates) {
+            // Coords are of form [column / x, row / y];
             const tokenRow = gameBoard.tokens[coord[1]];
             if (!tokenRow) continue;
 

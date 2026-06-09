@@ -7829,6 +7829,7 @@ export const ws = $root.ws = (() => {
          * @property {ws.ITile|null} [tile] GameMove tile
          * @property {shared.IGameBoard|null} [board] GameMove board
          * @property {shared.PlayerIDs|null} [turn] GameMove turn
+         * @property {Array.<ws.ITile>|null} [changeTiles] GameMove changeTiles
          */
 
         /**
@@ -7840,6 +7841,7 @@ export const ws = $root.ws = (() => {
          * @param {ws.IGameMove=} [properties] Properties to set
          */
         function GameMove(properties) {
+            this.changeTiles = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -7871,6 +7873,14 @@ export const ws = $root.ws = (() => {
         GameMove.prototype.turn = 0;
 
         /**
+         * GameMove changeTiles.
+         * @member {Array.<ws.ITile>} changeTiles
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.changeTiles = $util.emptyArray;
+
+        /**
          * Creates a new GameMove instance using the specified properties.
          * @function create
          * @memberof ws.GameMove
@@ -7900,6 +7910,9 @@ export const ws = $root.ws = (() => {
                 $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.turn != null && Object.hasOwnProperty.call(message, "turn"))
                 writer.uint32(/* id 3, wireType 0 =*/24).int32(message.turn);
+            if (message.changeTiles != null && message.changeTiles.length)
+                for (let i = 0; i < message.changeTiles.length; ++i)
+                    $root.ws.Tile.encode(message.changeTiles[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             return writer;
         };
 
@@ -7950,6 +7963,12 @@ export const ws = $root.ws = (() => {
                     }
                 case 3: {
                         message.turn = reader.int32();
+                        break;
+                    }
+                case 4: {
+                        if (!(message.changeTiles && message.changeTiles.length))
+                            message.changeTiles = [];
+                        message.changeTiles.push($root.ws.Tile.decode(reader, reader.uint32(), undefined, long + 1));
                         break;
                     }
                 default:
@@ -8010,6 +8029,15 @@ export const ws = $root.ws = (() => {
                 case 2:
                     break;
                 }
+            if (message.changeTiles != null && message.hasOwnProperty("changeTiles")) {
+                if (!Array.isArray(message.changeTiles))
+                    return "changeTiles: array expected";
+                for (let i = 0; i < message.changeTiles.length; ++i) {
+                    let error = $root.ws.Tile.verify(message.changeTiles[i], long + 1);
+                    if (error)
+                        return "changeTiles." + error;
+                }
+            }
             return null;
         };
 
@@ -8059,6 +8087,16 @@ export const ws = $root.ws = (() => {
                 message.turn = 2;
                 break;
             }
+            if (object.changeTiles) {
+                if (!Array.isArray(object.changeTiles))
+                    throw TypeError(".ws.GameMove.changeTiles: array expected");
+                message.changeTiles = [];
+                for (let i = 0; i < object.changeTiles.length; ++i) {
+                    if (typeof object.changeTiles[i] !== "object")
+                        throw TypeError(".ws.GameMove.changeTiles: object expected");
+                    message.changeTiles[i] = $root.ws.Tile.fromObject(object.changeTiles[i], long + 1);
+                }
+            }
             return message;
         };
 
@@ -8075,6 +8113,8 @@ export const ws = $root.ws = (() => {
             if (!options)
                 options = {};
             let object = {};
+            if (options.arrays || options.defaults)
+                object.changeTiles = [];
             if (options.defaults) {
                 object.tile = null;
                 object.board = null;
@@ -8086,6 +8126,11 @@ export const ws = $root.ws = (() => {
                 object.board = $root.shared.GameBoard.toObject(message.board, options);
             if (message.turn != null && message.hasOwnProperty("turn"))
                 object.turn = options.enums === String ? $root.shared.PlayerIDs[message.turn] === undefined ? message.turn : $root.shared.PlayerIDs[message.turn] : message.turn;
+            if (message.changeTiles && message.changeTiles.length) {
+                object.changeTiles = [];
+                for (let j = 0; j < message.changeTiles.length; ++j)
+                    object.changeTiles[j] = $root.ws.Tile.toObject(message.changeTiles[j], options);
+            }
             return object;
         };
 
@@ -8129,6 +8174,7 @@ export const ws = $root.ws = (() => {
          * @property {models.IPartialUser|null} [winner] GameEnd winner
          * @property {models.IPartialUser|null} [loser] GameEnd loser
          * @property {shared.IGameBoard|null} [board] GameEnd board
+         * @property {Array.<ws.ITile>|null} [changeTiles] GameEnd changeTiles
          */
 
         /**
@@ -8140,6 +8186,7 @@ export const ws = $root.ws = (() => {
          * @param {ws.IGameEnd=} [properties] Properties to set
          */
         function GameEnd(properties) {
+            this.changeTiles = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -8185,6 +8232,14 @@ export const ws = $root.ws = (() => {
          * @instance
          */
         GameEnd.prototype.board = null;
+
+        /**
+         * GameEnd changeTiles.
+         * @member {Array.<ws.ITile>} changeTiles
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.changeTiles = $util.emptyArray;
 
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
@@ -8241,6 +8296,9 @@ export const ws = $root.ws = (() => {
                 $root.models.PartialUser.encode(message.loser, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             if (message.board != null && Object.hasOwnProperty.call(message, "board"))
                 $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.changeTiles != null && message.changeTiles.length)
+                for (let i = 0; i < message.changeTiles.length; ++i)
+                    $root.ws.Tile.encode(message.changeTiles[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
             return writer;
         };
 
@@ -8299,6 +8357,12 @@ export const ws = $root.ws = (() => {
                     }
                 case 5: {
                         message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 6: {
+                        if (!(message.changeTiles && message.changeTiles.length))
+                            message.changeTiles = [];
+                        message.changeTiles.push($root.ws.Tile.decode(reader, reader.uint32(), undefined, long + 1));
                         break;
                     }
                 default:
@@ -8380,6 +8444,15 @@ export const ws = $root.ws = (() => {
                 if (error)
                     return "board." + error;
             }
+            if (message.changeTiles != null && message.hasOwnProperty("changeTiles")) {
+                if (!Array.isArray(message.changeTiles))
+                    return "changeTiles: array expected";
+                for (let i = 0; i < message.changeTiles.length; ++i) {
+                    let error = $root.ws.Tile.verify(message.changeTiles[i], long + 1);
+                    if (error)
+                        return "changeTiles." + error;
+                }
+            }
             return null;
         };
 
@@ -8443,6 +8516,16 @@ export const ws = $root.ws = (() => {
                     throw TypeError(".ws.GameEnd.board: object expected");
                 message.board = $root.shared.GameBoard.fromObject(object.board, long + 1);
             }
+            if (object.changeTiles) {
+                if (!Array.isArray(object.changeTiles))
+                    throw TypeError(".ws.GameEnd.changeTiles: array expected");
+                message.changeTiles = [];
+                for (let i = 0; i < object.changeTiles.length; ++i) {
+                    if (typeof object.changeTiles[i] !== "object")
+                        throw TypeError(".ws.GameEnd.changeTiles: object expected");
+                    message.changeTiles[i] = $root.ws.Tile.fromObject(object.changeTiles[i], long + 1);
+                }
+            }
             return message;
         };
 
@@ -8459,6 +8542,8 @@ export const ws = $root.ws = (() => {
             if (!options)
                 options = {};
             let object = {};
+            if (options.arrays || options.defaults)
+                object.changeTiles = [];
             if (options.defaults) {
                 object.endType = options.enums === String ? "GAME_END_TYPES_UNSPECIFIED" : 0;
                 object.board = null;
@@ -8482,6 +8567,11 @@ export const ws = $root.ws = (() => {
             }
             if (message.board != null && message.hasOwnProperty("board"))
                 object.board = $root.shared.GameBoard.toObject(message.board, options);
+            if (message.changeTiles && message.changeTiles.length) {
+                object.changeTiles = [];
+                for (let j = 0; j < message.changeTiles.length; ++j)
+                    object.changeTiles[j] = $root.ws.Tile.toObject(message.changeTiles[j], options);
+            }
             return object;
         };
 

@@ -12,7 +12,8 @@ import {
 import { getPartialUserDataByPlayerID, getPlayerID } from '../../database-sqllite/lobbyMembers.ts';
 import { broadcastToRoom } from '../../lib/lib.ts';
 import { ws as p_ws } from '../../lib/proto.js';
-import { boardDataToProtobufBoard, checkGameState, getNextPlayer } from '../../lib/game/lib.ts';
+import { boardDataToProtobufBoard, checkGameState, coordinatesToProtoTiles, getNextPlayer } from '../../lib/game/lib.ts';
+import Token from '../../lib/game/tokens/base.ts';
 
 type GameWebSocket = WebSocket & { lobbyCode?: string; playerID?: TPlayerIDs };
 
@@ -143,6 +144,9 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                         // Format the game's board to be sent to the client
                         const protoBoard = boardDataToProtobufBoard(gameData.board);
 
+                        // Get the tokens that caused a change that requires frontend attention and convert them to the appropriate format
+                        const protoChangeTiles = coordinatesToProtoTiles(gameData.board, Token.changeTilesList);
+
                         // Check for wins and draws
                         const gameState = checkGameState(gameData.board);
 
@@ -170,6 +174,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                         winner: winnerData,
                                         loser: loserData,
                                         board: protoBoard,
+                                        changeTiles: protoChangeTiles,
                                     },
                                 })
                             );
@@ -196,6 +201,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                             },
                                         },
                                         board: protoBoard,
+                                        changeTiles: protoChangeTiles,
                                     },
                                 })
                             );
@@ -217,6 +223,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                     },
                                     board: protoBoard,
                                     turn: gameData.turn,
+                                    changeTiles: protoChangeTiles,
                                 },
                             })
                         );

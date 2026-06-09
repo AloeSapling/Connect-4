@@ -1,9 +1,11 @@
 import { CodedError, P_ErrorCodes, P_PlayerIDs, P_TokenTypes, type TPlayerIDs, type TTokenTypes } from '../../types.ts';
 import type { GameBoard } from '../gameBoard.ts';
 import { LineObj } from '../lineObj.ts';
-import { DirectionVectors, Lines, LineToDirections, type TLines } from '../types.ts';
+import { DirectionVectors, Lines, LineToDirections, type Coordinate, type TLines } from '../types.ts';
 
 export default abstract class Token {
+    // ** Static properties and methods
+
     private static prototypeMap: Record<number, object> = {};
 
     static register(tokenType: number, proto: object) {
@@ -13,6 +15,15 @@ export default abstract class Token {
     static getPrototype(type: number): object | undefined {
         return Token.prototypeMap[type];
     }
+
+    /** List of indexes of tokens that caused a change in the board that requires the frontend's attention */
+    static changeTilesList: Coordinate[];
+
+    static resetChangeTilesList() {
+        Token.changeTilesList = [];
+    }
+
+    //**
 
     // ** Public properties
     /** The count added to a line whenever this adds itself to a line */
@@ -37,6 +48,17 @@ export default abstract class Token {
     constructor(_playerID?: TPlayerIDs, _type?: TTokenTypes) {
         if (_playerID) this.playerID = _playerID;
         if (_type) this.type = _type;
+    }
+
+    /** Adds this token to the list of tiles that caused some kind of change at the end of the round
+     *
+     * Only adds it to the list if the list doesn't include it already
+     * */
+    addToChangeTilesList() {
+        const thisCoordinate: Coordinate = [this.column, this.row];
+        if (Token.changeTilesList.includes(thisCoordinate)) {
+            Token.changeTilesList.push(thisCoordinate);
+        }
     }
 
     /** The function called whenever the token is removed from its current position */

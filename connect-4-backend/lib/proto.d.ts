@@ -3085,6 +3085,9 @@ export namespace ws {
 
         /** GameMove turn */
         turn?: (shared.PlayerIDs|null);
+
+        /** GameMove changeTiles */
+        changeTiles?: (ws.ITile[]|null);
     }
 
     /** Represents a GameMove. */
@@ -3104,6 +3107,9 @@ export namespace ws {
 
         /** GameMove turn. */
         public turn: shared.PlayerIDs;
+
+        /** GameMove changeTiles. */
+        public changeTiles: ws.ITile[];
 
         /**
          * Creates a new GameMove instance using the specified properties.
@@ -3200,6 +3206,9 @@ export namespace ws {
 
         /** GameEnd board */
         board?: (shared.IGameBoard|null);
+
+        /** GameEnd changeTiles */
+        changeTiles?: (ws.ITile[]|null);
     }
 
     /** Represents a GameEnd. */
@@ -3225,6 +3234,9 @@ export namespace ws {
 
         /** GameEnd board. */
         public board?: (shared.IGameBoard|null);
+
+        /** GameEnd changeTiles. */
+        public changeTiles: ws.ITile[];
 
         /**
          * Creates a new GameEnd instance using the specified properties.

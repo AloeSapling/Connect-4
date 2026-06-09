@@ -48,6 +48,7 @@ message GameMove {
   Tile tile = 1;
   shared.GameBoard board = 2;
   shared.PlayerIDs turn = 3;
+  repeated Tile changeTiles = 4;
 }
 
 message GameEnd {
@@ -56,6 +57,7 @@ message GameEnd {
   optional models.PartialUser winner = 3;
   optional models.PartialUser loser = 4;
   shared.GameBoard board = 5;
+  repeated Tile changeTiles = 6;
 }
 
 enum GameResponses {

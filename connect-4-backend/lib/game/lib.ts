@@ -1,10 +1,10 @@
 import { GAME_WIN_COUNT } from '../../config.ts';
-import type { shared } from '../proto.js';
+import { ws, type models, type shared } from '../proto.js';
 import { P_TokenTypes, type TPlayerIDs } from '../types.ts';
 import type { GameBoard } from './gameBoard.ts';
 import { LineObj } from './lineObj.ts';
 import type Token from './tokens/base.ts';
-import type { GameStates } from './types.ts';
+import type { Coordinate, GameStates } from './types.ts';
 
 /** Formats the boardData found on the server into the appropriate protobuf message
  * @returns The formatted data
@@ -61,7 +61,6 @@ function checkGameState(gameBoard: GameBoard): {
         }
     }
 
-    console.log(LineObj.changedLines);
     for (const lineIdx of LineObj.changedLines) {
         const line = gameBoard.lines[lineIdx];
         if (!line) continue;
@@ -92,4 +91,34 @@ function checkGameState(gameBoard: GameBoard): {
     return gameState;
 }
 
-export { boardDataToProtobufBoard, getNextPlayer, checkGameState };
+/** Converts a list of coordinates to tiles
+ *
+ * @param gameBoard - the board which is indexed with the coordinates to get the tile data
+ * */
+function coordinatesToProtoTiles(gameBoard: GameBoard, coords: Coordinate[]): ws.Tile[] {
+    const tiles: ws.Tile[] = [];
+
+    for (const coord of coords) {
+        // Coords are of form [column / x, row / y];
+        const tokenRow = gameBoard.tokens[coord[1]];
+        if (!tokenRow) continue;
+
+        const token = tokenRow[coord[0]];
+        if (!token) continue;
+
+        tiles.push(
+            ws.Tile.create({
+                row: token.row,
+                column: token.column,
+                token: {
+                    playerId: token.playerID,
+                    tokenType: token.type,
+                },
+            })
+        );
+    }
+
+    return tiles;
+}
+
+export { boardDataToProtobufBoard, getNextPlayer, checkGameState, coordinatesToProtoTiles };
