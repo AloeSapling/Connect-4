@@ -1,5 +1,5 @@
 import { GAME_WIN_COUNT } from '../../config.ts';
-import { ws, type models, type shared } from '../proto.js';
+import { ws, type shared } from '../proto.js';
 import { P_TokenTypes, type TPlayerIDs } from '../types.ts';
 import type { GameBoard } from './gameBoard.ts';
 import { LineObj } from './lineObj.ts';
@@ -65,7 +65,8 @@ function checkGameState(gameBoard: GameBoard): {
         const line = gameBoard.lines[lineIdx];
         if (!line) continue;
 
-        line.recalculateCountEffects(gameBoard);
+        if (line.shouldRecalculate)
+            line.recalculateCountEffects(gameBoard);
 
         let fullCount = line.countTotal;
 

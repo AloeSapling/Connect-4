@@ -30,7 +30,7 @@ export class NegativeToken extends Token {
 
         this.doAround(gameBoard, (token: Token) => {
             if (token.playerID !== this.playerID) {
-                token.removeCountEffect(this.countEffectName);
+                token.removeCountEffect(gameBoard, this.countEffectName);
             }
         });
 
@@ -50,7 +50,7 @@ export class NegativeToken extends Token {
     tickTurn(gameBoard: GameBoard) {
         this.doAround(gameBoard, (token: Token) => {
             if (token.playerID !== this.playerID) {
-                token.addCountEffect(this.countEffectName, this.countEffectValue);
+                token.addCountEffect(gameBoard, this.countEffectName, this.countEffectValue);
             }
         });
     }

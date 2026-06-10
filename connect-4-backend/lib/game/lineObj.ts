@@ -17,6 +17,8 @@ export class LineObj {
     /** The index of this line in the game board */
     public boardIdx: number;
 
+    public shouldRecalculate: boolean = false;
+
     constructor(
         gameBoard: GameBoard,
         _lineType: TLines,
@@ -47,6 +49,8 @@ export class LineObj {
                 this.countEffects[key] = val;
             });
         }
+
+        this.shouldRecalculate = false;
     }
 
     /** Merges this line with another line
@@ -161,7 +165,7 @@ export class LineObj {
     /** Adds this line to this list of changed lines
      * Only adds this line to the list if the array doesn't include it yet
      * */
-    private lineChanged() {
+    lineChanged() {
         if (!LineObj.changedLines.includes(this.boardIdx)) {
             LineObj.changedLines.push(this.boardIdx);
         }

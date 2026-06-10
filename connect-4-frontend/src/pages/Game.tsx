@@ -66,10 +66,15 @@ function Game() {
     const [canMove, setCanMove] = useState<boolean>(true);
 
     // Which player's turn it is
-    const [currentTurn, setCurrentTurn] = useState<types.TPlayerIDs>(types.P_PlayerIDs.PLAYER_IDS_PLAYER1);
+    console.log(queryData);
+    console.log(queryData?.game);
+    const currentTurn = useRef<types.TPlayerIDs>(queryData?.game?.turn ?? types.P_PlayerIDs.PLAYER_IDS_PLAYER1);
 
     // The user's assigned player
     const [userPlayerID, setUserPlayerID] = useState<types.TPlayerIDs>(types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED);
+    const userPlayerIDRef = useRef(userPlayerID);
+
+    useEffect(() => { userPlayerIDRef.current = userPlayerID; }, [userPlayerID]);
 
     const [results, setResults] = useState<string>("");
 
@@ -103,23 +108,26 @@ function Game() {
             console.log(packet.toJSON());
             switch (packet.response) {
                 case proto.ws.GameResponses.GAME_RESPONSES_UNSPECIFIED:
-                    if (currentTurn === userPlayerID) setCanMove(true);
+                    if (currentTurn.current === userPlayerIDRef.current) setCanMove(true);
                     console.log("unknown");
                     break;
                 case proto.ws.GameResponses.GAME_RESPONSES_ERROR:
-                    if (currentTurn === userPlayerID) setCanMove(true);
+                    if (currentTurn.current === userPlayerIDRef.current) setCanMove(true);
                     console.log(packet.toJSON())
                     break;
                 case proto.ws.GameResponses.GAME_RESPONSES_INIT:
-                    setUserPlayerID(packet.init?.playerId || types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED);
+                    console.log(packet.init?.playerId);
+                    userPlayerIDRef.current = packet.init?.playerId || types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED;
+                    setUserPlayerID(userPlayerIDRef.current);
                     break;
                 case proto.ws.GameResponses.GAME_RESPONSES_MOVE:
                     console.log(packet.toJSON());
                     if (!packet.move?.turn) return;
 
-                    setCurrentTurn(packet.move?.turn); // temp
+                    currentTurn.current = (packet.move?.turn); // temp
 
-                    if (packet.move.turn === userPlayerID) setCanMove(true);
+                    console.log(userPlayerIDRef.current);
+                    if (packet.move.turn === userPlayerIDRef.current) setCanMove(true);
 
                     gameCanvasRef.current?.insertToken(packet.move?.tile?.column!, packet.move?.tile?.row!, packet.move.tile.token?.playerId!);
 
@@ -165,7 +173,8 @@ function Game() {
     const [tokenType, setTokenType] = useState(types.P_TokenTypes.TOKEN_TYPES_STANDARD);
 
     const handleMakeMove = (column: number) => {
-        if (userPlayerID !== currentTurn || !canMove) return;
+        console.log(userPlayerID, currentTurn.current, canMove);
+        if (userPlayerID !== currentTurn.current || !canMove) return;
 
         setCanMove(false);
         wsRef.current?.insertToken(column, tokenType);
@@ -237,7 +246,7 @@ function Game() {
                             {texts.forfeitButton}
                         </Button>
                     }
-                    <input value={tokenType} onChange={(e) => setTokenType(Number(e.target.value) as types.TTokenTypes)} />
+                    <input className="z-30 absolute top-0 right-0" value={tokenType} onChange={(e) => setTokenType(Number(e.target.value) as types.TTokenTypes)} />
                 </>
                 :
                 <Button className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20" onClick={leaveLobbyButton}>

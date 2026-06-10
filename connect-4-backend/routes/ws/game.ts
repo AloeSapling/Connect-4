@@ -266,17 +266,21 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                             })
                         );
                     } catch (err) {
-                        const formattedError = {
-                            code: (err as CodedError).code,
-                            error: (err as CodedError).error.toString(),
-                        };
+                        if ((err as CodedError).code !== null && (err as CodedError).error !== null) {
+                            const formattedError = {
+                                code: (err as CodedError).code,
+                                error: (err as CodedError).error.toString(),
+                            };
 
-                        ws.send(
-                            wsEncode({
-                                response: p_ws.GameResponses.GAME_RESPONSES_ERROR,
-                                error: formattedError,
-                            })
-                        );
+                            ws.send(
+                                wsEncode({
+                                    response: p_ws.GameResponses.GAME_RESPONSES_ERROR,
+                                    error: formattedError,
+                                })
+                            );
+                        } else {
+                            console.log(err);
+                        }
                     }
                     break;
             }

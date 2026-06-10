@@ -17,7 +17,7 @@ export default abstract class Token {
     }
 
     /** List of indexes of tokens that caused a change in the board that requires the frontend's attention */
-    static changeTilesList: Coordinate[];
+    static changeTilesList: Coordinate[] = [];
 
     static resetChangeTilesList() {
         Token.changeTilesList = [];
@@ -97,12 +97,41 @@ export default abstract class Token {
         this.place(gameBoard, newRow, newColumn);
     }
 
-    addCountEffect(countEffect: string, value: number) {
+    addCountEffect(gameBoard: GameBoard, countEffect: string, value: number) {
         this.countEffects[countEffect] = value;
+
+        Object.values(this.lines).forEach((val) => {
+            if (val !== null) {
+                if (val >= 0 && val < gameBoard.lines.length) {
+
+                    const line = gameBoard.lines[val];
+
+                    if (line) {
+                        line.lineChanged();
+                        line.shouldRecalculate = true;
+                    }
+                }
+            }
+        })
     }
 
-    removeCountEffect(countEffect: string) {
+    removeCountEffect(gameBoard: GameBoard, countEffect: string) {
         delete this.countEffects[countEffect];
+
+        Object.values(this.lines).forEach((val) => {
+            if (val !== null) {
+                if (val >= 0 && val < gameBoard.lines.length) {
+
+                    const line = gameBoard.lines[val];
+
+                    if (line) {
+                        line.lineChanged();
+                        line.shouldRecalculate = true;
+                    }
+                }
+            }
+        })
+
     }
 
     getCountEffects(): Record<string, number> {
@@ -235,5 +264,5 @@ export default abstract class Token {
         // **
     }
 
-    // **
+// **
 }
