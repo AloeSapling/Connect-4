@@ -1,4 +1,3 @@
-
 import { P_TokenTypes, type TTokenTypes } from '../../types.ts';
 import type { GameBoard } from '../gameBoard.ts';
 import type { Coordinate } from '../types.ts';

@@ -73,6 +73,43 @@ export default abstract class Token {
         });
     }
 
+    /** Makes the tokens in a column fall down to their appropriate positions */
+    static fallTokens(gameBoard: GameBoard, column: number) {
+        if (column < 0) return;
+
+        // Find the lowest non empty row (the tokens will fall down to here
+        let lowestNonEmptyRow: number = -1;
+        for (let i = 0; i < gameBoard.tokens.length; i++) {
+            const tokenRow = gameBoard.tokens[i];
+            if (!tokenRow || column >= tokenRow.length) continue;
+
+            const token = tokenRow[column];
+            if (!token) continue;
+
+            if (token.type === P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) {
+                lowestNonEmptyRow = i;
+                break;
+            }
+        }
+
+        // Don't do anything if the column is full
+        if (lowestNonEmptyRow === -1) return;
+
+        // Make the tokens fall down
+        let offset = 0;
+        for (let i = lowestNonEmptyRow + 1; i < gameBoard.tokens.length; i++) {
+            const tokenRow = gameBoard.tokens[i];
+            if (!tokenRow) continue;
+
+            const token = tokenRow[column];
+            if (!token) continue;
+
+            if (token.type !== P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) {
+                token.move(gameBoard, lowestNonEmptyRow + offset, column);
+                offset++;
+            }
+        }
+    }
 
 
     /** Adds this token to the list of tiles that caused some kind of change at the end of the round
@@ -86,6 +123,25 @@ export default abstract class Token {
                 action: action,
                 tileCoord: thisCoordinate
             });
+        }
+    }
+
+    /** Calls a function on all tokens surrounding this token */
+    doAround(gameBoard: GameBoard, func: (token: Token) => void) {
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                if (i === 0 && j === 0) continue;
+
+                if (this.column + j < 0 || this.row + i < 0 || this.row + i >= gameBoard.tokens.length) continue;
+
+                const tokenRow = gameBoard.tokens[this.row + i];
+                if (!tokenRow || this.column + j >= tokenRow.length) continue;
+
+                const token = tokenRow[this.column + j];
+                if (!token) continue;
+
+                func(token);
+            }
         }
     }
 

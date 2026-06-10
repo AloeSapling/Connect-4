@@ -7,6 +7,7 @@ import { BurnToken } from "./burn.ts";
 import { NegativeToken } from "./negative.ts";
 import { FreezeToken } from "./freeze.ts";
 import { ReverseToken } from "./reverse.ts";
+import { BombToken } from "./bomb.ts";
 
 export class TokenFactory {
     static createToken(tokenType: TTokenTypes, playerID?: TPlayerIDs): Token {
@@ -23,6 +24,9 @@ export class TokenFactory {
                 return new FreezeToken(playerID);
             case P_TokenTypes.TOKEN_TYPES_REVERSE:
                 return new ReverseToken(playerID);
+            case P_TokenTypes.TOKEN_TYPES_BOMB:
+                return new BombToken(playerID);
+
             default:
                 return new EmptyToken();
         }

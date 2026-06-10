@@ -52,7 +52,6 @@ export class FreezeToken extends Token {
             if (!token) continue;
 
             token.isFrozen = true;
-            console.log("UnFroze a token!");
 
             // Makes the empty tokens count as filled
             if (token.type === P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) token.type = P_TokenTypes.TOKEN_TYPES_FROZEN;
@@ -73,11 +72,11 @@ export class FreezeToken extends Token {
 
             token.isFrozen = false;
 
-            console.log("Froze a token!");
-
             // Makes the empty tokens count as empty again
             if (token.type === P_TokenTypes.TOKEN_TYPES_FROZEN) token.type = P_TokenTypes.TOKEN_TYPES_UNSPECIFIED;
         }
+
+        Token.fallTokens(gameBoard, this.column);
 
         this.addToChangeTilesList(P_ChangeTokenActions.CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE);
     }

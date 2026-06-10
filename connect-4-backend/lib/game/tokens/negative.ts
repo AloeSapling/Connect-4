@@ -60,22 +60,4 @@ export class NegativeToken extends Token {
             }
         });
     }
-
-    doAround(gameBoard: GameBoard, func: (token: Token) => void) {
-        for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
-                if (i === 0 && j === 0) continue;
-
-                if (this.column + j < 0 || this.row + i < 0 || this.row + i >= gameBoard.tokens.length) continue;
-
-                const tokenRow = gameBoard.tokens[this.row + i];
-                if (!tokenRow || this.column + j >= tokenRow.length) continue;
-
-                const token = tokenRow[this.column + j];
-                if (!token) continue;
-
-                func(token);
-            }
-        }
-    }
 }
