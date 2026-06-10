@@ -1,6 +1,6 @@
 import { GAME_WIN_COUNT } from '../../config.ts';
-import { ws, type shared } from '../proto.js';
-import { P_TokenTypes, type TPlayerIDs } from '../types.ts';
+import { type shared } from '../proto.js';
+import { P_Tile, P_TokenTypes, type TPlayerIDs, type TTile } from '../types.ts';
 import type { GameBoard } from './gameBoard.ts';
 import { LineObj } from './lineObj.ts';
 import type Token from './tokens/base.ts';
@@ -102,8 +102,8 @@ function checkGameState(gameBoard: GameBoard): {
  *
  * @param gameBoard - the board which is indexed with the coordinates to get the tile data
  * */
-function coordinatesToProtoTiles(gameBoard: GameBoard, coords: Coordinate[]): ws.Tile[] {
-    const tiles: ws.Tile[] = [];
+function coordinatesToProtoTiles(gameBoard: GameBoard, coords: Coordinate[]): TTile[] {
+    const tiles: TTile[] = [];
 
     for (const coord of coords) {
         // Coords are of form [column / x, row / y];
@@ -114,7 +114,7 @@ function coordinatesToProtoTiles(gameBoard: GameBoard, coords: Coordinate[]): ws
         if (!token) continue;
 
         tiles.push(
-            ws.Tile.create({
+            P_Tile.create({
                 row: token.row,
                 column: token.column,
                 token: {

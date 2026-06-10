@@ -141,6 +141,7 @@ export class LineObj {
         const directionVector = DirectionVectors[directions[0]];
 
         this.tokenCoordinates.sort((a, b) => {
+            // Coords are of form [column / x, row / y];
             const val1 = a[0] * directionVector[0] + a[1] * directionVector[1];
             const val2 = b[0] * directionVector[0] + b[1] * directionVector[1];
 

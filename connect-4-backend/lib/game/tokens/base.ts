@@ -1,7 +1,7 @@
-import { CodedError, P_ErrorCodes, P_PlayerIDs, P_TokenTypes, type TPlayerIDs, type TTokenTypes } from '../../types.ts';
+import { CodedError, P_ErrorCodes, P_PlayerIDs, P_TokenTypes, type TChangeTokenActions, type TPlayerIDs, type TTokenTypes } from '../../types.ts';
 import type { GameBoard } from '../gameBoard.ts';
 import { LineObj } from '../lineObj.ts';
-import { DirectionVectors, Lines, LineToDirections, type Coordinate, type TLines } from '../types.ts';
+import { DirectionVectors, Lines, LineToDirections, type ChangeTile, type Coordinate, type TDirections, type TLines } from '../types.ts';
 
 export default abstract class Token {
     // ** Static properties and methods
@@ -17,10 +17,14 @@ export default abstract class Token {
     }
 
     /** List of indexes of tokens that caused a change in the board that requires the frontend's attention */
-    static changeTilesList: Coordinate[] = [];
+    static changeTilesList: ChangeTile[] = [];
 
     static resetChangeTilesList() {
         Token.changeTilesList = [];
+    }
+
+    static removeFromActiveInstances(instances: Coordinate[], col: number, row: number): Coordinate[] {
+        return instances.filter((elem) => !(elem[0] === col && elem[1] === row));
     }
 
     //**
@@ -44,6 +48,8 @@ export default abstract class Token {
     public row: number = -1;
     public column: number = -1;
 
+    public isFrozen: boolean = false;
+
     // ** Private properties
 
     private countEffects: Record<string, number> = {};
@@ -55,21 +61,46 @@ export default abstract class Token {
         if (_type) this.type = _type;
     }
 
+    /** Sort the list of token coordinates, sequentially from the top, down, from left to right */
+    static sortTokensSequentially(tokenCoords: Coordinate[]): Coordinate[] {
+        return tokenCoords.sort((a, b) => {
+            // Coords are of form [column / x, row / y];
+            // The element with the higher row goes first
+            if (a[1] !== b[1]) return b[1] - a[1];
+
+            // The element with the lower column goes first
+            return a[0] - b[0];
+        });
+    }
+
+
+
     /** Adds this token to the list of tiles that caused some kind of change at the end of the round
      *
      * Only adds it to the list if the list doesn't include it already
      * */
-    addToChangeTilesList() {
+    addToChangeTilesList(action: TChangeTokenActions) {
         const thisCoordinate: Coordinate = [this.column, this.row];
-        if (Token.changeTilesList.includes(thisCoordinate)) {
-            Token.changeTilesList.push(thisCoordinate);
+        if (Token.changeTilesList.findIndex((val) => val.tileCoord === thisCoordinate) === -1) {
+            Token.changeTilesList.push({
+                action: action,
+                tileCoord: thisCoordinate
+            });
         }
     }
 
     // ** Placement and board logic
 
     /** The function called whenever the token is removed from its current position */
-    abstract remove(gameBoard: GameBoard): void;
+    remove(gameBoard: GameBoard): void {
+        // Replace this token with an empty one
+        const emptyToken = new EmptyToken();
+        emptyToken.place(gameBoard, this.row, this.column)
+
+        // Unset this token's position
+        this.row = -1;
+        this.column = -1;
+    };
 
     /** The function called whenever a turn ends */
     abstract tickTurn(gameBoard: GameBoard): void;
@@ -264,5 +295,14 @@ export default abstract class Token {
         // **
     }
 
-// **
+    // **
+}
+
+export class EmptyToken extends Token {
+    static {
+        Token.register(P_TokenTypes.TOKEN_TYPES_UNSPECIFIED, EmptyToken.prototype);
+    }
+
+    remove() { }
+    tickTurn() { }
 }

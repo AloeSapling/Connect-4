@@ -14,10 +14,24 @@ enum TokenTypes {
   TOKEN_TYPES_FREEZE = 6;
   TOKEN_TYPES_BURN = 7;
   TOKEN_TYPES_REVERSE = 8;
-  TOKEN_TYPES_DOUBLE = 9;
+  TOKEN_TYPES_FROZEN = 9;
+}
+
+enum ChangeTokenActions {
+  CHANGE_TOKEN_ACTIONS_UNSPECIFIED = 0;
+  CHANGE_TOKEN_ACTIONS_BURN_DESTROY = 1;
+  CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP = 2;
+  CHANGE_TOKENS_ACTIONS_FREEZE_FROZE = 3;
+  CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE = 4;
 }
 
 message Token {
   shared.PlayerIDs player_id = 1;
   TokenTypes token_type = 2;
+}
+
+message Tile {
+  int32 row = 1;
+  int32 column = 2;
+  optional models.Token token = 3;
 }

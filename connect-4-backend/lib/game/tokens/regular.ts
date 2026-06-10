@@ -11,6 +11,8 @@ export class StandardToken extends Token {
     }
 
     remove(gameBoard: GameBoard) {
+        super.remove(gameBoard);
+
         this.removeSelfFromLines(gameBoard);
     }
 
@@ -20,5 +22,5 @@ export class StandardToken extends Token {
         this.addSelfToLines(gameBoard);
     }
 
-    tickTurn() {}
+    tickTurn() { }
 }

@@ -10,6 +10,8 @@ import { GameBoard } from '../lib/game/gameBoard.ts';
 import { TokenFactory } from '../lib/game/tokens/tokenFactory.ts';
 import { NegativeToken } from '../lib/game/tokens/negative.ts';
 import { AuraToken } from '../lib/game/tokens/aura.ts';
+import { BurnToken } from '../lib/game/tokens/burn.ts';
+import { FreezeToken } from '../lib/game/tokens/freeze.ts';
 
 /** The list of tokens used to instantiate the initial game board */
 const initialTokens: Token[][] = [];
@@ -147,10 +149,12 @@ async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPl
     /** A list of tokens that have an effect triggered every time the round ends
      * The list is comprised in the order that the effects are meant to trigger
      * */
-    const tokenIndexesWithTurnTick = [NegativeToken.activeInstanceIndexes, AuraToken.activeInstanceIndexes];
+    const tokenIndexesWithTurnTick = [FreezeToken.activeInstanceIndexes, BurnToken.activeInstanceIndexes, NegativeToken.activeInstanceIndexes, AuraToken.activeInstanceIndexes];
 
     tokenIndexesWithTurnTick.forEach((instanceIndexes) => {
-        for (const coord of instanceIndexes) {
+        const sortedCoords = Token.sortTokensSequentially(instanceIndexes);
+
+        for (const coord of sortedCoords) {
             const tokenRow = gameBoard.tokens[coord[1]];
             if (!tokenRow) continue;
 

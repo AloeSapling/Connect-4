@@ -26,7 +26,8 @@ export class AuraToken extends Token {
     }
 
     remove(gameBoard: GameBoard) {
-        this.removeSelfFromLines(gameBoard);
+        const col = this.column;
+        const row = this.row;
 
         this.doAround(gameBoard, (token: Token) => {
             if (token.playerID === this.playerID) {
@@ -34,8 +35,11 @@ export class AuraToken extends Token {
             }
         });
 
-        // Remove this token from the list of active instances
-        AuraToken.activeInstanceIndexes.filter((elem) => !(elem[0] === this.column && elem[1] === this.row));
+        super.remove(gameBoard);
+
+        this.removeSelfFromLines(gameBoard);
+
+        AuraToken.activeInstanceIndexes = Token.removeFromActiveInstances(AuraToken.activeInstanceIndexes, col, row);
     }
 
     place(gameBoard: GameBoard, newRow: number, newColumn: number) {

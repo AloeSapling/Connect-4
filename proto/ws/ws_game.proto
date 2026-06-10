@@ -34,12 +34,6 @@ enum GameEndTypes {
   GAME_END_TYPES_DRAW = 3;
 }
 
-message Tile {
-  int32 row = 1;
-  int32 column = 2;
-  optional models.Token token = 3;
-}
-
 message GameInit {
   shared.PlayerIDs player_id = 1;
 }
@@ -48,16 +42,21 @@ message GameMove {
   Tile tile = 1;
   shared.GameBoard board = 2;
   shared.PlayerIDs turn = 3;
-  repeated Tile changeTiles = 4;
+  repeated ChangeTile changeTiles = 4;
+}
+
+message ChangeTile {
+  models.ChangeTokenActions action = 1;
+  models.Tile tile = 2;
 }
 
 message GameEnd {
   GameEndTypes endType = 1;
-  optional Tile tile = 2;
+  optional models.Tile tile = 2;
   optional models.PartialUser winner = 3;
   optional models.PartialUser loser = 4;
   shared.GameBoard board = 5;
-  repeated Tile changeTiles = 6;
+  repeated ChangeTile changeTiles = 6;
 }
 
 enum GameResponses {

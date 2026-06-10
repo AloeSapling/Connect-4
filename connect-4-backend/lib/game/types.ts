@@ -1,4 +1,5 @@
-import type { TPlayerIDs } from '../types.ts';
+import type { models } from '../proto.js';
+import type { TChangeTokenActions, TPlayerIDs } from '../types.ts';
 import type { GameBoard } from './gameBoard.ts';
 
 export type GameData = {
@@ -15,6 +16,11 @@ export type TDirections = (typeof Directions)[number];
 
 export const Lines = ['NWSE', 'NESW', 'HORIZONTAL', 'VERTICAL'] as const;
 export type TLines = (typeof Lines)[number];
+
+export type ChangeTile = {
+    action: TChangeTokenActions;
+    tileCoord: Coordinate;
+}
 
 /** Vectors for the 8 possible directions. The list is in clockwise order, starting with North.
  * Each vector is [columnDelta, rowDelta].

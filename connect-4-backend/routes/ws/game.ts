@@ -8,6 +8,7 @@ import {
     P_CodedError,
     P_ErrorCodes,
     type WsArgs,
+    P_ChangeTokenActions,
 } from '../../lib/types.ts';
 import { getPartialUserDataByPlayerID, getPlayerID } from '../../database-sqllite/lobbyMembers.ts';
 import { broadcastToRoom } from '../../lib/lib.ts';
@@ -145,7 +146,15 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                         const protoBoard = boardDataToProtobufBoard(gameData.board);
 
                         // Get the tokens that caused a change that requires frontend attention and convert them to the appropriate format
-                        const protoChangeTiles = coordinatesToProtoTiles(gameData.board, Token.changeTilesList);
+                        const tmpCoords = Token.changeTilesList.map((val) => val.tileCoord);
+                        const tmpTiles = coordinatesToProtoTiles(gameData.board, tmpCoords);
+
+                        const protoChangeTiles = tmpTiles.map((val, idx) => ({
+                            action: Token.changeTilesList[idx]?.action || P_ChangeTokenActions.CHANGE_TOKEN_ACTIONS_UNSPECIFIED,
+                            tile: val,
+                        }))
+
+                        Token.resetChangeTilesList();
 
                         // Check for wins and draws
                         const gameState = checkGameState(gameData.board);
