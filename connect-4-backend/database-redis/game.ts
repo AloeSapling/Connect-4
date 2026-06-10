@@ -246,18 +246,18 @@ export async function insertToken(
 
         let i = boardData.tokens.length - 1;
         // Find the height of the lowest open cell in this column
-        while (i >= 0 && boardData.tokens[i]?.[column]?.playerID === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED) {
+        while (i >= 0 && boardData.tokens[i]?.[column]?.type === P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) {
             i--;
         }
         i++; // i is the highest *non*-empty position. Shift it up to the lowest *empty* position
 
         // i >= boardData.length means that there are no empty cells in this column,
         // This means an invalid input was given, so just exit early
-        if (i >= boardData.tokens.length) throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
+        if (i >= boardData.tokens.length) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
 
         // Create a new token and add it to the game board
         const token = TokenFactory.createToken(tokenType, playerID);
-        token.place(boardData, i, column);
+        const tokenCoord = token.place(boardData, i, column);
 
         console.log(token);
 
@@ -265,7 +265,7 @@ export async function insertToken(
 
         await endTurn(lobbyCode, boardData, playerID);
 
-        return i;
+        return tokenCoord[1];
     } finally {
         // Unwatch to prevent the locking detection from leaking into the next request
         await redis.unwatch();

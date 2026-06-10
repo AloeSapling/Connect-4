@@ -28,11 +28,13 @@ export class BurnToken extends Token {
         BurnToken.activeInstanceIndexes = Token.removeFromActiveInstances(BurnToken.activeInstanceIndexes, col, row);
     }
 
-    place(gameBoard: GameBoard, newRow: number, newColumn: number) {
+    place(gameBoard: GameBoard, newRow: number, newColumn: number): Coordinate {
         super.place(gameBoard, newRow, newColumn);
 
         // Add this token to the list of active indexes
         BurnToken.activeInstanceIndexes.push([this.column, this.row]);
+
+        return [newColumn, newRow];
     }
 
     tickTurn(gameBoard: GameBoard) {

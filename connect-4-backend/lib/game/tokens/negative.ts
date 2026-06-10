@@ -42,13 +42,15 @@ export class NegativeToken extends Token {
         NegativeToken.activeInstanceIndexes = Token.removeFromActiveInstances(NegativeToken.activeInstanceIndexes, col, row);
     }
 
-    place(gameBoard: GameBoard, newRow: number, newColumn: number) {
+    place(gameBoard: GameBoard, newRow: number, newColumn: number): Coordinate {
         super.place(gameBoard, newRow, newColumn);
 
         this.addSelfToLines(gameBoard);
 
         // Add this token to the list of active indexes
         NegativeToken.activeInstanceIndexes.push([this.column, this.row]);
+
+        return [newColumn, newRow];
     }
 
     tickTurn(gameBoard: GameBoard) {

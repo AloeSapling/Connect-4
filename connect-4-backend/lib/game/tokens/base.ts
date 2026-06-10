@@ -105,8 +105,10 @@ export default abstract class Token {
     /** The function called whenever a turn ends */
     abstract tickTurn(gameBoard: GameBoard): void;
 
-    /** The function called whenever the token is placed in a new position */
-    place(gameBoard: GameBoard, newRow: number, newColumn: number): void {
+    /** The function called whenever the token is placed in a new position 
+    *@returns the coordinate where this token ended up being placed
+    * */
+    place(gameBoard: GameBoard, newRow: number, newColumn: number): Coordinate {
         // Validation
         if (newRow < 0 || newRow >= gameBoard.tokens.length) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
 
@@ -119,6 +121,8 @@ export default abstract class Token {
 
         // Add the token to the gameBoard's list of tokens
         tempRow[newColumn] = this;
+
+        return [newColumn, newRow];
     }
 
     /** Moves the token to the new position and handles the count changes appropriately */

@@ -28,13 +28,15 @@ export class FreezeToken extends Token {
         FreezeToken.activeInstanceIndexes = Token.removeFromActiveInstances(FreezeToken.activeInstanceIndexes, col, row);
     }
 
-    place(gameBoard: GameBoard, newRow: number, newColumn: number) {
+    place(gameBoard: GameBoard, newRow: number, newColumn: number): Coordinate {
         super.place(gameBoard, newRow, newColumn);
 
         this.freezeAllTokens(gameBoard);
 
         // Add this token to the list of active indexes
         FreezeToken.activeInstanceIndexes.push([this.column, this.row]);
+
+        return [newColumn, newRow];
     }
 
     /** Freezes all the tokens in the column of this token */
@@ -50,6 +52,7 @@ export class FreezeToken extends Token {
             if (!token) continue;
 
             token.isFrozen = true;
+            console.log("UnFroze a token!");
 
             // Makes the empty tokens count as filled
             if (token.type === P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) token.type = P_TokenTypes.TOKEN_TYPES_FROZEN;
@@ -70,6 +73,8 @@ export class FreezeToken extends Token {
 
             token.isFrozen = false;
 
+            console.log("Froze a token!");
+
             // Makes the empty tokens count as empty again
             if (token.type === P_TokenTypes.TOKEN_TYPES_FROZEN) token.type = P_TokenTypes.TOKEN_TYPES_UNSPECIFIED;
         }
@@ -79,6 +84,8 @@ export class FreezeToken extends Token {
 
     tickTurn(gameBoard: GameBoard) {
         if (this.turnsUntilUnfreeze < 0) return;
+
+        console.log(this.turnsUntilUnfreeze);
 
         if (this.turnsUntilUnfreeze === 0) {
             this.unfreezeAllTokens(gameBoard);

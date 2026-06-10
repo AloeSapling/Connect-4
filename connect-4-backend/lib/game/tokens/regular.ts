@@ -1,5 +1,6 @@
 import { P_TokenTypes, type TTokenTypes } from '../../types.ts';
 import type { GameBoard } from '../gameBoard.ts';
+import type { Coordinate } from '../types.ts';
 import Token from './base.ts';
 
 export class StandardToken extends Token {
@@ -16,10 +17,12 @@ export class StandardToken extends Token {
         this.removeSelfFromLines(gameBoard);
     }
 
-    place(gameBoard: GameBoard, newRow: number, newColumn: number) {
+    place(gameBoard: GameBoard, newRow: number, newColumn: number): Coordinate {
         super.place(gameBoard, newRow, newColumn);
 
         this.addSelfToLines(gameBoard);
+
+        return [newColumn, newRow];
     }
 
     tickTurn() { }
