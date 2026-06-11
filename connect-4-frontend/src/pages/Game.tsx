@@ -6,6 +6,7 @@ import {
     P_TokenQueueModes,
     P_TokenTypes,
     type TPlayerIDs,
+    type TTokenQueueData,
     type TTokenQueueModes,
     type TTokenTypes,
 } from '@/lib/types';
@@ -60,6 +61,11 @@ export default function Game() {
     // State variables
     const [userPlayerID, setUserPlayerID] = useState<TPlayerIDs>(P_PlayerIDs.PLAYER_IDS_UNSPECIFIED);
     const [results, setResults] = useState<string>('');
+    const [tokenQueueData, setTokenQueueData] = useState<TTokenQueueData>({
+        mode: queryData?.game?.tokenQueueMode,
+        decks: queryData?.game?.decks,
+        tokens: queryData?.game?.currentTokens,
+    });
     const [selectedToken, setSelectedToken] = useState<TTokenTypes>(P_TokenTypes.TOKEN_TYPES_STANDARD);
 
     // Ref variables
@@ -68,13 +74,18 @@ export default function Game() {
     const userPlayerIDRef = useRef<TPlayerIDs>(P_PlayerIDs.PLAYER_IDS_UNSPECIFIED);
     const gameCanvasRef = useRef<GameCanvas | null>(null);
     const currentTurn = useRef<TPlayerIDs>(P_PlayerIDs.PLAYER_IDS_PLAYER1);
+    const tokenQueueDataRef = useRef<TTokenQueueData>({
+        mode: queryData?.game?.tokenQueueMode,
+        decks: queryData?.game?.decks,
+        tokens: queryData?.game?.currentTokens,
+    });
+    const selectedTokenRef = useRef<TTokenTypes>(P_TokenTypes.TOKEN_TYPES_STANDARD);
 
     useEffect(() => {
         if (queryData?.game?.turn != null) {
             currentTurn.current = queryData.game.turn;
         }
     }, [queryData?.game?.turn]);
-    const selectedTokenRef = useRef<TTokenTypes>(P_TokenTypes.TOKEN_TYPES_STANDARD);
 
     // Set state variable callbacks
     const setPlayerID = useCallback((pid: TPlayerIDs) => {
@@ -94,6 +105,13 @@ export default function Game() {
         },
         [setSelectedToken]
     );
+    const setTokenQueueDataObject = useCallback(
+        (tokenQueueData: TTokenQueueData) => {
+            setTokenQueueData(tokenQueueData);
+            tokenQueueDataRef.current = tokenQueueData;
+        },
+        [setTokenQueueData]
+    );
 
     // Set up the game websocket and set the ref
     useEffect(() => {
@@ -108,9 +126,10 @@ export default function Game() {
             gameCanvasRef,
             currentTurn,
             cancelled,
-            queryData?.game?.tokenQueueMode ?? P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED,
+            tokenQueueDataRef,
             setPlayerID,
             setGameResults,
+            setTokenQueueDataObject,
             setSelectedToken,
             texts
         );
@@ -173,15 +192,7 @@ export default function Game() {
                         {texts.resultsLeaveButton}
                     </Button>
                 )}
-                <TokenView
-                    tokenQueueData={{
-                        mode: queryData.game?.tokenQueueMode,
-                        decks: queryData.game?.decks,
-                        tokens: queryData.game?.currentTokens,
-                    }}
-                    playerID={userPlayerID}
-                    onTokenSelect={setSelectedTokenType}
-                />
+                <TokenView tokenQueueData={tokenQueueData} playerID={userPlayerID} onTokenSelect={setSelectedTokenType} />
             </div>
 
             {/* Results dialog */}
@@ -251,9 +262,10 @@ function setUpGameWebsocket(
     gameCanvasRef: RefObject<GameCanvas | null>,
     currentTurn: RefObject<TPlayerIDs>,
     cancelled: RefObject<boolean>,
-    tokenQueueMode: TTokenQueueModes,
+    tokenQueueDataRef: RefObject<TTokenQueueData>,
     setUserPlayerID: (pid: TPlayerIDs) => void,
     setGameResults: (res: string) => void,
+    setTokenQueueDataObject: (tokenQueueData: TTokenQueueData) => void,
     setSelectedTokenType: (type: TTokenTypes) => void,
     texts: PageTexts['game']
 ) {
@@ -292,9 +304,15 @@ function setUpGameWebsocket(
                     packet.move.tile?.token?.tokenType!
                 );
 
+                setTokenQueueDataObject({
+                    mode: tokenQueueDataRef.current.mode,
+                    tokens: packet.move.currentTokens,
+                    decks: packet.move.decks,
+                });
+
                 if (
-                    tokenQueueMode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
-                    tokenQueueMode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
+                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
+                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
                 ) {
                     if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
                         setSelectedTokenType(packet.move.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
@@ -316,9 +334,15 @@ function setUpGameWebsocket(
                         packet.end.tile?.token?.tokenType!
                     );
 
+                setTokenQueueDataObject({
+                    mode: tokenQueueDataRef.current.mode,
+                    tokens: packet.end.currentTokens,
+                    decks: packet.end.decks,
+                });
+
                 if (
-                    tokenQueueMode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
-                    tokenQueueMode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
+                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
+                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
                 ) {
                     if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
                         setSelectedTokenType(packet.end.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);

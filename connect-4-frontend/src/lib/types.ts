@@ -1,3 +1,4 @@
+import type { models } from './proto.js';
 import * as proto from './proto.js';
 
 // Protobuf type and value aliases
@@ -25,3 +26,9 @@ export const P_TokenQueueModes = proto.models.TokenQueueModes;
 export type ResponseError = {
     status: number;
 } & TCodedError;
+
+export type TTokenQueueData = {
+    mode: TTokenQueueModes | null | undefined;
+    tokens: models.ICurrentTokens | null | undefined;
+    decks: models.IDecks | null | undefined;
+};
