@@ -1,4 +1,4 @@
-import { P_ChangeTokenActions, P_TokenTypes, type TTokenTypes } from '../../types.ts';
+import { P_ChangeTokenActions, P_PlayerIDs, P_TokenTypes, type TPlayerIDs, type TTokenTypes } from '../../types.ts';
 import type { GameBoard } from '../gameBoard.ts';
 import type { Coordinate } from '../types.ts';
 import Token from './base.ts';
@@ -9,6 +9,12 @@ export class BombToken extends Token {
 
     static {
         Token.register(P_TokenTypes.TOKEN_TYPES_BOMB, BombToken.prototype);
+    }
+
+    constructor(_playerID?: TPlayerIDs, _type?: TTokenTypes) {
+        super(_playerID, _type);
+
+        this.playerID = P_PlayerIDs.PLAYER_IDS_UNSPECIFIED;
     }
 
     remove(gameBoard: GameBoard) {
