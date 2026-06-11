@@ -1,262 +1,182 @@
-import { useEffect, useRef, useState, useCallback, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_ROWS, GAME_COLUMNS } from '@/lib/config.js';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import GameBoardCanvas from '@/components/game/GameBoardCanvas';
 import { getGameState, leaveLobby } from '@/lib/api';
+import { P_ErrorCodes, P_PlayerIDs, P_TokenTypes, type TPlayerIDs, type TTokenTypes } from '@/lib/types';
+import { GameWebSocket } from '@/lib/websockets';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useCallback, useContext, useEffect, useRef, useState, type RefObject } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ws as p_ws } from '@/lib/proto';
+import type GameCanvas from '@/lib/canvasLogic';
+import type { PageTexts } from '@/lib/lang';
 import { langContext } from '@/lib/contexts';
-import { toast } from 'sonner';
-import { GameWebSocket } from '@/lib/websockets.js';
-// import { makeMove } from '@/lib/gameLogic';
-import GameCanvas from '@/lib/canvasLogic.js';
-import * as proto from '@/lib/proto.js';
-import * as types from '@/lib/types.js';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import TokenView from '@/components/game/TokenView';
 
-function Game() {
+export default function Game() {
     const navigate = useNavigate();
     const { lobbyCode } = useParams();
-    const animationRef = useRef<number | null>(null);
-    const gameCanvasRef = useRef<GameCanvas | null>(null);
 
-    const { data: queryData, isLoading, error } = useQuery({
-        queryKey: ['lobby', lobbyCode],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const {
+        data: queryData,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['game', lobbyCode],
         queryFn: () => getGameState(lobbyCode!),
         refetchOnWindowFocus: false,
         retry: 1,
     });
 
-    const [currentBoardState, setCurrentBoardState] = useState(queryData?.game?.board ??
-        proto.shared.GameBoard.create({
-            rows: Array.from({ length: GAME_ROWS }, () => ({
-                tokens: Array.from({ length: GAME_COLUMNS }, () => ({
-                    playerId: types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
-                    tokenType: types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
-                })),
-            })),
-        })
-    );
-
+    // Handle errors gracefully
     useEffect(() => {
-        if (queryData?.game?.board) {
-            setCurrentBoardState(queryData.game.board);
-        }
-    }, [queryData]);
-
-    useEffect(() => {
-        if (!gameCanvasRef.current) return;
-
-        gameCanvasRef.current.setBoardState(currentBoardState);
-    }, [currentBoardState]);
-
-    useEffect(() => {
-        if (!error) return;
+        if (!error || !lobbyCode) return;
 
         const err = error as any;
 
-        if (err.code === types.P_ErrorCodes.ERROR_CODES_UNAUTHORISED ||
-            err.code === types.P_ErrorCodes.ERROR_CODES_GAME_EXPIRED ||
-            err.code === types.P_ErrorCodes.ERROR_CODES_GAME_LOCKED ||
-            err.code === types.P_ErrorCodes.ERROR_CODES_DOESNT_EXIST ||
-            err.status === 400) {
-            wsRef.current?.ws.close();
+        if (
+            err.code === P_ErrorCodes.ERROR_CODES_UNAUTHORISED ||
+            err.code === P_ErrorCodes.ERROR_CODES_GAME_EXPIRED ||
+            err.code === P_ErrorCodes.ERROR_CODES_GAME_LOCKED ||
+            err.code === P_ErrorCodes.ERROR_CODES_DOESNT_EXIST ||
+            err.status === 400
+        ) {
             navigate(`/lobby/${lobbyCode}`);
         }
     }, [error, navigate, lobbyCode]);
 
-    const [canMove, setCanMove] = useState<boolean>(true);
+    const langCtx = useContext(langContext);
+    const texts = langCtx?.texts.game;
 
-    // Which player's turn it is
-    console.log(queryData);
-    console.log(queryData?.game);
-    const currentTurn = useRef<types.TPlayerIDs>(queryData?.game?.turn ?? types.P_PlayerIDs.PLAYER_IDS_PLAYER1);
+    // State variables
+    const [userPlayerID, setUserPlayerID] = useState<TPlayerIDs>(P_PlayerIDs.PLAYER_IDS_UNSPECIFIED);
+    const [results, setResults] = useState<string>('');
+    const [selectedToken, setSelectedToken] = useState<TTokenTypes>(P_TokenTypes.TOKEN_TYPES_STANDARD);
 
-    // The user's assigned player
-    const [userPlayerID, setUserPlayerID] = useState<types.TPlayerIDs>(types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED);
-    const userPlayerIDRef = useRef(userPlayerID);
-
-    useEffect(() => { userPlayerIDRef.current = userPlayerID; }, [userPlayerID]);
-
-    const [results, setResults] = useState<string>("");
-
-    const leaveLobby_m = useMutation({
-        mutationFn: leaveLobby,
-        onSuccess: () => {
-            toast.success(`${texts.leaveToast}`);
-            navigate('/lobbylist');
-        },
-        onError: (err) => toast.error(err.message)
-    });
-
-    const leaveLobbyButton = () =>
-        leaveLobby_m.mutate(lobbyCode!);
-
-    const backToLobbyButton = () =>
-        navigate(`/lobby/${lobbyCode}`);
-
-    const forfeitGameButton = () =>
-        wsRef.current?.forfeit();
-
+    // Ref variables
     const wsRef = useRef<GameWebSocket | null>(null);
+    const cancelled = useRef(false);
+    const userPlayerIDRef = useRef<TPlayerIDs>(P_PlayerIDs.PLAYER_IDS_UNSPECIFIED);
+    const gameCanvasRef = useRef<GameCanvas | null>(null);
+    const currentTurn = useRef<TPlayerIDs>(P_PlayerIDs.PLAYER_IDS_PLAYER1);
 
     useEffect(() => {
-        if (!lobbyCode) return;
-        let cancelled = false;
-        console.log("Test");
+        if (queryData?.game?.turn != null) {
+            currentTurn.current = queryData.game.turn;
+        }
+    }, [queryData?.game?.turn]);
+    const selectedTokenRef = useRef<TTokenTypes>(P_TokenTypes.TOKEN_TYPES_STANDARD);
 
-        GameWebSocket.create(lobbyCode, (packet) => {
+    // Set state variable callbacks
+    const setPlayerID = useCallback((pid: TPlayerIDs) => {
+        setUserPlayerID(pid);
+        userPlayerIDRef.current = pid;
+    }, []);
+    const setGameResults = useCallback(
+        (res: string) => {
+            setResults(res);
+        },
+        [setResults]
+    );
+    const setSelectedTokenType = useCallback(
+        (type: TTokenTypes) => {
+            setSelectedToken(type);
+            selectedTokenRef.current = type;
+        },
+        [setSelectedToken]
+    );
 
-            console.log(packet.toJSON());
-            switch (packet.response) {
-                case proto.ws.GameResponses.GAME_RESPONSES_UNSPECIFIED:
-                    if (currentTurn.current === userPlayerIDRef.current) setCanMove(true);
-                    console.log("unknown");
-                    break;
-                case proto.ws.GameResponses.GAME_RESPONSES_ERROR:
-                    if (currentTurn.current === userPlayerIDRef.current) setCanMove(true);
-                    console.log(packet.toJSON())
-                    break;
-                case proto.ws.GameResponses.GAME_RESPONSES_INIT:
-                    console.log(packet.init?.playerId);
-                    userPlayerIDRef.current = packet.init?.playerId || types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED;
-                    setUserPlayerID(userPlayerIDRef.current);
-                    break;
-                case proto.ws.GameResponses.GAME_RESPONSES_MOVE:
-                    console.log(packet.toJSON());
-                    if (!packet.move?.turn) return;
+    // Set up the game websocket and set the ref
+    useEffect(() => {
+        if (!lobbyCode || !texts) return;
 
-                    currentTurn.current = (packet.move?.turn); // temp
+        cancelled.current = false;
 
-                    console.log(userPlayerIDRef.current);
-                    if (packet.move.turn === userPlayerIDRef.current) setCanMove(true);
-
-                    gameCanvasRef.current?.placeToken(packet.move?.tile?.column!, packet.move?.tile?.row!, packet.move.tile!.token?.playerId!, packet.move.tile?.token?.tokenType!);
-
-                    break;
-                case proto.ws.GameResponses.GAME_RESPONSES_END:
-                    console.log(packet.toJSON());
-                    if (!packet.end) return;
-
-                    if (packet.end.tile?.token) gameCanvasRef.current?.placeToken(packet.end?.tile?.column!, packet.end?.tile?.row!, packet.end.tile.token?.playerId!, packet.end.tile?.token?.tokenType!);
-
-                    switch (packet.end.endType) {
-                        case proto.ws.GameEndTypes.GAME_END_TYPES_DRAW:
-                            setResults(texts.resultsDrawText);
-                            break;
-                        case proto.ws.GameEndTypes.GAME_END_TYPES_STANDARD_WIN:
-                            setResults(`${packet.end?.winner?.username} ${texts.resultsWinText}`);
-                            break;
-                        case proto.ws.GameEndTypes.GAME_END_TYPES_FORFEITED:
-                            setResults(`${packet.end.loser?.username} ${texts.resultsForfeitText} ${packet.end.winner?.username} ${texts.resultsWinText}`);
-                            break;
-                        case proto.ws.GameEndTypes.GAME_END_TYPES_UNSPECIFIED:
-                            setResults(`unspecified`);
-                            break;
-                        default:
-                            setResults(`default`);
-                    }
-                    break;
-            }
-        }).then((instance) => {
-            if (cancelled)
-                instance.ws.close();
-            else
-                wsRef.current = instance;
-        });
+        setUpGameWebsocket(
+            lobbyCode,
+            wsRef,
+            userPlayerIDRef,
+            gameCanvasRef,
+            currentTurn,
+            cancelled,
+            setPlayerID,
+            setGameResults,
+            texts
+        );
 
         return () => {
             wsRef.current?.ws.close();
             wsRef.current = null;
-            cancelled = true;
+            cancelled.current = true;
         };
-    }, []);
+    }, [lobbyCode, texts]);
 
-    const [tokenType, setTokenType] = useState(types.P_TokenTypes.TOKEN_TYPES_STANDARD);
+    // Button actions
+    const leaveLobby_m = useMutation({
+        mutationFn: leaveLobby,
+        onSuccess: () => {
+            toast.success(`${texts?.leaveToast}`);
+            navigate('/lobbylist');
+        },
+        onError: (err) => toast.error(err.message),
+    });
 
-    const handleMakeMove = (column: number) => {
-        console.log(userPlayerID, currentTurn.current, canMove);
-        if (userPlayerID !== currentTurn.current || !canMove) return;
+    const leaveLobbyButton = () => leaveLobby_m.mutate(lobbyCode!);
 
-        setCanMove(false);
-        wsRef.current?.insertToken(column, tokenType);
-    };
+    const backToLobbyButton = () => navigate(`/lobby/${lobbyCode}`);
 
-    const handleColumnEnter = (column: number) => {
-        gameCanvasRef.current?.displayColumnIndicator(true, column);
-    }
+    const forfeitGameButton = () => wsRef.current?.forfeit();
 
-    const handleColumnLeave = () => {
-        gameCanvasRef.current?.displayColumnIndicator(false, 0);
-    }
-
-    // Get canvas and start animation
-    const canvasRef = useCallback((canvas: HTMLCanvasElement | null) => {
-        if (!canvas) return;
-        const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
-        if (!ctx) return;
-
-        canvas.width = CANVAS_WIDTH;
-        canvas.height = CANVAS_HEIGHT;
-
-        const gameCanvas = new GameCanvas(canvas, ctx);
-        gameCanvasRef.current = gameCanvas;
-        gameCanvasRef.current.setBoardState(currentBoardState);
-
-        animationRef.current = requestAnimationFrame(gameCanvas.gameLoop);
-
-        return () => {
-            if (animationRef.current) {
-                cancelAnimationFrame(animationRef.current);
-            }
-        };
-    }, []);
-
-    const langCtx = useContext(langContext);
-
-    if (!langCtx) return <p>Missing language context!</p>;
-
-    const texts = langCtx.texts.game;
-
-    if (isLoading || !queryData) {
-        return <div>Loading...</div>;
-    }
+    // Wait for everything to load properly
+    if (isLoading || !queryData || !lobbyCode || !texts) return <p>Loading</p>;
 
     return (
-        <>
-            {/* column buttons */}
-            {userPlayerID !== types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED &&
-                <div className="absolute top-[4%] left-[27.3%] w-[45.85%] h-[80%] flex">
-                    {Array.from({ length: GAME_COLUMNS }, (_, col) => (
-                        <button
-                            key={col}
-                            onClick={() => {
-                                handleMakeMove(col)
-                            }}
-                            onMouseEnter={() => handleColumnEnter(col)}
-                            onMouseLeave={() => handleColumnLeave()}
-                            className="pointer-events-auto z-30 flex-1 h-full cursor-pointer"
-                        />
-                    ))}
-                </div>
-            }
+        <div>
+            {/* The game's board canvas element, handles all of the on-board game playing logic */}
+            <GameBoardCanvas
+                queryData={queryData}
+                wsRef={wsRef}
+                userPlayerID={userPlayerID}
+                userPlayerIDRef={userPlayerIDRef}
+                currentTurn={currentTurn}
+                selectedTokenRef={selectedTokenRef}
+            />
+            <div className="flex flex-row items-center p-5 gap-20">
+                {userPlayerID !== P_PlayerIDs.PLAYER_IDS_UNSPECIFIED ? (
+                    <>
+                        {results === '' && (
+                            <Button
+                                className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20"
+                                onClick={forfeitGameButton}
+                            >
+                                {texts.forfeitButton}
+                            </Button>
+                        )}
+                    </>
+                ) : (
+                    <Button
+                        className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20"
+                        onClick={leaveLobbyButton}
+                    >
+                        {texts.resultsLeaveButton}
+                    </Button>
+                )}
+                <TokenView
+                    tokenQueueData={{
+                        mode: queryData.game?.tokenQueueMode,
+                        decks: queryData.game?.decks,
+                        tokens: queryData.game?.currentTokens,
+                    }}
+                    playerID={userPlayerID}
+                    onTokenSelect={setSelectedTokenType}
+                />
+            </div>
 
-            {userPlayerID !== types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED ?
-                <>
-                    {results === "" &&
-                        <Button className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20" onClick={forfeitGameButton}>
-                            {texts.forfeitButton}
-                        </Button>
-                    }
-                    <input className="z-30 absolute top-0 right-0" value={tokenType} onChange={(e) => setTokenType(Number(e.target.value) as types.TTokenTypes)} />
-                </>
-                :
-                <Button className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20" onClick={leaveLobbyButton}>
-                    {texts.resultsLeaveButton}
-                </Button>
-            }
-
-
-            {results !== "" &&
-                <div className="
+            {/* Results dialog */}
+            {results !== '' && (
+                <div
+                    className="
                     bg-yellow-800
                     text-white
                     text-center
@@ -272,25 +192,111 @@ function Game() {
                     h-[150px] md:h-[200px]
                     top-[50%] left-[50%]
                     translate-x-[-50%] translate-y-[-50%]
-                ">
-                    <h1 className='text-3xl'>{results}</h1>
+                "
+                >
+                    <h1 className="text-3xl">{results}</h1>
 
                     <div className="flex flex-row justify-between">
-                        <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer" onClick={leaveLobbyButton}>
+                        <Button
+                            className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer"
+                            onClick={leaveLobbyButton}
+                        >
                             {texts.resultsLeaveButton}
                         </Button>
-                        <Button className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer" onClick={backToLobbyButton}>
+                        <Button
+                            className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer"
+                            onClick={backToLobbyButton}
+                        >
                             {texts.resultsBackToLobbyButton}
                         </Button>
                     </div>
                 </div>
-            }
-
-            <canvas ref={canvasRef} className="gameCanvas absolute top-0 right-0 bottom-0 left-0 w-full h-full z-0">
-                Your browser does not support canvas. Sorry! :(
-            </canvas>
-        </>
+            )}
+        </div>
     );
 }
 
-export default Game;
+function getResults(packet: p_ws.GameResponsePacket, texts: PageTexts['game']): string {
+    if (!packet.end) return '';
+
+    switch (packet.end.endType) {
+        case p_ws.GameEndTypes.GAME_END_TYPES_DRAW:
+            return texts.resultsDrawText;
+        case p_ws.GameEndTypes.GAME_END_TYPES_STANDARD_WIN:
+            return `${packet.end?.winner?.username} ${texts.resultsWinText}`;
+        case p_ws.GameEndTypes.GAME_END_TYPES_FORFEITED:
+            return `${packet.end.loser?.username} ${texts.resultsForfeitText} ${packet.end.winner?.username} ${texts.resultsWinText}`;
+        case p_ws.GameEndTypes.GAME_END_TYPES_UNSPECIFIED:
+            return `unspecified`;
+        default:
+            return `default`;
+    }
+}
+
+function setUpGameWebsocket(
+    lobbyCode: string,
+    wsRef: RefObject<GameWebSocket | null>,
+    userPlayerID: RefObject<TPlayerIDs | null>,
+    gameCanvasRef: RefObject<GameCanvas | null>,
+    currentTurn: RefObject<TPlayerIDs | null>,
+    cancelled: RefObject<boolean>,
+    setUserPlayerID: (pid: TPlayerIDs) => void,
+    setGameResults: (res: string) => void,
+    texts: PageTexts['game']
+) {
+    GameWebSocket.create(lobbyCode, (packet) => {
+        console.log(packet.toJSON());
+        switch (packet.response) {
+            case p_ws.GameResponses.GAME_RESPONSES_UNSPECIFIED:
+                // if (currentTurn.current === userPlayerID.current) setCanMove(true);
+                console.log('unknown');
+                break;
+            case p_ws.GameResponses.GAME_RESPONSES_ERROR:
+                // if (currentTurn.current === userPlayerID.current) setCanMove(true);
+                console.log(packet.toJSON());
+                break;
+            case p_ws.GameResponses.GAME_RESPONSES_INIT:
+                console.log(packet.init?.playerId);
+
+                userPlayerID.current = packet.init?.playerId || P_PlayerIDs.PLAYER_IDS_UNSPECIFIED;
+                setUserPlayerID(userPlayerID.current);
+
+                break;
+            case p_ws.GameResponses.GAME_RESPONSES_MOVE:
+                console.log(packet.toJSON());
+                if (!packet.move?.turn) return;
+
+                currentTurn.current = packet.move?.turn; // temp
+
+                console.log(userPlayerID.current);
+                // if (packet.move.turn === userPlayerID.current) setCanMove(true);
+
+                gameCanvasRef.current?.placeToken(
+                    packet.move?.tile?.column!,
+                    packet.move?.tile?.row!,
+                    packet.move.tile!.token?.playerId!,
+                    packet.move.tile?.token?.tokenType!
+                );
+
+                break;
+            case p_ws.GameResponses.GAME_RESPONSES_END:
+                console.log(packet.toJSON());
+                if (!packet.end) return;
+
+                if (packet.end.tile?.token)
+                    gameCanvasRef.current?.placeToken(
+                        packet.end?.tile?.column!,
+                        packet.end?.tile?.row!,
+                        packet.end.tile.token?.playerId!,
+                        packet.end.tile?.token?.tokenType!
+                    );
+
+                setGameResults(getResults(packet, texts));
+
+                break;
+        }
+    }).then((instance) => {
+        if (cancelled.current) instance.ws.close();
+        else wsRef.current = instance;
+    });
+}

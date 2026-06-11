@@ -140,6 +140,7 @@ addRouteWithMethods(
                 response: ws.LobbyResponses.LOBBY_RESPONSES_SETTINGS_CHANGED,
                 settings: settings,
             });
+            res.status(200).send();
         } catch {
             res.status(500).send(
                 P_CodedError.encode({

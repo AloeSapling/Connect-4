@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { changeLobbySettings, getLobbyDetails } from '@/lib/api';
 import { UserContext, langContext } from '@/lib/contexts';
 import { leaveLobby, createGame } from '@/lib/api';
@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import HostControls from '@/components/lobby/HostControls.js';
 import MemberTable from '@/components/lobby/MemberTable.js';
-import { Copy } from "lucide-react";
+import { Copy } from 'lucide-react';
 import * as proto from '@/lib/proto.js';
 import * as types from '@/lib/types.js';
 
@@ -20,10 +20,14 @@ function Lobby() {
     const user = useContext(UserContext);
     const queryClient = useQueryClient();
 
-    const { data: queryData, isLoading, error } = useQuery({
+    const {
+        data: queryData,
+        isLoading,
+        error,
+    } = useQuery({
         queryKey: ['lobby', lobbyCode],
         queryFn: () => getLobbyDetails(lobbyCode!),
-        retry: 1
+        retry: 1,
     });
 
     const [lobbyMembersData, setLobbyMembersData] = useState(queryData?.lobbyDetails?.lobbyMembers ?? []);
@@ -39,8 +43,10 @@ function Lobby() {
 
         const err = error as any;
 
-        if (err.code === types.P_ErrorCodes.ERROR_CODES_UNAUTHORISED ||
-            err.code === types.P_ErrorCodes.ERROR_CODES_DOESNT_EXIST) {
+        if (
+            err.code === types.P_ErrorCodes.ERROR_CODES_UNAUTHORISED ||
+            err.code === types.P_ErrorCodes.ERROR_CODES_DOESNT_EXIST
+        ) {
             navigate(`/lobbylist`);
         }
     }, [error, navigate]);
@@ -83,11 +89,10 @@ function Lobby() {
             toast.success(`${texts.leaveToast}`);
             navigate('/lobbylist');
         },
-        onError: (err) => toast.error(err.message)
+        onError: (err) => toast.error(err.message),
     });
 
-    const leaveLobbyButton = () =>
-        leaveLobby_m.mutate(lobbyCode!);
+    const leaveLobbyButton = () => leaveLobby_m.mutate(lobbyCode!);
 
     const createGame_m = useMutation({
         mutationFn: createGame,
@@ -95,22 +100,51 @@ function Lobby() {
             toast.success(`${texts.createGameToast}`);
 
             queryClient.invalidateQueries({
-                queryKey: ['lobby', lobbyCode]
+                queryKey: ['lobby', lobbyCode],
             });
         },
-        onError: (err) => toast.error(err.message)
-    })
+        onError: (err) => toast.error(err.message),
+    });
 
-    const createGameButton = (lobbyCode: string) =>
-        createGame_m.mutate(lobbyCode);
+    const createGameButton = (lobbyCode: string) => createGame_m.mutate(lobbyCode);
+
+    const [isSpecialMode, setIsSpecialMode] = useState(false);
+
+    const enableSpecialMode_m = useMutation({
+        mutationFn: changeLobbySettings,
+        onSuccess: () => {
+            setIsSpecialMode(true);
+            toast.success('Special mode enabled!');
+        },
+        onError: (err) => toast.error(err.message),
+    });
+
+    const enableSpecialModeButton = () =>
+        enableSpecialMode_m.mutate({
+            lobbyCode: lobbyCode!,
+            settings: {
+                specialGamemode: true,
+                tokenQueueMode: types.P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK,
+                allowedTokens: [
+                    types.P_TokenTypes.TOKEN_TYPES_STANDARD,
+                    types.P_TokenTypes.TOKEN_TYPES_NEGATIVE,
+                    types.P_TokenTypes.TOKEN_TYPES_AURA,
+                    types.P_TokenTypes.TOKEN_TYPES_BOMB,
+                    types.P_TokenTypes.TOKEN_TYPES_SPLIT,
+                    types.P_TokenTypes.TOKEN_TYPES_FREEZE,
+                    types.P_TokenTypes.TOKEN_TYPES_BURN,
+                    types.P_TokenTypes.TOKEN_TYPES_REVERSE,
+                ],
+            },
+        });
 
     const copyLobbyCode = (lobbyCode: string) => {
         navigator.clipboard.writeText(lobbyCode);
-    }
+    };
 
     useEffect(() => {
         if (queryData?.lobbyDetails?.hasGame) navigate(`/game/${lobbyCode}`);
-    }, [queryData?.lobbyDetails?.hasGame, navigate])
+    }, [queryData?.lobbyDetails?.hasGame, navigate]);
 
     const langCtx = useContext(langContext);
 
@@ -136,13 +170,13 @@ function Lobby() {
         "
         >
             <div className="mb-3 border-b-[2px] border-amber-950 pb-2 flex justify-between">
-                <p>{texts.lobby} {queryData?.lobbyDetails?.lobbyName}</p>
+                <p>
+                    {texts.lobby} {queryData?.lobbyDetails?.lobbyName}
+                </p>
                 <p>
                     {texts.lobbyCode}
-                    <span onClick={() => copyLobbyCode(queryData.lobbyDetails?.code!)}
-                        className="cursor-pointer"
-                    >
-                        {queryData?.lobbyDetails?.code} <Copy size={16} className='inline-block' />
+                    <span onClick={() => copyLobbyCode(queryData.lobbyDetails?.code!)} className="cursor-pointer">
+                        {queryData?.lobbyDetails?.code} <Copy size={16} className="inline-block" />
                     </span>
                 </p>
             </div>
@@ -151,11 +185,9 @@ function Lobby() {
             <div className="flex flex-row flex-1 gap-4 min-h-0 max-h-[80%] min-w-0 select-none">
                 <MemberTable membersData={lobbyMembersData} />
 
-                {lobbyMembersData.some(
-                    (member) => member.userId === user?.id && member.host
-                ) && (
-                        <HostControls lobbyCode={lobbyCode!} membersData={lobbyMembersData} />
-                    )}
+                {lobbyMembersData.some((member) => member.userId === user?.id && member.host) && (
+                    <HostControls lobbyCode={lobbyCode!} membersData={lobbyMembersData} />
+                )}
             </div>
 
             {/* Bottom */}
@@ -163,12 +195,21 @@ function Lobby() {
                 <Button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={leaveLobbyButton}>
                     {texts.leaveButton}
                 </Button>
-                {lobbyMembersData?.some(
-                    (member) => member.userId === user?.id && member.host
-                ) ? (
-                    <Button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={() => createGameButton(lobbyCode!)}>
-                        {texts.createGameButton}
-                    </Button>
+                {lobbyMembersData?.some((member) => member.userId === user?.id && member.host) ? (
+                    <>
+                        <Button
+                            className={`w-[15%] cursor-pointer rounded-lg ${isSpecialMode ? 'bg-green-700 hover:bg-green-800' : 'bg-amber-900 hover:bg-amber-950'}`}
+                            onClick={enableSpecialModeButton}
+                        >
+                            {isSpecialMode ? 'Special: ON' : 'Special: OFF'}
+                        </Button>
+                        <Button
+                            className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg"
+                            onClick={() => createGameButton(lobbyCode!)}
+                        >
+                            {texts.createGameButton}
+                        </Button>
+                    </>
                 ) : (
                     <Button className="w-[15%] text-gray-400 bg-yellow-900 rounded-lg" disabled>
                         {texts.createGameButton}

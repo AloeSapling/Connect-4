@@ -1,1594 +1,1172 @@
 import * as $protobuf from "protobufjs";
 import Long = require("long");
-/** Namespace shared. */
-export namespace shared {
+/** Namespace routes. */
+export namespace routes {
 
-    /** ErrorCodes enum. */
-    enum ErrorCodes {
-        ERROR_CODES_UNSPECIFIED = 0,
-        ERROR_CODES_SERVER_ERROR = 1,
-        ERROR_CODES_BAD_DATA = 2,
-        ERROR_CODES_BAD_TURN = 3,
-        ERROR_CODES_BAD_USER = 4,
-        ERROR_CODES_BAD_NAME = 5,
-        ERROR_CODES_UNAUTHORISED = 6,
-        ERROR_CODES_ALREADY_JOINED = 7,
-        ERROR_CODES_NOT_A_MEMBER = 8,
-        ERROR_CODES_GAME_LOCKED = 9,
-        ERROR_CODES_GAME_EXPIRED = 10,
-        ERROR_CODES_GAME_ALREADY_EXISTS = 11,
-        ERROR_CODES_DOESNT_EXIST = 12,
-        ERROR_CODES_USER_ALREADY_EXISTS = 13,
-        ERROR_CODES_BAD_SETUP = 14,
-        ERROR_CODES_USER_BANNED = 15,
-        ERROR_CODES_BAD_TOKEN = 16
+    /** Properties of a GetLobbiesResponse. */
+    interface IGetLobbiesResponse {
+
+        /** GetLobbiesResponse lobbies */
+        lobbies?: (models.ILobbyData[]|null);
     }
 
-    /** Properties of a CodedError. */
-    interface ICodedError {
-
-        /** CodedError code */
-        code?: (shared.ErrorCodes|null);
-
-        /** CodedError error */
-        error?: (string|null);
-    }
-
-    /** Represents a CodedError. */
-    class CodedError implements ICodedError {
+    /** Represents a GetLobbiesResponse. */
+    class GetLobbiesResponse implements IGetLobbiesResponse {
 
         /**
-         * Constructs a new CodedError.
+         * Constructs a new GetLobbiesResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: shared.ICodedError);
+        constructor(properties?: routes.IGetLobbiesResponse);
 
-        /** CodedError code. */
-        public code: shared.ErrorCodes;
-
-        /** CodedError error. */
-        public error?: (string|null);
+        /** GetLobbiesResponse lobbies. */
+        public lobbies: models.ILobbyData[];
 
         /**
-         * Creates a new CodedError instance using the specified properties.
+         * Creates a new GetLobbiesResponse instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns CodedError instance
+         * @returns GetLobbiesResponse instance
          */
-        public static create(properties?: shared.ICodedError): shared.CodedError;
+        public static create(properties?: routes.IGetLobbiesResponse): routes.GetLobbiesResponse;
 
         /**
-         * Encodes the specified CodedError message. Does not implicitly {@link shared.CodedError.verify|verify} messages.
-         * @param message CodedError message or plain object to encode
+         * Encodes the specified GetLobbiesResponse message. Does not implicitly {@link routes.GetLobbiesResponse.verify|verify} messages.
+         * @param message GetLobbiesResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: shared.ICodedError, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.IGetLobbiesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified CodedError message, length delimited. Does not implicitly {@link shared.CodedError.verify|verify} messages.
-         * @param message CodedError message or plain object to encode
+         * Encodes the specified GetLobbiesResponse message, length delimited. Does not implicitly {@link routes.GetLobbiesResponse.verify|verify} messages.
+         * @param message GetLobbiesResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: shared.ICodedError, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.IGetLobbiesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a CodedError message from the specified reader or buffer.
+         * Decodes a GetLobbiesResponse message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns CodedError
+         * @returns GetLobbiesResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): shared.CodedError;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetLobbiesResponse;
 
         /**
-         * Decodes a CodedError message from the specified reader or buffer, length delimited.
+         * Decodes a GetLobbiesResponse message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns CodedError
+         * @returns GetLobbiesResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): shared.CodedError;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetLobbiesResponse;
 
         /**
-         * Verifies a CodedError message.
+         * Verifies a GetLobbiesResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a CodedError message from a plain object. Also converts values to their respective internal types.
+         * Creates a GetLobbiesResponse message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns CodedError
+         * @returns GetLobbiesResponse
          */
-        public static fromObject(object: { [k: string]: any }): shared.CodedError;
+        public static fromObject(object: { [k: string]: any }): routes.GetLobbiesResponse;
 
         /**
-         * Creates a plain object from a CodedError message. Also converts values to other types if specified.
-         * @param message CodedError
+         * Creates a plain object from a GetLobbiesResponse message. Also converts values to other types if specified.
+         * @param message GetLobbiesResponse
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: shared.CodedError, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.GetLobbiesResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this CodedError to JSON.
+         * Converts this GetLobbiesResponse to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for CodedError
+         * Gets the default type url for GetLobbiesResponse
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** PlayerTypes enum. */
-    enum PlayerTypes {
-        PLAYER_TYPES_UNSPECIFIED = 0,
-        PLAYER_TYPES_PLAYER = 1,
-        PLAYER_TYPES_SPECTATOR = 2
+    /** Properties of a GetLobbyResponse. */
+    interface IGetLobbyResponse {
+
+        /** GetLobbyResponse lobby */
+        lobby?: (models.ILobbyData|null);
     }
 
-    /** PlayerIDs enum. */
-    enum PlayerIDs {
-        PLAYER_IDS_UNSPECIFIED = 0,
-        PLAYER_IDS_PLAYER1 = 1,
-        PLAYER_IDS_PLAYER2 = 2
-    }
-
-    /** Properties of a GameRow. */
-    interface IGameRow {
-
-        /** GameRow tokens */
-        tokens?: (models.IToken[]|null);
-    }
-
-    /** Represents a GameRow. */
-    class GameRow implements IGameRow {
+    /** Represents a GetLobbyResponse. */
+    class GetLobbyResponse implements IGetLobbyResponse {
 
         /**
-         * Constructs a new GameRow.
+         * Constructs a new GetLobbyResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: shared.IGameRow);
+        constructor(properties?: routes.IGetLobbyResponse);
 
-        /** GameRow tokens. */
-        public tokens: models.IToken[];
+        /** GetLobbyResponse lobby. */
+        public lobby?: (models.ILobbyData|null);
 
         /**
-         * Creates a new GameRow instance using the specified properties.
+         * Creates a new GetLobbyResponse instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GameRow instance
+         * @returns GetLobbyResponse instance
          */
-        public static create(properties?: shared.IGameRow): shared.GameRow;
+        public static create(properties?: routes.IGetLobbyResponse): routes.GetLobbyResponse;
 
         /**
-         * Encodes the specified GameRow message. Does not implicitly {@link shared.GameRow.verify|verify} messages.
-         * @param message GameRow message or plain object to encode
+         * Encodes the specified GetLobbyResponse message. Does not implicitly {@link routes.GetLobbyResponse.verify|verify} messages.
+         * @param message GetLobbyResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: shared.IGameRow, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.IGetLobbyResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GameRow message, length delimited. Does not implicitly {@link shared.GameRow.verify|verify} messages.
-         * @param message GameRow message or plain object to encode
+         * Encodes the specified GetLobbyResponse message, length delimited. Does not implicitly {@link routes.GetLobbyResponse.verify|verify} messages.
+         * @param message GetLobbyResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: shared.IGameRow, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.IGetLobbyResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GameRow message from the specified reader or buffer.
+         * Decodes a GetLobbyResponse message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GameRow
+         * @returns GetLobbyResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): shared.GameRow;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetLobbyResponse;
 
         /**
-         * Decodes a GameRow message from the specified reader or buffer, length delimited.
+         * Decodes a GetLobbyResponse message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GameRow
+         * @returns GetLobbyResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): shared.GameRow;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetLobbyResponse;
 
         /**
-         * Verifies a GameRow message.
+         * Verifies a GetLobbyResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GameRow message from a plain object. Also converts values to their respective internal types.
+         * Creates a GetLobbyResponse message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GameRow
+         * @returns GetLobbyResponse
          */
-        public static fromObject(object: { [k: string]: any }): shared.GameRow;
+        public static fromObject(object: { [k: string]: any }): routes.GetLobbyResponse;
 
         /**
-         * Creates a plain object from a GameRow message. Also converts values to other types if specified.
-         * @param message GameRow
+         * Creates a plain object from a GetLobbyResponse message. Also converts values to other types if specified.
+         * @param message GetLobbyResponse
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: shared.GameRow, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.GetLobbyResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GameRow to JSON.
+         * Converts this GetLobbyResponse to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GameRow
+         * Gets the default type url for GetLobbyResponse
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a GameBoard. */
-    interface IGameBoard {
+    /** Properties of a CreateLobbyRequest. */
+    interface ICreateLobbyRequest {
 
-        /** GameBoard rows */
-        rows?: (shared.IGameRow[]|null);
+        /** CreateLobbyRequest lobbyName */
+        lobbyName?: (string|null);
     }
 
-    /** Represents a GameBoard. */
-    class GameBoard implements IGameBoard {
+    /** Represents a CreateLobbyRequest. */
+    class CreateLobbyRequest implements ICreateLobbyRequest {
 
         /**
-         * Constructs a new GameBoard.
+         * Constructs a new CreateLobbyRequest.
          * @param [properties] Properties to set
          */
-        constructor(properties?: shared.IGameBoard);
+        constructor(properties?: routes.ICreateLobbyRequest);
 
-        /** GameBoard rows. */
-        public rows: shared.IGameRow[];
+        /** CreateLobbyRequest lobbyName. */
+        public lobbyName: string;
 
         /**
-         * Creates a new GameBoard instance using the specified properties.
+         * Creates a new CreateLobbyRequest instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GameBoard instance
+         * @returns CreateLobbyRequest instance
          */
-        public static create(properties?: shared.IGameBoard): shared.GameBoard;
+        public static create(properties?: routes.ICreateLobbyRequest): routes.CreateLobbyRequest;
 
         /**
-         * Encodes the specified GameBoard message. Does not implicitly {@link shared.GameBoard.verify|verify} messages.
-         * @param message GameBoard message or plain object to encode
+         * Encodes the specified CreateLobbyRequest message. Does not implicitly {@link routes.CreateLobbyRequest.verify|verify} messages.
+         * @param message CreateLobbyRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: shared.IGameBoard, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.ICreateLobbyRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GameBoard message, length delimited. Does not implicitly {@link shared.GameBoard.verify|verify} messages.
-         * @param message GameBoard message or plain object to encode
+         * Encodes the specified CreateLobbyRequest message, length delimited. Does not implicitly {@link routes.CreateLobbyRequest.verify|verify} messages.
+         * @param message CreateLobbyRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: shared.IGameBoard, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.ICreateLobbyRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GameBoard message from the specified reader or buffer.
+         * Decodes a CreateLobbyRequest message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GameBoard
+         * @returns CreateLobbyRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): shared.GameBoard;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.CreateLobbyRequest;
 
         /**
-         * Decodes a GameBoard message from the specified reader or buffer, length delimited.
+         * Decodes a CreateLobbyRequest message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GameBoard
+         * @returns CreateLobbyRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): shared.GameBoard;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.CreateLobbyRequest;
 
         /**
-         * Verifies a GameBoard message.
+         * Verifies a CreateLobbyRequest message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GameBoard message from a plain object. Also converts values to their respective internal types.
+         * Creates a CreateLobbyRequest message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GameBoard
+         * @returns CreateLobbyRequest
          */
-        public static fromObject(object: { [k: string]: any }): shared.GameBoard;
+        public static fromObject(object: { [k: string]: any }): routes.CreateLobbyRequest;
 
         /**
-         * Creates a plain object from a GameBoard message. Also converts values to other types if specified.
-         * @param message GameBoard
+         * Creates a plain object from a CreateLobbyRequest message. Also converts values to other types if specified.
+         * @param message CreateLobbyRequest
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: shared.GameBoard, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.CreateLobbyRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GameBoard to JSON.
+         * Converts this CreateLobbyRequest to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GameBoard
+         * Gets the default type url for CreateLobbyRequest
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
-}
 
-/** Namespace ws. */
-export namespace ws {
+    /** Properties of a CreateLobbyResponse. */
+    interface ICreateLobbyResponse {
 
-    /** LobbyResponses enum. */
-    enum LobbyResponses {
-        LOBBY_RESPONSES_UNSPECIFIED = 0,
-        LOBBY_RESPONSES_ERROR = 1,
-        LOBBY_RESPONSES_JOIN = 2,
-        LOBBY_RESPONSES_LEAVE = 3,
-        LOBBY_RESPONSES_CHANGE_PLAYER = 4,
-        LOBBY_RESPONSES_START_GAME = 5,
-        LOBBY_RESPONSES_HOST_LEFT = 6,
-        LOBBY_RESPONSES_SETTINGS_CHANGED = 7
+        /** CreateLobbyResponse code */
+        code?: (string|null);
     }
 
-    /** Properties of a LobbyJoin. */
-    interface ILobbyJoin {
-
-        /** LobbyJoin users */
-        users?: (models.IDetailedLobbyMemberData[]|null);
-    }
-
-    /** Represents a LobbyJoin. */
-    class LobbyJoin implements ILobbyJoin {
+    /** Represents a CreateLobbyResponse. */
+    class CreateLobbyResponse implements ICreateLobbyResponse {
 
         /**
-         * Constructs a new LobbyJoin.
+         * Constructs a new CreateLobbyResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.ILobbyJoin);
+        constructor(properties?: routes.ICreateLobbyResponse);
 
-        /** LobbyJoin users. */
-        public users: models.IDetailedLobbyMemberData[];
+        /** CreateLobbyResponse code. */
+        public code: string;
 
         /**
-         * Creates a new LobbyJoin instance using the specified properties.
+         * Creates a new CreateLobbyResponse instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns LobbyJoin instance
+         * @returns CreateLobbyResponse instance
          */
-        public static create(properties?: ws.ILobbyJoin): ws.LobbyJoin;
+        public static create(properties?: routes.ICreateLobbyResponse): routes.CreateLobbyResponse;
 
         /**
-         * Encodes the specified LobbyJoin message. Does not implicitly {@link ws.LobbyJoin.verify|verify} messages.
-         * @param message LobbyJoin message or plain object to encode
+         * Encodes the specified CreateLobbyResponse message. Does not implicitly {@link routes.CreateLobbyResponse.verify|verify} messages.
+         * @param message CreateLobbyResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.ILobbyJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.ICreateLobbyResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified LobbyJoin message, length delimited. Does not implicitly {@link ws.LobbyJoin.verify|verify} messages.
-         * @param message LobbyJoin message or plain object to encode
+         * Encodes the specified CreateLobbyResponse message, length delimited. Does not implicitly {@link routes.CreateLobbyResponse.verify|verify} messages.
+         * @param message CreateLobbyResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.ILobbyJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.ICreateLobbyResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a LobbyJoin message from the specified reader or buffer.
+         * Decodes a CreateLobbyResponse message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns LobbyJoin
+         * @returns CreateLobbyResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyJoin;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.CreateLobbyResponse;
 
         /**
-         * Decodes a LobbyJoin message from the specified reader or buffer, length delimited.
+         * Decodes a CreateLobbyResponse message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns LobbyJoin
+         * @returns CreateLobbyResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyJoin;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.CreateLobbyResponse;
 
         /**
-         * Verifies a LobbyJoin message.
+         * Verifies a CreateLobbyResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a LobbyJoin message from a plain object. Also converts values to their respective internal types.
+         * Creates a CreateLobbyResponse message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns LobbyJoin
+         * @returns CreateLobbyResponse
          */
-        public static fromObject(object: { [k: string]: any }): ws.LobbyJoin;
+        public static fromObject(object: { [k: string]: any }): routes.CreateLobbyResponse;
 
         /**
-         * Creates a plain object from a LobbyJoin message. Also converts values to other types if specified.
-         * @param message LobbyJoin
+         * Creates a plain object from a CreateLobbyResponse message. Also converts values to other types if specified.
+         * @param message CreateLobbyResponse
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.LobbyJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.CreateLobbyResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this LobbyJoin to JSON.
+         * Converts this CreateLobbyResponse to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for LobbyJoin
+         * Gets the default type url for CreateLobbyResponse
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a LobbyLeave. */
-    interface ILobbyLeave {
+    /** Properties of a GetLobbyDetailsResponse. */
+    interface IGetLobbyDetailsResponse {
 
-        /** LobbyLeave users */
-        users?: (models.IDetailedLobbyMemberData[]|null);
+        /** GetLobbyDetailsResponse lobbyDetails */
+        lobbyDetails?: (models.IDetailedLobbyData|null);
     }
 
-    /** Represents a LobbyLeave. */
-    class LobbyLeave implements ILobbyLeave {
+    /** Represents a GetLobbyDetailsResponse. */
+    class GetLobbyDetailsResponse implements IGetLobbyDetailsResponse {
 
         /**
-         * Constructs a new LobbyLeave.
+         * Constructs a new GetLobbyDetailsResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.ILobbyLeave);
+        constructor(properties?: routes.IGetLobbyDetailsResponse);
 
-        /** LobbyLeave users. */
-        public users: models.IDetailedLobbyMemberData[];
+        /** GetLobbyDetailsResponse lobbyDetails. */
+        public lobbyDetails?: (models.IDetailedLobbyData|null);
 
         /**
-         * Creates a new LobbyLeave instance using the specified properties.
+         * Creates a new GetLobbyDetailsResponse instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns LobbyLeave instance
+         * @returns GetLobbyDetailsResponse instance
          */
-        public static create(properties?: ws.ILobbyLeave): ws.LobbyLeave;
+        public static create(properties?: routes.IGetLobbyDetailsResponse): routes.GetLobbyDetailsResponse;
 
         /**
-         * Encodes the specified LobbyLeave message. Does not implicitly {@link ws.LobbyLeave.verify|verify} messages.
-         * @param message LobbyLeave message or plain object to encode
+         * Encodes the specified GetLobbyDetailsResponse message. Does not implicitly {@link routes.GetLobbyDetailsResponse.verify|verify} messages.
+         * @param message GetLobbyDetailsResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.ILobbyLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.IGetLobbyDetailsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified LobbyLeave message, length delimited. Does not implicitly {@link ws.LobbyLeave.verify|verify} messages.
-         * @param message LobbyLeave message or plain object to encode
+         * Encodes the specified GetLobbyDetailsResponse message, length delimited. Does not implicitly {@link routes.GetLobbyDetailsResponse.verify|verify} messages.
+         * @param message GetLobbyDetailsResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.ILobbyLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.IGetLobbyDetailsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a LobbyLeave message from the specified reader or buffer.
+         * Decodes a GetLobbyDetailsResponse message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns LobbyLeave
+         * @returns GetLobbyDetailsResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyLeave;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetLobbyDetailsResponse;
 
         /**
-         * Decodes a LobbyLeave message from the specified reader or buffer, length delimited.
+         * Decodes a GetLobbyDetailsResponse message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns LobbyLeave
+         * @returns GetLobbyDetailsResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyLeave;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetLobbyDetailsResponse;
 
         /**
-         * Verifies a LobbyLeave message.
+         * Verifies a GetLobbyDetailsResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a LobbyLeave message from a plain object. Also converts values to their respective internal types.
+         * Creates a GetLobbyDetailsResponse message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns LobbyLeave
+         * @returns GetLobbyDetailsResponse
          */
-        public static fromObject(object: { [k: string]: any }): ws.LobbyLeave;
+        public static fromObject(object: { [k: string]: any }): routes.GetLobbyDetailsResponse;
 
         /**
-         * Creates a plain object from a LobbyLeave message. Also converts values to other types if specified.
-         * @param message LobbyLeave
+         * Creates a plain object from a GetLobbyDetailsResponse message. Also converts values to other types if specified.
+         * @param message GetLobbyDetailsResponse
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.LobbyLeave, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.GetLobbyDetailsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this LobbyLeave to JSON.
+         * Converts this GetLobbyDetailsResponse to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for LobbyLeave
+         * Gets the default type url for GetLobbyDetailsResponse
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a LobbyChangePlayer. */
-    interface ILobbyChangePlayer {
+    /** Properties of a ChangeLobbySettingsRequest. */
+    interface IChangeLobbySettingsRequest {
 
-        /** LobbyChangePlayer users */
-        users?: (models.IDetailedLobbyMemberData[]|null);
-    }
-
-    /** Represents a LobbyChangePlayer. */
-    class LobbyChangePlayer implements ILobbyChangePlayer {
-
-        /**
-         * Constructs a new LobbyChangePlayer.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: ws.ILobbyChangePlayer);
-
-        /** LobbyChangePlayer users. */
-        public users: models.IDetailedLobbyMemberData[];
-
-        /**
-         * Creates a new LobbyChangePlayer instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns LobbyChangePlayer instance
-         */
-        public static create(properties?: ws.ILobbyChangePlayer): ws.LobbyChangePlayer;
-
-        /**
-         * Encodes the specified LobbyChangePlayer message. Does not implicitly {@link ws.LobbyChangePlayer.verify|verify} messages.
-         * @param message LobbyChangePlayer message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: ws.ILobbyChangePlayer, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified LobbyChangePlayer message, length delimited. Does not implicitly {@link ws.LobbyChangePlayer.verify|verify} messages.
-         * @param message LobbyChangePlayer message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: ws.ILobbyChangePlayer, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a LobbyChangePlayer message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns LobbyChangePlayer
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyChangePlayer;
-
-        /**
-         * Decodes a LobbyChangePlayer message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns LobbyChangePlayer
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyChangePlayer;
-
-        /**
-         * Verifies a LobbyChangePlayer message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a LobbyChangePlayer message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns LobbyChangePlayer
-         */
-        public static fromObject(object: { [k: string]: any }): ws.LobbyChangePlayer;
-
-        /**
-         * Creates a plain object from a LobbyChangePlayer message. Also converts values to other types if specified.
-         * @param message LobbyChangePlayer
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: ws.LobbyChangePlayer, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this LobbyChangePlayer to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for LobbyChangePlayer
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of a LobbyResponsePacket. */
-    interface ILobbyResponsePacket {
-
-        /** LobbyResponsePacket response */
-        response?: (ws.LobbyResponses|null);
-
-        /** LobbyResponsePacket error */
-        error?: (shared.ICodedError|null);
-
-        /** LobbyResponsePacket join */
-        join?: (ws.ILobbyJoin|null);
-
-        /** LobbyResponsePacket leave */
-        leave?: (ws.ILobbyLeave|null);
-
-        /** LobbyResponsePacket changePlayer */
-        changePlayer?: (ws.ILobbyChangePlayer|null);
-
-        /** LobbyResponsePacket settings */
+        /** ChangeLobbySettingsRequest settings */
         settings?: (models.ILobbySettings|null);
     }
 
-    /** Represents a LobbyResponsePacket. */
-    class LobbyResponsePacket implements ILobbyResponsePacket {
+    /** Represents a ChangeLobbySettingsRequest. */
+    class ChangeLobbySettingsRequest implements IChangeLobbySettingsRequest {
 
         /**
-         * Constructs a new LobbyResponsePacket.
+         * Constructs a new ChangeLobbySettingsRequest.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.ILobbyResponsePacket);
+        constructor(properties?: routes.IChangeLobbySettingsRequest);
 
-        /** LobbyResponsePacket response. */
-        public response: ws.LobbyResponses;
-
-        /** LobbyResponsePacket error. */
-        public error?: (shared.ICodedError|null);
-
-        /** LobbyResponsePacket join. */
-        public join?: (ws.ILobbyJoin|null);
-
-        /** LobbyResponsePacket leave. */
-        public leave?: (ws.ILobbyLeave|null);
-
-        /** LobbyResponsePacket changePlayer. */
-        public changePlayer?: (ws.ILobbyChangePlayer|null);
-
-        /** LobbyResponsePacket settings. */
+        /** ChangeLobbySettingsRequest settings. */
         public settings?: (models.ILobbySettings|null);
 
-        /** LobbyResponsePacket data. */
-        public data?: ("error"|"join"|"leave"|"changePlayer"|"settings");
-
         /**
-         * Creates a new LobbyResponsePacket instance using the specified properties.
+         * Creates a new ChangeLobbySettingsRequest instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns LobbyResponsePacket instance
+         * @returns ChangeLobbySettingsRequest instance
          */
-        public static create(properties?: ws.ILobbyResponsePacket): ws.LobbyResponsePacket;
+        public static create(properties?: routes.IChangeLobbySettingsRequest): routes.ChangeLobbySettingsRequest;
 
         /**
-         * Encodes the specified LobbyResponsePacket message. Does not implicitly {@link ws.LobbyResponsePacket.verify|verify} messages.
-         * @param message LobbyResponsePacket message or plain object to encode
+         * Encodes the specified ChangeLobbySettingsRequest message. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
+         * @param message ChangeLobbySettingsRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.ILobbyResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.IChangeLobbySettingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified LobbyResponsePacket message, length delimited. Does not implicitly {@link ws.LobbyResponsePacket.verify|verify} messages.
-         * @param message LobbyResponsePacket message or plain object to encode
+         * Encodes the specified ChangeLobbySettingsRequest message, length delimited. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
+         * @param message ChangeLobbySettingsRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.ILobbyResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.IChangeLobbySettingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a LobbyResponsePacket message from the specified reader or buffer.
+         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns LobbyResponsePacket
+         * @returns ChangeLobbySettingsRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyResponsePacket;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.ChangeLobbySettingsRequest;
 
         /**
-         * Decodes a LobbyResponsePacket message from the specified reader or buffer, length delimited.
+         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns LobbyResponsePacket
+         * @returns ChangeLobbySettingsRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyResponsePacket;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.ChangeLobbySettingsRequest;
 
         /**
-         * Verifies a LobbyResponsePacket message.
+         * Verifies a ChangeLobbySettingsRequest message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a LobbyResponsePacket message from a plain object. Also converts values to their respective internal types.
+         * Creates a ChangeLobbySettingsRequest message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns LobbyResponsePacket
+         * @returns ChangeLobbySettingsRequest
          */
-        public static fromObject(object: { [k: string]: any }): ws.LobbyResponsePacket;
+        public static fromObject(object: { [k: string]: any }): routes.ChangeLobbySettingsRequest;
 
         /**
-         * Creates a plain object from a LobbyResponsePacket message. Also converts values to other types if specified.
-         * @param message LobbyResponsePacket
+         * Creates a plain object from a ChangeLobbySettingsRequest message. Also converts values to other types if specified.
+         * @param message ChangeLobbySettingsRequest
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.LobbyResponsePacket, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.ChangeLobbySettingsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this LobbyResponsePacket to JSON.
+         * Converts this ChangeLobbySettingsRequest to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for LobbyResponsePacket
+         * Gets the default type url for ChangeLobbySettingsRequest
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a GameInsertToken. */
-    interface IGameInsertToken {
+    /** Properties of a KickPlayerRequest. */
+    interface IKickPlayerRequest {
 
-        /** GameInsertToken column */
-        column?: (number|null);
-
-        /** GameInsertToken tokenType */
-        tokenType?: (models.TokenTypes|null);
+        /** KickPlayerRequest userId */
+        userId?: (number|null);
     }
 
-    /** Represents a GameInsertToken. */
-    class GameInsertToken implements IGameInsertToken {
+    /** Represents a KickPlayerRequest. */
+    class KickPlayerRequest implements IKickPlayerRequest {
 
         /**
-         * Constructs a new GameInsertToken.
+         * Constructs a new KickPlayerRequest.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IGameInsertToken);
+        constructor(properties?: routes.IKickPlayerRequest);
 
-        /** GameInsertToken column. */
-        public column: number;
-
-        /** GameInsertToken tokenType. */
-        public tokenType: models.TokenTypes;
+        /** KickPlayerRequest userId. */
+        public userId: number;
 
         /**
-         * Creates a new GameInsertToken instance using the specified properties.
+         * Creates a new KickPlayerRequest instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GameInsertToken instance
+         * @returns KickPlayerRequest instance
          */
-        public static create(properties?: ws.IGameInsertToken): ws.GameInsertToken;
+        public static create(properties?: routes.IKickPlayerRequest): routes.KickPlayerRequest;
 
         /**
-         * Encodes the specified GameInsertToken message. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
-         * @param message GameInsertToken message or plain object to encode
+         * Encodes the specified KickPlayerRequest message. Does not implicitly {@link routes.KickPlayerRequest.verify|verify} messages.
+         * @param message KickPlayerRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IGameInsertToken, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.IKickPlayerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GameInsertToken message, length delimited. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
-         * @param message GameInsertToken message or plain object to encode
+         * Encodes the specified KickPlayerRequest message, length delimited. Does not implicitly {@link routes.KickPlayerRequest.verify|verify} messages.
+         * @param message KickPlayerRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IGameInsertToken, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.IKickPlayerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GameInsertToken message from the specified reader or buffer.
+         * Decodes a KickPlayerRequest message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GameInsertToken
+         * @returns KickPlayerRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameInsertToken;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.KickPlayerRequest;
 
         /**
-         * Decodes a GameInsertToken message from the specified reader or buffer, length delimited.
+         * Decodes a KickPlayerRequest message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GameInsertToken
+         * @returns KickPlayerRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameInsertToken;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.KickPlayerRequest;
 
         /**
-         * Verifies a GameInsertToken message.
+         * Verifies a KickPlayerRequest message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GameInsertToken message from a plain object. Also converts values to their respective internal types.
+         * Creates a KickPlayerRequest message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GameInsertToken
+         * @returns KickPlayerRequest
          */
-        public static fromObject(object: { [k: string]: any }): ws.GameInsertToken;
+        public static fromObject(object: { [k: string]: any }): routes.KickPlayerRequest;
 
         /**
-         * Creates a plain object from a GameInsertToken message. Also converts values to other types if specified.
-         * @param message GameInsertToken
+         * Creates a plain object from a KickPlayerRequest message. Also converts values to other types if specified.
+         * @param message KickPlayerRequest
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.GameInsertToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.KickPlayerRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GameInsertToken to JSON.
+         * Converts this KickPlayerRequest to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GameInsertToken
+         * Gets the default type url for KickPlayerRequest
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** GameActions enum. */
-    enum GameActions {
-        GAME_ACTIONS_UNSPECIFIED = 0,
-        GAME_ACTIONS_INSERT_TOKEN = 1,
-        GAME_ACTIONS_FORFEIT = 2
-    }
+    /** Properties of a ChangePlayerIDRequest. */
+    interface IChangePlayerIDRequest {
 
-    /** Properties of a GamePacket. */
-    interface IGamePacket {
+        /** ChangePlayerIDRequest userId */
+        userId?: (number|null);
 
-        /** GamePacket action */
-        action?: (ws.GameActions|null);
-
-        /** GamePacket insertToken */
-        insertToken?: (ws.IGameInsertToken|null);
-    }
-
-    /** Represents a GamePacket. */
-    class GamePacket implements IGamePacket {
-
-        /**
-         * Constructs a new GamePacket.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: ws.IGamePacket);
-
-        /** GamePacket action. */
-        public action: ws.GameActions;
-
-        /** GamePacket insertToken. */
-        public insertToken?: (ws.IGameInsertToken|null);
-
-        /** GamePacket data. */
-        public data?: "insertToken";
-
-        /**
-         * Creates a new GamePacket instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns GamePacket instance
-         */
-        public static create(properties?: ws.IGamePacket): ws.GamePacket;
-
-        /**
-         * Encodes the specified GamePacket message. Does not implicitly {@link ws.GamePacket.verify|verify} messages.
-         * @param message GamePacket message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: ws.IGamePacket, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified GamePacket message, length delimited. Does not implicitly {@link ws.GamePacket.verify|verify} messages.
-         * @param message GamePacket message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: ws.IGamePacket, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a GamePacket message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns GamePacket
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GamePacket;
-
-        /**
-         * Decodes a GamePacket message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns GamePacket
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GamePacket;
-
-        /**
-         * Verifies a GamePacket message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a GamePacket message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns GamePacket
-         */
-        public static fromObject(object: { [k: string]: any }): ws.GamePacket;
-
-        /**
-         * Creates a plain object from a GamePacket message. Also converts values to other types if specified.
-         * @param message GamePacket
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: ws.GamePacket, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this GamePacket to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for GamePacket
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** GameEndTypes enum. */
-    enum GameEndTypes {
-        GAME_END_TYPES_UNSPECIFIED = 0,
-        GAME_END_TYPES_STANDARD_WIN = 1,
-        GAME_END_TYPES_FORFEITED = 2,
-        GAME_END_TYPES_DRAW = 3
-    }
-
-    /** Properties of a GameInit. */
-    interface IGameInit {
-
-        /** GameInit playerId */
+        /** ChangePlayerIDRequest playerId */
         playerId?: (shared.PlayerIDs|null);
     }
 
-    /** Represents a GameInit. */
-    class GameInit implements IGameInit {
+    /** Represents a ChangePlayerIDRequest. */
+    class ChangePlayerIDRequest implements IChangePlayerIDRequest {
 
         /**
-         * Constructs a new GameInit.
+         * Constructs a new ChangePlayerIDRequest.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IGameInit);
+        constructor(properties?: routes.IChangePlayerIDRequest);
 
-        /** GameInit playerId. */
+        /** ChangePlayerIDRequest userId. */
+        public userId: number;
+
+        /** ChangePlayerIDRequest playerId. */
         public playerId: shared.PlayerIDs;
 
         /**
-         * Creates a new GameInit instance using the specified properties.
+         * Creates a new ChangePlayerIDRequest instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GameInit instance
+         * @returns ChangePlayerIDRequest instance
          */
-        public static create(properties?: ws.IGameInit): ws.GameInit;
+        public static create(properties?: routes.IChangePlayerIDRequest): routes.ChangePlayerIDRequest;
 
         /**
-         * Encodes the specified GameInit message. Does not implicitly {@link ws.GameInit.verify|verify} messages.
-         * @param message GameInit message or plain object to encode
+         * Encodes the specified ChangePlayerIDRequest message. Does not implicitly {@link routes.ChangePlayerIDRequest.verify|verify} messages.
+         * @param message ChangePlayerIDRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IGameInit, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.IChangePlayerIDRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GameInit message, length delimited. Does not implicitly {@link ws.GameInit.verify|verify} messages.
-         * @param message GameInit message or plain object to encode
+         * Encodes the specified ChangePlayerIDRequest message, length delimited. Does not implicitly {@link routes.ChangePlayerIDRequest.verify|verify} messages.
+         * @param message ChangePlayerIDRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IGameInit, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.IChangePlayerIDRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GameInit message from the specified reader or buffer.
+         * Decodes a ChangePlayerIDRequest message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GameInit
+         * @returns ChangePlayerIDRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameInit;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.ChangePlayerIDRequest;
 
         /**
-         * Decodes a GameInit message from the specified reader or buffer, length delimited.
+         * Decodes a ChangePlayerIDRequest message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GameInit
+         * @returns ChangePlayerIDRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameInit;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.ChangePlayerIDRequest;
 
         /**
-         * Verifies a GameInit message.
+         * Verifies a ChangePlayerIDRequest message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GameInit message from a plain object. Also converts values to their respective internal types.
+         * Creates a ChangePlayerIDRequest message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GameInit
+         * @returns ChangePlayerIDRequest
          */
-        public static fromObject(object: { [k: string]: any }): ws.GameInit;
+        public static fromObject(object: { [k: string]: any }): routes.ChangePlayerIDRequest;
 
         /**
-         * Creates a plain object from a GameInit message. Also converts values to other types if specified.
-         * @param message GameInit
+         * Creates a plain object from a ChangePlayerIDRequest message. Also converts values to other types if specified.
+         * @param message ChangePlayerIDRequest
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.GameInit, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.ChangePlayerIDRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GameInit to JSON.
+         * Converts this ChangePlayerIDRequest to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GameInit
+         * Gets the default type url for ChangePlayerIDRequest
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a GameMove. */
-    interface IGameMove {
+    /** Properties of a CreateUserRequest. */
+    interface ICreateUserRequest {
 
-        /** GameMove tile */
-        tile?: (models.ITile|null);
-
-        /** GameMove board */
-        board?: (shared.IGameBoard|null);
-
-        /** GameMove turn */
-        turn?: (shared.PlayerIDs|null);
-
-        /** GameMove changeTiles */
-        changeTiles?: (ws.IChangeTile[]|null);
-
-        /** GameMove currentTokens */
-        currentTokens?: (models.ICurrentTokens|null);
-
-        /** GameMove decks */
-        decks?: (models.IDecks|null);
+        /** CreateUserRequest username */
+        username?: (string|null);
     }
 
-    /** Represents a GameMove. */
-    class GameMove implements IGameMove {
+    /** Represents a CreateUserRequest. */
+    class CreateUserRequest implements ICreateUserRequest {
 
         /**
-         * Constructs a new GameMove.
+         * Constructs a new CreateUserRequest.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IGameMove);
+        constructor(properties?: routes.ICreateUserRequest);
 
-        /** GameMove tile. */
-        public tile?: (models.ITile|null);
-
-        /** GameMove board. */
-        public board?: (shared.IGameBoard|null);
-
-        /** GameMove turn. */
-        public turn: shared.PlayerIDs;
-
-        /** GameMove changeTiles. */
-        public changeTiles: ws.IChangeTile[];
-
-        /** GameMove currentTokens. */
-        public currentTokens?: (models.ICurrentTokens|null);
-
-        /** GameMove decks. */
-        public decks?: (models.IDecks|null);
+        /** CreateUserRequest username. */
+        public username: string;
 
         /**
-         * Creates a new GameMove instance using the specified properties.
+         * Creates a new CreateUserRequest instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GameMove instance
+         * @returns CreateUserRequest instance
          */
-        public static create(properties?: ws.IGameMove): ws.GameMove;
+        public static create(properties?: routes.ICreateUserRequest): routes.CreateUserRequest;
 
         /**
-         * Encodes the specified GameMove message. Does not implicitly {@link ws.GameMove.verify|verify} messages.
-         * @param message GameMove message or plain object to encode
+         * Encodes the specified CreateUserRequest message. Does not implicitly {@link routes.CreateUserRequest.verify|verify} messages.
+         * @param message CreateUserRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.ICreateUserRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GameMove message, length delimited. Does not implicitly {@link ws.GameMove.verify|verify} messages.
-         * @param message GameMove message or plain object to encode
+         * Encodes the specified CreateUserRequest message, length delimited. Does not implicitly {@link routes.CreateUserRequest.verify|verify} messages.
+         * @param message CreateUserRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.ICreateUserRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GameMove message from the specified reader or buffer.
+         * Decodes a CreateUserRequest message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GameMove
+         * @returns CreateUserRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameMove;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.CreateUserRequest;
 
         /**
-         * Decodes a GameMove message from the specified reader or buffer, length delimited.
+         * Decodes a CreateUserRequest message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GameMove
+         * @returns CreateUserRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameMove;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.CreateUserRequest;
 
         /**
-         * Verifies a GameMove message.
+         * Verifies a CreateUserRequest message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GameMove message from a plain object. Also converts values to their respective internal types.
+         * Creates a CreateUserRequest message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GameMove
+         * @returns CreateUserRequest
          */
-        public static fromObject(object: { [k: string]: any }): ws.GameMove;
+        public static fromObject(object: { [k: string]: any }): routes.CreateUserRequest;
 
         /**
-         * Creates a plain object from a GameMove message. Also converts values to other types if specified.
-         * @param message GameMove
+         * Creates a plain object from a CreateUserRequest message. Also converts values to other types if specified.
+         * @param message CreateUserRequest
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.GameMove, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.CreateUserRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GameMove to JSON.
+         * Converts this CreateUserRequest to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GameMove
+         * Gets the default type url for CreateUserRequest
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a ChangeTile. */
-    interface IChangeTile {
+    /** Properties of a ChangeUsernameRequest. */
+    interface IChangeUsernameRequest {
 
-        /** ChangeTile action */
-        action?: (models.ChangeTokenActions|null);
-
-        /** ChangeTile tile */
-        tile?: (models.ITile|null);
+        /** ChangeUsernameRequest username */
+        username?: (string|null);
     }
 
-    /** Represents a ChangeTile. */
-    class ChangeTile implements IChangeTile {
+    /** Represents a ChangeUsernameRequest. */
+    class ChangeUsernameRequest implements IChangeUsernameRequest {
 
         /**
-         * Constructs a new ChangeTile.
+         * Constructs a new ChangeUsernameRequest.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IChangeTile);
+        constructor(properties?: routes.IChangeUsernameRequest);
 
-        /** ChangeTile action. */
-        public action: models.ChangeTokenActions;
-
-        /** ChangeTile tile. */
-        public tile?: (models.ITile|null);
+        /** ChangeUsernameRequest username. */
+        public username: string;
 
         /**
-         * Creates a new ChangeTile instance using the specified properties.
+         * Creates a new ChangeUsernameRequest instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns ChangeTile instance
+         * @returns ChangeUsernameRequest instance
          */
-        public static create(properties?: ws.IChangeTile): ws.ChangeTile;
+        public static create(properties?: routes.IChangeUsernameRequest): routes.ChangeUsernameRequest;
 
         /**
-         * Encodes the specified ChangeTile message. Does not implicitly {@link ws.ChangeTile.verify|verify} messages.
-         * @param message ChangeTile message or plain object to encode
+         * Encodes the specified ChangeUsernameRequest message. Does not implicitly {@link routes.ChangeUsernameRequest.verify|verify} messages.
+         * @param message ChangeUsernameRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IChangeTile, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.IChangeUsernameRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ChangeTile message, length delimited. Does not implicitly {@link ws.ChangeTile.verify|verify} messages.
-         * @param message ChangeTile message or plain object to encode
+         * Encodes the specified ChangeUsernameRequest message, length delimited. Does not implicitly {@link routes.ChangeUsernameRequest.verify|verify} messages.
+         * @param message ChangeUsernameRequest message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IChangeTile, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.IChangeUsernameRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a ChangeTile message from the specified reader or buffer.
+         * Decodes a ChangeUsernameRequest message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns ChangeTile
+         * @returns ChangeUsernameRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.ChangeTile;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.ChangeUsernameRequest;
 
         /**
-         * Decodes a ChangeTile message from the specified reader or buffer, length delimited.
+         * Decodes a ChangeUsernameRequest message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns ChangeTile
+         * @returns ChangeUsernameRequest
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.ChangeTile;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.ChangeUsernameRequest;
 
         /**
-         * Verifies a ChangeTile message.
+         * Verifies a ChangeUsernameRequest message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a ChangeTile message from a plain object. Also converts values to their respective internal types.
+         * Creates a ChangeUsernameRequest message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns ChangeTile
+         * @returns ChangeUsernameRequest
          */
-        public static fromObject(object: { [k: string]: any }): ws.ChangeTile;
+        public static fromObject(object: { [k: string]: any }): routes.ChangeUsernameRequest;
 
         /**
-         * Creates a plain object from a ChangeTile message. Also converts values to other types if specified.
-         * @param message ChangeTile
+         * Creates a plain object from a ChangeUsernameRequest message. Also converts values to other types if specified.
+         * @param message ChangeUsernameRequest
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.ChangeTile, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.ChangeUsernameRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this ChangeTile to JSON.
+         * Converts this ChangeUsernameRequest to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for ChangeTile
+         * Gets the default type url for ChangeUsernameRequest
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a GameEnd. */
-    interface IGameEnd {
+    /** Properties of a GetLoggedInData. */
+    interface IGetLoggedInData {
 
-        /** GameEnd endType */
-        endType?: (ws.GameEndTypes|null);
-
-        /** GameEnd tile */
-        tile?: (models.ITile|null);
-
-        /** GameEnd winner */
-        winner?: (models.IPartialUser|null);
-
-        /** GameEnd loser */
-        loser?: (models.IPartialUser|null);
-
-        /** GameEnd board */
-        board?: (shared.IGameBoard|null);
-
-        /** GameEnd changeTiles */
-        changeTiles?: (ws.IChangeTile[]|null);
-
-        /** GameEnd currentTokens */
-        currentTokens?: (models.ICurrentTokens|null);
-
-        /** GameEnd decks */
-        decks?: (models.IDecks|null);
+        /** GetLoggedInData user */
+        user?: (models.IUser|null);
     }
 
-    /** Represents a GameEnd. */
-    class GameEnd implements IGameEnd {
+    /** Represents a GetLoggedInData. */
+    class GetLoggedInData implements IGetLoggedInData {
 
         /**
-         * Constructs a new GameEnd.
+         * Constructs a new GetLoggedInData.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IGameEnd);
+        constructor(properties?: routes.IGetLoggedInData);
 
-        /** GameEnd endType. */
-        public endType: ws.GameEndTypes;
-
-        /** GameEnd tile. */
-        public tile?: (models.ITile|null);
-
-        /** GameEnd winner. */
-        public winner?: (models.IPartialUser|null);
-
-        /** GameEnd loser. */
-        public loser?: (models.IPartialUser|null);
-
-        /** GameEnd board. */
-        public board?: (shared.IGameBoard|null);
-
-        /** GameEnd changeTiles. */
-        public changeTiles: ws.IChangeTile[];
-
-        /** GameEnd currentTokens. */
-        public currentTokens?: (models.ICurrentTokens|null);
-
-        /** GameEnd decks. */
-        public decks?: (models.IDecks|null);
+        /** GetLoggedInData user. */
+        public user?: (models.IUser|null);
 
         /**
-         * Creates a new GameEnd instance using the specified properties.
+         * Creates a new GetLoggedInData instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GameEnd instance
+         * @returns GetLoggedInData instance
          */
-        public static create(properties?: ws.IGameEnd): ws.GameEnd;
+        public static create(properties?: routes.IGetLoggedInData): routes.GetLoggedInData;
 
         /**
-         * Encodes the specified GameEnd message. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
-         * @param message GameEnd message or plain object to encode
+         * Encodes the specified GetLoggedInData message. Does not implicitly {@link routes.GetLoggedInData.verify|verify} messages.
+         * @param message GetLoggedInData message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.IGetLoggedInData, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GameEnd message, length delimited. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
-         * @param message GameEnd message or plain object to encode
+         * Encodes the specified GetLoggedInData message, length delimited. Does not implicitly {@link routes.GetLoggedInData.verify|verify} messages.
+         * @param message GetLoggedInData message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.IGetLoggedInData, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GameEnd message from the specified reader or buffer.
+         * Decodes a GetLoggedInData message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GameEnd
+         * @returns GetLoggedInData
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameEnd;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetLoggedInData;
 
         /**
-         * Decodes a GameEnd message from the specified reader or buffer, length delimited.
+         * Decodes a GetLoggedInData message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GameEnd
+         * @returns GetLoggedInData
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameEnd;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetLoggedInData;
 
         /**
-         * Verifies a GameEnd message.
+         * Verifies a GetLoggedInData message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GameEnd message from a plain object. Also converts values to their respective internal types.
+         * Creates a GetLoggedInData message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GameEnd
+         * @returns GetLoggedInData
          */
-        public static fromObject(object: { [k: string]: any }): ws.GameEnd;
+        public static fromObject(object: { [k: string]: any }): routes.GetLoggedInData;
 
         /**
-         * Creates a plain object from a GameEnd message. Also converts values to other types if specified.
-         * @param message GameEnd
+         * Creates a plain object from a GetLoggedInData message. Also converts values to other types if specified.
+         * @param message GetLoggedInData
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.GameEnd, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.GetLoggedInData, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GameEnd to JSON.
+         * Converts this GetLoggedInData to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GameEnd
+         * Gets the default type url for GetLoggedInData
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** GameResponses enum. */
-    enum GameResponses {
-        GAME_RESPONSES_UNSPECIFIED = 0,
-        GAME_RESPONSES_ERROR = 1,
-        GAME_RESPONSES_INIT = 2,
-        GAME_RESPONSES_MOVE = 3,
-        GAME_RESPONSES_END = 4
+    /** Properties of a GetGameResponse. */
+    interface IGetGameResponse {
+
+        /** GetGameResponse game */
+        game?: (models.IGame|null);
     }
 
-    /** Properties of a GameResponsePacket. */
-    interface IGameResponsePacket {
-
-        /** GameResponsePacket response */
-        response?: (ws.GameResponses|null);
-
-        /** GameResponsePacket error */
-        error?: (shared.ICodedError|null);
-
-        /** GameResponsePacket init */
-        init?: (ws.IGameInit|null);
-
-        /** GameResponsePacket move */
-        move?: (ws.IGameMove|null);
-
-        /** GameResponsePacket end */
-        end?: (ws.IGameEnd|null);
-    }
-
-    /** Represents a GameResponsePacket. */
-    class GameResponsePacket implements IGameResponsePacket {
+    /** Represents a GetGameResponse. */
+    class GetGameResponse implements IGetGameResponse {
 
         /**
-         * Constructs a new GameResponsePacket.
+         * Constructs a new GetGameResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IGameResponsePacket);
+        constructor(properties?: routes.IGetGameResponse);
 
-        /** GameResponsePacket response. */
-        public response: ws.GameResponses;
-
-        /** GameResponsePacket error. */
-        public error?: (shared.ICodedError|null);
-
-        /** GameResponsePacket init. */
-        public init?: (ws.IGameInit|null);
-
-        /** GameResponsePacket move. */
-        public move?: (ws.IGameMove|null);
-
-        /** GameResponsePacket end. */
-        public end?: (ws.IGameEnd|null);
-
-        /** GameResponsePacket data. */
-        public data?: ("error"|"init"|"move"|"end");
+        /** GetGameResponse game. */
+        public game?: (models.IGame|null);
 
         /**
-         * Creates a new GameResponsePacket instance using the specified properties.
+         * Creates a new GetGameResponse instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GameResponsePacket instance
+         * @returns GetGameResponse instance
          */
-        public static create(properties?: ws.IGameResponsePacket): ws.GameResponsePacket;
+        public static create(properties?: routes.IGetGameResponse): routes.GetGameResponse;
 
         /**
-         * Encodes the specified GameResponsePacket message. Does not implicitly {@link ws.GameResponsePacket.verify|verify} messages.
-         * @param message GameResponsePacket message or plain object to encode
+         * Encodes the specified GetGameResponse message. Does not implicitly {@link routes.GetGameResponse.verify|verify} messages.
+         * @param message GetGameResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IGameResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: routes.IGetGameResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GameResponsePacket message, length delimited. Does not implicitly {@link ws.GameResponsePacket.verify|verify} messages.
-         * @param message GameResponsePacket message or plain object to encode
+         * Encodes the specified GetGameResponse message, length delimited. Does not implicitly {@link routes.GetGameResponse.verify|verify} messages.
+         * @param message GetGameResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IGameResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: routes.IGetGameResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GameResponsePacket message from the specified reader or buffer.
+         * Decodes a GetGameResponse message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GameResponsePacket
+         * @returns GetGameResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameResponsePacket;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetGameResponse;
 
         /**
-         * Decodes a GameResponsePacket message from the specified reader or buffer, length delimited.
+         * Decodes a GetGameResponse message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GameResponsePacket
+         * @returns GetGameResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameResponsePacket;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetGameResponse;
 
         /**
-         * Verifies a GameResponsePacket message.
+         * Verifies a GetGameResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GameResponsePacket message from a plain object. Also converts values to their respective internal types.
+         * Creates a GetGameResponse message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GameResponsePacket
+         * @returns GetGameResponse
          */
-        public static fromObject(object: { [k: string]: any }): ws.GameResponsePacket;
+        public static fromObject(object: { [k: string]: any }): routes.GetGameResponse;
 
         /**
-         * Creates a plain object from a GameResponsePacket message. Also converts values to other types if specified.
-         * @param message GameResponsePacket
+         * Creates a plain object from a GetGameResponse message. Also converts values to other types if specified.
+         * @param message GetGameResponse
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.GameResponsePacket, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: routes.GetGameResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GameResponsePacket to JSON.
+         * Converts this GetGameResponse to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GameResponsePacket
+         * Gets the default type url for GetGameResponse
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -1716,6 +1294,15 @@ export namespace models {
 
         /** Game board */
         board?: (shared.IGameBoard|null);
+
+        /** Game tokenQueueMode */
+        tokenQueueMode?: (models.TokenQueueModes|null);
+
+        /** Game currentTokens */
+        currentTokens?: (models.ICurrentTokens|null);
+
+        /** Game decks */
+        decks?: (models.IDecks|null);
     }
 
     /** Represents a Game. */
@@ -1732,6 +1319,15 @@ export namespace models {
 
         /** Game board. */
         public board?: (shared.IGameBoard|null);
+
+        /** Game tokenQueueMode. */
+        public tokenQueueMode: models.TokenQueueModes;
+
+        /** Game currentTokens. */
+        public currentTokens?: (models.ICurrentTokens|null);
+
+        /** Game decks. */
+        public decks?: (models.IDecks|null);
 
         /**
          * Creates a new Game instance using the specified properties.
@@ -3085,1173 +2681,1595 @@ export namespace models {
     }
 }
 
-/** Namespace routes. */
-export namespace routes {
+/** Namespace shared. */
+export namespace shared {
 
-    /** Properties of a GetLobbiesResponse. */
-    interface IGetLobbiesResponse {
-
-        /** GetLobbiesResponse lobbies */
-        lobbies?: (models.ILobbyData[]|null);
+    /** PlayerTypes enum. */
+    enum PlayerTypes {
+        PLAYER_TYPES_UNSPECIFIED = 0,
+        PLAYER_TYPES_PLAYER = 1,
+        PLAYER_TYPES_SPECTATOR = 2
     }
 
-    /** Represents a GetLobbiesResponse. */
-    class GetLobbiesResponse implements IGetLobbiesResponse {
+    /** PlayerIDs enum. */
+    enum PlayerIDs {
+        PLAYER_IDS_UNSPECIFIED = 0,
+        PLAYER_IDS_PLAYER1 = 1,
+        PLAYER_IDS_PLAYER2 = 2
+    }
+
+    /** Properties of a GameRow. */
+    interface IGameRow {
+
+        /** GameRow tokens */
+        tokens?: (models.IToken[]|null);
+    }
+
+    /** Represents a GameRow. */
+    class GameRow implements IGameRow {
 
         /**
-         * Constructs a new GetLobbiesResponse.
+         * Constructs a new GameRow.
          * @param [properties] Properties to set
          */
-        constructor(properties?: routes.IGetLobbiesResponse);
+        constructor(properties?: shared.IGameRow);
 
-        /** GetLobbiesResponse lobbies. */
-        public lobbies: models.ILobbyData[];
+        /** GameRow tokens. */
+        public tokens: models.IToken[];
 
         /**
-         * Creates a new GetLobbiesResponse instance using the specified properties.
+         * Creates a new GameRow instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GetLobbiesResponse instance
+         * @returns GameRow instance
          */
-        public static create(properties?: routes.IGetLobbiesResponse): routes.GetLobbiesResponse;
+        public static create(properties?: shared.IGameRow): shared.GameRow;
 
         /**
-         * Encodes the specified GetLobbiesResponse message. Does not implicitly {@link routes.GetLobbiesResponse.verify|verify} messages.
-         * @param message GetLobbiesResponse message or plain object to encode
+         * Encodes the specified GameRow message. Does not implicitly {@link shared.GameRow.verify|verify} messages.
+         * @param message GameRow message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: routes.IGetLobbiesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: shared.IGameRow, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GetLobbiesResponse message, length delimited. Does not implicitly {@link routes.GetLobbiesResponse.verify|verify} messages.
-         * @param message GetLobbiesResponse message or plain object to encode
+         * Encodes the specified GameRow message, length delimited. Does not implicitly {@link shared.GameRow.verify|verify} messages.
+         * @param message GameRow message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: routes.IGetLobbiesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: shared.IGameRow, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GetLobbiesResponse message from the specified reader or buffer.
+         * Decodes a GameRow message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GetLobbiesResponse
+         * @returns GameRow
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetLobbiesResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): shared.GameRow;
 
         /**
-         * Decodes a GetLobbiesResponse message from the specified reader or buffer, length delimited.
+         * Decodes a GameRow message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GetLobbiesResponse
+         * @returns GameRow
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetLobbiesResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): shared.GameRow;
 
         /**
-         * Verifies a GetLobbiesResponse message.
+         * Verifies a GameRow message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GetLobbiesResponse message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameRow message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GetLobbiesResponse
+         * @returns GameRow
          */
-        public static fromObject(object: { [k: string]: any }): routes.GetLobbiesResponse;
+        public static fromObject(object: { [k: string]: any }): shared.GameRow;
 
         /**
-         * Creates a plain object from a GetLobbiesResponse message. Also converts values to other types if specified.
-         * @param message GetLobbiesResponse
+         * Creates a plain object from a GameRow message. Also converts values to other types if specified.
+         * @param message GameRow
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: routes.GetLobbiesResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: shared.GameRow, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GetLobbiesResponse to JSON.
+         * Converts this GameRow to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GetLobbiesResponse
+         * Gets the default type url for GameRow
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a GetLobbyResponse. */
-    interface IGetLobbyResponse {
+    /** Properties of a GameBoard. */
+    interface IGameBoard {
 
-        /** GetLobbyResponse lobby */
-        lobby?: (models.ILobbyData|null);
+        /** GameBoard rows */
+        rows?: (shared.IGameRow[]|null);
     }
 
-    /** Represents a GetLobbyResponse. */
-    class GetLobbyResponse implements IGetLobbyResponse {
+    /** Represents a GameBoard. */
+    class GameBoard implements IGameBoard {
 
         /**
-         * Constructs a new GetLobbyResponse.
+         * Constructs a new GameBoard.
          * @param [properties] Properties to set
          */
-        constructor(properties?: routes.IGetLobbyResponse);
+        constructor(properties?: shared.IGameBoard);
 
-        /** GetLobbyResponse lobby. */
-        public lobby?: (models.ILobbyData|null);
+        /** GameBoard rows. */
+        public rows: shared.IGameRow[];
 
         /**
-         * Creates a new GetLobbyResponse instance using the specified properties.
+         * Creates a new GameBoard instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GetLobbyResponse instance
+         * @returns GameBoard instance
          */
-        public static create(properties?: routes.IGetLobbyResponse): routes.GetLobbyResponse;
+        public static create(properties?: shared.IGameBoard): shared.GameBoard;
 
         /**
-         * Encodes the specified GetLobbyResponse message. Does not implicitly {@link routes.GetLobbyResponse.verify|verify} messages.
-         * @param message GetLobbyResponse message or plain object to encode
+         * Encodes the specified GameBoard message. Does not implicitly {@link shared.GameBoard.verify|verify} messages.
+         * @param message GameBoard message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: routes.IGetLobbyResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: shared.IGameBoard, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GetLobbyResponse message, length delimited. Does not implicitly {@link routes.GetLobbyResponse.verify|verify} messages.
-         * @param message GetLobbyResponse message or plain object to encode
+         * Encodes the specified GameBoard message, length delimited. Does not implicitly {@link shared.GameBoard.verify|verify} messages.
+         * @param message GameBoard message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: routes.IGetLobbyResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: shared.IGameBoard, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GetLobbyResponse message from the specified reader or buffer.
+         * Decodes a GameBoard message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GetLobbyResponse
+         * @returns GameBoard
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetLobbyResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): shared.GameBoard;
 
         /**
-         * Decodes a GetLobbyResponse message from the specified reader or buffer, length delimited.
+         * Decodes a GameBoard message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GetLobbyResponse
+         * @returns GameBoard
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetLobbyResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): shared.GameBoard;
 
         /**
-         * Verifies a GetLobbyResponse message.
+         * Verifies a GameBoard message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GetLobbyResponse message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameBoard message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GetLobbyResponse
+         * @returns GameBoard
          */
-        public static fromObject(object: { [k: string]: any }): routes.GetLobbyResponse;
+        public static fromObject(object: { [k: string]: any }): shared.GameBoard;
 
         /**
-         * Creates a plain object from a GetLobbyResponse message. Also converts values to other types if specified.
-         * @param message GetLobbyResponse
+         * Creates a plain object from a GameBoard message. Also converts values to other types if specified.
+         * @param message GameBoard
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: routes.GetLobbyResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: shared.GameBoard, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GetLobbyResponse to JSON.
+         * Converts this GameBoard to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GetLobbyResponse
+         * Gets the default type url for GameBoard
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a CreateLobbyRequest. */
-    interface ICreateLobbyRequest {
-
-        /** CreateLobbyRequest lobbyName */
-        lobbyName?: (string|null);
+    /** ErrorCodes enum. */
+    enum ErrorCodes {
+        ERROR_CODES_UNSPECIFIED = 0,
+        ERROR_CODES_SERVER_ERROR = 1,
+        ERROR_CODES_BAD_DATA = 2,
+        ERROR_CODES_BAD_TURN = 3,
+        ERROR_CODES_BAD_USER = 4,
+        ERROR_CODES_BAD_NAME = 5,
+        ERROR_CODES_UNAUTHORISED = 6,
+        ERROR_CODES_ALREADY_JOINED = 7,
+        ERROR_CODES_NOT_A_MEMBER = 8,
+        ERROR_CODES_GAME_LOCKED = 9,
+        ERROR_CODES_GAME_EXPIRED = 10,
+        ERROR_CODES_GAME_ALREADY_EXISTS = 11,
+        ERROR_CODES_DOESNT_EXIST = 12,
+        ERROR_CODES_USER_ALREADY_EXISTS = 13,
+        ERROR_CODES_BAD_SETUP = 14,
+        ERROR_CODES_USER_BANNED = 15,
+        ERROR_CODES_BAD_TOKEN = 16
     }
 
-    /** Represents a CreateLobbyRequest. */
-    class CreateLobbyRequest implements ICreateLobbyRequest {
+    /** Properties of a CodedError. */
+    interface ICodedError {
+
+        /** CodedError code */
+        code?: (shared.ErrorCodes|null);
+
+        /** CodedError error */
+        error?: (string|null);
+    }
+
+    /** Represents a CodedError. */
+    class CodedError implements ICodedError {
 
         /**
-         * Constructs a new CreateLobbyRequest.
+         * Constructs a new CodedError.
          * @param [properties] Properties to set
          */
-        constructor(properties?: routes.ICreateLobbyRequest);
+        constructor(properties?: shared.ICodedError);
 
-        /** CreateLobbyRequest lobbyName. */
-        public lobbyName: string;
+        /** CodedError code. */
+        public code: shared.ErrorCodes;
+
+        /** CodedError error. */
+        public error?: (string|null);
 
         /**
-         * Creates a new CreateLobbyRequest instance using the specified properties.
+         * Creates a new CodedError instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns CreateLobbyRequest instance
+         * @returns CodedError instance
          */
-        public static create(properties?: routes.ICreateLobbyRequest): routes.CreateLobbyRequest;
+        public static create(properties?: shared.ICodedError): shared.CodedError;
 
         /**
-         * Encodes the specified CreateLobbyRequest message. Does not implicitly {@link routes.CreateLobbyRequest.verify|verify} messages.
-         * @param message CreateLobbyRequest message or plain object to encode
+         * Encodes the specified CodedError message. Does not implicitly {@link shared.CodedError.verify|verify} messages.
+         * @param message CodedError message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: routes.ICreateLobbyRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: shared.ICodedError, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified CreateLobbyRequest message, length delimited. Does not implicitly {@link routes.CreateLobbyRequest.verify|verify} messages.
-         * @param message CreateLobbyRequest message or plain object to encode
+         * Encodes the specified CodedError message, length delimited. Does not implicitly {@link shared.CodedError.verify|verify} messages.
+         * @param message CodedError message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: routes.ICreateLobbyRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: shared.ICodedError, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a CreateLobbyRequest message from the specified reader or buffer.
+         * Decodes a CodedError message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns CreateLobbyRequest
+         * @returns CodedError
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.CreateLobbyRequest;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): shared.CodedError;
 
         /**
-         * Decodes a CreateLobbyRequest message from the specified reader or buffer, length delimited.
+         * Decodes a CodedError message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns CreateLobbyRequest
+         * @returns CodedError
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.CreateLobbyRequest;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): shared.CodedError;
 
         /**
-         * Verifies a CreateLobbyRequest message.
+         * Verifies a CodedError message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a CreateLobbyRequest message from a plain object. Also converts values to their respective internal types.
+         * Creates a CodedError message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns CreateLobbyRequest
+         * @returns CodedError
          */
-        public static fromObject(object: { [k: string]: any }): routes.CreateLobbyRequest;
+        public static fromObject(object: { [k: string]: any }): shared.CodedError;
 
         /**
-         * Creates a plain object from a CreateLobbyRequest message. Also converts values to other types if specified.
-         * @param message CreateLobbyRequest
+         * Creates a plain object from a CodedError message. Also converts values to other types if specified.
+         * @param message CodedError
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: routes.CreateLobbyRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: shared.CodedError, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this CreateLobbyRequest to JSON.
+         * Converts this CodedError to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for CreateLobbyRequest
+         * Gets the default type url for CodedError
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
+}
 
-    /** Properties of a CreateLobbyResponse. */
-    interface ICreateLobbyResponse {
+/** Namespace ws. */
+export namespace ws {
 
-        /** CreateLobbyResponse code */
-        code?: (string|null);
+    /** Properties of a GameInsertToken. */
+    interface IGameInsertToken {
+
+        /** GameInsertToken column */
+        column?: (number|null);
+
+        /** GameInsertToken tokenType */
+        tokenType?: (models.TokenTypes|null);
     }
 
-    /** Represents a CreateLobbyResponse. */
-    class CreateLobbyResponse implements ICreateLobbyResponse {
+    /** Represents a GameInsertToken. */
+    class GameInsertToken implements IGameInsertToken {
 
         /**
-         * Constructs a new CreateLobbyResponse.
+         * Constructs a new GameInsertToken.
          * @param [properties] Properties to set
          */
-        constructor(properties?: routes.ICreateLobbyResponse);
+        constructor(properties?: ws.IGameInsertToken);
 
-        /** CreateLobbyResponse code. */
-        public code: string;
+        /** GameInsertToken column. */
+        public column: number;
+
+        /** GameInsertToken tokenType. */
+        public tokenType: models.TokenTypes;
 
         /**
-         * Creates a new CreateLobbyResponse instance using the specified properties.
+         * Creates a new GameInsertToken instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns CreateLobbyResponse instance
+         * @returns GameInsertToken instance
          */
-        public static create(properties?: routes.ICreateLobbyResponse): routes.CreateLobbyResponse;
+        public static create(properties?: ws.IGameInsertToken): ws.GameInsertToken;
 
         /**
-         * Encodes the specified CreateLobbyResponse message. Does not implicitly {@link routes.CreateLobbyResponse.verify|verify} messages.
-         * @param message CreateLobbyResponse message or plain object to encode
+         * Encodes the specified GameInsertToken message. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
+         * @param message GameInsertToken message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: routes.ICreateLobbyResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameInsertToken, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified CreateLobbyResponse message, length delimited. Does not implicitly {@link routes.CreateLobbyResponse.verify|verify} messages.
-         * @param message CreateLobbyResponse message or plain object to encode
+         * Encodes the specified GameInsertToken message, length delimited. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
+         * @param message GameInsertToken message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: routes.ICreateLobbyResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameInsertToken, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a CreateLobbyResponse message from the specified reader or buffer.
+         * Decodes a GameInsertToken message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns CreateLobbyResponse
+         * @returns GameInsertToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.CreateLobbyResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameInsertToken;
 
         /**
-         * Decodes a CreateLobbyResponse message from the specified reader or buffer, length delimited.
+         * Decodes a GameInsertToken message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns CreateLobbyResponse
+         * @returns GameInsertToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.CreateLobbyResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameInsertToken;
 
         /**
-         * Verifies a CreateLobbyResponse message.
+         * Verifies a GameInsertToken message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a CreateLobbyResponse message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameInsertToken message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns CreateLobbyResponse
+         * @returns GameInsertToken
          */
-        public static fromObject(object: { [k: string]: any }): routes.CreateLobbyResponse;
+        public static fromObject(object: { [k: string]: any }): ws.GameInsertToken;
 
         /**
-         * Creates a plain object from a CreateLobbyResponse message. Also converts values to other types if specified.
-         * @param message CreateLobbyResponse
+         * Creates a plain object from a GameInsertToken message. Also converts values to other types if specified.
+         * @param message GameInsertToken
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: routes.CreateLobbyResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameInsertToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this CreateLobbyResponse to JSON.
+         * Converts this GameInsertToken to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for CreateLobbyResponse
+         * Gets the default type url for GameInsertToken
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a GetLobbyDetailsResponse. */
-    interface IGetLobbyDetailsResponse {
-
-        /** GetLobbyDetailsResponse lobbyDetails */
-        lobbyDetails?: (models.IDetailedLobbyData|null);
+    /** GameActions enum. */
+    enum GameActions {
+        GAME_ACTIONS_UNSPECIFIED = 0,
+        GAME_ACTIONS_INSERT_TOKEN = 1,
+        GAME_ACTIONS_FORFEIT = 2
     }
 
-    /** Represents a GetLobbyDetailsResponse. */
-    class GetLobbyDetailsResponse implements IGetLobbyDetailsResponse {
+    /** Properties of a GamePacket. */
+    interface IGamePacket {
+
+        /** GamePacket action */
+        action?: (ws.GameActions|null);
+
+        /** GamePacket insertToken */
+        insertToken?: (ws.IGameInsertToken|null);
+    }
+
+    /** Represents a GamePacket. */
+    class GamePacket implements IGamePacket {
 
         /**
-         * Constructs a new GetLobbyDetailsResponse.
+         * Constructs a new GamePacket.
          * @param [properties] Properties to set
          */
-        constructor(properties?: routes.IGetLobbyDetailsResponse);
+        constructor(properties?: ws.IGamePacket);
 
-        /** GetLobbyDetailsResponse lobbyDetails. */
-        public lobbyDetails?: (models.IDetailedLobbyData|null);
+        /** GamePacket action. */
+        public action: ws.GameActions;
+
+        /** GamePacket insertToken. */
+        public insertToken?: (ws.IGameInsertToken|null);
+
+        /** GamePacket data. */
+        public data?: "insertToken";
 
         /**
-         * Creates a new GetLobbyDetailsResponse instance using the specified properties.
+         * Creates a new GamePacket instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GetLobbyDetailsResponse instance
+         * @returns GamePacket instance
          */
-        public static create(properties?: routes.IGetLobbyDetailsResponse): routes.GetLobbyDetailsResponse;
+        public static create(properties?: ws.IGamePacket): ws.GamePacket;
 
         /**
-         * Encodes the specified GetLobbyDetailsResponse message. Does not implicitly {@link routes.GetLobbyDetailsResponse.verify|verify} messages.
-         * @param message GetLobbyDetailsResponse message or plain object to encode
+         * Encodes the specified GamePacket message. Does not implicitly {@link ws.GamePacket.verify|verify} messages.
+         * @param message GamePacket message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: routes.IGetLobbyDetailsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGamePacket, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GetLobbyDetailsResponse message, length delimited. Does not implicitly {@link routes.GetLobbyDetailsResponse.verify|verify} messages.
-         * @param message GetLobbyDetailsResponse message or plain object to encode
+         * Encodes the specified GamePacket message, length delimited. Does not implicitly {@link ws.GamePacket.verify|verify} messages.
+         * @param message GamePacket message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: routes.IGetLobbyDetailsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGamePacket, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GetLobbyDetailsResponse message from the specified reader or buffer.
+         * Decodes a GamePacket message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GetLobbyDetailsResponse
+         * @returns GamePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetLobbyDetailsResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GamePacket;
 
         /**
-         * Decodes a GetLobbyDetailsResponse message from the specified reader or buffer, length delimited.
+         * Decodes a GamePacket message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GetLobbyDetailsResponse
+         * @returns GamePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetLobbyDetailsResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GamePacket;
 
         /**
-         * Verifies a GetLobbyDetailsResponse message.
+         * Verifies a GamePacket message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GetLobbyDetailsResponse message from a plain object. Also converts values to their respective internal types.
+         * Creates a GamePacket message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GetLobbyDetailsResponse
+         * @returns GamePacket
          */
-        public static fromObject(object: { [k: string]: any }): routes.GetLobbyDetailsResponse;
+        public static fromObject(object: { [k: string]: any }): ws.GamePacket;
 
         /**
-         * Creates a plain object from a GetLobbyDetailsResponse message. Also converts values to other types if specified.
-         * @param message GetLobbyDetailsResponse
+         * Creates a plain object from a GamePacket message. Also converts values to other types if specified.
+         * @param message GamePacket
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: routes.GetLobbyDetailsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GamePacket, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GetLobbyDetailsResponse to JSON.
+         * Converts this GamePacket to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GetLobbyDetailsResponse
+         * Gets the default type url for GamePacket
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a ChangeLobbySettingsRequest. */
-    interface IChangeLobbySettingsRequest {
-
-        /** ChangeLobbySettingsRequest settings */
-        settings?: (models.ILobbySettings|null);
+    /** GameEndTypes enum. */
+    enum GameEndTypes {
+        GAME_END_TYPES_UNSPECIFIED = 0,
+        GAME_END_TYPES_STANDARD_WIN = 1,
+        GAME_END_TYPES_FORFEITED = 2,
+        GAME_END_TYPES_DRAW = 3
     }
 
-    /** Represents a ChangeLobbySettingsRequest. */
-    class ChangeLobbySettingsRequest implements IChangeLobbySettingsRequest {
+    /** Properties of a GameInit. */
+    interface IGameInit {
 
-        /**
-         * Constructs a new ChangeLobbySettingsRequest.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: routes.IChangeLobbySettingsRequest);
-
-        /** ChangeLobbySettingsRequest settings. */
-        public settings?: (models.ILobbySettings|null);
-
-        /**
-         * Creates a new ChangeLobbySettingsRequest instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns ChangeLobbySettingsRequest instance
-         */
-        public static create(properties?: routes.IChangeLobbySettingsRequest): routes.ChangeLobbySettingsRequest;
-
-        /**
-         * Encodes the specified ChangeLobbySettingsRequest message. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
-         * @param message ChangeLobbySettingsRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: routes.IChangeLobbySettingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified ChangeLobbySettingsRequest message, length delimited. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
-         * @param message ChangeLobbySettingsRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: routes.IChangeLobbySettingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns ChangeLobbySettingsRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.ChangeLobbySettingsRequest;
-
-        /**
-         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns ChangeLobbySettingsRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.ChangeLobbySettingsRequest;
-
-        /**
-         * Verifies a ChangeLobbySettingsRequest message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a ChangeLobbySettingsRequest message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns ChangeLobbySettingsRequest
-         */
-        public static fromObject(object: { [k: string]: any }): routes.ChangeLobbySettingsRequest;
-
-        /**
-         * Creates a plain object from a ChangeLobbySettingsRequest message. Also converts values to other types if specified.
-         * @param message ChangeLobbySettingsRequest
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: routes.ChangeLobbySettingsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this ChangeLobbySettingsRequest to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for ChangeLobbySettingsRequest
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of a KickPlayerRequest. */
-    interface IKickPlayerRequest {
-
-        /** KickPlayerRequest userId */
-        userId?: (number|null);
-    }
-
-    /** Represents a KickPlayerRequest. */
-    class KickPlayerRequest implements IKickPlayerRequest {
-
-        /**
-         * Constructs a new KickPlayerRequest.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: routes.IKickPlayerRequest);
-
-        /** KickPlayerRequest userId. */
-        public userId: number;
-
-        /**
-         * Creates a new KickPlayerRequest instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns KickPlayerRequest instance
-         */
-        public static create(properties?: routes.IKickPlayerRequest): routes.KickPlayerRequest;
-
-        /**
-         * Encodes the specified KickPlayerRequest message. Does not implicitly {@link routes.KickPlayerRequest.verify|verify} messages.
-         * @param message KickPlayerRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: routes.IKickPlayerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified KickPlayerRequest message, length delimited. Does not implicitly {@link routes.KickPlayerRequest.verify|verify} messages.
-         * @param message KickPlayerRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: routes.IKickPlayerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a KickPlayerRequest message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns KickPlayerRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.KickPlayerRequest;
-
-        /**
-         * Decodes a KickPlayerRequest message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns KickPlayerRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.KickPlayerRequest;
-
-        /**
-         * Verifies a KickPlayerRequest message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a KickPlayerRequest message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns KickPlayerRequest
-         */
-        public static fromObject(object: { [k: string]: any }): routes.KickPlayerRequest;
-
-        /**
-         * Creates a plain object from a KickPlayerRequest message. Also converts values to other types if specified.
-         * @param message KickPlayerRequest
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: routes.KickPlayerRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this KickPlayerRequest to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for KickPlayerRequest
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of a ChangePlayerIDRequest. */
-    interface IChangePlayerIDRequest {
-
-        /** ChangePlayerIDRequest userId */
-        userId?: (number|null);
-
-        /** ChangePlayerIDRequest playerId */
+        /** GameInit playerId */
         playerId?: (shared.PlayerIDs|null);
     }
 
-    /** Represents a ChangePlayerIDRequest. */
-    class ChangePlayerIDRequest implements IChangePlayerIDRequest {
+    /** Represents a GameInit. */
+    class GameInit implements IGameInit {
 
         /**
-         * Constructs a new ChangePlayerIDRequest.
+         * Constructs a new GameInit.
          * @param [properties] Properties to set
          */
-        constructor(properties?: routes.IChangePlayerIDRequest);
+        constructor(properties?: ws.IGameInit);
 
-        /** ChangePlayerIDRequest userId. */
-        public userId: number;
-
-        /** ChangePlayerIDRequest playerId. */
+        /** GameInit playerId. */
         public playerId: shared.PlayerIDs;
 
         /**
-         * Creates a new ChangePlayerIDRequest instance using the specified properties.
+         * Creates a new GameInit instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns ChangePlayerIDRequest instance
+         * @returns GameInit instance
          */
-        public static create(properties?: routes.IChangePlayerIDRequest): routes.ChangePlayerIDRequest;
+        public static create(properties?: ws.IGameInit): ws.GameInit;
 
         /**
-         * Encodes the specified ChangePlayerIDRequest message. Does not implicitly {@link routes.ChangePlayerIDRequest.verify|verify} messages.
-         * @param message ChangePlayerIDRequest message or plain object to encode
+         * Encodes the specified GameInit message. Does not implicitly {@link ws.GameInit.verify|verify} messages.
+         * @param message GameInit message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: routes.IChangePlayerIDRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameInit, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ChangePlayerIDRequest message, length delimited. Does not implicitly {@link routes.ChangePlayerIDRequest.verify|verify} messages.
-         * @param message ChangePlayerIDRequest message or plain object to encode
+         * Encodes the specified GameInit message, length delimited. Does not implicitly {@link ws.GameInit.verify|verify} messages.
+         * @param message GameInit message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: routes.IChangePlayerIDRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameInit, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a ChangePlayerIDRequest message from the specified reader or buffer.
+         * Decodes a GameInit message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns ChangePlayerIDRequest
+         * @returns GameInit
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.ChangePlayerIDRequest;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameInit;
 
         /**
-         * Decodes a ChangePlayerIDRequest message from the specified reader or buffer, length delimited.
+         * Decodes a GameInit message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns ChangePlayerIDRequest
+         * @returns GameInit
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.ChangePlayerIDRequest;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameInit;
 
         /**
-         * Verifies a ChangePlayerIDRequest message.
+         * Verifies a GameInit message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a ChangePlayerIDRequest message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameInit message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns ChangePlayerIDRequest
+         * @returns GameInit
          */
-        public static fromObject(object: { [k: string]: any }): routes.ChangePlayerIDRequest;
+        public static fromObject(object: { [k: string]: any }): ws.GameInit;
 
         /**
-         * Creates a plain object from a ChangePlayerIDRequest message. Also converts values to other types if specified.
-         * @param message ChangePlayerIDRequest
+         * Creates a plain object from a GameInit message. Also converts values to other types if specified.
+         * @param message GameInit
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: routes.ChangePlayerIDRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameInit, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this ChangePlayerIDRequest to JSON.
+         * Converts this GameInit to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for ChangePlayerIDRequest
+         * Gets the default type url for GameInit
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a CreateUserRequest. */
-    interface ICreateUserRequest {
+    /** Properties of a GameMove. */
+    interface IGameMove {
 
-        /** CreateUserRequest username */
-        username?: (string|null);
+        /** GameMove tile */
+        tile?: (models.ITile|null);
+
+        /** GameMove board */
+        board?: (shared.IGameBoard|null);
+
+        /** GameMove turn */
+        turn?: (shared.PlayerIDs|null);
+
+        /** GameMove changeTiles */
+        changeTiles?: (ws.IChangeTile[]|null);
+
+        /** GameMove currentTokens */
+        currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameMove decks */
+        decks?: (models.IDecks|null);
     }
 
-    /** Represents a CreateUserRequest. */
-    class CreateUserRequest implements ICreateUserRequest {
+    /** Represents a GameMove. */
+    class GameMove implements IGameMove {
 
         /**
-         * Constructs a new CreateUserRequest.
+         * Constructs a new GameMove.
          * @param [properties] Properties to set
          */
-        constructor(properties?: routes.ICreateUserRequest);
+        constructor(properties?: ws.IGameMove);
 
-        /** CreateUserRequest username. */
-        public username: string;
+        /** GameMove tile. */
+        public tile?: (models.ITile|null);
+
+        /** GameMove board. */
+        public board?: (shared.IGameBoard|null);
+
+        /** GameMove turn. */
+        public turn: shared.PlayerIDs;
+
+        /** GameMove changeTiles. */
+        public changeTiles: ws.IChangeTile[];
+
+        /** GameMove currentTokens. */
+        public currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameMove decks. */
+        public decks?: (models.IDecks|null);
 
         /**
-         * Creates a new CreateUserRequest instance using the specified properties.
+         * Creates a new GameMove instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns CreateUserRequest instance
+         * @returns GameMove instance
          */
-        public static create(properties?: routes.ICreateUserRequest): routes.CreateUserRequest;
+        public static create(properties?: ws.IGameMove): ws.GameMove;
 
         /**
-         * Encodes the specified CreateUserRequest message. Does not implicitly {@link routes.CreateUserRequest.verify|verify} messages.
-         * @param message CreateUserRequest message or plain object to encode
+         * Encodes the specified GameMove message. Does not implicitly {@link ws.GameMove.verify|verify} messages.
+         * @param message GameMove message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: routes.ICreateUserRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified CreateUserRequest message, length delimited. Does not implicitly {@link routes.CreateUserRequest.verify|verify} messages.
-         * @param message CreateUserRequest message or plain object to encode
+         * Encodes the specified GameMove message, length delimited. Does not implicitly {@link ws.GameMove.verify|verify} messages.
+         * @param message GameMove message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: routes.ICreateUserRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameMove, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a CreateUserRequest message from the specified reader or buffer.
+         * Decodes a GameMove message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns CreateUserRequest
+         * @returns GameMove
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.CreateUserRequest;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameMove;
 
         /**
-         * Decodes a CreateUserRequest message from the specified reader or buffer, length delimited.
+         * Decodes a GameMove message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns CreateUserRequest
+         * @returns GameMove
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.CreateUserRequest;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameMove;
 
         /**
-         * Verifies a CreateUserRequest message.
+         * Verifies a GameMove message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a CreateUserRequest message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameMove message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns CreateUserRequest
+         * @returns GameMove
          */
-        public static fromObject(object: { [k: string]: any }): routes.CreateUserRequest;
+        public static fromObject(object: { [k: string]: any }): ws.GameMove;
 
         /**
-         * Creates a plain object from a CreateUserRequest message. Also converts values to other types if specified.
-         * @param message CreateUserRequest
+         * Creates a plain object from a GameMove message. Also converts values to other types if specified.
+         * @param message GameMove
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: routes.CreateUserRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameMove, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this CreateUserRequest to JSON.
+         * Converts this GameMove to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for CreateUserRequest
+         * Gets the default type url for GameMove
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a ChangeUsernameRequest. */
-    interface IChangeUsernameRequest {
+    /** Properties of a ChangeTile. */
+    interface IChangeTile {
 
-        /** ChangeUsernameRequest username */
-        username?: (string|null);
+        /** ChangeTile action */
+        action?: (models.ChangeTokenActions|null);
+
+        /** ChangeTile tile */
+        tile?: (models.ITile|null);
     }
 
-    /** Represents a ChangeUsernameRequest. */
-    class ChangeUsernameRequest implements IChangeUsernameRequest {
+    /** Represents a ChangeTile. */
+    class ChangeTile implements IChangeTile {
 
         /**
-         * Constructs a new ChangeUsernameRequest.
+         * Constructs a new ChangeTile.
          * @param [properties] Properties to set
          */
-        constructor(properties?: routes.IChangeUsernameRequest);
+        constructor(properties?: ws.IChangeTile);
 
-        /** ChangeUsernameRequest username. */
-        public username: string;
+        /** ChangeTile action. */
+        public action: models.ChangeTokenActions;
+
+        /** ChangeTile tile. */
+        public tile?: (models.ITile|null);
 
         /**
-         * Creates a new ChangeUsernameRequest instance using the specified properties.
+         * Creates a new ChangeTile instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns ChangeUsernameRequest instance
+         * @returns ChangeTile instance
          */
-        public static create(properties?: routes.IChangeUsernameRequest): routes.ChangeUsernameRequest;
+        public static create(properties?: ws.IChangeTile): ws.ChangeTile;
 
         /**
-         * Encodes the specified ChangeUsernameRequest message. Does not implicitly {@link routes.ChangeUsernameRequest.verify|verify} messages.
-         * @param message ChangeUsernameRequest message or plain object to encode
+         * Encodes the specified ChangeTile message. Does not implicitly {@link ws.ChangeTile.verify|verify} messages.
+         * @param message ChangeTile message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: routes.IChangeUsernameRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IChangeTile, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ChangeUsernameRequest message, length delimited. Does not implicitly {@link routes.ChangeUsernameRequest.verify|verify} messages.
-         * @param message ChangeUsernameRequest message or plain object to encode
+         * Encodes the specified ChangeTile message, length delimited. Does not implicitly {@link ws.ChangeTile.verify|verify} messages.
+         * @param message ChangeTile message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: routes.IChangeUsernameRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IChangeTile, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a ChangeUsernameRequest message from the specified reader or buffer.
+         * Decodes a ChangeTile message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns ChangeUsernameRequest
+         * @returns ChangeTile
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.ChangeUsernameRequest;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.ChangeTile;
 
         /**
-         * Decodes a ChangeUsernameRequest message from the specified reader or buffer, length delimited.
+         * Decodes a ChangeTile message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns ChangeUsernameRequest
+         * @returns ChangeTile
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.ChangeUsernameRequest;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.ChangeTile;
 
         /**
-         * Verifies a ChangeUsernameRequest message.
+         * Verifies a ChangeTile message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a ChangeUsernameRequest message from a plain object. Also converts values to their respective internal types.
+         * Creates a ChangeTile message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns ChangeUsernameRequest
+         * @returns ChangeTile
          */
-        public static fromObject(object: { [k: string]: any }): routes.ChangeUsernameRequest;
+        public static fromObject(object: { [k: string]: any }): ws.ChangeTile;
 
         /**
-         * Creates a plain object from a ChangeUsernameRequest message. Also converts values to other types if specified.
-         * @param message ChangeUsernameRequest
+         * Creates a plain object from a ChangeTile message. Also converts values to other types if specified.
+         * @param message ChangeTile
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: routes.ChangeUsernameRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.ChangeTile, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this ChangeUsernameRequest to JSON.
+         * Converts this ChangeTile to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for ChangeUsernameRequest
+         * Gets the default type url for ChangeTile
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a GetLoggedInData. */
-    interface IGetLoggedInData {
+    /** Properties of a GameEnd. */
+    interface IGameEnd {
 
-        /** GetLoggedInData user */
-        user?: (models.IUser|null);
+        /** GameEnd endType */
+        endType?: (ws.GameEndTypes|null);
+
+        /** GameEnd tile */
+        tile?: (models.ITile|null);
+
+        /** GameEnd winner */
+        winner?: (models.IPartialUser|null);
+
+        /** GameEnd loser */
+        loser?: (models.IPartialUser|null);
+
+        /** GameEnd board */
+        board?: (shared.IGameBoard|null);
+
+        /** GameEnd changeTiles */
+        changeTiles?: (ws.IChangeTile[]|null);
+
+        /** GameEnd currentTokens */
+        currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameEnd decks */
+        decks?: (models.IDecks|null);
     }
 
-    /** Represents a GetLoggedInData. */
-    class GetLoggedInData implements IGetLoggedInData {
+    /** Represents a GameEnd. */
+    class GameEnd implements IGameEnd {
 
         /**
-         * Constructs a new GetLoggedInData.
+         * Constructs a new GameEnd.
          * @param [properties] Properties to set
          */
-        constructor(properties?: routes.IGetLoggedInData);
+        constructor(properties?: ws.IGameEnd);
 
-        /** GetLoggedInData user. */
-        public user?: (models.IUser|null);
+        /** GameEnd endType. */
+        public endType: ws.GameEndTypes;
+
+        /** GameEnd tile. */
+        public tile?: (models.ITile|null);
+
+        /** GameEnd winner. */
+        public winner?: (models.IPartialUser|null);
+
+        /** GameEnd loser. */
+        public loser?: (models.IPartialUser|null);
+
+        /** GameEnd board. */
+        public board?: (shared.IGameBoard|null);
+
+        /** GameEnd changeTiles. */
+        public changeTiles: ws.IChangeTile[];
+
+        /** GameEnd currentTokens. */
+        public currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameEnd decks. */
+        public decks?: (models.IDecks|null);
 
         /**
-         * Creates a new GetLoggedInData instance using the specified properties.
+         * Creates a new GameEnd instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GetLoggedInData instance
+         * @returns GameEnd instance
          */
-        public static create(properties?: routes.IGetLoggedInData): routes.GetLoggedInData;
+        public static create(properties?: ws.IGameEnd): ws.GameEnd;
 
         /**
-         * Encodes the specified GetLoggedInData message. Does not implicitly {@link routes.GetLoggedInData.verify|verify} messages.
-         * @param message GetLoggedInData message or plain object to encode
+         * Encodes the specified GameEnd message. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
+         * @param message GameEnd message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: routes.IGetLoggedInData, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GetLoggedInData message, length delimited. Does not implicitly {@link routes.GetLoggedInData.verify|verify} messages.
-         * @param message GetLoggedInData message or plain object to encode
+         * Encodes the specified GameEnd message, length delimited. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
+         * @param message GameEnd message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: routes.IGetLoggedInData, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GetLoggedInData message from the specified reader or buffer.
+         * Decodes a GameEnd message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GetLoggedInData
+         * @returns GameEnd
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetLoggedInData;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameEnd;
 
         /**
-         * Decodes a GetLoggedInData message from the specified reader or buffer, length delimited.
+         * Decodes a GameEnd message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GetLoggedInData
+         * @returns GameEnd
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetLoggedInData;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameEnd;
 
         /**
-         * Verifies a GetLoggedInData message.
+         * Verifies a GameEnd message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GetLoggedInData message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameEnd message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GetLoggedInData
+         * @returns GameEnd
          */
-        public static fromObject(object: { [k: string]: any }): routes.GetLoggedInData;
+        public static fromObject(object: { [k: string]: any }): ws.GameEnd;
 
         /**
-         * Creates a plain object from a GetLoggedInData message. Also converts values to other types if specified.
-         * @param message GetLoggedInData
+         * Creates a plain object from a GameEnd message. Also converts values to other types if specified.
+         * @param message GameEnd
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: routes.GetLoggedInData, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameEnd, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GetLoggedInData to JSON.
+         * Converts this GameEnd to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GetLoggedInData
+         * Gets the default type url for GameEnd
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a GetGameResponse. */
-    interface IGetGameResponse {
-
-        /** GetGameResponse game */
-        game?: (models.IGame|null);
+    /** GameResponses enum. */
+    enum GameResponses {
+        GAME_RESPONSES_UNSPECIFIED = 0,
+        GAME_RESPONSES_ERROR = 1,
+        GAME_RESPONSES_INIT = 2,
+        GAME_RESPONSES_MOVE = 3,
+        GAME_RESPONSES_END = 4
     }
 
-    /** Represents a GetGameResponse. */
-    class GetGameResponse implements IGetGameResponse {
+    /** Properties of a GameResponsePacket. */
+    interface IGameResponsePacket {
+
+        /** GameResponsePacket response */
+        response?: (ws.GameResponses|null);
+
+        /** GameResponsePacket error */
+        error?: (shared.ICodedError|null);
+
+        /** GameResponsePacket init */
+        init?: (ws.IGameInit|null);
+
+        /** GameResponsePacket move */
+        move?: (ws.IGameMove|null);
+
+        /** GameResponsePacket end */
+        end?: (ws.IGameEnd|null);
+    }
+
+    /** Represents a GameResponsePacket. */
+    class GameResponsePacket implements IGameResponsePacket {
 
         /**
-         * Constructs a new GetGameResponse.
+         * Constructs a new GameResponsePacket.
          * @param [properties] Properties to set
          */
-        constructor(properties?: routes.IGetGameResponse);
+        constructor(properties?: ws.IGameResponsePacket);
 
-        /** GetGameResponse game. */
-        public game?: (models.IGame|null);
+        /** GameResponsePacket response. */
+        public response: ws.GameResponses;
+
+        /** GameResponsePacket error. */
+        public error?: (shared.ICodedError|null);
+
+        /** GameResponsePacket init. */
+        public init?: (ws.IGameInit|null);
+
+        /** GameResponsePacket move. */
+        public move?: (ws.IGameMove|null);
+
+        /** GameResponsePacket end. */
+        public end?: (ws.IGameEnd|null);
+
+        /** GameResponsePacket data. */
+        public data?: ("error"|"init"|"move"|"end");
 
         /**
-         * Creates a new GetGameResponse instance using the specified properties.
+         * Creates a new GameResponsePacket instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GetGameResponse instance
+         * @returns GameResponsePacket instance
          */
-        public static create(properties?: routes.IGetGameResponse): routes.GetGameResponse;
+        public static create(properties?: ws.IGameResponsePacket): ws.GameResponsePacket;
 
         /**
-         * Encodes the specified GetGameResponse message. Does not implicitly {@link routes.GetGameResponse.verify|verify} messages.
-         * @param message GetGameResponse message or plain object to encode
+         * Encodes the specified GameResponsePacket message. Does not implicitly {@link ws.GameResponsePacket.verify|verify} messages.
+         * @param message GameResponsePacket message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: routes.IGetGameResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GetGameResponse message, length delimited. Does not implicitly {@link routes.GetGameResponse.verify|verify} messages.
-         * @param message GetGameResponse message or plain object to encode
+         * Encodes the specified GameResponsePacket message, length delimited. Does not implicitly {@link ws.GameResponsePacket.verify|verify} messages.
+         * @param message GameResponsePacket message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: routes.IGetGameResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GetGameResponse message from the specified reader or buffer.
+         * Decodes a GameResponsePacket message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GetGameResponse
+         * @returns GameResponsePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.GetGameResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameResponsePacket;
 
         /**
-         * Decodes a GetGameResponse message from the specified reader or buffer, length delimited.
+         * Decodes a GameResponsePacket message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GetGameResponse
+         * @returns GameResponsePacket
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.GetGameResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameResponsePacket;
 
         /**
-         * Verifies a GetGameResponse message.
+         * Verifies a GameResponsePacket message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GetGameResponse message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameResponsePacket message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GetGameResponse
+         * @returns GameResponsePacket
          */
-        public static fromObject(object: { [k: string]: any }): routes.GetGameResponse;
+        public static fromObject(object: { [k: string]: any }): ws.GameResponsePacket;
 
         /**
-         * Creates a plain object from a GetGameResponse message. Also converts values to other types if specified.
-         * @param message GetGameResponse
+         * Creates a plain object from a GameResponsePacket message. Also converts values to other types if specified.
+         * @param message GameResponsePacket
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: routes.GetGameResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameResponsePacket, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GetGameResponse to JSON.
+         * Converts this GameResponsePacket to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GetGameResponse
+         * Gets the default type url for GameResponsePacket
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** LobbyResponses enum. */
+    enum LobbyResponses {
+        LOBBY_RESPONSES_UNSPECIFIED = 0,
+        LOBBY_RESPONSES_ERROR = 1,
+        LOBBY_RESPONSES_JOIN = 2,
+        LOBBY_RESPONSES_LEAVE = 3,
+        LOBBY_RESPONSES_CHANGE_PLAYER = 4,
+        LOBBY_RESPONSES_START_GAME = 5,
+        LOBBY_RESPONSES_HOST_LEFT = 6,
+        LOBBY_RESPONSES_SETTINGS_CHANGED = 7
+    }
+
+    /** Properties of a LobbyJoin. */
+    interface ILobbyJoin {
+
+        /** LobbyJoin users */
+        users?: (models.IDetailedLobbyMemberData[]|null);
+    }
+
+    /** Represents a LobbyJoin. */
+    class LobbyJoin implements ILobbyJoin {
+
+        /**
+         * Constructs a new LobbyJoin.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.ILobbyJoin);
+
+        /** LobbyJoin users. */
+        public users: models.IDetailedLobbyMemberData[];
+
+        /**
+         * Creates a new LobbyJoin instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LobbyJoin instance
+         */
+        public static create(properties?: ws.ILobbyJoin): ws.LobbyJoin;
+
+        /**
+         * Encodes the specified LobbyJoin message. Does not implicitly {@link ws.LobbyJoin.verify|verify} messages.
+         * @param message LobbyJoin message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.ILobbyJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LobbyJoin message, length delimited. Does not implicitly {@link ws.LobbyJoin.verify|verify} messages.
+         * @param message LobbyJoin message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.ILobbyJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LobbyJoin message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LobbyJoin
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyJoin;
+
+        /**
+         * Decodes a LobbyJoin message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LobbyJoin
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyJoin;
+
+        /**
+         * Verifies a LobbyJoin message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LobbyJoin message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LobbyJoin
+         */
+        public static fromObject(object: { [k: string]: any }): ws.LobbyJoin;
+
+        /**
+         * Creates a plain object from a LobbyJoin message. Also converts values to other types if specified.
+         * @param message LobbyJoin
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.LobbyJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LobbyJoin to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LobbyJoin
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a LobbyLeave. */
+    interface ILobbyLeave {
+
+        /** LobbyLeave users */
+        users?: (models.IDetailedLobbyMemberData[]|null);
+    }
+
+    /** Represents a LobbyLeave. */
+    class LobbyLeave implements ILobbyLeave {
+
+        /**
+         * Constructs a new LobbyLeave.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.ILobbyLeave);
+
+        /** LobbyLeave users. */
+        public users: models.IDetailedLobbyMemberData[];
+
+        /**
+         * Creates a new LobbyLeave instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LobbyLeave instance
+         */
+        public static create(properties?: ws.ILobbyLeave): ws.LobbyLeave;
+
+        /**
+         * Encodes the specified LobbyLeave message. Does not implicitly {@link ws.LobbyLeave.verify|verify} messages.
+         * @param message LobbyLeave message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.ILobbyLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LobbyLeave message, length delimited. Does not implicitly {@link ws.LobbyLeave.verify|verify} messages.
+         * @param message LobbyLeave message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.ILobbyLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LobbyLeave message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LobbyLeave
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyLeave;
+
+        /**
+         * Decodes a LobbyLeave message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LobbyLeave
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyLeave;
+
+        /**
+         * Verifies a LobbyLeave message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LobbyLeave message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LobbyLeave
+         */
+        public static fromObject(object: { [k: string]: any }): ws.LobbyLeave;
+
+        /**
+         * Creates a plain object from a LobbyLeave message. Also converts values to other types if specified.
+         * @param message LobbyLeave
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.LobbyLeave, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LobbyLeave to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LobbyLeave
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a LobbyChangePlayer. */
+    interface ILobbyChangePlayer {
+
+        /** LobbyChangePlayer users */
+        users?: (models.IDetailedLobbyMemberData[]|null);
+    }
+
+    /** Represents a LobbyChangePlayer. */
+    class LobbyChangePlayer implements ILobbyChangePlayer {
+
+        /**
+         * Constructs a new LobbyChangePlayer.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.ILobbyChangePlayer);
+
+        /** LobbyChangePlayer users. */
+        public users: models.IDetailedLobbyMemberData[];
+
+        /**
+         * Creates a new LobbyChangePlayer instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LobbyChangePlayer instance
+         */
+        public static create(properties?: ws.ILobbyChangePlayer): ws.LobbyChangePlayer;
+
+        /**
+         * Encodes the specified LobbyChangePlayer message. Does not implicitly {@link ws.LobbyChangePlayer.verify|verify} messages.
+         * @param message LobbyChangePlayer message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.ILobbyChangePlayer, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LobbyChangePlayer message, length delimited. Does not implicitly {@link ws.LobbyChangePlayer.verify|verify} messages.
+         * @param message LobbyChangePlayer message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.ILobbyChangePlayer, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LobbyChangePlayer message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LobbyChangePlayer
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyChangePlayer;
+
+        /**
+         * Decodes a LobbyChangePlayer message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LobbyChangePlayer
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyChangePlayer;
+
+        /**
+         * Verifies a LobbyChangePlayer message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LobbyChangePlayer message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LobbyChangePlayer
+         */
+        public static fromObject(object: { [k: string]: any }): ws.LobbyChangePlayer;
+
+        /**
+         * Creates a plain object from a LobbyChangePlayer message. Also converts values to other types if specified.
+         * @param message LobbyChangePlayer
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.LobbyChangePlayer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LobbyChangePlayer to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LobbyChangePlayer
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a LobbyResponsePacket. */
+    interface ILobbyResponsePacket {
+
+        /** LobbyResponsePacket response */
+        response?: (ws.LobbyResponses|null);
+
+        /** LobbyResponsePacket error */
+        error?: (shared.ICodedError|null);
+
+        /** LobbyResponsePacket join */
+        join?: (ws.ILobbyJoin|null);
+
+        /** LobbyResponsePacket leave */
+        leave?: (ws.ILobbyLeave|null);
+
+        /** LobbyResponsePacket changePlayer */
+        changePlayer?: (ws.ILobbyChangePlayer|null);
+
+        /** LobbyResponsePacket settings */
+        settings?: (models.ILobbySettings|null);
+    }
+
+    /** Represents a LobbyResponsePacket. */
+    class LobbyResponsePacket implements ILobbyResponsePacket {
+
+        /**
+         * Constructs a new LobbyResponsePacket.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.ILobbyResponsePacket);
+
+        /** LobbyResponsePacket response. */
+        public response: ws.LobbyResponses;
+
+        /** LobbyResponsePacket error. */
+        public error?: (shared.ICodedError|null);
+
+        /** LobbyResponsePacket join. */
+        public join?: (ws.ILobbyJoin|null);
+
+        /** LobbyResponsePacket leave. */
+        public leave?: (ws.ILobbyLeave|null);
+
+        /** LobbyResponsePacket changePlayer. */
+        public changePlayer?: (ws.ILobbyChangePlayer|null);
+
+        /** LobbyResponsePacket settings. */
+        public settings?: (models.ILobbySettings|null);
+
+        /** LobbyResponsePacket data. */
+        public data?: ("error"|"join"|"leave"|"changePlayer"|"settings");
+
+        /**
+         * Creates a new LobbyResponsePacket instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LobbyResponsePacket instance
+         */
+        public static create(properties?: ws.ILobbyResponsePacket): ws.LobbyResponsePacket;
+
+        /**
+         * Encodes the specified LobbyResponsePacket message. Does not implicitly {@link ws.LobbyResponsePacket.verify|verify} messages.
+         * @param message LobbyResponsePacket message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.ILobbyResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LobbyResponsePacket message, length delimited. Does not implicitly {@link ws.LobbyResponsePacket.verify|verify} messages.
+         * @param message LobbyResponsePacket message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.ILobbyResponsePacket, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LobbyResponsePacket message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LobbyResponsePacket
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.LobbyResponsePacket;
+
+        /**
+         * Decodes a LobbyResponsePacket message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LobbyResponsePacket
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.LobbyResponsePacket;
+
+        /**
+         * Verifies a LobbyResponsePacket message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LobbyResponsePacket message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LobbyResponsePacket
+         */
+        public static fromObject(object: { [k: string]: any }): ws.LobbyResponsePacket;
+
+        /**
+         * Creates a plain object from a LobbyResponsePacket message. Also converts values to other types if specified.
+         * @param message LobbyResponsePacket
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.LobbyResponsePacket, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LobbyResponsePacket to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LobbyResponsePacket
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
