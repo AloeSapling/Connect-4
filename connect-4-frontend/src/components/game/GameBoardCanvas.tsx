@@ -10,6 +10,7 @@ import { P_PlayerIDs, P_TokenTypes, type TPlayerIDs, type TTokenTypes } from '@/
 function GameBoardCanvas({
     queryData,
     wsRef,
+    gameCanvasRef,
     userPlayerID,
     userPlayerIDRef,
     currentTurn,
@@ -17,13 +18,13 @@ function GameBoardCanvas({
 }: {
     queryData: proto.routes.GetGameResponse;
     wsRef: RefObject<GameWebSocket | null>;
+    gameCanvasRef: RefObject<GameCanvas | null>;
     userPlayerID: TPlayerIDs;
     userPlayerIDRef: RefObject<TPlayerIDs>;
     currentTurn: RefObject<TPlayerIDs | null>;
     selectedTokenRef: RefObject<TTokenTypes>;
 }) {
     const animationRef = useRef<number | null>(null);
-    const gameCanvasRef = useRef<GameCanvas | null>(null);
 
     const [currentBoardState, setCurrentBoardState] = useState<proto.shared.IGameBoard>({
         rows: Array.from({ length: GAME_ROWS }, () => ({
