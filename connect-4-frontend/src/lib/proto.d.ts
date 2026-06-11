@@ -20,7 +20,8 @@ export namespace shared {
         ERROR_CODES_DOESNT_EXIST = 12,
         ERROR_CODES_USER_ALREADY_EXISTS = 13,
         ERROR_CODES_BAD_SETUP = 14,
-        ERROR_CODES_USER_BANNED = 15
+        ERROR_CODES_USER_BANNED = 15,
+        ERROR_CODES_BAD_TOKEN = 16
     }
 
     /** Properties of a CodedError. */
@@ -1106,6 +1107,12 @@ export namespace ws {
 
         /** GameMove changeTiles */
         changeTiles?: (ws.IChangeTile[]|null);
+
+        /** GameMove currentTokens */
+        currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameMove decks */
+        decks?: (models.IDecks|null);
     }
 
     /** Represents a GameMove. */
@@ -1128,6 +1135,12 @@ export namespace ws {
 
         /** GameMove changeTiles. */
         public changeTiles: ws.IChangeTile[];
+
+        /** GameMove currentTokens. */
+        public currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameMove decks. */
+        public decks?: (models.IDecks|null);
 
         /**
          * Creates a new GameMove instance using the specified properties.
@@ -1330,6 +1343,12 @@ export namespace ws {
 
         /** GameEnd changeTiles */
         changeTiles?: (ws.IChangeTile[]|null);
+
+        /** GameEnd currentTokens */
+        currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameEnd decks */
+        decks?: (models.IDecks|null);
     }
 
     /** Represents a GameEnd. */
@@ -1358,6 +1377,12 @@ export namespace ws {
 
         /** GameEnd changeTiles. */
         public changeTiles: ws.IChangeTile[];
+
+        /** GameEnd currentTokens. */
+        public currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameEnd decks. */
+        public decks?: (models.IDecks|null);
 
         /**
          * Creates a new GameEnd instance using the specified properties.
@@ -1889,6 +1914,456 @@ export namespace models {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** TokenQueueModes enum. */
+    enum TokenQueueModes {
+        TOKEN_QUEUE_MODES_UNSPECIFIED = 0,
+        TOKEN_QUEUE_MODES_FULL_RANDOM = 1,
+        TOKEN_QUEUE_MODES_SPECIAL_EVERY = 2,
+        TOKEN_QUEUE_MODES_DECK = 3
+    }
+
+    /** TokenTypes enum. */
+    enum TokenTypes {
+        TOKEN_TYPES_UNSPECIFIED = 0,
+        TOKEN_TYPES_STANDARD = 1,
+        TOKEN_TYPES_NEGATIVE = 2,
+        TOKEN_TYPES_AURA = 3,
+        TOKEN_TYPES_BOMB = 4,
+        TOKEN_TYPES_SPLIT = 5,
+        TOKEN_TYPES_FREEZE = 6,
+        TOKEN_TYPES_BURN = 7,
+        TOKEN_TYPES_REVERSE = 8,
+        TOKEN_TYPES_FROZEN = 9
+    }
+
+    /** ChangeTokenActions enum. */
+    enum ChangeTokenActions {
+        CHANGE_TOKEN_ACTIONS_UNSPECIFIED = 0,
+        CHANGE_TOKEN_ACTIONS_BURN_DESTROY = 1,
+        CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP = 2,
+        CHANGE_TOKENS_ACTIONS_FREEZE_FROZE = 3,
+        CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE = 4,
+        CHANGE_TOKENS_ACTIONS_BOMB_EXPLODED = 5
+    }
+
+    /** Properties of a Token. */
+    interface IToken {
+
+        /** Token playerId */
+        playerId?: (shared.PlayerIDs|null);
+
+        /** Token tokenType */
+        tokenType?: (models.TokenTypes|null);
+    }
+
+    /** Represents a Token. */
+    class Token implements IToken {
+
+        /**
+         * Constructs a new Token.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.IToken);
+
+        /** Token playerId. */
+        public playerId: shared.PlayerIDs;
+
+        /** Token tokenType. */
+        public tokenType: models.TokenTypes;
+
+        /**
+         * Creates a new Token instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Token instance
+         */
+        public static create(properties?: models.IToken): models.Token;
+
+        /**
+         * Encodes the specified Token message. Does not implicitly {@link models.Token.verify|verify} messages.
+         * @param message Token message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Token message, length delimited. Does not implicitly {@link models.Token.verify|verify} messages.
+         * @param message Token message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Token message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.Token;
+
+        /**
+         * Decodes a Token message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.Token;
+
+        /**
+         * Verifies a Token message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Token message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Token
+         */
+        public static fromObject(object: { [k: string]: any }): models.Token;
+
+        /**
+         * Creates a plain object from a Token message. Also converts values to other types if specified.
+         * @param message Token
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.Token, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Token to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Token
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a Tile. */
+    interface ITile {
+
+        /** Tile row */
+        row?: (number|null);
+
+        /** Tile column */
+        column?: (number|null);
+
+        /** Tile token */
+        token?: (models.IToken|null);
+    }
+
+    /** Represents a Tile. */
+    class Tile implements ITile {
+
+        /**
+         * Constructs a new Tile.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.ITile);
+
+        /** Tile row. */
+        public row: number;
+
+        /** Tile column. */
+        public column: number;
+
+        /** Tile token. */
+        public token?: (models.IToken|null);
+
+        /**
+         * Creates a new Tile instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Tile instance
+         */
+        public static create(properties?: models.ITile): models.Tile;
+
+        /**
+         * Encodes the specified Tile message. Does not implicitly {@link models.Tile.verify|verify} messages.
+         * @param message Tile message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.ITile, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Tile message, length delimited. Does not implicitly {@link models.Tile.verify|verify} messages.
+         * @param message Tile message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.ITile, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Tile message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Tile
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.Tile;
+
+        /**
+         * Decodes a Tile message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Tile
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.Tile;
+
+        /**
+         * Verifies a Tile message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Tile message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Tile
+         */
+        public static fromObject(object: { [k: string]: any }): models.Tile;
+
+        /**
+         * Creates a plain object from a Tile message. Also converts values to other types if specified.
+         * @param message Tile
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.Tile, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Tile to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Tile
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a CurrentTokens. */
+    interface ICurrentTokens {
+
+        /** CurrentTokens player1 */
+        player1?: (models.TokenTypes|null);
+
+        /** CurrentTokens player2 */
+        player2?: (models.TokenTypes|null);
+    }
+
+    /** Represents a CurrentTokens. */
+    class CurrentTokens implements ICurrentTokens {
+
+        /**
+         * Constructs a new CurrentTokens.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.ICurrentTokens);
+
+        /** CurrentTokens player1. */
+        public player1?: (models.TokenTypes|null);
+
+        /** CurrentTokens player2. */
+        public player2?: (models.TokenTypes|null);
+
+        /**
+         * Creates a new CurrentTokens instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns CurrentTokens instance
+         */
+        public static create(properties?: models.ICurrentTokens): models.CurrentTokens;
+
+        /**
+         * Encodes the specified CurrentTokens message. Does not implicitly {@link models.CurrentTokens.verify|verify} messages.
+         * @param message CurrentTokens message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.ICurrentTokens, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified CurrentTokens message, length delimited. Does not implicitly {@link models.CurrentTokens.verify|verify} messages.
+         * @param message CurrentTokens message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.ICurrentTokens, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a CurrentTokens message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns CurrentTokens
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.CurrentTokens;
+
+        /**
+         * Decodes a CurrentTokens message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns CurrentTokens
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.CurrentTokens;
+
+        /**
+         * Verifies a CurrentTokens message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a CurrentTokens message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns CurrentTokens
+         */
+        public static fromObject(object: { [k: string]: any }): models.CurrentTokens;
+
+        /**
+         * Creates a plain object from a CurrentTokens message. Also converts values to other types if specified.
+         * @param message CurrentTokens
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.CurrentTokens, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this CurrentTokens to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for CurrentTokens
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a Decks. */
+    interface IDecks {
+
+        /** Decks player1 */
+        player1?: (models.TokenTypes[]|null);
+
+        /** Decks player2 */
+        player2?: (models.TokenTypes[]|null);
+    }
+
+    /** Represents a Decks. */
+    class Decks implements IDecks {
+
+        /**
+         * Constructs a new Decks.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.IDecks);
+
+        /** Decks player1. */
+        public player1: models.TokenTypes[];
+
+        /** Decks player2. */
+        public player2: models.TokenTypes[];
+
+        /**
+         * Creates a new Decks instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Decks instance
+         */
+        public static create(properties?: models.IDecks): models.Decks;
+
+        /**
+         * Encodes the specified Decks message. Does not implicitly {@link models.Decks.verify|verify} messages.
+         * @param message Decks message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.IDecks, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Decks message, length delimited. Does not implicitly {@link models.Decks.verify|verify} messages.
+         * @param message Decks message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.IDecks, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Decks message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Decks
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.Decks;
+
+        /**
+         * Decodes a Decks message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Decks
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.Decks;
+
+        /**
+         * Verifies a Decks message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Decks message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Decks
+         */
+        public static fromObject(object: { [k: string]: any }): models.Decks;
+
+        /**
+         * Creates a plain object from a Decks message. Also converts values to other types if specified.
+         * @param message Decks
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.Decks, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Decks to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Decks
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a Lobby. */
     interface ILobby {
 
@@ -2112,6 +2587,18 @@ export namespace models {
 
         /** LobbySettings turnTime */
         turnTime?: (number|null);
+
+        /** LobbySettings tokenQueueMode */
+        tokenQueueMode?: (models.TokenQueueModes|null);
+
+        /** LobbySettings allowedTokens */
+        allowedTokens?: (models.TokenTypes[]|null);
+
+        /** LobbySettings specialGamemode */
+        specialGamemode?: (boolean|null);
+
+        /** LobbySettings every */
+        every?: (number|null);
     }
 
     /** Represents a LobbySettings. */
@@ -2124,7 +2611,19 @@ export namespace models {
         constructor(properties?: models.ILobbySettings);
 
         /** LobbySettings turnTime. */
-        public turnTime: number;
+        public turnTime?: (number|null);
+
+        /** LobbySettings tokenQueueMode. */
+        public tokenQueueMode?: (models.TokenQueueModes|null);
+
+        /** LobbySettings allowedTokens. */
+        public allowedTokens: models.TokenTypes[];
+
+        /** LobbySettings specialGamemode. */
+        public specialGamemode?: (boolean|null);
+
+        /** LobbySettings every. */
+        public every?: (number|null);
 
         /**
          * Creates a new LobbySettings instance using the specified properties.
@@ -2331,241 +2830,6 @@ export namespace models {
 
         /**
          * Gets the default type url for DetailedLobbyData
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** TokenTypes enum. */
-    enum TokenTypes {
-        TOKEN_TYPES_UNSPECIFIED = 0,
-        TOKEN_TYPES_STANDARD = 1,
-        TOKEN_TYPES_NEGATIVE = 2,
-        TOKEN_TYPES_AURA = 3,
-        TOKEN_TYPES_BOMB = 4,
-        TOKEN_TYPES_SPLIT = 5,
-        TOKEN_TYPES_FREEZE = 6,
-        TOKEN_TYPES_BURN = 7,
-        TOKEN_TYPES_REVERSE = 8,
-        TOKEN_TYPES_FROZEN = 9
-    }
-
-    /** ChangeTokenActions enum. */
-    enum ChangeTokenActions {
-        CHANGE_TOKEN_ACTIONS_UNSPECIFIED = 0,
-        CHANGE_TOKEN_ACTIONS_BURN_DESTROY = 1,
-        CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP = 2,
-        CHANGE_TOKENS_ACTIONS_FREEZE_FROZE = 3,
-        CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE = 4
-    }
-
-    /** Properties of a Token. */
-    interface IToken {
-
-        /** Token playerId */
-        playerId?: (shared.PlayerIDs|null);
-
-        /** Token tokenType */
-        tokenType?: (models.TokenTypes|null);
-    }
-
-    /** Represents a Token. */
-    class Token implements IToken {
-
-        /**
-         * Constructs a new Token.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: models.IToken);
-
-        /** Token playerId. */
-        public playerId: shared.PlayerIDs;
-
-        /** Token tokenType. */
-        public tokenType: models.TokenTypes;
-
-        /**
-         * Creates a new Token instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns Token instance
-         */
-        public static create(properties?: models.IToken): models.Token;
-
-        /**
-         * Encodes the specified Token message. Does not implicitly {@link models.Token.verify|verify} messages.
-         * @param message Token message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: models.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified Token message, length delimited. Does not implicitly {@link models.Token.verify|verify} messages.
-         * @param message Token message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: models.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a Token message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns Token
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.Token;
-
-        /**
-         * Decodes a Token message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns Token
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.Token;
-
-        /**
-         * Verifies a Token message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a Token message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns Token
-         */
-        public static fromObject(object: { [k: string]: any }): models.Token;
-
-        /**
-         * Creates a plain object from a Token message. Also converts values to other types if specified.
-         * @param message Token
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: models.Token, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this Token to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for Token
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of a Tile. */
-    interface ITile {
-
-        /** Tile row */
-        row?: (number|null);
-
-        /** Tile column */
-        column?: (number|null);
-
-        /** Tile token */
-        token?: (models.IToken|null);
-    }
-
-    /** Represents a Tile. */
-    class Tile implements ITile {
-
-        /**
-         * Constructs a new Tile.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: models.ITile);
-
-        /** Tile row. */
-        public row: number;
-
-        /** Tile column. */
-        public column: number;
-
-        /** Tile token. */
-        public token?: (models.IToken|null);
-
-        /**
-         * Creates a new Tile instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns Tile instance
-         */
-        public static create(properties?: models.ITile): models.Tile;
-
-        /**
-         * Encodes the specified Tile message. Does not implicitly {@link models.Tile.verify|verify} messages.
-         * @param message Tile message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: models.ITile, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified Tile message, length delimited. Does not implicitly {@link models.Tile.verify|verify} messages.
-         * @param message Tile message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: models.ITile, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a Tile message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns Tile
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.Tile;
-
-        /**
-         * Decodes a Tile message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns Tile
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.Tile;
-
-        /**
-         * Verifies a Tile message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a Tile message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns Tile
-         */
-        public static fromObject(object: { [k: string]: any }): models.Tile;
-
-        /**
-         * Creates a plain object from a Tile message. Also converts values to other types if specified.
-         * @param message Tile
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: models.Tile, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this Tile to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for Tile
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */

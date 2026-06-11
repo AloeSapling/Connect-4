@@ -1,10 +1,10 @@
-import type { models } from '../proto.js';
-import type { TChangeTokenActions, TPlayerIDs } from '../types.ts';
+import type { TChangeTokenActions, TokenQueueData, TPlayerIDs } from '../types.ts';
 import type { GameBoard } from './gameBoard.ts';
 
 export type GameData = {
     board: GameBoard;
     turn: TPlayerIDs;
+    tokenQueue?: TokenQueueData | undefined;
 };
 
 export type GameStates = 'NOT_FINISHED' | 'WIN' | 'DRAW';

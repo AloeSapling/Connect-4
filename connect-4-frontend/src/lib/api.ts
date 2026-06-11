@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { SERVER_URL } from './config';
-import { routes } from './proto.js';
+import { models, routes } from './proto.js';
 import { P_CodedError, type ResponseError, type TPlayerIDs } from './types.js';
 
 /** An axios instance shared between all backend fetches */
@@ -96,6 +96,16 @@ export async function changePlayerID(lobbyCode: string, uid: number, playerID: T
         routes.ChangePlayerIDRequest.encode({
             playerId: playerID,
             userId: uid,
+        }).finish()
+    );
+}
+
+/** Changes the settings of the lobby with the given code */
+export async function changeLobbySettings({ lobbyCode, settings }: { lobbyCode: string, settings: models.ILobbySettings }) {
+    await api.post<ArrayBuffer>(
+        `/lobby/${lobbyCode}/changeSettings`,
+        routes.ChangeLobbySettingsRequest.encode({
+            settings: settings,
         }).finish()
     );
 }

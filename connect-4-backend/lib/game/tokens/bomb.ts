@@ -1,4 +1,4 @@
-import { P_TokenTypes, type TTokenTypes } from '../../types.ts';
+import { P_ChangeTokenActions, P_TokenTypes, type TTokenTypes } from '../../types.ts';
 import type { GameBoard } from '../gameBoard.ts';
 import type { Coordinate } from '../types.ts';
 import Token from './base.ts';
@@ -25,6 +25,8 @@ export class BombToken extends Token {
         if (this.column > 0) Token.fallTokens(gameBoard, this.column - 1);
 
         if (this.column < gameBoard.tokens.length - 1) Token.fallTokens(gameBoard, this.column + 1);
+
+        this.addToChangeTilesList(P_ChangeTokenActions.CHANGE_TOKENS_ACTIONS_BOMB_EXPLODED);
 
         return [newColumn, newRow];
     }

@@ -17,7 +17,11 @@ message LobbyData {
 }
 
 message LobbySettings {
-  int32 turn_time = 1;
+  optional int32 turn_time = 1;
+  optional models.TokenQueueModes token_queue_mode = 2;
+  repeated models.TokenTypes allowed_tokens = 3;
+  optional bool special_gamemode = 4;
+  optional int32 every = 5;
 }
 
 message DetailedLobbyData {

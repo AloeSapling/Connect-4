@@ -1,6 +1,6 @@
 import { redis } from '../app.ts';
 import { GAME_COLUMNS, GAME_ROWS, LOBBY_KEEP_ALIVE_TIME } from '../config.ts';
-import { CodedError, P_ErrorCodes, P_PlayerIDs, P_TokenTypes, type TPlayerIDs, type TTokenTypes } from '../lib/types.ts';
+import { CodedError, P_ErrorCodes, P_PlayerIDs, P_TokenQueueModes, P_TokenTypes, type TPlayerIDs, type TTokenTypes, type TokenQueueData } from '../lib/types.ts';
 import { getPartialUserDataByPlayerID } from '../database-sqllite/lobbyMembers.ts';
 import type { models } from '../lib/proto.js';
 import Token from '../lib/game/tokens/base.ts';
@@ -12,6 +12,7 @@ import { NegativeToken } from '../lib/game/tokens/negative.ts';
 import { AuraToken } from '../lib/game/tokens/aura.ts';
 import { BurnToken } from '../lib/game/tokens/burn.ts';
 import { FreezeToken } from '../lib/game/tokens/freeze.ts';
+import { createNextTokenQueueObj, getTokenForFullRandom, getTokensForDeck } from '../lib/game/tokenQueue.ts';
 
 /** The list of tokens used to instantiate the initial game board */
 const initialTokens: Token[][] = [];
@@ -48,6 +49,17 @@ export async function createGame(lobbyCode: string, settings: models.ILobbySetti
     await redis.set(`GameData_${lobbyCode}:turnTime`, settings.turnTime || 0, {
         EX: settings.turnTime || 0, // In seconds
     });
+
+    if (settings.specialGamemode && settings.tokenQueueMode) {
+        const tokenQueueObj = createNextTokenQueueObj({
+            mode: settings.tokenQueueMode,
+            allowedTokens: settings.allowedTokens ?? [],
+            every: settings.every ?? undefined
+        }, 0);
+
+        // Holds the data about the tokenQueue - mode, allowed tokens and the tokens playable each turn
+        await redis.set(`GameData_${lobbyCode}:tokenQueue`, JSON.stringify(tokenQueueObj));
+    }
 }
 
 /** Checks if a game exists for the given lobby */
@@ -85,6 +97,7 @@ export async function deleteGame(lobbyCode: string) {
     await redis.del(`GameData_${lobbyCode}:board`);
     await redis.del(`GameData_${lobbyCode}:turn`);
     await redis.del(`GameData_${lobbyCode}:turnTime`);
+    await redis.del(`GameData_${lobbyCode}:tokenQueue`);
 }
 
 /** Deletes the game and starts a timer to delete the associated lobby
@@ -99,6 +112,7 @@ export async function endGame(lobbyCode: string) {
 
     const transaction = redis.multi();
 
+    // Keep lobby alive for some time after the game ends
     transaction.set(`Lobby_${lobbyCode}:expireTimer`, 1, {
         EX: LOBBY_KEEP_ALIVE_TIME, // In seconds
     });
@@ -127,15 +141,19 @@ export async function getGameData(lobbyCode: string): Promise<GameData> {
     const board = await redis.get(`GameData_${lobbyCode}:board`);
     const turn = await redis.get(`GameData_${lobbyCode}:turn`);
 
+    const tokenQueue = await redis.get(`GameData_${lobbyCode}:tokenQueue`);
+
     if (!board || !turn) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_EXPIRED);
 
     try {
         const boardData = GameBoard.revive(JSON.parse(board));
         const turnData = Number(turn) as TPlayerIDs;
+        const tokenQueueData = tokenQueue ? JSON.parse(tokenQueue) as TokenQueueData : undefined;
 
         return {
             board: boardData,
             turn: turnData,
+            tokenQueue: tokenQueueData
         };
     } catch {
         throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
@@ -143,7 +161,7 @@ export async function getGameData(lobbyCode: string): Promise<GameData> {
 }
 
 /** Performs all the actions that happen whenever a turn ends */
-async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPlayerIDs) {
+async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPlayerIDs, tokenQueueData?: TokenQueueData) {
     // ** Game board updates
 
     /** A list of tokens that have an effect triggered every time the round ends
@@ -188,6 +206,14 @@ async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPl
         EX: turnTime || 0,
     });
 
+    if (tokenQueueData) {
+        transaction.set(`GameData_${lobbyCode}:tokenQueue`, JSON.stringify(
+            createNextTokenQueueObj(
+                tokenQueueData,
+                tokenQueueData.turn ? tokenQueueData.turn + 1 : undefined
+            )))
+    }
+
     if (transaction.exec() === null) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_LOCKED);
 
     /// **
@@ -209,7 +235,7 @@ export async function insertToken(
     lobbyCode: string,
     column: number,
     playerID: TPlayerIDs,
-    tokenType: TTokenTypes
+    tokenType?: TTokenTypes
 ): Promise<number> {
     if (column < 0 || column > GAME_COLUMNS - 1) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
 
@@ -222,6 +248,7 @@ export async function insertToken(
 
     const board = await redis.get(`GameData_${lobbyCode}:board`);
     const turn = await redis.get(`GameData_${lobbyCode}:turn`);
+    const tokenQueue = await redis.get(`GameData_${lobbyCode}:tokenQueue`);
 
     try {
         /// ** Initial validation
@@ -240,6 +267,7 @@ export async function insertToken(
             throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
         }
 
+        const tokenQueueData = tokenQueue ? JSON.parse(tokenQueue) as TokenQueueData : undefined;
         /// **
 
         /// ** Tile insertion logic
@@ -256,14 +284,37 @@ export async function insertToken(
         if (i >= boardData.tokens.length) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
 
         // Create a new token and add it to the game board
-        const token = TokenFactory.createToken(tokenType, playerID);
+        let token: Token;
+        if (tokenQueueData) {
+            if (!tokenType) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
+
+            // Validates if the player can place this token
+            if (tokenQueueData.mode === P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK) {
+                if (!tokenQueueData.decks) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_SETUP);
+
+                const tmpIdx = tokenQueueData.decks[playerID]?.findIndex((val) => val === tokenType);
+                if (tmpIdx === -1 || tmpIdx === undefined) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_TOKEN);
+
+                // Remove this token from this player's deck of token
+                tokenQueueData.decks[playerID]?.splice(tmpIdx, 1);
+            } else if (tokenQueueData.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED) {
+                if (!tokenQueueData.tokens) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_SETUP);
+
+                if (tokenQueueData.tokens[playerID] !== tokenType) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_TOKEN);
+            }
+
+            token = TokenFactory.createToken(tokenType, playerID);
+        } else {
+            token = TokenFactory.createToken(P_TokenTypes.TOKEN_TYPES_STANDARD, playerID);
+        }
+
         const tokenCoord = token.place(boardData, i, column);
 
         console.log(token);
 
         // **
 
-        await endTurn(lobbyCode, boardData, playerID);
+        await endTurn(lobbyCode, boardData, playerID, tokenQueueData);
 
         return tokenCoord[1];
     } finally {

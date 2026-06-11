@@ -1,11 +1,12 @@
 import { createLobbyCode } from '../lib/lib.ts';
-import { CodedError, P_ErrorCodes } from '../lib/types.ts';
+import { CodedError, P_ErrorCodes, P_TokenQueueModes, P_TokenTypes } from '../lib/types.ts';
 import { Lobby, LobbyMember } from './models.ts';
 import { models } from '../lib/proto.js';
 import { getDetailedLobbyMembersData } from './lobbyMembers.ts';
 import { gameExists, gamesExist } from '../database-redis/game.ts';
 import { Sequelize } from 'sequelize';
 import { sequelize } from './database.ts';
+import { DEFAULT_TURN_TIME } from '../config.ts';
 
 /** Create a new lobby instance in the sql database
  * @returns The code associated with the newly created lobby
@@ -23,7 +24,7 @@ export async function createLobby(lobbyName: string): Promise<string> {
 
             return code;
             // eslint-disable-next-line no-empty
-        } catch {} // Disregard unique constraint failure errors
+        } catch { } // Disregard unique constraint failure errors
     }
 
     throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
@@ -84,7 +85,11 @@ export async function lobbyExists(code: string): Promise<boolean> {
 export async function changeLobbySettings(code: string, settings: models.ILobbySettings) {
     await Lobby.update(
         {
-            turn_time: settings.turnTime,
+            turn_time: settings.turnTime ?? DEFAULT_TURN_TIME,
+            tokenQueueMode: settings.tokenQueueMode ?? P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED,
+            allowedTokens: JSON.stringify(settings.allowedTokens ?? []),
+            specialGamemode: settings.specialGamemode ?? false,
+            every: settings.every ?? null,
         },
         {
             where: {
@@ -107,6 +112,10 @@ export async function getLobbySettings(code: string): Promise<models.ILobbySetti
 
     return {
         turnTime: lobby.turnTime,
+        tokenQueueMode: lobby.tokenQueueMode,
+        allowedTokens: JSON.parse(lobby.allowedTokens ?? '[]'),
+        specialGamemode: lobby.specialGamemode,
+        every: lobby.every ?? undefined,
     };
 }
 
@@ -139,6 +148,10 @@ export async function getDetailedLobbyData(code: string): Promise<models.IDetail
         lobbyMembers: memberData,
         settings: {
             turnTime: lobby.turnTime,
+            tokenQueueMode: lobby.tokenQueueMode,
+            allowedTokens: JSON.parse(lobby.allowedTokens ?? '[]'),
+            specialGamemode: lobby.specialGamemode,
+            every: lobby.every ?? undefined,
         },
     };
 }
