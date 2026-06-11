@@ -289,7 +289,10 @@ function setUpGameWebsocket(
                     packet.move?.tile?.column!,
                     packet.move?.tile?.row!,
                     packet.move.tile!.token?.playerId!,
-                    packet.move.tile?.token?.tokenType!
+                    packet.move.tile?.token?.tokenType!,
+                    packet.move.deletedTiles!,
+                    packet.move.fallingTokens!,
+                    packet.move.frozenColumns!
                 );
 
                 if (
@@ -313,7 +316,10 @@ function setUpGameWebsocket(
                         packet.end?.tile?.column!,
                         packet.end?.tile?.row!,
                         packet.end.tile.token?.playerId!,
-                        packet.end.tile?.token?.tokenType!
+                        packet.end.tile?.token?.tokenType!,
+                        packet.end.deletedTiles!,
+                        packet.end.fallingTokens!,
+                        packet.end.frozenColumns!
                     );
 
                 if (
