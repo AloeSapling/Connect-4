@@ -3029,6 +3029,7 @@ export const models = $root.models = (() => {
          * @property {models.TokenQueueModes|null} [tokenQueueMode] Game tokenQueueMode
          * @property {models.ICurrentTokens|null} [currentTokens] Game currentTokens
          * @property {models.IDecks|null} [decks] Game decks
+         * @property {Array.<boolean>|null} [frozenColumns] Game frozenColumns
          */
 
         /**
@@ -3040,6 +3041,7 @@ export const models = $root.models = (() => {
          * @param {models.IGame=} [properties] Properties to set
          */
         function Game(properties) {
+            this.frozenColumns = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -3085,6 +3087,14 @@ export const models = $root.models = (() => {
          * @instance
          */
         Game.prototype.decks = null;
+
+        /**
+         * Game frozenColumns.
+         * @member {Array.<boolean>} frozenColumns
+         * @memberof models.Game
+         * @instance
+         */
+        Game.prototype.frozenColumns = $util.emptyArray;
 
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
@@ -3135,6 +3145,12 @@ export const models = $root.models = (() => {
                 $root.models.CurrentTokens.encode(message.currentTokens, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             if (message.decks != null && Object.hasOwnProperty.call(message, "decks"))
                 $root.models.Decks.encode(message.decks, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.frozenColumns != null && message.frozenColumns.length) {
+                writer.uint32(/* id 6, wireType 2 =*/50).fork();
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    writer.bool(message.frozenColumns[i]);
+                writer.ldelim();
+            }
             return writer;
         };
 
@@ -3193,6 +3209,17 @@ export const models = $root.models = (() => {
                     }
                 case 5: {
                         message.decks = $root.models.Decks.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 6: {
+                        if (!(message.frozenColumns && message.frozenColumns.length))
+                            message.frozenColumns = [];
+                        if ((tag & 7) === 2) {
+                            let end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.frozenColumns.push(reader.bool());
+                        } else
+                            message.frozenColumns.push(reader.bool());
                         break;
                     }
                 default:
@@ -3275,6 +3302,13 @@ export const models = $root.models = (() => {
                         return "decks." + error;
                 }
             }
+            if (message.frozenColumns != null && message.hasOwnProperty("frozenColumns")) {
+                if (!Array.isArray(message.frozenColumns))
+                    return "frozenColumns: array expected";
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    if (typeof message.frozenColumns[i] !== "boolean")
+                        return "frozenColumns: boolean[] expected";
+            }
             return null;
         };
 
@@ -3353,6 +3387,13 @@ export const models = $root.models = (() => {
                     throw TypeError(".models.Game.decks: object expected");
                 message.decks = $root.models.Decks.fromObject(object.decks, long + 1);
             }
+            if (object.frozenColumns) {
+                if (!Array.isArray(object.frozenColumns))
+                    throw TypeError(".models.Game.frozenColumns: array expected");
+                message.frozenColumns = [];
+                for (let i = 0; i < object.frozenColumns.length; ++i)
+                    message.frozenColumns[i] = Boolean(object.frozenColumns[i]);
+            }
             return message;
         };
 
@@ -3369,6 +3410,8 @@ export const models = $root.models = (() => {
             if (!options)
                 options = {};
             let object = {};
+            if (options.arrays || options.defaults)
+                object.frozenColumns = [];
             if (options.defaults) {
                 object.turn = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
                 object.board = null;
@@ -3389,6 +3432,11 @@ export const models = $root.models = (() => {
                 object.decks = $root.models.Decks.toObject(message.decks, options);
                 if (options.oneofs)
                     object._decks = "decks";
+            }
+            if (message.frozenColumns && message.frozenColumns.length) {
+                object.frozenColumns = [];
+                for (let j = 0; j < message.frozenColumns.length; ++j)
+                    object.frozenColumns[j] = message.frozenColumns[j];
             }
             return object;
         };
@@ -9283,6 +9331,7 @@ export const ws = $root.ws = (() => {
          * @property {models.IDecks|null} [decks] GameMove decks
          * @property {Array.<ws.IFallingToken>|null} [fallingTokens] GameMove fallingTokens
          * @property {Array.<ws.IChangeTile>|null} [deletedTiles] GameMove deletedTiles
+         * @property {Array.<boolean>|null} [frozenColumns] GameMove frozenColumns
          */
 
         /**
@@ -9297,6 +9346,7 @@ export const ws = $root.ws = (() => {
             this.changeTiles = [];
             this.fallingTokens = [];
             this.deletedTiles = [];
+            this.frozenColumns = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -9367,6 +9417,14 @@ export const ws = $root.ws = (() => {
          */
         GameMove.prototype.deletedTiles = $util.emptyArray;
 
+        /**
+         * GameMove frozenColumns.
+         * @member {Array.<boolean>} frozenColumns
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.frozenColumns = $util.emptyArray;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
@@ -9425,6 +9483,12 @@ export const ws = $root.ws = (() => {
             if (message.deletedTiles != null && message.deletedTiles.length)
                 for (let i = 0; i < message.deletedTiles.length; ++i)
                     $root.ws.ChangeTile.encode(message.deletedTiles[i], writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+            if (message.frozenColumns != null && message.frozenColumns.length) {
+                writer.uint32(/* id 9, wireType 2 =*/74).fork();
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    writer.bool(message.frozenColumns[i]);
+                writer.ldelim();
+            }
             return writer;
         };
 
@@ -9501,6 +9565,17 @@ export const ws = $root.ws = (() => {
                         if (!(message.deletedTiles && message.deletedTiles.length))
                             message.deletedTiles = [];
                         message.deletedTiles.push($root.ws.ChangeTile.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 9: {
+                        if (!(message.frozenColumns && message.frozenColumns.length))
+                            message.frozenColumns = [];
+                        if ((tag & 7) === 2) {
+                            let end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.frozenColumns.push(reader.bool());
+                        } else
+                            message.frozenColumns.push(reader.bool());
                         break;
                     }
                 default:
@@ -9605,6 +9680,13 @@ export const ws = $root.ws = (() => {
                         return "deletedTiles." + error;
                 }
             }
+            if (message.frozenColumns != null && message.hasOwnProperty("frozenColumns")) {
+                if (!Array.isArray(message.frozenColumns))
+                    return "frozenColumns: array expected";
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    if (typeof message.frozenColumns[i] !== "boolean")
+                        return "frozenColumns: boolean[] expected";
+            }
             return null;
         };
 
@@ -9694,6 +9776,13 @@ export const ws = $root.ws = (() => {
                     message.deletedTiles[i] = $root.ws.ChangeTile.fromObject(object.deletedTiles[i], long + 1);
                 }
             }
+            if (object.frozenColumns) {
+                if (!Array.isArray(object.frozenColumns))
+                    throw TypeError(".ws.GameMove.frozenColumns: array expected");
+                message.frozenColumns = [];
+                for (let i = 0; i < object.frozenColumns.length; ++i)
+                    message.frozenColumns[i] = Boolean(object.frozenColumns[i]);
+            }
             return message;
         };
 
@@ -9714,6 +9803,7 @@ export const ws = $root.ws = (() => {
                 object.changeTiles = [];
                 object.fallingTokens = [];
                 object.deletedTiles = [];
+                object.frozenColumns = [];
             }
             if (options.defaults) {
                 object.tile = null;
@@ -9750,6 +9840,11 @@ export const ws = $root.ws = (() => {
                 object.deletedTiles = [];
                 for (let j = 0; j < message.deletedTiles.length; ++j)
                     object.deletedTiles[j] = $root.ws.ChangeTile.toObject(message.deletedTiles[j], options);
+            }
+            if (message.frozenColumns && message.frozenColumns.length) {
+                object.frozenColumns = [];
+                for (let j = 0; j < message.frozenColumns.length; ++j)
+                    object.frozenColumns[j] = message.frozenColumns[j];
             }
             return object;
         };
@@ -10084,6 +10179,7 @@ export const ws = $root.ws = (() => {
          * @property {models.IDecks|null} [decks] GameEnd decks
          * @property {Array.<ws.IFallingToken>|null} [fallingTokens] GameEnd fallingTokens
          * @property {Array.<ws.IChangeTile>|null} [deletedTiles] GameEnd deletedTiles
+         * @property {Array.<boolean>|null} [frozenColumns] GameEnd frozenColumns
          */
 
         /**
@@ -10098,6 +10194,7 @@ export const ws = $root.ws = (() => {
             this.changeTiles = [];
             this.fallingTokens = [];
             this.deletedTiles = [];
+            this.frozenColumns = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -10184,6 +10281,14 @@ export const ws = $root.ws = (() => {
          */
         GameEnd.prototype.deletedTiles = $util.emptyArray;
 
+        /**
+         * GameEnd frozenColumns.
+         * @member {Array.<boolean>} frozenColumns
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.frozenColumns = $util.emptyArray;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
@@ -10264,6 +10369,12 @@ export const ws = $root.ws = (() => {
             if (message.deletedTiles != null && message.deletedTiles.length)
                 for (let i = 0; i < message.deletedTiles.length; ++i)
                     $root.ws.ChangeTile.encode(message.deletedTiles[i], writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+            if (message.frozenColumns != null && message.frozenColumns.length) {
+                writer.uint32(/* id 11, wireType 2 =*/90).fork();
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    writer.bool(message.frozenColumns[i]);
+                writer.ldelim();
+            }
             return writer;
         };
 
@@ -10348,6 +10459,17 @@ export const ws = $root.ws = (() => {
                         if (!(message.deletedTiles && message.deletedTiles.length))
                             message.deletedTiles = [];
                         message.deletedTiles.push($root.ws.ChangeTile.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 11: {
+                        if (!(message.frozenColumns && message.frozenColumns.length))
+                            message.frozenColumns = [];
+                        if ((tag & 7) === 2) {
+                            let end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.frozenColumns.push(reader.bool());
+                        } else
+                            message.frozenColumns.push(reader.bool());
                         break;
                     }
                 default:
@@ -10472,6 +10594,13 @@ export const ws = $root.ws = (() => {
                         return "deletedTiles." + error;
                 }
             }
+            if (message.frozenColumns != null && message.hasOwnProperty("frozenColumns")) {
+                if (!Array.isArray(message.frozenColumns))
+                    return "frozenColumns: array expected";
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    if (typeof message.frozenColumns[i] !== "boolean")
+                        return "frozenColumns: boolean[] expected";
+            }
             return null;
         };
 
@@ -10575,6 +10704,13 @@ export const ws = $root.ws = (() => {
                     message.deletedTiles[i] = $root.ws.ChangeTile.fromObject(object.deletedTiles[i], long + 1);
                 }
             }
+            if (object.frozenColumns) {
+                if (!Array.isArray(object.frozenColumns))
+                    throw TypeError(".ws.GameEnd.frozenColumns: array expected");
+                message.frozenColumns = [];
+                for (let i = 0; i < object.frozenColumns.length; ++i)
+                    message.frozenColumns[i] = Boolean(object.frozenColumns[i]);
+            }
             return message;
         };
 
@@ -10595,6 +10731,7 @@ export const ws = $root.ws = (() => {
                 object.changeTiles = [];
                 object.fallingTokens = [];
                 object.deletedTiles = [];
+                object.frozenColumns = [];
             }
             if (options.defaults) {
                 object.endType = options.enums === String ? "GAME_END_TYPES_UNSPECIFIED" : 0;
@@ -10643,6 +10780,11 @@ export const ws = $root.ws = (() => {
                 object.deletedTiles = [];
                 for (let j = 0; j < message.deletedTiles.length; ++j)
                     object.deletedTiles[j] = $root.ws.ChangeTile.toObject(message.deletedTiles[j], options);
+            }
+            if (message.frozenColumns && message.frozenColumns.length) {
+                object.frozenColumns = [];
+                for (let j = 0; j < message.frozenColumns.length; ++j)
+                    object.frozenColumns[j] = message.frozenColumns[j];
             }
             return object;
         };

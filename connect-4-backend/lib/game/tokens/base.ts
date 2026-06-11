@@ -57,8 +57,6 @@ export default abstract class Token {
     public row: number = -1;
     public column: number = -1;
 
-    public isFrozen: boolean = false;
-
     // ** Private properties
 
     private countEffects: Record<string, number> = {};

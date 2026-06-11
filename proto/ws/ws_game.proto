@@ -54,6 +54,7 @@ message GameMove {
   optional models.Decks decks = 6;
   repeated FallingToken falling_tokens = 7;
   repeated ChangeTile deleted_tiles = 8;
+  repeated bool frozen_columns = 9;
 }
 
 message ChangeTile {
@@ -72,6 +73,7 @@ message GameEnd {
   optional models.Decks decks = 8;
   repeated FallingToken falling_tokens = 9;
   repeated ChangeTile deleted_tiles = 10;
+  repeated bool frozen_columns = 11;
 }
 
 enum GameResponses {

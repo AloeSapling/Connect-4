@@ -115,6 +115,7 @@ addRouteWithMethods(
                             currentTokens,
                             decks,
                             tokenQueueMode: gameData.tokenQueue?.mode ?? null,
+                            frozenColumns: gameData.board.frozenColumns,
                         },
                     }).finish()
                 );

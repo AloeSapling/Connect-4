@@ -17,4 +17,5 @@ message Game {
   models.TokenQueueModes token_queue_mode = 3;
   optional models.CurrentTokens current_tokens = 4;
   optional models.Decks decks = 5;
+  repeated bool frozen_columns = 6;
 }
