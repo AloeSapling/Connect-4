@@ -108,8 +108,10 @@ export default function Game() {
             gameCanvasRef,
             currentTurn,
             cancelled,
+            queryData?.game?.tokenQueueMode ?? P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED,
             setPlayerID,
             setGameResults,
+            setSelectedToken,
             texts
         );
 
@@ -249,7 +251,7 @@ function setUpGameWebsocket(
     gameCanvasRef: RefObject<GameCanvas | null>,
     currentTurn: RefObject<TPlayerIDs>,
     cancelled: RefObject<boolean>,
-    tokenQueueMode: RefObject<TTokenQueueModes>,
+    tokenQueueMode: TTokenQueueModes,
     setUserPlayerID: (pid: TPlayerIDs) => void,
     setGameResults: (res: string) => void,
     setSelectedTokenType: (type: TTokenTypes) => void,
@@ -282,12 +284,7 @@ function setUpGameWebsocket(
                 console.log(userPlayerID.current);
                 // if (packet.move.turn === userPlayerID.current) setCanMove(true);
 
-                console.log(
-                    'placeToken',
-                    gameCanvasRef.current,
-                    packet.move?.tile?.column,
-                    packet.move?.tile?.row
-                );
+                console.log('placeToken', gameCanvasRef.current, packet.move?.tile?.column, packet.move?.tile?.row);
                 gameCanvasRef.current?.placeToken(
                     packet.move?.tile?.column!,
                     packet.move?.tile?.row!,
@@ -296,8 +293,8 @@ function setUpGameWebsocket(
                 );
 
                 if (
-                    tokenQueueMode.current !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
-                    tokenQueueMode.current !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
+                    tokenQueueMode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
+                    tokenQueueMode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
                 ) {
                     if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
                         setSelectedTokenType(packet.move.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
@@ -320,8 +317,8 @@ function setUpGameWebsocket(
                     );
 
                 if (
-                    tokenQueueMode.current !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
-                    tokenQueueMode.current !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
+                    tokenQueueMode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
+                    tokenQueueMode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
                 ) {
                     if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
                         setSelectedTokenType(packet.end.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
