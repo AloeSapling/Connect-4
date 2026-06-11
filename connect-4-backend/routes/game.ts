@@ -93,11 +93,28 @@ addRouteWithMethods(
                 // Format the game's board to be sent to the client
                 const protoBoard = boardDataToProtobufBoard(gameData.board);
 
+                const currentTokens = gameData.tokenQueue?.tokens
+                    ? {
+                          player1: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? null,
+                          player2: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? null,
+                      }
+                    : null;
+
+                const decks = gameData.tokenQueue?.decks
+                    ? {
+                          player1: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? [],
+                          player2: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? [],
+                      }
+                    : null;
+
                 res.status(200).send(
                     routes.GetGameResponse.encode({
                         game: {
                             board: protoBoard,
                             turn: gameData.turn,
+                            currentTokens,
+                            decks,
+                            tokenQueueMode: gameData.tokenQueue?.mode ?? null,
                         },
                     }).finish()
                 );

@@ -6,7 +6,7 @@ import { P_CodedError, type ResponseError, type TPlayerIDs } from './types.js';
 /** An axios instance shared between all backend fetches */
 const api = axios.create({
     baseURL: SERVER_URL,
-    timeout: 1000,
+    timeout: 5000,
     withCredentials: true,
     responseType: 'arraybuffer',
     headers: {
@@ -23,6 +23,9 @@ api.interceptors.response.use(
         return response;
     },
     function (error) {
+        if (!error.response) {
+            return Promise.reject(error);
+        }
         const decodedErr = P_CodedError.decode(new Uint8Array(error.response.data));
         const responseErr: ResponseError = { ...decodedErr, status: error.status };
         return Promise.reject(responseErr);
@@ -101,7 +104,7 @@ export async function changePlayerID(lobbyCode: string, uid: number, playerID: T
 }
 
 /** Changes the settings of the lobby with the given code */
-export async function changeLobbySettings({ lobbyCode, settings }: { lobbyCode: string, settings: models.ILobbySettings }) {
+export async function changeLobbySettings({ lobbyCode, settings }: { lobbyCode: string; settings: models.ILobbySettings }) {
     await api.post<ArrayBuffer>(
         `/lobby/${lobbyCode}/changeSettings`,
         routes.ChangeLobbySettingsRequest.encode({

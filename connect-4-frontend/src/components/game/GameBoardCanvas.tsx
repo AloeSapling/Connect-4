@@ -49,7 +49,7 @@ function GameBoardCanvas({
     console.log(queryData?.game);
 
     const handleMakeMove = (column: number) => {
-        // console.log(userPlayerID, currentTurn.current, canMove);
+        console.log(userPlayerID, currentTurn.current);
         if (userPlayerIDRef.current !== currentTurn.current) return;
 
         wsRef.current?.insertToken(column, selectedTokenRef.current ?? P_TokenTypes.TOKEN_TYPES_STANDARD);
@@ -115,7 +115,7 @@ function GameBoardCanvas({
                 </div>
             )}
 
-            <canvas ref={canvasRef} className="gameCanvas absolute top-0 right-0 bottom-0 left-0 w-full h-full z-0">
+            <canvas ref={canvasRef} className="gameCanvas w-full h-full z-0">
                 Your browser does not support canvas. Sorry! :(
             </canvas>
         </>

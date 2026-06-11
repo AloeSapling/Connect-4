@@ -11,6 +11,7 @@ import type { PageTexts } from '@/lib/lang';
 import { langContext } from '@/lib/contexts';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import TokenView from '@/components/game/TokenView';
 
 export default function Game() {
     const navigate = useNavigate();
@@ -58,7 +59,13 @@ export default function Game() {
     const cancelled = useRef(false);
     const userPlayerIDRef = useRef<TPlayerIDs>(P_PlayerIDs.PLAYER_IDS_UNSPECIFIED);
     const gameCanvasRef = useRef<GameCanvas | null>(null);
-    const currentTurn = useRef<TPlayerIDs>(queryData?.game?.turn ?? P_PlayerIDs.PLAYER_IDS_PLAYER1);
+    const currentTurn = useRef<TPlayerIDs>(P_PlayerIDs.PLAYER_IDS_PLAYER1);
+
+    useEffect(() => {
+        if (queryData?.game?.turn != null) {
+            currentTurn.current = queryData.game.turn;
+        }
+    }, [queryData?.game?.turn]);
     const selectedTokenRef = useRef<TTokenTypes>(P_TokenTypes.TOKEN_TYPES_STANDARD);
 
     // Set state variable callbacks
@@ -135,30 +142,36 @@ export default function Game() {
                 currentTurn={currentTurn}
                 selectedTokenRef={selectedTokenRef}
             />
-            {userPlayerID !== P_PlayerIDs.PLAYER_IDS_UNSPECIFIED ? (
-                <>
-                    {results === '' && (
-                        <Button
-                            className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20"
-                            onClick={forfeitGameButton}
-                        >
-                            {texts.forfeitButton}
-                        </Button>
-                    )}
-                    {/*     <input */}
-                    {/*         className="z-30 absolute top-0 right-0" */}
-                    {/*         value={tokenType} */}
-                    {/*         onChange={(e) => setTokenType(Number(e.target.value) as types.TTokenTypes)} */}
-                    {/*     /> */}
-                </>
-            ) : (
-                <Button
-                    className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20"
-                    onClick={leaveLobbyButton}
-                >
-                    {texts.resultsLeaveButton}
-                </Button>
-            )}
+            <div className="flex flex-row items-center p-5 gap-20">
+                {userPlayerID !== P_PlayerIDs.PLAYER_IDS_UNSPECIFIED ? (
+                    <>
+                        {results === '' && (
+                            <Button
+                                className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20"
+                                onClick={forfeitGameButton}
+                            >
+                                {texts.forfeitButton}
+                            </Button>
+                        )}
+                    </>
+                ) : (
+                    <Button
+                        className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20"
+                        onClick={leaveLobbyButton}
+                    >
+                        {texts.resultsLeaveButton}
+                    </Button>
+                )}
+                <TokenView
+                    tokenQueueData={{
+                        mode: queryData.game?.tokenQueueMode,
+                        decks: queryData.game?.decks,
+                        tokens: queryData.game?.currentTokens,
+                    }}
+                    playerID={userPlayerID}
+                    onTokenSelect={setSelectedTokenType}
+                />
+            </div>
 
             {/* Results dialog */}
             {results !== '' && (
