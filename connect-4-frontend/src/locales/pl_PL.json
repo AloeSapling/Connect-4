@@ -17,6 +17,9 @@
         "listHeader": "Lista Pokoi",
         "refresh": "Odśwież Pokoje",
 
+        "myLobbies": "Moje Pokoje",
+        "otherLobbies": "Inne Pokoje",
+
         "tableName": "Nazwa",
         "tablePlayers": "Gracze",
         "tableHasGame": "Ma Grę",

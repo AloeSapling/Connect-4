@@ -4,7 +4,7 @@ import { Lobby, LobbyMember } from './models.ts';
 import { models } from '../lib/proto.js';
 import { getDetailedLobbyMembersData } from './lobbyMembers.ts';
 import { gameExists, gamesExist } from '../database-redis/game.ts';
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { sequelize } from './database.ts';
 import { DEFAULT_TURN_TIME } from '../config.ts';
 
@@ -51,6 +51,74 @@ export async function getAllLobbiesData(): Promise<models.ILobbyData[]> {
                 attributes: [],
             },
         ],
+        group: ['Lobby.code'],
+        raw: true,
+    })) as tmp_SelectResult;
+
+    const hasGames = await gamesExist(lobbies.map((lobby) => lobby.code));
+
+    return lobbies.map((lobby, i) => ({
+        ...lobby,
+        lobbyName: lobby.name,
+        hasGame: hasGames[i] || false,
+    }));
+}
+
+/** @returns The lobbies that the user is a member of */
+export async function getMyLobbiesData(userId: number): Promise<models.ILobbyData[]> {
+    const userLobbyCodes = await LobbyMember.findAll({
+        where: { user_id: userId },
+        attributes: ['lobby_code'],
+        raw: true,
+    }).then((rows) => rows.map((r) => r.lobby_code));
+
+    if (userLobbyCodes.length === 0) return [];
+
+    type tmp_SelectResult = (Lobby & { memberCount: number })[];
+
+    const lobbies: tmp_SelectResult = (await Lobby.findAll({
+        attributes: ['code', 'name', [Sequelize.fn('COUNT', sequelize.col('LobbyMembers.id')), 'memberCount']],
+        include: [
+            {
+                model: LobbyMember,
+                attributes: [],
+            },
+        ],
+        where: {
+            code: { [Op.in]: userLobbyCodes },
+        },
+        group: ['Lobby.code'],
+        raw: true,
+    })) as tmp_SelectResult;
+
+    const hasGames = await gamesExist(lobbies.map((lobby) => lobby.code));
+
+    return lobbies.map((lobby, i) => ({
+        ...lobby,
+        lobbyName: lobby.name,
+        hasGame: hasGames[i] || false,
+    }));
+}
+
+/** @returns The lobbies that the user is NOT a member of */
+export async function getOtherLobbiesData(userId: number): Promise<models.ILobbyData[]> {
+    const userLobbyCodes = await LobbyMember.findAll({
+        where: { user_id: userId },
+        attributes: ['lobby_code'],
+        raw: true,
+    }).then((rows) => rows.map((r) => r.lobby_code));
+
+    type tmp_SelectResult = (Lobby & { memberCount: number })[];
+
+    const lobbies: tmp_SelectResult = (await Lobby.findAll({
+        attributes: ['code', 'name', [Sequelize.fn('COUNT', sequelize.col('LobbyMembers.id')), 'memberCount']],
+        include: [
+            {
+                model: LobbyMember,
+                attributes: [],
+            },
+        ],
+        ...(userLobbyCodes.length > 0 ? { where: { code: { [Op.notIn]: userLobbyCodes } } } : {}),
         group: ['Lobby.code'],
         raw: true,
     })) as tmp_SelectResult;

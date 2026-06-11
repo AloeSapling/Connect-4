@@ -17,6 +17,9 @@
         "listHeader": "Lobby List",
         "refresh": "Refresh Lobbies",
 
+        "myLobbies": "My Lobbies",
+        "otherLobbies": "Other Lobbies",
+
         "tableName": "Name",
         "tablePlayers": "Players",
         "tableHasGame": "Has Game",

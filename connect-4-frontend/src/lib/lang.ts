@@ -20,6 +20,9 @@ export type PageTexts = {
         listHeader: string;
         refresh: string;
 
+        myLobbies: string;
+        otherLobbies: string;
+
         tableName: string;
         tablePlayers: string;
         tableHasGame: string;

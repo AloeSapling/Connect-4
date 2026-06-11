@@ -293,9 +293,8 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
 
                 case p_ws.GameActions.GAME_ACTIONS_FORFEIT:
                     try {
-                        const [winner, loser] = await gameRedis.forfeitGame(lobbyCode, wsPlayerID);
-
                         const gameData = await gameRedis.getGameData(lobbyCode);
+                        const [winner, loser] = await gameRedis.forfeitGame(lobbyCode, wsPlayerID);
 
                         const protoBoard = boardDataToProtobufBoard(gameData.board);
 

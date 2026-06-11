@@ -87,6 +87,33 @@ export default function Game() {
         }
     }, [queryData?.game?.turn]);
 
+    useEffect(() => {
+        if (!queryData?.game) return;
+
+        setTokenQueueDataObject({
+            mode: queryData.game.tokenQueueMode,
+            decks: queryData.game.decks,
+            tokens: queryData.game.currentTokens,
+        });
+    }, [queryData]);
+
+    // Preselect the correct token once both player identity and token queue data are known
+    useEffect(() => {
+        if (userPlayerID === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED) return;
+        if (!tokenQueueData.mode) return;
+
+        if (
+            tokenQueueData.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
+            tokenQueueData.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
+        ) {
+            if (userPlayerID === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
+                setSelectedTokenType(tokenQueueData.tokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+            } else if (userPlayerID === P_PlayerIDs.PLAYER_IDS_PLAYER2) {
+                setSelectedTokenType(tokenQueueData.tokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+            }
+        }
+    }, [userPlayerID, tokenQueueData]);
+
     // Set state variable callbacks
     const setPlayerID = useCallback((pid: TPlayerIDs) => {
         setUserPlayerID(pid);
@@ -172,12 +199,12 @@ export default function Game() {
                 currentTurn={currentTurn}
                 selectedTokenRef={selectedTokenRef}
             />
-            <div className="flex flex-row items-center p-5 gap-20">
+            <div className="flex flex-row justify-evenly items-center p-5 gap-8 rounded-lg mt-2 bg-yellow-800">
                 {userPlayerID !== P_PlayerIDs.PLAYER_IDS_UNSPECIFIED ? (
                     <>
                         {results === '' && (
                             <Button
-                                className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20"
+                                className="bg-amber-900 hover:bg-amber-950 w-45 h-[60%] text-2xl rounded-lg p-2 font-semibold cursor-pointer z-20"
                                 onClick={forfeitGameButton}
                             >
                                 {texts.forfeitButton}
@@ -186,7 +213,7 @@ export default function Game() {
                     </>
                 ) : (
                     <Button
-                        className="absolute top-[3%] left-[3%] bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20"
+                        className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20"
                         onClick={leaveLobbyButton}
                     >
                         {texts.resultsLeaveButton}
@@ -285,6 +312,17 @@ function setUpGameWebsocket(
 
                 userPlayerID.current = packet.init?.playerId || P_PlayerIDs.PLAYER_IDS_UNSPECIFIED;
                 setUserPlayerID(userPlayerID.current);
+
+                if (
+                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
+                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
+                ) {
+                    if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
+                        setSelectedTokenType(tokenQueueDataRef.current.tokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                    } else if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER2) {
+                        setSelectedTokenType(tokenQueueDataRef.current.tokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                    }
+                }
 
                 break;
             case p_ws.GameResponses.GAME_RESPONSES_MOVE:

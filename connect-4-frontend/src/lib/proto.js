@@ -22,7 +22,8 @@ export const routes = $root.routes = (() => {
          * Properties of a GetLobbiesResponse.
          * @memberof routes
          * @interface IGetLobbiesResponse
-         * @property {Array.<models.ILobbyData>|null} [lobbies] GetLobbiesResponse lobbies
+         * @property {Array.<models.ILobbyData>|null} [myLobbies] GetLobbiesResponse myLobbies
+         * @property {Array.<models.ILobbyData>|null} [otherLobbies] GetLobbiesResponse otherLobbies
          */
 
         /**
@@ -34,7 +35,8 @@ export const routes = $root.routes = (() => {
          * @param {routes.IGetLobbiesResponse=} [properties] Properties to set
          */
         function GetLobbiesResponse(properties) {
-            this.lobbies = [];
+            this.myLobbies = [];
+            this.otherLobbies = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -42,12 +44,20 @@ export const routes = $root.routes = (() => {
         }
 
         /**
-         * GetLobbiesResponse lobbies.
-         * @member {Array.<models.ILobbyData>} lobbies
+         * GetLobbiesResponse myLobbies.
+         * @member {Array.<models.ILobbyData>} myLobbies
          * @memberof routes.GetLobbiesResponse
          * @instance
          */
-        GetLobbiesResponse.prototype.lobbies = $util.emptyArray;
+        GetLobbiesResponse.prototype.myLobbies = $util.emptyArray;
+
+        /**
+         * GetLobbiesResponse otherLobbies.
+         * @member {Array.<models.ILobbyData>} otherLobbies
+         * @memberof routes.GetLobbiesResponse
+         * @instance
+         */
+        GetLobbiesResponse.prototype.otherLobbies = $util.emptyArray;
 
         /**
          * Creates a new GetLobbiesResponse instance using the specified properties.
@@ -73,9 +83,12 @@ export const routes = $root.routes = (() => {
         GetLobbiesResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.lobbies != null && message.lobbies.length)
-                for (let i = 0; i < message.lobbies.length; ++i)
-                    $root.models.LobbyData.encode(message.lobbies[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.myLobbies != null && message.myLobbies.length)
+                for (let i = 0; i < message.myLobbies.length; ++i)
+                    $root.models.LobbyData.encode(message.myLobbies[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.otherLobbies != null && message.otherLobbies.length)
+                for (let i = 0; i < message.otherLobbies.length; ++i)
+                    $root.models.LobbyData.encode(message.otherLobbies[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             return writer;
         };
 
@@ -117,9 +130,15 @@ export const routes = $root.routes = (() => {
                     break;
                 switch (tag >>> 3) {
                 case 1: {
-                        if (!(message.lobbies && message.lobbies.length))
-                            message.lobbies = [];
-                        message.lobbies.push($root.models.LobbyData.decode(reader, reader.uint32(), undefined, long + 1));
+                        if (!(message.myLobbies && message.myLobbies.length))
+                            message.myLobbies = [];
+                        message.myLobbies.push($root.models.LobbyData.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 2: {
+                        if (!(message.otherLobbies && message.otherLobbies.length))
+                            message.otherLobbies = [];
+                        message.otherLobbies.push($root.models.LobbyData.decode(reader, reader.uint32(), undefined, long + 1));
                         break;
                     }
                 default:
@@ -161,13 +180,22 @@ export const routes = $root.routes = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            if (message.lobbies != null && message.hasOwnProperty("lobbies")) {
-                if (!Array.isArray(message.lobbies))
-                    return "lobbies: array expected";
-                for (let i = 0; i < message.lobbies.length; ++i) {
-                    let error = $root.models.LobbyData.verify(message.lobbies[i], long + 1);
+            if (message.myLobbies != null && message.hasOwnProperty("myLobbies")) {
+                if (!Array.isArray(message.myLobbies))
+                    return "myLobbies: array expected";
+                for (let i = 0; i < message.myLobbies.length; ++i) {
+                    let error = $root.models.LobbyData.verify(message.myLobbies[i], long + 1);
                     if (error)
-                        return "lobbies." + error;
+                        return "myLobbies." + error;
+                }
+            }
+            if (message.otherLobbies != null && message.hasOwnProperty("otherLobbies")) {
+                if (!Array.isArray(message.otherLobbies))
+                    return "otherLobbies: array expected";
+                for (let i = 0; i < message.otherLobbies.length; ++i) {
+                    let error = $root.models.LobbyData.verify(message.otherLobbies[i], long + 1);
+                    if (error)
+                        return "otherLobbies." + error;
                 }
             }
             return null;
@@ -189,14 +217,24 @@ export const routes = $root.routes = (() => {
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
             let message = new $root.routes.GetLobbiesResponse();
-            if (object.lobbies) {
-                if (!Array.isArray(object.lobbies))
-                    throw TypeError(".routes.GetLobbiesResponse.lobbies: array expected");
-                message.lobbies = [];
-                for (let i = 0; i < object.lobbies.length; ++i) {
-                    if (typeof object.lobbies[i] !== "object")
-                        throw TypeError(".routes.GetLobbiesResponse.lobbies: object expected");
-                    message.lobbies[i] = $root.models.LobbyData.fromObject(object.lobbies[i], long + 1);
+            if (object.myLobbies) {
+                if (!Array.isArray(object.myLobbies))
+                    throw TypeError(".routes.GetLobbiesResponse.myLobbies: array expected");
+                message.myLobbies = [];
+                for (let i = 0; i < object.myLobbies.length; ++i) {
+                    if (typeof object.myLobbies[i] !== "object")
+                        throw TypeError(".routes.GetLobbiesResponse.myLobbies: object expected");
+                    message.myLobbies[i] = $root.models.LobbyData.fromObject(object.myLobbies[i], long + 1);
+                }
+            }
+            if (object.otherLobbies) {
+                if (!Array.isArray(object.otherLobbies))
+                    throw TypeError(".routes.GetLobbiesResponse.otherLobbies: array expected");
+                message.otherLobbies = [];
+                for (let i = 0; i < object.otherLobbies.length; ++i) {
+                    if (typeof object.otherLobbies[i] !== "object")
+                        throw TypeError(".routes.GetLobbiesResponse.otherLobbies: object expected");
+                    message.otherLobbies[i] = $root.models.LobbyData.fromObject(object.otherLobbies[i], long + 1);
                 }
             }
             return message;
@@ -215,12 +253,19 @@ export const routes = $root.routes = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.arrays || options.defaults)
-                object.lobbies = [];
-            if (message.lobbies && message.lobbies.length) {
-                object.lobbies = [];
-                for (let j = 0; j < message.lobbies.length; ++j)
-                    object.lobbies[j] = $root.models.LobbyData.toObject(message.lobbies[j], options);
+            if (options.arrays || options.defaults) {
+                object.myLobbies = [];
+                object.otherLobbies = [];
+            }
+            if (message.myLobbies && message.myLobbies.length) {
+                object.myLobbies = [];
+                for (let j = 0; j < message.myLobbies.length; ++j)
+                    object.myLobbies[j] = $root.models.LobbyData.toObject(message.myLobbies[j], options);
+            }
+            if (message.otherLobbies && message.otherLobbies.length) {
+                object.otherLobbies = [];
+                for (let j = 0; j < message.otherLobbies.length; ++j)
+                    object.otherLobbies[j] = $root.models.LobbyData.toObject(message.otherLobbies[j], options);
             }
             return object;
         };

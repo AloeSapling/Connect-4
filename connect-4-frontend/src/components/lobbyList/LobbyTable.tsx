@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { useMutation } from "@tanstack/react-query";
 import * as proto from "../../lib/proto.js"
 
-export default function LobbyTable({ lobbyData }: { lobbyData: proto.models.ILobbyData[] }) {
+export default function LobbyTable({ lobbyData, title }: { lobbyData: proto.models.ILobbyData[]; title: string }) {
     const navigate = useNavigate();
     
     const joinLobby_m = useMutation({
@@ -26,8 +26,11 @@ export default function LobbyTable({ lobbyData }: { lobbyData: proto.models.ILob
        
     const texts = langCtx.texts.lobbyList;
 
+    if (lobbyData.length === 0) return null;
+
     return (
         <div className="flex flex-col min-h-0 min-w-0 select-none">
+            <h2 className="text-lg font-semibold px-1 py-1">{title}</h2>
             <table className="w-full table-fixed text-left">
                 <thead className="bg-amber-950">
                     <tr>

@@ -6,8 +6,11 @@ export namespace routes {
     /** Properties of a GetLobbiesResponse. */
     interface IGetLobbiesResponse {
 
-        /** GetLobbiesResponse lobbies */
-        lobbies?: (models.ILobbyData[]|null);
+        /** GetLobbiesResponse myLobbies */
+        myLobbies?: (models.ILobbyData[]|null);
+
+        /** GetLobbiesResponse otherLobbies */
+        otherLobbies?: (models.ILobbyData[]|null);
     }
 
     /** Represents a GetLobbiesResponse. */
@@ -19,8 +22,11 @@ export namespace routes {
          */
         constructor(properties?: routes.IGetLobbiesResponse);
 
-        /** GetLobbiesResponse lobbies. */
-        public lobbies: models.ILobbyData[];
+        /** GetLobbiesResponse myLobbies. */
+        public myLobbies: models.ILobbyData[];
+
+        /** GetLobbiesResponse otherLobbies. */
+        public otherLobbies: models.ILobbyData[];
 
         /**
          * Creates a new GetLobbiesResponse instance using the specified properties.

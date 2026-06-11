@@ -46,8 +46,12 @@ function LobbyList() {
                 min-h-0
             ">
 
-				{/* table of available lobbies */}
-				{queryData?.lobbies && <LobbyTable lobbyData={queryData.lobbies} />}
+				<div className="flex flex-col gap-2 min-h-0 overflow-hidden">
+					{queryData && <>
+						<LobbyTable lobbyData={queryData.myLobbies ?? []} title={texts.myLobbies} />
+						<LobbyTable lobbyData={queryData.otherLobbies ?? []} title={texts.otherLobbies} />
+					</>}
+				</div>
 
 				{/* side buttons */}
 				<div className="flex flex-col justify-between h-full">

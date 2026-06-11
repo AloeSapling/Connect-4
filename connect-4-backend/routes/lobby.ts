@@ -3,8 +3,9 @@ import {
     changeLobbySettings,
     createLobby,
     deleteLobby,
-    getAllLobbiesData,
     getDetailedLobbyData,
+    getMyLobbiesData,
+    getOtherLobbiesData,
     lobbyExists,
 } from '../database-sqllite/lobby.ts';
 import { P_CodedError, P_ErrorCodes, P_PlayerIDs, P_PlayerTypes, type UserRequest } from '../lib/types.ts';
@@ -35,8 +36,12 @@ addRouteWithMethods(
         // Gets a list of lobbies
         // Search params can include filters for the list of lobbies
         try {
-            const lobbies = await getAllLobbiesData();
-            res.status(200).send(routes.GetLobbiesResponse.encode({ lobbies: lobbies }).finish());
+            const user = (req as UserRequest).user;
+            const [myLobbies, otherLobbies] = await Promise.all([
+                getMyLobbiesData(user.id),
+                getOtherLobbiesData(user.id),
+            ]);
+            res.status(200).send(routes.GetLobbiesResponse.encode({ myLobbies, otherLobbies }).finish());
         } catch {
             res.status(500).send(
                 P_CodedError.encode({
