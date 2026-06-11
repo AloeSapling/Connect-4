@@ -3422,247 +3422,6 @@ export const models = $root.models = (() => {
         return Game;
     })();
 
-    models.PartialUser = (function() {
-
-        /**
-         * Properties of a PartialUser.
-         * @memberof models
-         * @interface IPartialUser
-         * @property {number|null} [id] PartialUser id
-         * @property {string|null} [username] PartialUser username
-         */
-
-        /**
-         * Constructs a new PartialUser.
-         * @memberof models
-         * @classdesc Represents a PartialUser.
-         * @implements IPartialUser
-         * @constructor
-         * @param {models.IPartialUser=} [properties] Properties to set
-         */
-        function PartialUser(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * PartialUser id.
-         * @member {number} id
-         * @memberof models.PartialUser
-         * @instance
-         */
-        PartialUser.prototype.id = 0;
-
-        /**
-         * PartialUser username.
-         * @member {string} username
-         * @memberof models.PartialUser
-         * @instance
-         */
-        PartialUser.prototype.username = "";
-
-        /**
-         * Creates a new PartialUser instance using the specified properties.
-         * @function create
-         * @memberof models.PartialUser
-         * @static
-         * @param {models.IPartialUser=} [properties] Properties to set
-         * @returns {models.PartialUser} PartialUser instance
-         */
-        PartialUser.create = function create(properties) {
-            return new PartialUser(properties);
-        };
-
-        /**
-         * Encodes the specified PartialUser message. Does not implicitly {@link models.PartialUser.verify|verify} messages.
-         * @function encode
-         * @memberof models.PartialUser
-         * @static
-         * @param {models.IPartialUser} message PartialUser message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        PartialUser.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
-                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
-            if (message.username != null && Object.hasOwnProperty.call(message, "username"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.username);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified PartialUser message, length delimited. Does not implicitly {@link models.PartialUser.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof models.PartialUser
-         * @static
-         * @param {models.IPartialUser} message PartialUser message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        PartialUser.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a PartialUser message from the specified reader or buffer.
-         * @function decode
-         * @memberof models.PartialUser
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {models.PartialUser} PartialUser
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        PartialUser.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.PartialUser();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.id = reader.int32();
-                        break;
-                    }
-                case 2: {
-                        message.username = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a PartialUser message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof models.PartialUser
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {models.PartialUser} PartialUser
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        PartialUser.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a PartialUser message.
-         * @function verify
-         * @memberof models.PartialUser
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        PartialUser.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.id != null && message.hasOwnProperty("id"))
-                if (!$util.isInteger(message.id))
-                    return "id: integer expected";
-            if (message.username != null && message.hasOwnProperty("username"))
-                if (!$util.isString(message.username))
-                    return "username: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a PartialUser message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof models.PartialUser
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {models.PartialUser} PartialUser
-         */
-        PartialUser.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.models.PartialUser)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.models.PartialUser();
-            if (object.id != null)
-                message.id = object.id | 0;
-            if (object.username != null)
-                message.username = String(object.username);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a PartialUser message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof models.PartialUser
-         * @static
-         * @param {models.PartialUser} message PartialUser
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        PartialUser.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults) {
-                object.id = 0;
-                object.username = "";
-            }
-            if (message.id != null && message.hasOwnProperty("id"))
-                object.id = message.id;
-            if (message.username != null && message.hasOwnProperty("username"))
-                object.username = message.username;
-            return object;
-        };
-
-        /**
-         * Converts this PartialUser to JSON.
-         * @function toJSON
-         * @memberof models.PartialUser
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        PartialUser.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for PartialUser
-         * @function getTypeUrl
-         * @memberof models.PartialUser
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        PartialUser.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/models.PartialUser";
-        };
-
-        return PartialUser;
-    })();
-
     /**
      * TokenQueueModes enum.
      * @name models.TokenQueueModes
@@ -3690,7 +3449,6 @@ export const models = $root.models = (() => {
      * @property {number} TOKEN_TYPES_NEGATIVE=2 TOKEN_TYPES_NEGATIVE value
      * @property {number} TOKEN_TYPES_AURA=3 TOKEN_TYPES_AURA value
      * @property {number} TOKEN_TYPES_BOMB=4 TOKEN_TYPES_BOMB value
-     * @property {number} TOKEN_TYPES_SPLIT=5 TOKEN_TYPES_SPLIT value
      * @property {number} TOKEN_TYPES_FREEZE=6 TOKEN_TYPES_FREEZE value
      * @property {number} TOKEN_TYPES_BURN=7 TOKEN_TYPES_BURN value
      * @property {number} TOKEN_TYPES_REVERSE=8 TOKEN_TYPES_REVERSE value
@@ -3703,7 +3461,6 @@ export const models = $root.models = (() => {
         values[valuesById[2] = "TOKEN_TYPES_NEGATIVE"] = 2;
         values[valuesById[3] = "TOKEN_TYPES_AURA"] = 3;
         values[valuesById[4] = "TOKEN_TYPES_BOMB"] = 4;
-        values[valuesById[5] = "TOKEN_TYPES_SPLIT"] = 5;
         values[valuesById[6] = "TOKEN_TYPES_FREEZE"] = 6;
         values[valuesById[7] = "TOKEN_TYPES_BURN"] = 7;
         values[valuesById[8] = "TOKEN_TYPES_REVERSE"] = 8;
@@ -3907,7 +3664,6 @@ export const models = $root.models = (() => {
                 case 2:
                 case 3:
                 case 4:
-                case 5:
                 case 6:
                 case 7:
                 case 8:
@@ -3979,10 +3735,6 @@ export const models = $root.models = (() => {
             case "TOKEN_TYPES_BOMB":
             case 4:
                 message.tokenType = 4;
-                break;
-            case "TOKEN_TYPES_SPLIT":
-            case 5:
-                message.tokenType = 5;
                 break;
             case "TOKEN_TYPES_FREEZE":
             case 6:
@@ -4523,7 +4275,6 @@ export const models = $root.models = (() => {
                 case 2:
                 case 3:
                 case 4:
-                case 5:
                 case 6:
                 case 7:
                 case 8:
@@ -4541,7 +4292,6 @@ export const models = $root.models = (() => {
                 case 2:
                 case 3:
                 case 4:
-                case 5:
                 case 6:
                 case 7:
                 case 8:
@@ -4595,10 +4345,6 @@ export const models = $root.models = (() => {
             case 4:
                 message.player1 = 4;
                 break;
-            case "TOKEN_TYPES_SPLIT":
-            case 5:
-                message.player1 = 5;
-                break;
             case "TOKEN_TYPES_FREEZE":
             case 6:
                 message.player1 = 6;
@@ -4642,10 +4388,6 @@ export const models = $root.models = (() => {
             case "TOKEN_TYPES_BOMB":
             case 4:
                 message.player2 = 4;
-                break;
-            case "TOKEN_TYPES_SPLIT":
-            case 5:
-                message.player2 = 5;
                 break;
             case "TOKEN_TYPES_FREEZE":
             case 6:
@@ -4914,7 +4656,6 @@ export const models = $root.models = (() => {
                     case 2:
                     case 3:
                     case 4:
-                    case 5:
                     case 6:
                     case 7:
                     case 8:
@@ -4934,7 +4675,6 @@ export const models = $root.models = (() => {
                     case 2:
                     case 3:
                     case 4:
-                    case 5:
                     case 6:
                     case 7:
                     case 8:
@@ -4992,10 +4732,6 @@ export const models = $root.models = (() => {
                     case 4:
                         message.player1[i] = 4;
                         break;
-                    case "TOKEN_TYPES_SPLIT":
-                    case 5:
-                        message.player1[i] = 5;
-                        break;
                     case "TOKEN_TYPES_FREEZE":
                     case 6:
                         message.player1[i] = 6;
@@ -5044,10 +4780,6 @@ export const models = $root.models = (() => {
                     case "TOKEN_TYPES_BOMB":
                     case 4:
                         message.player2[i] = 4;
-                        break;
-                    case "TOKEN_TYPES_SPLIT":
-                    case 5:
-                        message.player2[i] = 5;
                         break;
                     case "TOKEN_TYPES_FREEZE":
                     case 6:
@@ -5127,6 +4859,247 @@ export const models = $root.models = (() => {
         };
 
         return Decks;
+    })();
+
+    models.PartialUser = (function() {
+
+        /**
+         * Properties of a PartialUser.
+         * @memberof models
+         * @interface IPartialUser
+         * @property {number|null} [id] PartialUser id
+         * @property {string|null} [username] PartialUser username
+         */
+
+        /**
+         * Constructs a new PartialUser.
+         * @memberof models
+         * @classdesc Represents a PartialUser.
+         * @implements IPartialUser
+         * @constructor
+         * @param {models.IPartialUser=} [properties] Properties to set
+         */
+        function PartialUser(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * PartialUser id.
+         * @member {number} id
+         * @memberof models.PartialUser
+         * @instance
+         */
+        PartialUser.prototype.id = 0;
+
+        /**
+         * PartialUser username.
+         * @member {string} username
+         * @memberof models.PartialUser
+         * @instance
+         */
+        PartialUser.prototype.username = "";
+
+        /**
+         * Creates a new PartialUser instance using the specified properties.
+         * @function create
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.IPartialUser=} [properties] Properties to set
+         * @returns {models.PartialUser} PartialUser instance
+         */
+        PartialUser.create = function create(properties) {
+            return new PartialUser(properties);
+        };
+
+        /**
+         * Encodes the specified PartialUser message. Does not implicitly {@link models.PartialUser.verify|verify} messages.
+         * @function encode
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.IPartialUser} message PartialUser message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        PartialUser.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
+            if (message.username != null && Object.hasOwnProperty.call(message, "username"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.username);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified PartialUser message, length delimited. Does not implicitly {@link models.PartialUser.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.IPartialUser} message PartialUser message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        PartialUser.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a PartialUser message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.PartialUser
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.PartialUser} PartialUser
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        PartialUser.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.PartialUser();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.id = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.username = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a PartialUser message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.PartialUser
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.PartialUser} PartialUser
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        PartialUser.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a PartialUser message.
+         * @function verify
+         * @memberof models.PartialUser
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        PartialUser.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.id != null && message.hasOwnProperty("id"))
+                if (!$util.isInteger(message.id))
+                    return "id: integer expected";
+            if (message.username != null && message.hasOwnProperty("username"))
+                if (!$util.isString(message.username))
+                    return "username: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a PartialUser message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.PartialUser
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.PartialUser} PartialUser
+         */
+        PartialUser.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.PartialUser)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.PartialUser();
+            if (object.id != null)
+                message.id = object.id | 0;
+            if (object.username != null)
+                message.username = String(object.username);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a PartialUser message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.PartialUser
+         * @static
+         * @param {models.PartialUser} message PartialUser
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        PartialUser.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.id = 0;
+                object.username = "";
+            }
+            if (message.id != null && message.hasOwnProperty("id"))
+                object.id = message.id;
+            if (message.username != null && message.hasOwnProperty("username"))
+                object.username = message.username;
+            return object;
+        };
+
+        /**
+         * Converts this PartialUser to JSON.
+         * @function toJSON
+         * @memberof models.PartialUser
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        PartialUser.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for PartialUser
+         * @function getTypeUrl
+         * @memberof models.PartialUser
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        PartialUser.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.PartialUser";
+        };
+
+        return PartialUser;
     })();
 
     models.Lobby = (function() {
@@ -5927,7 +5900,6 @@ export const models = $root.models = (() => {
                     case 2:
                     case 3:
                     case 4:
-                    case 5:
                     case 6:
                     case 7:
                     case 8:
@@ -6020,10 +5992,6 @@ export const models = $root.models = (() => {
                     case "TOKEN_TYPES_BOMB":
                     case 4:
                         message.allowedTokens[i] = 4;
-                        break;
-                    case "TOKEN_TYPES_SPLIT":
-                    case 5:
-                        message.allowedTokens[i] = 5;
                         break;
                     case "TOKEN_TYPES_FREEZE":
                     case 6:
@@ -8341,7 +8309,6 @@ export const ws = $root.ws = (() => {
                 case 2:
                 case 3:
                 case 4:
-                case 5:
                 case 6:
                 case 7:
                 case 8:
@@ -8395,10 +8362,6 @@ export const ws = $root.ws = (() => {
             case "TOKEN_TYPES_BOMB":
             case 4:
                 message.tokenType = 4;
-                break;
-            case "TOKEN_TYPES_SPLIT":
-            case 5:
-                message.tokenType = 5;
                 break;
             case "TOKEN_TYPES_FREEZE":
             case 6:
@@ -9037,6 +9000,275 @@ export const ws = $root.ws = (() => {
         return GameInit;
     })();
 
+    ws.FallingToken = (function() {
+
+        /**
+         * Properties of a FallingToken.
+         * @memberof ws
+         * @interface IFallingToken
+         * @property {number|null} [fromCol] FallingToken fromCol
+         * @property {number|null} [fromRow] FallingToken fromRow
+         * @property {models.ITile|null} [tile] FallingToken tile
+         */
+
+        /**
+         * Constructs a new FallingToken.
+         * @memberof ws
+         * @classdesc Represents a FallingToken.
+         * @implements IFallingToken
+         * @constructor
+         * @param {ws.IFallingToken=} [properties] Properties to set
+         */
+        function FallingToken(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * FallingToken fromCol.
+         * @member {number} fromCol
+         * @memberof ws.FallingToken
+         * @instance
+         */
+        FallingToken.prototype.fromCol = 0;
+
+        /**
+         * FallingToken fromRow.
+         * @member {number} fromRow
+         * @memberof ws.FallingToken
+         * @instance
+         */
+        FallingToken.prototype.fromRow = 0;
+
+        /**
+         * FallingToken tile.
+         * @member {models.ITile|null|undefined} tile
+         * @memberof ws.FallingToken
+         * @instance
+         */
+        FallingToken.prototype.tile = null;
+
+        /**
+         * Creates a new FallingToken instance using the specified properties.
+         * @function create
+         * @memberof ws.FallingToken
+         * @static
+         * @param {ws.IFallingToken=} [properties] Properties to set
+         * @returns {ws.FallingToken} FallingToken instance
+         */
+        FallingToken.create = function create(properties) {
+            return new FallingToken(properties);
+        };
+
+        /**
+         * Encodes the specified FallingToken message. Does not implicitly {@link ws.FallingToken.verify|verify} messages.
+         * @function encode
+         * @memberof ws.FallingToken
+         * @static
+         * @param {ws.IFallingToken} message FallingToken message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        FallingToken.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.fromCol != null && Object.hasOwnProperty.call(message, "fromCol"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.fromCol);
+            if (message.fromRow != null && Object.hasOwnProperty.call(message, "fromRow"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.fromRow);
+            if (message.tile != null && Object.hasOwnProperty.call(message, "tile"))
+                $root.models.Tile.encode(message.tile, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified FallingToken message, length delimited. Does not implicitly {@link ws.FallingToken.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof ws.FallingToken
+         * @static
+         * @param {ws.IFallingToken} message FallingToken message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        FallingToken.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a FallingToken message from the specified reader or buffer.
+         * @function decode
+         * @memberof ws.FallingToken
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {ws.FallingToken} FallingToken
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        FallingToken.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.FallingToken();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.fromCol = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.fromRow = reader.int32();
+                        break;
+                    }
+                case 3: {
+                        message.tile = $root.models.Tile.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a FallingToken message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof ws.FallingToken
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {ws.FallingToken} FallingToken
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        FallingToken.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a FallingToken message.
+         * @function verify
+         * @memberof ws.FallingToken
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        FallingToken.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.fromCol != null && message.hasOwnProperty("fromCol"))
+                if (!$util.isInteger(message.fromCol))
+                    return "fromCol: integer expected";
+            if (message.fromRow != null && message.hasOwnProperty("fromRow"))
+                if (!$util.isInteger(message.fromRow))
+                    return "fromRow: integer expected";
+            if (message.tile != null && message.hasOwnProperty("tile")) {
+                let error = $root.models.Tile.verify(message.tile, long + 1);
+                if (error)
+                    return "tile." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates a FallingToken message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof ws.FallingToken
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {ws.FallingToken} FallingToken
+         */
+        FallingToken.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.FallingToken)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.ws.FallingToken();
+            if (object.fromCol != null)
+                message.fromCol = object.fromCol | 0;
+            if (object.fromRow != null)
+                message.fromRow = object.fromRow | 0;
+            if (object.tile != null) {
+                if (typeof object.tile !== "object")
+                    throw TypeError(".ws.FallingToken.tile: object expected");
+                message.tile = $root.models.Tile.fromObject(object.tile, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a FallingToken message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof ws.FallingToken
+         * @static
+         * @param {ws.FallingToken} message FallingToken
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        FallingToken.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.fromCol = 0;
+                object.fromRow = 0;
+                object.tile = null;
+            }
+            if (message.fromCol != null && message.hasOwnProperty("fromCol"))
+                object.fromCol = message.fromCol;
+            if (message.fromRow != null && message.hasOwnProperty("fromRow"))
+                object.fromRow = message.fromRow;
+            if (message.tile != null && message.hasOwnProperty("tile"))
+                object.tile = $root.models.Tile.toObject(message.tile, options);
+            return object;
+        };
+
+        /**
+         * Converts this FallingToken to JSON.
+         * @function toJSON
+         * @memberof ws.FallingToken
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        FallingToken.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for FallingToken
+         * @function getTypeUrl
+         * @memberof ws.FallingToken
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        FallingToken.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/ws.FallingToken";
+        };
+
+        return FallingToken;
+    })();
+
     ws.GameMove = (function() {
 
         /**
@@ -9049,6 +9281,8 @@ export const ws = $root.ws = (() => {
          * @property {Array.<ws.IChangeTile>|null} [changeTiles] GameMove changeTiles
          * @property {models.ICurrentTokens|null} [currentTokens] GameMove currentTokens
          * @property {models.IDecks|null} [decks] GameMove decks
+         * @property {Array.<ws.IFallingToken>|null} [fallingTokens] GameMove fallingTokens
+         * @property {Array.<ws.IChangeTile>|null} [deletedTiles] GameMove deletedTiles
          */
 
         /**
@@ -9061,6 +9295,8 @@ export const ws = $root.ws = (() => {
          */
         function GameMove(properties) {
             this.changeTiles = [];
+            this.fallingTokens = [];
+            this.deletedTiles = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -9115,6 +9351,22 @@ export const ws = $root.ws = (() => {
          */
         GameMove.prototype.decks = null;
 
+        /**
+         * GameMove fallingTokens.
+         * @member {Array.<ws.IFallingToken>} fallingTokens
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.fallingTokens = $util.emptyArray;
+
+        /**
+         * GameMove deletedTiles.
+         * @member {Array.<ws.IChangeTile>} deletedTiles
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.deletedTiles = $util.emptyArray;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
@@ -9167,6 +9419,12 @@ export const ws = $root.ws = (() => {
                 $root.models.CurrentTokens.encode(message.currentTokens, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
             if (message.decks != null && Object.hasOwnProperty.call(message, "decks"))
                 $root.models.Decks.encode(message.decks, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+            if (message.fallingTokens != null && message.fallingTokens.length)
+                for (let i = 0; i < message.fallingTokens.length; ++i)
+                    $root.ws.FallingToken.encode(message.fallingTokens[i], writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+            if (message.deletedTiles != null && message.deletedTiles.length)
+                for (let i = 0; i < message.deletedTiles.length; ++i)
+                    $root.ws.ChangeTile.encode(message.deletedTiles[i], writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
             return writer;
         };
 
@@ -9231,6 +9489,18 @@ export const ws = $root.ws = (() => {
                     }
                 case 6: {
                         message.decks = $root.models.Decks.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 7: {
+                        if (!(message.fallingTokens && message.fallingTokens.length))
+                            message.fallingTokens = [];
+                        message.fallingTokens.push($root.ws.FallingToken.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 8: {
+                        if (!(message.deletedTiles && message.deletedTiles.length))
+                            message.deletedTiles = [];
+                        message.deletedTiles.push($root.ws.ChangeTile.decode(reader, reader.uint32(), undefined, long + 1));
                         break;
                     }
                 default:
@@ -9317,6 +9587,24 @@ export const ws = $root.ws = (() => {
                         return "decks." + error;
                 }
             }
+            if (message.fallingTokens != null && message.hasOwnProperty("fallingTokens")) {
+                if (!Array.isArray(message.fallingTokens))
+                    return "fallingTokens: array expected";
+                for (let i = 0; i < message.fallingTokens.length; ++i) {
+                    let error = $root.ws.FallingToken.verify(message.fallingTokens[i], long + 1);
+                    if (error)
+                        return "fallingTokens." + error;
+                }
+            }
+            if (message.deletedTiles != null && message.hasOwnProperty("deletedTiles")) {
+                if (!Array.isArray(message.deletedTiles))
+                    return "deletedTiles: array expected";
+                for (let i = 0; i < message.deletedTiles.length; ++i) {
+                    let error = $root.ws.ChangeTile.verify(message.deletedTiles[i], long + 1);
+                    if (error)
+                        return "deletedTiles." + error;
+                }
+            }
             return null;
         };
 
@@ -9386,6 +9674,26 @@ export const ws = $root.ws = (() => {
                     throw TypeError(".ws.GameMove.decks: object expected");
                 message.decks = $root.models.Decks.fromObject(object.decks, long + 1);
             }
+            if (object.fallingTokens) {
+                if (!Array.isArray(object.fallingTokens))
+                    throw TypeError(".ws.GameMove.fallingTokens: array expected");
+                message.fallingTokens = [];
+                for (let i = 0; i < object.fallingTokens.length; ++i) {
+                    if (typeof object.fallingTokens[i] !== "object")
+                        throw TypeError(".ws.GameMove.fallingTokens: object expected");
+                    message.fallingTokens[i] = $root.ws.FallingToken.fromObject(object.fallingTokens[i], long + 1);
+                }
+            }
+            if (object.deletedTiles) {
+                if (!Array.isArray(object.deletedTiles))
+                    throw TypeError(".ws.GameMove.deletedTiles: array expected");
+                message.deletedTiles = [];
+                for (let i = 0; i < object.deletedTiles.length; ++i) {
+                    if (typeof object.deletedTiles[i] !== "object")
+                        throw TypeError(".ws.GameMove.deletedTiles: object expected");
+                    message.deletedTiles[i] = $root.ws.ChangeTile.fromObject(object.deletedTiles[i], long + 1);
+                }
+            }
             return message;
         };
 
@@ -9402,8 +9710,11 @@ export const ws = $root.ws = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.arrays || options.defaults)
+            if (options.arrays || options.defaults) {
                 object.changeTiles = [];
+                object.fallingTokens = [];
+                object.deletedTiles = [];
+            }
             if (options.defaults) {
                 object.tile = null;
                 object.board = null;
@@ -9429,6 +9740,16 @@ export const ws = $root.ws = (() => {
                 object.decks = $root.models.Decks.toObject(message.decks, options);
                 if (options.oneofs)
                     object._decks = "decks";
+            }
+            if (message.fallingTokens && message.fallingTokens.length) {
+                object.fallingTokens = [];
+                for (let j = 0; j < message.fallingTokens.length; ++j)
+                    object.fallingTokens[j] = $root.ws.FallingToken.toObject(message.fallingTokens[j], options);
+            }
+            if (message.deletedTiles && message.deletedTiles.length) {
+                object.deletedTiles = [];
+                for (let j = 0; j < message.deletedTiles.length; ++j)
+                    object.deletedTiles[j] = $root.ws.ChangeTile.toObject(message.deletedTiles[j], options);
             }
             return object;
         };
@@ -9761,6 +10082,8 @@ export const ws = $root.ws = (() => {
          * @property {Array.<ws.IChangeTile>|null} [changeTiles] GameEnd changeTiles
          * @property {models.ICurrentTokens|null} [currentTokens] GameEnd currentTokens
          * @property {models.IDecks|null} [decks] GameEnd decks
+         * @property {Array.<ws.IFallingToken>|null} [fallingTokens] GameEnd fallingTokens
+         * @property {Array.<ws.IChangeTile>|null} [deletedTiles] GameEnd deletedTiles
          */
 
         /**
@@ -9773,6 +10096,8 @@ export const ws = $root.ws = (() => {
          */
         function GameEnd(properties) {
             this.changeTiles = [];
+            this.fallingTokens = [];
+            this.deletedTiles = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -9842,6 +10167,22 @@ export const ws = $root.ws = (() => {
          * @instance
          */
         GameEnd.prototype.decks = null;
+
+        /**
+         * GameEnd fallingTokens.
+         * @member {Array.<ws.IFallingToken>} fallingTokens
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.fallingTokens = $util.emptyArray;
+
+        /**
+         * GameEnd deletedTiles.
+         * @member {Array.<ws.IChangeTile>} deletedTiles
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.deletedTiles = $util.emptyArray;
 
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
@@ -9917,6 +10258,12 @@ export const ws = $root.ws = (() => {
                 $root.models.CurrentTokens.encode(message.currentTokens, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
             if (message.decks != null && Object.hasOwnProperty.call(message, "decks"))
                 $root.models.Decks.encode(message.decks, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+            if (message.fallingTokens != null && message.fallingTokens.length)
+                for (let i = 0; i < message.fallingTokens.length; ++i)
+                    $root.ws.FallingToken.encode(message.fallingTokens[i], writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+            if (message.deletedTiles != null && message.deletedTiles.length)
+                for (let i = 0; i < message.deletedTiles.length; ++i)
+                    $root.ws.ChangeTile.encode(message.deletedTiles[i], writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
             return writer;
         };
 
@@ -9989,6 +10336,18 @@ export const ws = $root.ws = (() => {
                     }
                 case 8: {
                         message.decks = $root.models.Decks.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 9: {
+                        if (!(message.fallingTokens && message.fallingTokens.length))
+                            message.fallingTokens = [];
+                        message.fallingTokens.push($root.ws.FallingToken.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 10: {
+                        if (!(message.deletedTiles && message.deletedTiles.length))
+                            message.deletedTiles = [];
+                        message.deletedTiles.push($root.ws.ChangeTile.decode(reader, reader.uint32(), undefined, long + 1));
                         break;
                     }
                 default:
@@ -10095,6 +10454,24 @@ export const ws = $root.ws = (() => {
                         return "decks." + error;
                 }
             }
+            if (message.fallingTokens != null && message.hasOwnProperty("fallingTokens")) {
+                if (!Array.isArray(message.fallingTokens))
+                    return "fallingTokens: array expected";
+                for (let i = 0; i < message.fallingTokens.length; ++i) {
+                    let error = $root.ws.FallingToken.verify(message.fallingTokens[i], long + 1);
+                    if (error)
+                        return "fallingTokens." + error;
+                }
+            }
+            if (message.deletedTiles != null && message.hasOwnProperty("deletedTiles")) {
+                if (!Array.isArray(message.deletedTiles))
+                    return "deletedTiles: array expected";
+                for (let i = 0; i < message.deletedTiles.length; ++i) {
+                    let error = $root.ws.ChangeTile.verify(message.deletedTiles[i], long + 1);
+                    if (error)
+                        return "deletedTiles." + error;
+                }
+            }
             return null;
         };
 
@@ -10178,6 +10555,26 @@ export const ws = $root.ws = (() => {
                     throw TypeError(".ws.GameEnd.decks: object expected");
                 message.decks = $root.models.Decks.fromObject(object.decks, long + 1);
             }
+            if (object.fallingTokens) {
+                if (!Array.isArray(object.fallingTokens))
+                    throw TypeError(".ws.GameEnd.fallingTokens: array expected");
+                message.fallingTokens = [];
+                for (let i = 0; i < object.fallingTokens.length; ++i) {
+                    if (typeof object.fallingTokens[i] !== "object")
+                        throw TypeError(".ws.GameEnd.fallingTokens: object expected");
+                    message.fallingTokens[i] = $root.ws.FallingToken.fromObject(object.fallingTokens[i], long + 1);
+                }
+            }
+            if (object.deletedTiles) {
+                if (!Array.isArray(object.deletedTiles))
+                    throw TypeError(".ws.GameEnd.deletedTiles: array expected");
+                message.deletedTiles = [];
+                for (let i = 0; i < object.deletedTiles.length; ++i) {
+                    if (typeof object.deletedTiles[i] !== "object")
+                        throw TypeError(".ws.GameEnd.deletedTiles: object expected");
+                    message.deletedTiles[i] = $root.ws.ChangeTile.fromObject(object.deletedTiles[i], long + 1);
+                }
+            }
             return message;
         };
 
@@ -10194,8 +10591,11 @@ export const ws = $root.ws = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.arrays || options.defaults)
+            if (options.arrays || options.defaults) {
                 object.changeTiles = [];
+                object.fallingTokens = [];
+                object.deletedTiles = [];
+            }
             if (options.defaults) {
                 object.endType = options.enums === String ? "GAME_END_TYPES_UNSPECIFIED" : 0;
                 object.board = null;
@@ -10233,6 +10633,16 @@ export const ws = $root.ws = (() => {
                 object.decks = $root.models.Decks.toObject(message.decks, options);
                 if (options.oneofs)
                     object._decks = "decks";
+            }
+            if (message.fallingTokens && message.fallingTokens.length) {
+                object.fallingTokens = [];
+                for (let j = 0; j < message.fallingTokens.length; ++j)
+                    object.fallingTokens[j] = $root.ws.FallingToken.toObject(message.fallingTokens[j], options);
+            }
+            if (message.deletedTiles && message.deletedTiles.length) {
+                object.deletedTiles = [];
+                for (let j = 0; j < message.deletedTiles.length; ++j)
+                    object.deletedTiles[j] = $root.ws.ChangeTile.toObject(message.deletedTiles[j], options);
             }
             return object;
         };

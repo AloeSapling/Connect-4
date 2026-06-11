@@ -8,16 +8,17 @@ import { NegativeToken } from "./negative.ts";
 import { FreezeToken } from "./freeze.ts";
 import { ReverseToken } from "./reverse.ts";
 import { BombToken } from "./bomb.ts";
+import type { GameBoard } from "../gameBoard.ts";
 
 export class TokenFactory {
-    static createToken(tokenType: TTokenTypes, playerID?: TPlayerIDs): Token {
+    static createToken(tokenType: TTokenTypes, playerID?: TPlayerIDs, gameBoard?: GameBoard): Token {
         switch (tokenType) {
             case P_TokenTypes.TOKEN_TYPES_STANDARD:
                 return new StandardToken(playerID);
             case P_TokenTypes.TOKEN_TYPES_NEGATIVE:
-                return new NegativeToken(playerID);
+                return new NegativeToken(playerID, undefined, gameBoard);
             case P_TokenTypes.TOKEN_TYPES_AURA:
-                return new AuraToken(playerID);
+                return new AuraToken(playerID, undefined, gameBoard);
             case P_TokenTypes.TOKEN_TYPES_BURN:
                 return new BurnToken(playerID);
             case P_TokenTypes.TOKEN_TYPES_FREEZE:

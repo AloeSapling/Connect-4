@@ -11,8 +11,6 @@ export class FreezeToken extends Token {
     /** The amount of turns left until the column gets unfrozen */
     public turnsUntilUnfreeze: number = -1;
 
-    static activeInstanceIndexes: Coordinate[] = [];
-
     static {
         Token.register(P_TokenTypes.TOKEN_TYPES_FREEZE, FreezeToken.prototype);
     }
@@ -25,7 +23,10 @@ export class FreezeToken extends Token {
 
         if (this.turnsUntilUnfreeze > 0) this.unfreezeAllTokens(gameBoard);
 
-        FreezeToken.activeInstanceIndexes = Token.removeFromActiveInstances(FreezeToken.activeInstanceIndexes, col, row);
+        const instances = gameBoard.activeInstances[P_TokenTypes.TOKEN_TYPES_FREEZE];
+        if (instances) {
+            gameBoard.activeInstances[P_TokenTypes.TOKEN_TYPES_FREEZE] = Token.removeFromActiveInstances(instances, col, row);
+        }
     }
 
     place(gameBoard: GameBoard, newRow: number, newColumn: number): Coordinate {
@@ -34,7 +35,8 @@ export class FreezeToken extends Token {
         this.freezeAllTokens(gameBoard);
 
         // Add this token to the list of active indexes
-        FreezeToken.activeInstanceIndexes.push([this.column, this.row]);
+        const instances = (gameBoard.activeInstances[P_TokenTypes.TOKEN_TYPES_FREEZE] ??= []);
+        instances.push([this.column, this.row]);
 
         return [newColumn, newRow];
     }
@@ -57,7 +59,7 @@ export class FreezeToken extends Token {
             if (token.type === P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) token.type = P_TokenTypes.TOKEN_TYPES_FROZEN;
         }
 
-        this.addToChangeTilesList(P_ChangeTokenActions.CHANGE_TOKENS_ACTIONS_FREEZE_FROZE);
+        this.addToChangeTilesList(gameBoard, P_ChangeTokenActions.CHANGE_TOKENS_ACTIONS_FREEZE_FROZE);
     }
 
     /** Unfreezes all the tokens in the column of this token */
@@ -78,7 +80,7 @@ export class FreezeToken extends Token {
 
         Token.fallTokens(gameBoard, this.column);
 
-        this.addToChangeTilesList(P_ChangeTokenActions.CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE);
+        this.addToChangeTilesList(gameBoard, P_ChangeTokenActions.CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE);
     }
 
     tickTurn(gameBoard: GameBoard) {

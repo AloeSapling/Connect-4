@@ -10,19 +10,16 @@ export class AuraToken extends Token {
     private countEffectName: string;
     private countEffectValue: number = 1;
 
-    private static instanceCount = 0;
-
     static {
         Token.register(P_TokenTypes.TOKEN_TYPES_AURA, AuraToken.prototype);
     }
 
-    static activeInstanceIndexes: Coordinate[] = [];
-
-    constructor(_playerID?: TPlayerIDs, _type?: TTokenTypes) {
+    constructor(_playerID?: TPlayerIDs, _type?: TTokenTypes, _gameBoard?: GameBoard) {
         super(_playerID, _type);
 
-        AuraToken.instanceCount++;
-        this.countEffectName = `AuraToken_${AuraToken.instanceCount}`;
+        const counter = (_gameBoard?.instanceCounters.AuraToken ?? 0) + 1;
+        if (_gameBoard) _gameBoard.instanceCounters.AuraToken = counter;
+        this.countEffectName = `AuraToken_${counter}`;
     }
 
     remove(gameBoard: GameBoard) {
@@ -39,7 +36,10 @@ export class AuraToken extends Token {
 
         this.removeSelfFromLines(gameBoard);
 
-        AuraToken.activeInstanceIndexes = Token.removeFromActiveInstances(AuraToken.activeInstanceIndexes, col, row);
+        const instances = gameBoard.activeInstances[P_TokenTypes.TOKEN_TYPES_AURA];
+        if (instances) {
+            gameBoard.activeInstances[P_TokenTypes.TOKEN_TYPES_AURA] = Token.removeFromActiveInstances(instances, col, row);
+        }
     }
 
     place(gameBoard: GameBoard, newRow: number, newColumn: number): Coordinate {
@@ -48,7 +48,8 @@ export class AuraToken extends Token {
         this.addSelfToLines(gameBoard);
 
         // Add this token to the list of active indexes
-        AuraToken.activeInstanceIndexes.push([this.column, this.row]);
+        const instances = (gameBoard.activeInstances[P_TokenTypes.TOKEN_TYPES_AURA] ??= []);
+        instances.push([this.column, this.row]);
 
         return [newColumn, newRow];
     }

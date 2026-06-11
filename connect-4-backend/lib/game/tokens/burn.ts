@@ -7,8 +7,6 @@ export class BurnToken extends Token {
     public type: TTokenTypes = P_TokenTypes.TOKEN_TYPES_BURN;
     public count: number = 0;
 
-    static activeInstanceIndexes: Coordinate[] = [];
-
     static {
         Token.register(P_TokenTypes.TOKEN_TYPES_BURN, BurnToken.prototype);
     }
@@ -25,14 +23,18 @@ export class BurnToken extends Token {
 
         super.remove(gameBoard);
 
-        BurnToken.activeInstanceIndexes = Token.removeFromActiveInstances(BurnToken.activeInstanceIndexes, col, row);
+        const instances = gameBoard.activeInstances[P_TokenTypes.TOKEN_TYPES_BURN];
+        if (instances) {
+            gameBoard.activeInstances[P_TokenTypes.TOKEN_TYPES_BURN] = Token.removeFromActiveInstances(instances, col, row);
+        }
     }
 
     place(gameBoard: GameBoard, newRow: number, newColumn: number): Coordinate {
         super.place(gameBoard, newRow, newColumn);
 
         // Add this token to the list of active indexes
-        BurnToken.activeInstanceIndexes.push([this.column, this.row]);
+        const instances = (gameBoard.activeInstances[P_TokenTypes.TOKEN_TYPES_BURN] ??= []);
+        instances.push([this.column, this.row]);
 
         return [newColumn, newRow];
     }
@@ -41,9 +43,21 @@ export class BurnToken extends Token {
         if (this.isFrozen || this.row >= gameBoard.tokens.length) return;
 
         if (this.row <= 0) {
+            gameBoard.deletedTiles.push({
+                action: P_ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP,
+                tile: {
+                    row: this.row,
+                    column: this.column,
+                    token: {
+                        playerId: this.playerID,
+                        tokenType: this.type,
+                    },
+                },
+            });
+
             this.remove(gameBoard);
 
-            this.addToChangeTilesList(P_ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP);
+            this.addToChangeTilesList(gameBoard, P_ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP);
             return;
         }
 
@@ -52,21 +66,24 @@ export class BurnToken extends Token {
         if (belowRow) {
             const belowToken = belowRow[this.column];
             if (belowToken) {
+                gameBoard.deletedTiles.push({
+                    action: P_ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_DESTROY,
+                    tile: {
+                        row: belowToken.row,
+                        column: belowToken.column,
+                        token: {
+                            playerId: belowToken.playerID,
+                            tokenType: belowToken.type,
+                        },
+                    },
+                });
+
                 belowToken.remove(gameBoard);
             }
         }
 
-        const startRow = this.row;
+        Token.fallTokens(gameBoard, this.column);
 
-        for (let i = 0; i < gameBoard.tokens.length; i++) {
-            if (startRow + i >= gameBoard.tokens.length) break;
-
-            const tokenRow = gameBoard.tokens[startRow + i];
-            const token = tokenRow![this.column];
-
-            token?.move(gameBoard, startRow + i - 1, this.column);
-        }
-
-        this.addToChangeTilesList(P_ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_DESTROY);
+        this.addToChangeTilesList(gameBoard, P_ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_DESTROY);
     }
 }

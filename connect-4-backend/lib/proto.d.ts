@@ -1407,109 +1407,6 @@ export namespace models {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a PartialUser. */
-    interface IPartialUser {
-
-        /** PartialUser id */
-        id?: (number|null);
-
-        /** PartialUser username */
-        username?: (string|null);
-    }
-
-    /** Represents a PartialUser. */
-    class PartialUser implements IPartialUser {
-
-        /**
-         * Constructs a new PartialUser.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: models.IPartialUser);
-
-        /** PartialUser id. */
-        public id: number;
-
-        /** PartialUser username. */
-        public username: string;
-
-        /**
-         * Creates a new PartialUser instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns PartialUser instance
-         */
-        public static create(properties?: models.IPartialUser): models.PartialUser;
-
-        /**
-         * Encodes the specified PartialUser message. Does not implicitly {@link models.PartialUser.verify|verify} messages.
-         * @param message PartialUser message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: models.IPartialUser, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified PartialUser message, length delimited. Does not implicitly {@link models.PartialUser.verify|verify} messages.
-         * @param message PartialUser message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: models.IPartialUser, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a PartialUser message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns PartialUser
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.PartialUser;
-
-        /**
-         * Decodes a PartialUser message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns PartialUser
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.PartialUser;
-
-        /**
-         * Verifies a PartialUser message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a PartialUser message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns PartialUser
-         */
-        public static fromObject(object: { [k: string]: any }): models.PartialUser;
-
-        /**
-         * Creates a plain object from a PartialUser message. Also converts values to other types if specified.
-         * @param message PartialUser
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: models.PartialUser, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this PartialUser to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for PartialUser
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
     /** TokenQueueModes enum. */
     enum TokenQueueModes {
         TOKEN_QUEUE_MODES_UNSPECIFIED = 0,
@@ -1525,7 +1422,6 @@ export namespace models {
         TOKEN_TYPES_NEGATIVE = 2,
         TOKEN_TYPES_AURA = 3,
         TOKEN_TYPES_BOMB = 4,
-        TOKEN_TYPES_SPLIT = 5,
         TOKEN_TYPES_FREEZE = 6,
         TOKEN_TYPES_BURN = 7,
         TOKEN_TYPES_REVERSE = 8,
@@ -1954,6 +1850,109 @@ export namespace models {
 
         /**
          * Gets the default type url for Decks
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a PartialUser. */
+    interface IPartialUser {
+
+        /** PartialUser id */
+        id?: (number|null);
+
+        /** PartialUser username */
+        username?: (string|null);
+    }
+
+    /** Represents a PartialUser. */
+    class PartialUser implements IPartialUser {
+
+        /**
+         * Constructs a new PartialUser.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.IPartialUser);
+
+        /** PartialUser id. */
+        public id: number;
+
+        /** PartialUser username. */
+        public username: string;
+
+        /**
+         * Creates a new PartialUser instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns PartialUser instance
+         */
+        public static create(properties?: models.IPartialUser): models.PartialUser;
+
+        /**
+         * Encodes the specified PartialUser message. Does not implicitly {@link models.PartialUser.verify|verify} messages.
+         * @param message PartialUser message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.IPartialUser, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified PartialUser message, length delimited. Does not implicitly {@link models.PartialUser.verify|verify} messages.
+         * @param message PartialUser message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.IPartialUser, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a PartialUser message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns PartialUser
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.PartialUser;
+
+        /**
+         * Decodes a PartialUser message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns PartialUser
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.PartialUser;
+
+        /**
+         * Verifies a PartialUser message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a PartialUser message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns PartialUser
+         */
+        public static fromObject(object: { [k: string]: any }): models.PartialUser;
+
+        /**
+         * Creates a plain object from a PartialUser message. Also converts values to other types if specified.
+         * @param message PartialUser
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.PartialUser, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this PartialUser to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for PartialUser
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -3341,6 +3340,115 @@ export namespace ws {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a FallingToken. */
+    interface IFallingToken {
+
+        /** FallingToken fromCol */
+        fromCol?: (number|null);
+
+        /** FallingToken fromRow */
+        fromRow?: (number|null);
+
+        /** FallingToken tile */
+        tile?: (models.ITile|null);
+    }
+
+    /** Represents a FallingToken. */
+    class FallingToken implements IFallingToken {
+
+        /**
+         * Constructs a new FallingToken.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.IFallingToken);
+
+        /** FallingToken fromCol. */
+        public fromCol: number;
+
+        /** FallingToken fromRow. */
+        public fromRow: number;
+
+        /** FallingToken tile. */
+        public tile?: (models.ITile|null);
+
+        /**
+         * Creates a new FallingToken instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns FallingToken instance
+         */
+        public static create(properties?: ws.IFallingToken): ws.FallingToken;
+
+        /**
+         * Encodes the specified FallingToken message. Does not implicitly {@link ws.FallingToken.verify|verify} messages.
+         * @param message FallingToken message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.IFallingToken, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified FallingToken message, length delimited. Does not implicitly {@link ws.FallingToken.verify|verify} messages.
+         * @param message FallingToken message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.IFallingToken, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a FallingToken message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns FallingToken
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.FallingToken;
+
+        /**
+         * Decodes a FallingToken message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns FallingToken
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.FallingToken;
+
+        /**
+         * Verifies a FallingToken message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a FallingToken message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns FallingToken
+         */
+        public static fromObject(object: { [k: string]: any }): ws.FallingToken;
+
+        /**
+         * Creates a plain object from a FallingToken message. Also converts values to other types if specified.
+         * @param message FallingToken
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.FallingToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this FallingToken to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for FallingToken
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a GameMove. */
     interface IGameMove {
 
@@ -3361,6 +3469,12 @@ export namespace ws {
 
         /** GameMove decks */
         decks?: (models.IDecks|null);
+
+        /** GameMove fallingTokens */
+        fallingTokens?: (ws.IFallingToken[]|null);
+
+        /** GameMove deletedTiles */
+        deletedTiles?: (ws.IChangeTile[]|null);
     }
 
     /** Represents a GameMove. */
@@ -3389,6 +3503,12 @@ export namespace ws {
 
         /** GameMove decks. */
         public decks?: (models.IDecks|null);
+
+        /** GameMove fallingTokens. */
+        public fallingTokens: ws.IFallingToken[];
+
+        /** GameMove deletedTiles. */
+        public deletedTiles: ws.IChangeTile[];
 
         /**
          * Creates a new GameMove instance using the specified properties.
@@ -3597,6 +3717,12 @@ export namespace ws {
 
         /** GameEnd decks */
         decks?: (models.IDecks|null);
+
+        /** GameEnd fallingTokens */
+        fallingTokens?: (ws.IFallingToken[]|null);
+
+        /** GameEnd deletedTiles */
+        deletedTiles?: (ws.IChangeTile[]|null);
     }
 
     /** Represents a GameEnd. */
@@ -3631,6 +3757,12 @@ export namespace ws {
 
         /** GameEnd decks. */
         public decks?: (models.IDecks|null);
+
+        /** GameEnd fallingTokens. */
+        public fallingTokens: ws.IFallingToken[];
+
+        /** GameEnd deletedTiles. */
+        public deletedTiles: ws.IChangeTile[];
 
         /**
          * Creates a new GameEnd instance using the specified properties.

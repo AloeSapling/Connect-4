@@ -61,7 +61,7 @@ function checkGameState(gameBoard: GameBoard): {
         }
     }
 
-    for (const lineIdx of LineObj.changedLines) {
+    for (const lineIdx of gameBoard.changedLines) {
         const line = gameBoard.lines[lineIdx];
         if (!line) continue;
 
@@ -91,7 +91,7 @@ function checkGameState(gameBoard: GameBoard): {
         }
     }
 
-    LineObj.resetChangedLines();
+    gameBoard.resetChangedLines();
 
     if (gameState.state !== 'WIN' && isFull) gameState.state = 'DRAW';
 

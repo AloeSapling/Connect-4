@@ -73,7 +73,7 @@ export class LineObj {
 
         other.tokenCoordinates = [];
 
-        this.lineChanged();
+        this.lineChanged(gameBoard);
     }
 
     addToken(gameBoard: GameBoard, token: Token) {
@@ -82,7 +82,7 @@ export class LineObj {
         this.countTotal += token.count;
         token.lines[this.lineType] = this.boardIdx;
 
-        this.lineChanged();
+        this.lineChanged(gameBoard);
     }
 
     /** Removes the token coordinate at the specified index
@@ -104,7 +104,7 @@ export class LineObj {
         const token = tokenRow[coord[0]];
         if (!token) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
 
-        this.doTokenRemove(token);
+        this.doTokenRemove(gameBoard, token);
 
         return coord;
     }
@@ -126,7 +126,7 @@ export class LineObj {
             const token = tokenRow[coord[0]];
             if (!token) continue;
 
-            this.doTokenRemove(token);
+            this.doTokenRemove(gameBoard, token);
         }
 
         return removedCoords;
@@ -150,25 +150,19 @@ export class LineObj {
     }
 
     /** Private helper function for performing the appropriate actions on removed tokens */
-    private doTokenRemove(token: Token) {
+    private doTokenRemove(gameBoard: GameBoard, token: Token) {
         token.lines[this.lineType] = null;
         this.countTotal -= token.count;
 
-        this.lineChanged();
+        this.lineChanged(gameBoard);
     }
 
-    static changedLines: number[] = [];
-
-    /** Resets the list of changed lines */
-    static resetChangedLines() {
-        LineObj.changedLines = [];
-    }
     /** Adds this line to this list of changed lines
      * Only adds this line to the list if the array doesn't include it yet
      * */
-    lineChanged() {
-        if (!LineObj.changedLines.includes(this.boardIdx)) {
-            LineObj.changedLines.push(this.boardIdx);
+    lineChanged(gameBoard: GameBoard) {
+        if (!gameBoard.changedLines.includes(this.boardIdx)) {
+            gameBoard.changedLines.push(this.boardIdx);
         }
     }
 }
