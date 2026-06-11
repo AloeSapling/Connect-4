@@ -160,6 +160,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
 
                         gameData.board.resetChangeTilesList();
                         gameData.board.deletedTiles = [];
+                        gameData.board.resetFallingTokens();
 
                         // Check for wins and draws
                         const gameState = checkGameState(gameData.board);

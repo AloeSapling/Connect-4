@@ -1,16 +1,20 @@
 import type { models } from '@/lib/proto';
-import { P_TokenQueueModes, type TPlayerIDs, type TTokenQueueModes, type TTokenTypes } from '@/lib/types';
+import {
+    P_PlayerIDs,
+    P_TokenQueueModes,
+    type TPlayerIDs,
+    type TTokenQueueData,
+    type TTokenQueueModes,
+    type TTokenTypes,
+} from '@/lib/types';
+import { tokenImageMap } from '@/lib/canvasLogic';
 
 export default function TokenView({
     tokenQueueData,
     playerID,
     onTokenSelect,
 }: {
-    tokenQueueData: {
-        mode: TTokenQueueModes | null | undefined;
-        tokens: models.ICurrentTokens | null | undefined;
-        decks: models.IDecks | null | undefined;
-    };
+    tokenQueueData: TTokenQueueData;
     playerID: TPlayerIDs;
     onTokenSelect?: (type: TTokenTypes) => void;
 }) {
@@ -21,11 +25,18 @@ export default function TokenView({
                 <div className="flex flex-row gap-3">
                     {tokenQueueData.mode === P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
                         tokenQueueData.decks?.player1?.map((tokenType) => (
-                            <Token tokenType={tokenType ?? undefined} clickFn={onTokenSelect} />
+                            <Token
+                                tokenType={tokenType ?? undefined}
+                                playerID={P_PlayerIDs.PLAYER_IDS_PLAYER1}
+                                clickFn={onTokenSelect}
+                            />
                         ))}
 
                     {tokenQueueData.mode != null && tokenQueueData.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED && (
-                        <Token tokenType={tokenQueueData.tokens?.player1 ?? undefined} />
+                        <Token
+                            tokenType={tokenQueueData.tokens?.player1 ?? undefined}
+                            playerID={P_PlayerIDs.PLAYER_IDS_PLAYER1}
+                        />
                     )}
                 </div>
             </div>
@@ -34,11 +45,18 @@ export default function TokenView({
                 <div className="flex flex-row gap-3">
                     {tokenQueueData.mode === P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
                         tokenQueueData.decks?.player2?.map((tokenType) => (
-                            <Token tokenType={tokenType ?? undefined} clickFn={onTokenSelect} />
+                            <Token
+                                tokenType={tokenType ?? undefined}
+                                playerID={P_PlayerIDs.PLAYER_IDS_PLAYER2}
+                                clickFn={onTokenSelect}
+                            />
                         ))}
 
                     {tokenQueueData.mode != null && tokenQueueData.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED && (
-                        <Token tokenType={tokenQueueData.tokens?.player2 ?? undefined} />
+                        <Token
+                            tokenType={tokenQueueData.tokens?.player2 ?? undefined}
+                            playerID={P_PlayerIDs.PLAYER_IDS_PLAYER2}
+                        />
                     )}
                 </div>
             </div>
@@ -46,12 +64,22 @@ export default function TokenView({
     );
 }
 
-function Token({ tokenType, clickFn }: { tokenType?: TTokenTypes; clickFn?: (tokenType: TTokenTypes) => void }) {
+function Token({
+    tokenType,
+    playerID,
+    clickFn,
+}: {
+    tokenType?: TTokenTypes;
+    playerID: TPlayerIDs;
+    clickFn?: (tokenType: TTokenTypes) => void;
+}) {
     if (!tokenType) return <p></p>;
+
+    const img = tokenImageMap.get(tokenType)?.get(playerID);
 
     return (
         <button className={clickFn && 'cursor-pointer'} onClick={() => clickFn && clickFn(tokenType)}>
-            <p>{tokenType.toString()}</p>
+            {img ? <img src={img} className="w-8 h-8" alt="" /> : <p>{tokenType.toString()}</p>}
         </button>
     );
 }

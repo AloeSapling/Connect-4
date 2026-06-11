@@ -141,7 +141,7 @@ export default abstract class Token {
      * */
     addToChangeTilesList(gameBoard: GameBoard, action: TChangeTokenActions) {
         const thisCoordinate: Coordinate = [this.column, this.row];
-        if (gameBoard.changeTilesList.findIndex((val) => val.tileCoord === thisCoordinate) === -1) {
+        if (gameBoard.changeTilesList.findIndex((val) => val.tileCoord[0] === thisCoordinate[0] && val.tileCoord[1] === thisCoordinate[1]) === -1) {
             gameBoard.changeTilesList.push({
                 action: action,
                 tileCoord: thisCoordinate,
@@ -327,7 +327,7 @@ export default abstract class Token {
 
     removeSelfFromLineObj(gameBoard: GameBoard, line: TLines) {
         const lineObjIdx: number | null = this.lines[line];
-        if (!lineObjIdx) return;
+        if (lineObjIdx === null) return;
 
         const lineObj = gameBoard.lines[lineObjIdx];
         if (!lineObj) return;

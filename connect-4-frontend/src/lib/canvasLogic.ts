@@ -62,6 +62,42 @@ type ColumnIndicator = {
     column: number;
 };
 
+export const tokenImageMap: Map<
+    types.TTokenTypes,
+    Map<types.TPlayerIDs, string>
+> = new Map([
+    [types.P_TokenTypes.TOKEN_TYPES_STANDARD, new Map<types.TPlayerIDs, string>([
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, TokenP1],
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, TokenP2],
+    ])],
+    [types.P_TokenTypes.TOKEN_TYPES_AURA, new Map([
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, TokenAuraP1],
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, TokenAuraP2],
+    ])],
+    [types.P_TokenTypes.TOKEN_TYPES_NEGATIVE, new Map([
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, TokenNegativeP1],
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, TokenNegativeP2],
+    ])],
+    [types.P_TokenTypes.TOKEN_TYPES_REVERSE, new Map([
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, TokenReverseP1],
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, TokenReverseP2],
+    ])],
+    [types.P_TokenTypes.TOKEN_TYPES_FREEZE, new Map([
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, TokenFreezeP1],
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, TokenFreezeP2],
+    ])],
+    [types.P_TokenTypes.TOKEN_TYPES_BOMB, new Map([
+        [types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED, TokenBomb],
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, TokenBomb],
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, TokenBomb],
+    ])],
+    [types.P_TokenTypes.TOKEN_TYPES_BURN, new Map([
+        [types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED, TokenBurn],
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, TokenBurn],
+        [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, TokenBurn],
+    ])],
+]);
+
 class GameCanvas {
     private readonly canvas: HTMLCanvasElement;
     private readonly ctx: CanvasRenderingContext2D;
