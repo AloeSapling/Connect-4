@@ -1,4 +1,4 @@
-import { BOARD_START_HEIGHT, BOARD_START_WIDTH, BOARD_SLOT_DISTANCE, GAME_ROWS, GAME_COLUMNS, TOKEN_GRAVITY_REVERSE, TOKEN_GRAVITY_NORMAL, ANIMATION_EXPLOSION_FPS, ANIMATION_EXPLOSION_FRAMES, FPS, STEP } from './config.js';
+import { BOARD_START_HEIGHT, BOARD_START_WIDTH, BOARD_SLOT_DISTANCE, GAME_ROWS, GAME_COLUMNS, TOKEN_GRAVITY_REVERSE, TOKEN_GRAVITY_NORMAL, ANIMATION_DEFAULT_FPS, ANIMATION_EXPLOSION_FRAMES, ANIMATION_INCINERATION_FRAMES, FPS, STEP } from './config.js';
 import * as types from '@/lib/types.js';
 import * as proto from './proto.js';
 
@@ -23,6 +23,7 @@ import TokenBurn from '@/assets/board_token_burn.png';
 
 import FrozenOverlay from '@/assets/board_frozen.png';
 import ExplosionSheet from '@/assets/board_token_bomb_explosion.png';
+import IncinerationSheet from '@/assets/board_token_burn_incinerate.png';
 
 type FallingToken = {
     column: number;
@@ -88,7 +89,9 @@ class GameCanvas {
     private tokenBurn = new Image();
 
     private frozenOverlay = new Image();
+
     private explosionSheet = new Image();
+    private incinerationSheet = new Image();
 
     public constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
         this.canvas = canvas;
@@ -115,6 +118,7 @@ class GameCanvas {
 
         this.frozenOverlay.src = FrozenOverlay;
         this.explosionSheet.src = ExplosionSheet;
+        this.incinerationSheet.src = IncinerationSheet;
     }
 
     // Map of token sources used for token rendering
@@ -256,7 +260,7 @@ class GameCanvas {
                         totalFrames: ANIMATION_EXPLOSION_FRAMES,
                         currentFrame: 0,
 
-                        FPS: Math.floor(FPS / ANIMATION_EXPLOSION_FPS),
+                        FPS: Math.floor(FPS / ANIMATION_DEFAULT_FPS),
                         FPSStep: 0,
                     });
                 }
