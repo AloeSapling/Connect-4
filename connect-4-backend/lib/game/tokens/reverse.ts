@@ -23,7 +23,23 @@ export class ReverseToken extends Token {
             const token = tokenRow![newColumn];
             if (!token) continue;
 
+            const tempCol = token.column;
+            const tempRow = token.row;
+
             token.move(gameBoard, i + 1, this.column);
+
+            gameBoard.fallingTokens.push({
+                fromCol: tempCol,
+                fromRow: tempRow,
+                tile: {
+                    row: token.row,
+                    column: token.column,
+                    token: {
+                        playerId: token.playerID,
+                        tokenType: token.type,
+                    },
+                },
+            });
         }
 
         // Place at the bottom
@@ -32,5 +48,5 @@ export class ReverseToken extends Token {
         return [newColumn, 0];
     }
 
-    tickTurn() { }
+    tickTurn() {}
 }

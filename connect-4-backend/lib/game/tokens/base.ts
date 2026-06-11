@@ -1,7 +1,23 @@
-import { CodedError, P_ErrorCodes, P_PlayerIDs, P_TokenTypes, type TChangeTokenActions, type TPlayerIDs, type TTokenTypes } from '../../types.ts';
+import {
+    CodedError,
+    P_ErrorCodes,
+    P_PlayerIDs,
+    P_TokenTypes,
+    type TChangeTokenActions,
+    type TPlayerIDs,
+    type TTokenTypes,
+} from '../../types.ts';
 import type { GameBoard } from '../gameBoard.ts';
 import { LineObj } from '../lineObj.ts';
-import { DirectionVectors, Lines, LineToDirections, type ChangeTile, type Coordinate, type TDirections, type TLines } from '../types.ts';
+import {
+    DirectionVectors,
+    Lines,
+    LineToDirections,
+    type ChangeTile,
+    type Coordinate,
+    type TDirections,
+    type TLines,
+} from '../types.ts';
 
 export default abstract class Token {
     // ** Static properties and methods
@@ -14,13 +30,6 @@ export default abstract class Token {
 
     static getPrototype(type: number): object | undefined {
         return Token.prototypeMap[type];
-    }
-
-    /** List of indexes of tokens that caused a change in the board that requires the frontend's attention */
-    static changeTilesList: ChangeTile[] = [];
-
-    static resetChangeTilesList() {
-        Token.changeTilesList = [];
     }
 
     static removeFromActiveInstances(instances: Coordinate[], col: number, row: number): Coordinate[] {
@@ -105,23 +114,38 @@ export default abstract class Token {
             if (!token) continue;
 
             if (token.type !== P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) {
+                const tempCol = token.column;
+                const tempRow = token.row;
+
                 token.move(gameBoard, lowestNonEmptyRow + offset, column);
                 offset++;
+
+                gameBoard.fallingTokens.push({
+                    fromCol: tempCol,
+                    fromRow: tempRow,
+                    tile: {
+                        row: token.row,
+                        column: token.column,
+                        token: {
+                            playerId: token.playerID,
+                            tokenType: token.type,
+                        },
+                    },
+                });
             }
         }
     }
-
 
     /** Adds this token to the list of tiles that caused some kind of change at the end of the round
      *
      * Only adds it to the list if the list doesn't include it already
      * */
-    addToChangeTilesList(action: TChangeTokenActions) {
+    addToChangeTilesList(gameBoard: GameBoard, action: TChangeTokenActions) {
         const thisCoordinate: Coordinate = [this.column, this.row];
-        if (Token.changeTilesList.findIndex((val) => val.tileCoord === thisCoordinate) === -1) {
-            Token.changeTilesList.push({
+        if (gameBoard.changeTilesList.findIndex((val) => val.tileCoord === thisCoordinate) === -1) {
+            gameBoard.changeTilesList.push({
                 action: action,
-                tileCoord: thisCoordinate
+                tileCoord: thisCoordinate,
             });
         }
     }
@@ -151,19 +175,19 @@ export default abstract class Token {
     remove(gameBoard: GameBoard): void {
         // Replace this token with an empty one
         const emptyToken = new EmptyToken();
-        emptyToken.place(gameBoard, this.row, this.column)
+        emptyToken.place(gameBoard, this.row, this.column);
 
         // Unset this token's position
         this.row = -1;
         this.column = -1;
-    };
+    }
 
     /** The function called whenever a turn ends */
     abstract tickTurn(gameBoard: GameBoard): void;
 
-    /** The function called whenever the token is placed in a new position 
-    *@returns the coordinate where this token ended up being placed
-    * */
+    /** The function called whenever the token is placed in a new position
+     *@returns the coordinate where this token ended up being placed
+     * */
     place(gameBoard: GameBoard, newRow: number, newColumn: number): Coordinate {
         // Validation
         if (newRow < 0 || newRow >= gameBoard.tokens.length) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
@@ -194,16 +218,15 @@ export default abstract class Token {
         Object.values(this.lines).forEach((val) => {
             if (val !== null) {
                 if (val >= 0 && val < gameBoard.lines.length) {
-
                     const line = gameBoard.lines[val];
 
                     if (line) {
-                        line.lineChanged();
+                        line.lineChanged(gameBoard);
                         line.shouldRecalculate = true;
                     }
                 }
             }
-        })
+        });
     }
 
     removeCountEffect(gameBoard: GameBoard, countEffect: string) {
@@ -212,17 +235,15 @@ export default abstract class Token {
         Object.values(this.lines).forEach((val) => {
             if (val !== null) {
                 if (val >= 0 && val < gameBoard.lines.length) {
-
                     const line = gameBoard.lines[val];
 
                     if (line) {
-                        line.lineChanged();
+                        line.lineChanged(gameBoard);
                         line.shouldRecalculate = true;
                     }
                 }
             }
-        })
-
+        });
     }
 
     getCountEffects(): Record<string, number> {
@@ -363,6 +384,6 @@ export class EmptyToken extends Token {
         Token.register(P_TokenTypes.TOKEN_TYPES_UNSPECIFIED, EmptyToken.prototype);
     }
 
-    remove() { }
-    tickTurn() { }
+    remove() {}
+    tickTurn() {}
 }

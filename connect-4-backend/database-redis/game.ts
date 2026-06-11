@@ -8,10 +8,6 @@ import { getNextPlayer } from '../lib/game/lib.ts';
 import type { GameData } from '../lib/game/types.ts';
 import { GameBoard } from '../lib/game/gameBoard.ts';
 import { TokenFactory } from '../lib/game/tokens/tokenFactory.ts';
-import { NegativeToken } from '../lib/game/tokens/negative.ts';
-import { AuraToken } from '../lib/game/tokens/aura.ts';
-import { BurnToken } from '../lib/game/tokens/burn.ts';
-import { FreezeToken } from '../lib/game/tokens/freeze.ts';
 import { createNextTokenQueueObj, getTokenForFullRandom, getTokensForDeck } from '../lib/game/tokenQueue.ts';
 
 /** The list of tokens used to instantiate the initial game board */
@@ -160,14 +156,39 @@ export async function getGameData(lobbyCode: string): Promise<GameData> {
     }
 }
 
-/** Performs all the actions that happen whenever a turn ends */
+/** Saves the game's full state to redis */
+export async function saveGameData(lobbyCode: string, gameBoard: GameBoard, nextTurn: TPlayerIDs, tokenQueueData?: TokenQueueData) {
+    const transaction = redis.multi();
+
+    try {
+        transaction.set(`GameData_${lobbyCode}:board`, JSON.stringify(gameBoard));
+    } catch {
+        throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
+    }
+
+    transaction.set(`GameData_${lobbyCode}:turn`, nextTurn);
+
+    const turnTime = Number(await redis.get(`GameData_${lobbyCode}:turnTime`));
+    transaction.set(`GameData_${lobbyCode}:turnTime`, turnTime || 0, {
+        EX: turnTime || 0,
+    });
+
+    if (tokenQueueData) {
+        transaction.set(`GameData_${lobbyCode}:tokenQueue`, JSON.stringify(tokenQueueData));
+    }
+
+    if (transaction.exec() === null) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_LOCKED);
+}
+
+/** Performs the tick-turn effects when a turn ends */
 async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPlayerIDs, tokenQueueData?: TokenQueueData) {
     // ** Game board updates
 
     /** A list of tokens that have an effect triggered every time the round ends
      * The list is comprised in the order that the effects are meant to trigger
      * */
-    const tokenIndexesWithTurnTick = [FreezeToken.activeInstanceIndexes, BurnToken.activeInstanceIndexes, NegativeToken.activeInstanceIndexes, AuraToken.activeInstanceIndexes];
+    const tokenTypesWithTurnTick = [P_TokenTypes.TOKEN_TYPES_BOMB, P_TokenTypes.TOKEN_TYPES_FREEZE, P_TokenTypes.TOKEN_TYPES_BURN, P_TokenTypes.TOKEN_TYPES_NEGATIVE, P_TokenTypes.TOKEN_TYPES_AURA];
+    const tokenIndexesWithTurnTick = tokenTypesWithTurnTick.map((type) => gameBoard.activeInstances[type] ?? []);
 
     tokenIndexesWithTurnTick.forEach((instanceIndexes) => {
         const sortedCoords = Token.sortTokensSequentially(instanceIndexes);
@@ -185,38 +206,11 @@ async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPl
 
     // **
 
-    /// ** Redis database update
+    const nextTokenQueueData = tokenQueueData
+        ? createNextTokenQueueObj(tokenQueueData, tokenQueueData.turn ? tokenQueueData.turn + 1 : undefined)
+        : undefined;
 
-    // Use a transaction with .exec() to handle locking redis entries
-    const transaction = redis.multi();
-
-    try {
-        transaction.set(`GameData_${lobbyCode}:board`, JSON.stringify(gameBoard));
-    } catch {
-        throw new CodedError(P_ErrorCodes.ERROR_CODES_SERVER_ERROR);
-    }
-
-    // Set the next player's turn
-    // Sets it to the next playerID in the list of playerIDs. The fallback if something goes wrong is the first element
-    transaction.set(`GameData_${lobbyCode}:turn`, getNextPlayer(currentTurn));
-
-    // Reset the game's expiry timer
-    const turnTime = Number(await redis.get(`GameData_${lobbyCode}:turnTime`)); // The time for each turn is stored inside of the entry
-    transaction.set(`GameData_${lobbyCode}:turnTime`, turnTime || 0, {
-        EX: turnTime || 0,
-    });
-
-    if (tokenQueueData) {
-        transaction.set(`GameData_${lobbyCode}:tokenQueue`, JSON.stringify(
-            createNextTokenQueueObj(
-                tokenQueueData,
-                tokenQueueData.turn ? tokenQueueData.turn + 1 : undefined
-            )))
-    }
-
-    if (transaction.exec() === null) throw new CodedError(P_ErrorCodes.ERROR_CODES_GAME_LOCKED);
-
-    /// **
+    await saveGameData(lobbyCode, gameBoard, getNextPlayer(currentTurn), nextTokenQueueData);
 }
 
 /** Takes in the selected column and calculates the game's state after inserting a token in that column.
@@ -303,9 +297,9 @@ export async function insertToken(
                 if (tokenQueueData.tokens[playerID] !== tokenType) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_TOKEN);
             }
 
-            token = TokenFactory.createToken(tokenType, playerID);
+            token = TokenFactory.createToken(tokenType, playerID, boardData);
         } else {
-            token = TokenFactory.createToken(P_TokenTypes.TOKEN_TYPES_STANDARD, playerID);
+            token = TokenFactory.createToken(P_TokenTypes.TOKEN_TYPES_STANDARD, playerID, boardData);
         }
 
         const tokenCoord = token.place(boardData, i, column);

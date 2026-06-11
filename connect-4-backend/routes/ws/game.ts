@@ -146,30 +146,37 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                         // Format the game's board to be sent to the client
                         const protoBoard = boardDataToProtobufBoard(gameData.board);
 
+                        const fallingTokens = gameData.board.fallingTokens;
+                        const deletedTiles = gameData.board.deletedTiles;
+
                         // Get the tokens that caused a change that requires frontend attention and convert them to the appropriate format
-                        const tmpCoords = Token.changeTilesList.map((val) => val.tileCoord);
+                        const tmpCoords = gameData.board.changeTilesList.map((val) => val.tileCoord);
                         const tmpTiles = coordinatesToProtoTiles(gameData.board, tmpCoords);
 
                         const protoChangeTiles = tmpTiles.map((val, idx) => ({
-                            action: Token.changeTilesList[idx]?.action || P_ChangeTokenActions.CHANGE_TOKEN_ACTIONS_UNSPECIFIED,
+                            action: gameData.board.changeTilesList[idx]?.action || P_ChangeTokenActions.CHANGE_TOKEN_ACTIONS_UNSPECIFIED,
                             tile: val,
-                        }))
+                        }));
 
-                        Token.resetChangeTilesList();
+                        gameData.board.resetChangeTilesList();
+                        gameData.board.deletedTiles = [];
 
                         // Check for wins and draws
                         const gameState = checkGameState(gameData.board);
 
-                        const currentTokens = gameData.tokenQueue?.tokens ? {
-                            player1: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? null,
-                            player2: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? null,
-                        } : null;
+                        const currentTokens = gameData.tokenQueue?.tokens
+                            ? {
+                                  player1: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? null,
+                                  player2: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? null,
+                              }
+                            : null;
 
-                        const decks = gameData.tokenQueue?.decks ? {
-                            player1: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? [],
-                            player2: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? [],
-                        } : null;
-
+                        const decks = gameData.tokenQueue?.decks
+                            ? {
+                                  player1: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? [],
+                                  player2: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? [],
+                              }
+                            : null;
 
                         // Handle a win
                         if (gameState.state === 'WIN' && gameState.winner) {
@@ -198,6 +205,8 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                         changeTiles: protoChangeTiles,
                                         currentTokens: currentTokens,
                                         decks: decks,
+                                        fallingTokens: fallingTokens,
+                                        deletedTiles: deletedTiles,
                                     },
                                 })
                             );
@@ -227,11 +236,15 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                         changeTiles: protoChangeTiles,
                                         currentTokens: currentTokens,
                                         decks: decks,
+                                        fallingTokens: fallingTokens,
+                                        deletedTiles: deletedTiles,
                                     },
                                 })
                             );
                             break;
                         }
+
+                        await gameRedis.saveGameData(lobbyCode, gameData.board, gameData.turn, gameData.tokenQueue ?? undefined);
 
                         broadcastToRoom(
                             rooms[lobbyCode],
@@ -251,6 +264,8 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                     changeTiles: protoChangeTiles,
                                     currentTokens: currentTokens,
                                     decks: decks,
+                                    fallingTokens: fallingTokens,
+                                    deletedTiles: deletedTiles,
                                 },
                             })
                         );
@@ -280,15 +295,19 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
 
                         const protoBoard = boardDataToProtobufBoard(gameData.board);
 
-                        const currentTokens = gameData.tokenQueue?.tokens ? {
-                            player1: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? null,
-                            player2: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? null,
-                        } : null;
+                        const currentTokens = gameData.tokenQueue?.tokens
+                            ? {
+                                  player1: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? null,
+                                  player2: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? null,
+                              }
+                            : null;
 
-                        const decks = gameData.tokenQueue?.decks ? {
-                            player1: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? [],
-                            player2: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? [],
-                        } : null;
+                        const decks = gameData.tokenQueue?.decks
+                            ? {
+                                  player1: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? [],
+                                  player2: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? [],
+                              }
+                            : null;
 
                         broadcastToRoom(
                             rooms[lobbyCode],
