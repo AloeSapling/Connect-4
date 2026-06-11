@@ -138,9 +138,7 @@ addRouteWithMethods(
 
             broadcastToLobbyRoom(code, {
                 response: ws.LobbyResponses.LOBBY_RESPONSES_SETTINGS_CHANGED,
-                settings: {
-                    turnTime: settings.turnTime || -1,
-                },
+                settings: settings,
             });
         } catch {
             res.status(500).send(

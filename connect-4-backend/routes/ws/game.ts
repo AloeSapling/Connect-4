@@ -8,6 +8,7 @@ import {
     P_CodedError,
     P_ErrorCodes,
     type WsArgs,
+    P_PlayerIDs,
     P_ChangeTokenActions,
 } from '../../lib/types.ts';
 import { getPartialUserDataByPlayerID, getPlayerID } from '../../database-sqllite/lobbyMembers.ts';
@@ -159,6 +160,17 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                         // Check for wins and draws
                         const gameState = checkGameState(gameData.board);
 
+                        const currentTokens = gameData.tokenQueue?.tokens ? {
+                            player1: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? null,
+                            player2: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? null,
+                        } : null;
+
+                        const decks = gameData.tokenQueue?.decks ? {
+                            player1: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? [],
+                            player2: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? [],
+                        } : null;
+
+
                         // Handle a win
                         if (gameState.state === 'WIN' && gameState.winner) {
                             await gameRedis.endGame(lobbyCode);
@@ -184,6 +196,8 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                         loser: loserData,
                                         board: protoBoard,
                                         changeTiles: protoChangeTiles,
+                                        currentTokens: currentTokens,
+                                        decks: decks,
                                     },
                                 })
                             );
@@ -211,6 +225,8 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                         },
                                         board: protoBoard,
                                         changeTiles: protoChangeTiles,
+                                        currentTokens: currentTokens,
+                                        decks: decks,
                                     },
                                 })
                             );
@@ -233,6 +249,8 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                     board: protoBoard,
                                     turn: gameData.turn,
                                     changeTiles: protoChangeTiles,
+                                    currentTokens: currentTokens,
+                                    decks: decks,
                                 },
                             })
                         );
@@ -262,6 +280,16 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
 
                         const protoBoard = boardDataToProtobufBoard(gameData.board);
 
+                        const currentTokens = gameData.tokenQueue?.tokens ? {
+                            player1: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? null,
+                            player2: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? null,
+                        } : null;
+
+                        const decks = gameData.tokenQueue?.decks ? {
+                            player1: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? [],
+                            player2: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? [],
+                        } : null;
+
                         broadcastToRoom(
                             rooms[lobbyCode],
                             wsEncode({
@@ -271,6 +299,8 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                     winner: winner,
                                     loser: loser,
                                     board: protoBoard,
+                                    currentTokens: currentTokens,
+                                    decks: decks,
                                 },
                             })
                         );

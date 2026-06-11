@@ -7,6 +7,8 @@ export const GAME_WIN_COUNT = 4 as const; // Amount of consecutive tiles needed 
 export const DEFAULT_TURN_TIME = 300 as const; // 5 minutes (60 seconds * 5)
 
 export const TOKEN_FREEZE_TURNS = 4 as const; // The amount of turns before a column frozen by the freeze token
+export const SPECIAL_TOKEN_CHANCE = 5 as const; // The chance that a special token gets chosen over the regular token
+export const TOKEN_DECK_LENGTH = 3 as const; // The amount of tokens in a player's deck at any point in time
 
 export const LOBBY_KEEP_ALIVE_TIME = 60 as const; // 1 minute (60 seconds)
 

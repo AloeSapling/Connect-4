@@ -3,6 +3,7 @@ syntax = "proto3";
 package ws;
 
 import "models/user.proto";
+import "models/tokens.proto";
 import "shared/shared.proto";
 
 // Request / client packets
@@ -43,6 +44,8 @@ message GameMove {
   shared.GameBoard board = 2;
   shared.PlayerIDs turn = 3;
   repeated ChangeTile changeTiles = 4;
+  optional models.CurrentTokens current_tokens = 5;
+  optional models.Decks decks = 6;
 }
 
 message ChangeTile {
@@ -57,6 +60,8 @@ message GameEnd {
   optional models.PartialUser loser = 4;
   shared.GameBoard board = 5;
   repeated ChangeTile changeTiles = 6;
+  optional models.CurrentTokens current_tokens = 7;
+  optional models.Decks decks = 8;
 }
 
 enum GameResponses {

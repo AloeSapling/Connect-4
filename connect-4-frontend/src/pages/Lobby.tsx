@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getLobbyDetails } from '@/lib/api';
+import { changeLobbySettings, getLobbyDetails } from '@/lib/api';
 import { UserContext, langContext } from '@/lib/contexts';
 import { leaveLobby, createGame } from '@/lib/api';
 import { LobbyWebSocket } from '@/lib/websockets';
@@ -35,15 +35,15 @@ function Lobby() {
     }, [queryData]);
 
     useEffect(() => {
-            if (!error) return;
-    
-            const err = error as any;
-    
-            if (err.code === types.P_ErrorCodes.ERROR_CODES_UNAUTHORISED ||
-                err.code === types.P_ErrorCodes.ERROR_CODES_DOESNT_EXIST ) {
-                navigate(`/lobbylist`);
-            }
-        }, [error, navigate]);
+        if (!error) return;
+
+        const err = error as any;
+
+        if (err.code === types.P_ErrorCodes.ERROR_CODES_UNAUTHORISED ||
+            err.code === types.P_ErrorCodes.ERROR_CODES_DOESNT_EXIST) {
+            navigate(`/lobbylist`);
+        }
+    }, [error, navigate]);
 
     useEffect(() => {
         if (!lobbyCode) return;
