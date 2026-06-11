@@ -1,13 +1,10 @@
 import type { ReactNode } from "react";
-import gameBackground from "../assets/game_background.png";
 
 const Menu: React.FC<{
     children: ReactNode;
 }> = ({ children }) => {
     return (
-        <div className="my-0 mx-[10vw] w-[80vw] h-[45vw] relative bg-cover bg-center bg-no-repeat border-solid border-3 border-black"
-            style={{ backgroundImage: `url(${gameBackground})` }}
-        >
+        <div className="relative w-full flex-1 flex flex-col justify-center items-center overflow-y-auto">
             {children}
         </div>
     );

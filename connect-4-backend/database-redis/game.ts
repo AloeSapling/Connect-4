@@ -204,6 +204,13 @@ async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPl
         }
     });
 
+    // ** Clear transient data before saving to Redis so it doesn't accumulate
+
+    gameBoard.resetFallingTokens();
+    gameBoard.deletedTiles = [];
+    gameBoard.resetChangeTilesList();
+    gameBoard.resetChangedLines();
+
     // **
 
     const nextTokenQueueData = tokenQueueData
@@ -211,14 +218,22 @@ async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPl
         : undefined;
 
     await saveGameData(lobbyCode, gameBoard, getNextPlayer(currentTurn), nextTokenQueueData);
+
+    return nextTokenQueueData;
 }
+
+export type InsertTokenResult = {
+    row: number;
+    board: GameBoard;
+    tokenQueue: TokenQueueData | undefined;
+};
 
 /** Takes in the selected column and calculates the game's state after inserting a token in that column.
  *
  * Automatically calculates which cell it will fall into
  * @param playerID - The identifier of the player who performed the move
  * @param tokenType - The type of token inserted into the column
- * @returns The row where the tile ended up
+ * @returns The row, game board, and token queue data
  * @throws Error code "BadData" if the column provided is invalid
  * @throws Error code "BadTurn" if it's not this player's turn
  * @throws Error code "GameExpired" if there was an error getting the game's state
@@ -230,7 +245,7 @@ export async function insertToken(
     column: number,
     playerID: TPlayerIDs,
     tokenType?: TTokenTypes
-): Promise<number> {
+): Promise<InsertTokenResult> {
     if (column < 0 || column > GAME_COLUMNS - 1) throw new CodedError(P_ErrorCodes.ERROR_CODES_BAD_DATA);
 
     const turnTime = await redis.get(`GameData_${lobbyCode}:turnTime`);
@@ -304,13 +319,26 @@ export async function insertToken(
 
         const tokenCoord = token.place(boardData, i, column);
 
-        console.log(token);
+        // ** Save transient data before endTurn clears it
 
-        // **
+        const fallingTokens = boardData.fallingTokens;
+        const deletedTiles = boardData.deletedTiles;
+        const changeTilesList = boardData.changeTilesList;
+        const changedLines = boardData.changedLines;
 
-        await endTurn(lobbyCode, boardData, playerID, tokenQueueData);
+        const nextTokenQueueData = await endTurn(lobbyCode, boardData, playerID, tokenQueueData);
 
-        return tokenCoord[1];
+        // Restore transient data so the caller can send it to the frontend
+        boardData.fallingTokens = fallingTokens;
+        boardData.deletedTiles = deletedTiles;
+        boardData.changeTilesList = changeTilesList;
+        boardData.changedLines = changedLines;
+
+        return {
+            row: tokenCoord[1],
+            board: boardData,
+            tokenQueue: nextTokenQueueData,
+        };
     } finally {
         // Unwatch to prevent the locking detection from leaking into the next request
         await redis.unwatch();

@@ -132,6 +132,14 @@ export async function getLobbies(): Promise<routes.GetLobbiesResponse> {
     return routes.GetLobbiesResponse.decode(new Uint8Array(response.data));
 }
 
+/** Tempbans a user from the lobby */
+export async function tempBanUser(lobbyCode: string, userId: number) {
+    await api.post<ArrayBuffer>(
+        `/lobby/${lobbyCode}/tempBanUser`,
+        routes.KickPlayerRequest.encode({ userId }).finish()
+    );
+}
+
 /** @returns The user data of the currently logged in user */
 export async function getLoggedInUserData(): Promise<routes.GetLoggedInData> {
     const response = await api.get<ArrayBuffer>('/user');

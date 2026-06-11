@@ -48,7 +48,7 @@ function Username() {
         <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="
-                bg-yellow-800
+                bg-yellow-800/80
                 text-white
                 text-center
                 justify-center
@@ -58,10 +58,8 @@ function Username() {
                 rounded-md
                 flex flex-col
                 gap-y-2
-                absolute w-[300px] md:w-[350px]
-                h-[150px] md:h-[200px]
-                top-[50%] left-[50%]
-                translate-x-[-50%] translate-y-[-50%]
+                w-11/12 max-w-md
+                p-6
             "
         >
             <FieldSet className="

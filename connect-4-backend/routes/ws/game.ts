@@ -111,7 +111,6 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
             if (!rooms[lobbyCode]) return;
 
             const packet = p_ws.GamePacket.decode(new Uint8Array(data as Buffer));
-            console.log(packet.toJSON());
 
             switch (packet.action) {
                 case p_ws.GameActions.GAME_ACTIONS_INSERT_TOKEN: {
@@ -139,43 +138,37 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                         const column = packet.insertToken.column;
                         const tokenType = packet.insertToken.tokenType;
 
-                        const row = await gameRedis.insertToken(lobbyCode, column, wsPlayerID, tokenType);
-
-                        const gameData = await gameRedis.getGameData(lobbyCode);
+                        const { row, board, tokenQueue } = await gameRedis.insertToken(lobbyCode, column, wsPlayerID, tokenType);
 
                         // Format the game's board to be sent to the client
-                        const protoBoard = boardDataToProtobufBoard(gameData.board);
+                        const protoBoard = boardDataToProtobufBoard(board);
 
-                        const fallingTokens = gameData.board.fallingTokens;
-                        const deletedTiles = gameData.board.deletedTiles;
+                        const fallingTokens = board.fallingTokens;
+                        const deletedTiles = board.deletedTiles;
 
                         // Get the tokens that caused a change that requires frontend attention and convert them to the appropriate format
-                        const tmpCoords = gameData.board.changeTilesList.map((val) => val.tileCoord);
-                        const tmpTiles = coordinatesToProtoTiles(gameData.board, tmpCoords);
+                        const tmpCoords = board.changeTilesList.map((val) => val.tileCoord);
+                        const tmpTiles = coordinatesToProtoTiles(board, tmpCoords);
 
                         const protoChangeTiles = tmpTiles.map((val, idx) => ({
-                            action: gameData.board.changeTilesList[idx]?.action || P_ChangeTokenActions.CHANGE_TOKEN_ACTIONS_UNSPECIFIED,
+                            action: board.changeTilesList[idx]?.action || P_ChangeTokenActions.CHANGE_TOKEN_ACTIONS_UNSPECIFIED,
                             tile: val,
                         }));
 
-                        gameData.board.resetChangeTilesList();
-                        gameData.board.deletedTiles = [];
-                        gameData.board.resetFallingTokens();
-
                         // Check for wins and draws
-                        const gameState = checkGameState(gameData.board);
+                        const gameState = checkGameState(board);
 
-                        const currentTokens = gameData.tokenQueue?.tokens
+                        const currentTokens = tokenQueue?.tokens
                             ? {
-                                  player1: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? null,
-                                  player2: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? null,
+                                  player1: tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? null,
+                                  player2: tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? null,
                               }
                             : null;
 
-                        const decks = gameData.tokenQueue?.decks
+                        const decks = tokenQueue?.decks
                             ? {
-                                  player1: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? [],
-                                  player2: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? [],
+                                  player1: tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? [],
+                                  player2: tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? [],
                               }
                             : null;
 
@@ -208,7 +201,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                         decks: decks,
                                         fallingTokens: fallingTokens,
                                         deletedTiles: deletedTiles,
-                                        frozenColumns: gameData.board.frozenColumns,
+                                        frozenColumns: board.frozenColumns,
                                     },
                                 })
                             );
@@ -240,14 +233,12 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                         decks: decks,
                                         fallingTokens: fallingTokens,
                                         deletedTiles: deletedTiles,
-                                        frozenColumns: gameData.board.frozenColumns,
+                                        frozenColumns: board.frozenColumns,
                                     },
                                 })
                             );
                             break;
                         }
-
-                        await gameRedis.saveGameData(lobbyCode, gameData.board, gameData.turn, gameData.tokenQueue ?? undefined);
 
                         broadcastToRoom(
                             rooms[lobbyCode],
@@ -263,13 +254,13 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                         },
                                     },
                                     board: protoBoard,
-                                    turn: gameData.turn,
+                                    turn: getNextPlayer(wsPlayerID),
                                     changeTiles: protoChangeTiles,
                                     currentTokens: currentTokens,
                                     decks: decks,
                                     fallingTokens: fallingTokens,
                                     deletedTiles: deletedTiles,
-                                    frozenColumns: gameData.board.frozenColumns,
+                                    frozenColumns: board.frozenColumns,
                                 },
                             })
                         );

@@ -98,7 +98,7 @@ function GameBoardCanvas({
     }
 
     return (
-        <>
+        <div className="relative w-full max-w-[1100px] aspect-video">
             {/* column buttons */}
             {userPlayerID !== P_PlayerIDs.PLAYER_IDS_UNSPECIFIED && (
                 <div className="absolute top-[4%] left-[27.3%] w-[45.85%] h-[80%] flex">
@@ -119,7 +119,7 @@ function GameBoardCanvas({
             <canvas ref={canvasRef} className="gameCanvas w-full h-full z-0">
                 Your browser does not support canvas. Sorry! :(
             </canvas>
-        </>
+        </div>
     );
 }
 

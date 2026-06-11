@@ -5,6 +5,7 @@ import {
     P_PlayerIDs,
     P_TokenQueueModes,
     P_TokenTypes,
+    type SelectedToken,
     type TPlayerIDs,
     type TTokenQueueData,
     type TTokenQueueModes,
@@ -40,6 +41,7 @@ export default function Game() {
 
     // Handle errors gracefully
     useEffect(() => {
+        console.log(error, lobbyCode);
         if (!error || !lobbyCode) return;
 
         const err = error as any;
@@ -66,7 +68,8 @@ export default function Game() {
         decks: queryData?.game?.decks,
         tokens: queryData?.game?.currentTokens,
     });
-    const [selectedToken, setSelectedToken] = useState<TTokenTypes>(P_TokenTypes.TOKEN_TYPES_STANDARD);
+    const [selectedToken, setSelectedToken] = useState<SelectedToken>({ type: P_TokenTypes.TOKEN_TYPES_UNSPECIFIED, key: '' });
+    const [currentTurnState, setCurrentTurnState] = useState<TPlayerIDs>(P_PlayerIDs.PLAYER_IDS_PLAYER1);
 
     // Ref variables
     const wsRef = useRef<GameWebSocket | null>(null);
@@ -79,11 +82,19 @@ export default function Game() {
         decks: queryData?.game?.decks,
         tokens: queryData?.game?.currentTokens,
     });
-    const selectedTokenRef = useRef<TTokenTypes>(P_TokenTypes.TOKEN_TYPES_STANDARD);
+    const selectedTokenRef = useRef<TTokenTypes>(P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+
+    const setTurn = useCallback(
+        (turn: TPlayerIDs) => {
+            currentTurn.current = turn;
+            setCurrentTurnState(turn);
+        },
+        [setCurrentTurnState]
+    );
 
     useEffect(() => {
         if (queryData?.game?.turn != null) {
-            currentTurn.current = queryData.game.turn;
+            setTurn(queryData.game.turn);
         }
     }, [queryData?.game?.turn]);
 
@@ -107,9 +118,9 @@ export default function Game() {
             tokenQueueData.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
         ) {
             if (userPlayerID === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
-                setSelectedTokenType(tokenQueueData.tokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                setSelectedTokenType({ type: tokenQueueData.tokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED, key: '1' });
             } else if (userPlayerID === P_PlayerIDs.PLAYER_IDS_PLAYER2) {
-                setSelectedTokenType(tokenQueueData.tokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                setSelectedTokenType({ type: tokenQueueData.tokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED, key: '2' });
             }
         }
     }, [userPlayerID, tokenQueueData]);
@@ -126,9 +137,9 @@ export default function Game() {
         [setResults]
     );
     const setSelectedTokenType = useCallback(
-        (type: TTokenTypes) => {
-            setSelectedToken(type);
-            selectedTokenRef.current = type;
+        (info: SelectedToken) => {
+            setSelectedToken(info);
+            selectedTokenRef.current = info.type;
         },
         [setSelectedToken]
     );
@@ -158,6 +169,7 @@ export default function Game() {
             setGameResults,
             setTokenQueueDataObject,
             setSelectedToken,
+            setTurn,
             texts
         );
 
@@ -180,7 +192,7 @@ export default function Game() {
 
     const leaveLobbyButton = () => leaveLobby_m.mutate(lobbyCode!);
 
-    const backToLobbyButton = () => navigate(`/lobby/${lobbyCode}`);
+    const backToLobbyButton = () => navigate(`/lobby/${lobbyCode}`, { state: { fromGame: true } });
 
     const forfeitGameButton = () => wsRef.current?.forfeit();
 
@@ -200,26 +212,33 @@ export default function Game() {
                 selectedTokenRef={selectedTokenRef}
             />
             <div className="flex flex-row justify-evenly items-center p-5 gap-8 rounded-lg mt-2 bg-yellow-800">
-                {userPlayerID !== P_PlayerIDs.PLAYER_IDS_UNSPECIFIED ? (
-                    <>
-                        {results === '' && (
-                            <Button
-                                className="bg-amber-900 hover:bg-amber-950 w-45 h-[60%] text-2xl rounded-lg p-2 font-semibold cursor-pointer z-20"
-                                onClick={forfeitGameButton}
-                            >
-                                {texts.forfeitButton}
-                            </Button>
-                        )}
-                    </>
-                ) : (
-                    <Button
-                        className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20"
-                        onClick={leaveLobbyButton}
-                    >
-                        {texts.resultsLeaveButton}
-                    </Button>
-                )}
-                <TokenView tokenQueueData={tokenQueueData} playerID={userPlayerID} onTokenSelect={setSelectedTokenType} />
+                <div className="flex flex-col items-center gap-5">
+                    {userPlayerID !== P_PlayerIDs.PLAYER_IDS_UNSPECIFIED ? (
+                        <Button
+                            className="bg-amber-900 hover:bg-amber-950 w-45 h-[60%] text-2xl rounded-lg p-2 font-semibold cursor-pointer z-20"
+                            onClick={forfeitGameButton}
+                            disabled={results !== ''}
+                        >
+                            {texts.forfeitButton}
+                        </Button>
+                    ) : (
+                        <Button
+                            className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer z-20"
+                            onClick={leaveLobbyButton}
+                        >
+                            {texts.resultsLeaveButton}
+                        </Button>
+                    )}
+                    <p className="text-white text-xl font-semibold italic">
+                        {currentTurnState === P_PlayerIDs.PLAYER_IDS_PLAYER1 ? "Player 1's Turn" : "Player 2's Turn"}
+                    </p>
+                </div>
+                <TokenView
+                    tokenQueueData={tokenQueueData}
+                    playerID={userPlayerID}
+                    selectedToken={selectedToken}
+                    onTokenSelect={setSelectedTokenType}
+                />
             </div>
 
             {/* Results dialog */}
@@ -294,6 +313,7 @@ function setUpGameWebsocket(
     setGameResults: (res: string) => void,
     setTokenQueueDataObject: (tokenQueueData: TTokenQueueData) => void,
     setSelectedTokenType: (type: TTokenTypes) => void,
+    setTurn: (turn: TPlayerIDs) => void,
     texts: PageTexts['game']
 ) {
     GameWebSocket.create(lobbyCode, (packet) => {
@@ -329,7 +349,7 @@ function setUpGameWebsocket(
                 console.log(packet.toJSON());
                 if (!packet.move?.turn) return;
 
-                currentTurn.current = packet.move?.turn; // temp
+                if (packet.move.turn) setTurn(packet.move.turn);
 
                 console.log(userPlayerID.current);
                 // if (packet.move.turn === userPlayerID.current) setCanMove(true);
@@ -356,9 +376,15 @@ function setUpGameWebsocket(
                     tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
                 ) {
                     if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
-                        setSelectedTokenType(packet.move.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                        setSelectedTokenType({
+                            type: packet.move.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED,
+                            key: '1',
+                        });
                     } else if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER2) {
-                        setSelectedTokenType(packet.move.currentTokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                        setSelectedTokenType({
+                            type: packet.move.currentTokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED,
+                            key: '2',
+                        });
                     }
                 }
 
@@ -389,9 +415,15 @@ function setUpGameWebsocket(
                     tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
                 ) {
                     if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
-                        setSelectedTokenType(packet.end.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                        setSelectedTokenType({
+                            type: packet.end.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED,
+                            key: '1',
+                        });
                     } else if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER2) {
-                        setSelectedTokenType(packet.end.currentTokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                        setSelectedTokenType({
+                            type: packet.end.currentTokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED,
+                            key: '2',
+                        });
                     }
                 }
 

@@ -86,8 +86,6 @@ export class FreezeToken extends Token {
     tickTurn(gameBoard: GameBoard) {
         if (this.turnsUntilUnfreeze < 0) return;
 
-        console.log(this.turnsUntilUnfreeze);
-
         if (this.turnsUntilUnfreeze === 0) {
             this.unfreezeAllTokens(gameBoard);
         }

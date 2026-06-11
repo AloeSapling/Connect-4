@@ -321,11 +321,16 @@ class GameCanvas {
                 
                 if (token.deletedTiles !== undefined) {
                     token.deletedTiles.forEach(tile => {
+                        const row = tile.tile?.row;
+                        const col = tile.tile?.column;
+                        if (row == null || col == null) return;
+                        if (row < 0 || row >= GAME_ROWS || col < 0 || col >= GAME_COLUMNS) return;
+
                         if (tile.action === proto.models.ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP ||
                             tile.action === proto.models.ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_DESTROY) {
                             this.spriteSheetAnims.push({
-                                x: BOARD_START_WIDTH + (tile.tile?.column! * BOARD_SLOT_DISTANCE),
-                                y: BOARD_START_HEIGHT + (tile.tile?.row! * BOARD_SLOT_DISTANCE),
+                                x: BOARD_START_WIDTH + (col * BOARD_SLOT_DISTANCE),
+                                y: BOARD_START_HEIGHT + (row * BOARD_SLOT_DISTANCE),
 
                                 spritesheet: this.incinerationSheet,
                                 height: this.incinerationSheet.height,
@@ -338,7 +343,7 @@ class GameCanvas {
                                 FPSStep: 0,
                             });
                         }
-                        this.currentBoardState.rows![tile.tile?.row!].tokens![tile.tile?.column!] = {
+                        this.currentBoardState.rows![row].tokens![col] = {
                             playerId: types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
                             tokenType: types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
                         }

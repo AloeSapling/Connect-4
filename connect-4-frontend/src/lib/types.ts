@@ -27,6 +27,11 @@ export type ResponseError = {
     status: number;
 } & TCodedError;
 
+export type SelectedToken = {
+    type: TTokenTypes;
+    key: string;
+};
+
 export type TTokenQueueData = {
     mode: TTokenQueueModes | null | undefined;
     tokens: models.ICurrentTokens | null | undefined;

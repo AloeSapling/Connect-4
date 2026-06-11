@@ -1,32 +1,44 @@
-import { useNavigate } from "react-router-dom";
-import { joinLobby } from "@/lib/api";
+import { useNavigate } from 'react-router-dom';
+import { joinLobby } from '@/lib/api';
 import { langContext } from '@/lib/contexts';
-import { toast } from "sonner";
-import { useContext } from "react";
-import { useMutation } from "@tanstack/react-query";
-import * as proto from "../../lib/proto.js"
+import { toast } from 'sonner';
+import { useContext } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import * as proto from '../../lib/proto.js';
 
-export default function LobbyTable({ lobbyData, title }: { lobbyData: proto.models.ILobbyData[]; title: string }) {
+export default function LobbyTable({
+    lobbyData,
+    title,
+    navigateOnly,
+}: {
+    lobbyData: proto.models.ILobbyData[];
+    title: string;
+    navigateOnly?: boolean;
+}) {
     const navigate = useNavigate();
-    
+
     const joinLobby_m = useMutation({
         mutationFn: joinLobby,
         onSuccess: (_data, code) => {
             toast.success(`${texts.lobbyToast}`);
             navigate(`/lobby/${code}`);
         },
-        onError: (err) => toast.error(err.message)
+        onError: (err) => toast.error(err.message),
     });
 
-    const selectLobby = (code: string) => joinLobby_m.mutate(code);
+    const selectLobby = (code: string) => {
+        if (navigateOnly) {
+            navigate(`/lobby/${code}`);
+        } else {
+            joinLobby_m.mutate(code);
+        }
+    };
 
     const langCtx = useContext(langContext);
-        
-    if (!langCtx) return <p>Missing language context!</p>;
-       
-    const texts = langCtx.texts.lobbyList;
 
-    if (lobbyData.length === 0) return null;
+    if (!langCtx) return <p>Missing language context!</p>;
+
+    const texts = langCtx.texts.lobbyList;
 
     return (
         <div className="flex flex-col min-h-0 min-w-0 select-none">
@@ -40,7 +52,8 @@ export default function LobbyTable({ lobbyData, title }: { lobbyData: proto.mode
                     </tr>
                 </thead>
             </table>
-            <div className="
+            <div
+                className="
                     flex-1
                     overflow-y-auto
                     overflow-x-hidden
@@ -51,31 +64,39 @@ export default function LobbyTable({ lobbyData, title }: { lobbyData: proto.mode
                     scrollbar-track-yellow-900
                     scrollbar-thumb-amber-800
                     hover:scrollbar-thumb-amber-700
-                ">
+                "
+            >
                 <table className="w-full table-fixed">
                     <tbody>
-                        {lobbyData.map((lobby) => lobby.code && (
-                            <tr
-                                key={lobby.code}
-                                className="border-b border-amber-950 hover:bg-yellow-800 cursor-pointer"
-                                onClick={() => selectLobby(lobby.code!)}
-                            >
-                                <td className="p-2 truncate">
-                                    {lobby.lobbyName}
-                                </td>
-
-                                <td className="p-2 w-24 text-right">
-                                    {lobby.memberCount}
-                                </td>
-
-                                <td className="p-2 w-24 text-right">
-                                    {lobby.hasGame ? `${texts.tableYes}` : `${texts.tableNo}`}
+                        {lobbyData.length === 0 ? (
+                            <tr>
+                                <td colSpan={3} className="p-4 text-center text-amber-300 italic">
+                                    No lobbies found
                                 </td>
                             </tr>
-                        ))}
+                        ) : (
+                            lobbyData.map(
+                                (lobby) =>
+                                    lobby.code && (
+                                        <tr
+                                            key={lobby.code}
+                                            className="border-b border-amber-950 hover:bg-yellow-800 cursor-pointer w-full"
+                                            onClick={() => selectLobby(lobby.code!)}
+                                        >
+                                            <td className="p-2 truncate">{lobby.lobbyName}</td>
+
+                                            <td className="p-2 w-24 text-right">{lobby.memberCount}</td>
+
+                                            <td className="p-2 w-24 text-right">
+                                                {lobby.hasGame ? `${texts.tableYes}` : `${texts.tableNo}`}
+                                            </td>
+                                        </tr>
+                                    )
+                            )
+                        )}
                     </tbody>
                 </table>
             </div>
         </div>
-    )
+    );
 }

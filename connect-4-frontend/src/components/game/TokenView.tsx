@@ -8,15 +8,18 @@ import {
     type TTokenTypes,
 } from '@/lib/types';
 import { tokenImageMap } from '@/lib/canvasLogic';
+import type { SelectedToken } from '@/lib/types';
 
 export default function TokenView({
     tokenQueueData,
     playerID,
+    selectedToken,
     onTokenSelect,
 }: {
     tokenQueueData: TTokenQueueData;
     playerID: TPlayerIDs;
-    onTokenSelect?: (type: TTokenTypes) => void;
+    selectedToken: SelectedToken;
+    onTokenSelect?: (info: SelectedToken) => void;
 }) {
     console.log(tokenQueueData);
     if (
@@ -33,11 +36,14 @@ export default function TokenView({
                 <h2 className="font-bold text-lg text-white text-center">Player 1 tokens</h2>
                 <div className="flex flex-row gap-3 justify-center">
                     {tokenQueueData.mode === P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
-                        tokenQueueData.decks?.player1?.map((tokenType) => (
+                        tokenQueueData.decks?.player1?.map((tokenType, i) => (
                             <Token
+                                key={i}
                                 tokenType={tokenType ?? undefined}
                                 playerID={P_PlayerIDs.PLAYER_IDS_PLAYER1}
+                                selectionKey={`1-${i}`}
                                 clickFn={onTokenSelect}
+                                isSelected={tokenType === selectedToken.type && selectedToken.key === `1-${i}`}
                                 isEnabled={playerID === P_PlayerIDs.PLAYER_IDS_PLAYER1}
                             />
                         ))}
@@ -47,6 +53,7 @@ export default function TokenView({
                         <Token
                             tokenType={tokenQueueData.tokens?.player1 ?? undefined}
                             playerID={P_PlayerIDs.PLAYER_IDS_PLAYER1}
+                            isSelected={tokenQueueData.tokens?.player1 === selectedToken.type && selectedToken.key === '1'}
                             isEnabled={playerID === P_PlayerIDs.PLAYER_IDS_PLAYER1}
                         />
                     )}
@@ -59,11 +66,14 @@ export default function TokenView({
                 <h2 className="font-bold text-lg text-white text-center">Player 2 tokens</h2>
                 <div className="flex flex-row gap-3 justify-center">
                     {tokenQueueData.mode === P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
-                        tokenQueueData.decks?.player2?.map((tokenType) => (
+                        tokenQueueData.decks?.player2?.map((tokenType, i) => (
                             <Token
+                                key={i}
                                 tokenType={tokenType ?? undefined}
                                 playerID={P_PlayerIDs.PLAYER_IDS_PLAYER2}
+                                selectionKey={`2-${i}`}
                                 clickFn={onTokenSelect}
+                                isSelected={tokenType === selectedToken.type && selectedToken.key === `2-${i}`}
                                 isEnabled={playerID === P_PlayerIDs.PLAYER_IDS_PLAYER2}
                             />
                         ))}
@@ -73,6 +83,7 @@ export default function TokenView({
                         <Token
                             tokenType={tokenQueueData.tokens?.player2 ?? undefined}
                             playerID={P_PlayerIDs.PLAYER_IDS_PLAYER2}
+                            isSelected={tokenQueueData.tokens?.player2 === selectedToken.type && selectedToken.key === '2'}
                             isEnabled={playerID === P_PlayerIDs.PLAYER_IDS_PLAYER2}
                         />
                     )}
@@ -85,12 +96,16 @@ export default function TokenView({
 function Token({
     tokenType,
     playerID,
+    selectionKey,
     clickFn,
+    isSelected,
     isEnabled,
 }: {
     tokenType?: TTokenTypes;
     playerID: TPlayerIDs;
-    clickFn?: (tokenType: TTokenTypes) => void;
+    selectionKey?: string;
+    clickFn?: (info: { type: TTokenTypes; key: string }) => void;
+    isSelected: boolean;
     isEnabled: boolean;
 }) {
     if (!tokenType) return <p></p>;
@@ -100,8 +115,8 @@ function Token({
     return (
         <button
             disabled={!isEnabled}
-            className={`bg-emerald-800 p-3 rounded-lg ${clickFn && isEnabled && 'cursor-pointer'} ${!isEnabled && 'opacity-50'}`}
-            onClick={() => clickFn && clickFn(tokenType)}
+            className={`bg-emerald-800 p-3 rounded-lg ${clickFn && isEnabled && 'cursor-pointer'} ${!isEnabled && 'opacity-50'} ${isSelected && 'ring-4 ring-sky-300'}`}
+            onClick={() => clickFn && selectionKey && clickFn({ type: tokenType, key: selectionKey })}
         >
             {img ? <img src={img} className="w-12 h-12" alt="" /> : <p>{tokenType.toString()}</p>}
         </button>
