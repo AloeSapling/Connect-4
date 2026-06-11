@@ -1,18 +1,29 @@
-import { BOARD_START_HEIGHT, BOARD_START_WIDTH, BOARD_SLOT_DISTANCE, GAME_ROWS, GAME_COLUMNS, STEP } from './config.js';
+import { BOARD_START_HEIGHT, BOARD_START_WIDTH, BOARD_SLOT_DISTANCE, GAME_ROWS, GAME_COLUMNS, TOKEN_GRAVITY_REVERSE, TOKEN_GRAVITY_NORMAL, STEP } from './config.js';
 import * as types from '@/lib/types.js';
 import * as proto from './proto.js';
 
-import BoardTable from '../assets/board_table.png';
-import BoardFront from '../assets/board_front.png';
-import BoardBack from '../assets/board_back.png';
-import ColIndic from '../assets/board_indicator.png';
-import TokenP1 from '../assets/board_token1.png';
-import TokenP2 from '../assets/board_token2.png';
+import BoardTable from '@/assets/board_table.png';
+import BoardFront from '@/assets/board_front.png';
+import BoardShadow from '@/assets/board_shadow.png';
+import BoardBack from '@/assets/board_back.png';
+import ColIndic from '@/assets/board_indicator.png';
+
+import TokenP1 from '@/assets/board_token1.png';
+import TokenP2 from '@/assets/board_token2.png';
+import TokenAuraP1 from '@/assets/board_token_aura1.png';
+import TokenAuraP2 from '@/assets/board_token_aura2.png';
+import TokenNegativeP1 from '@/assets/board_token_negative1.png';
+import TokenNegativeP2 from '@/assets/board_token_negative2.png';
+import TokenReverseP1 from '@/assets/board_token_reverse1.png';
+import TokenReverseP2 from '@/assets/board_token_reverse2.png';
+import TokenBomb from '@/assets/board_token_bomb.png';
+import TokenBurn from '@/assets/board_token_burn.png';
 
 type FallingToken = {
     column: number;
     targetRow: number;
-    player: proto.shared.PlayerIDs;
+    player: types.TPlayerIDs;
+    type: types.TTokenTypes;
 
     x: number;
     y: number;
@@ -37,10 +48,20 @@ class GameCanvas {
 
     private boardTable = new Image();
     private boardFront = new Image();
+    private boardShadow = new Image();
     private boardBack = new Image();
     private colIndic = new Image();
+
     private tokenP1 = new Image();
     private tokenP2 = new Image();
+    private tokenAuraP1 = new Image();
+    private tokenAuraP2 = new Image();
+    private tokenNegativeP1 = new Image();
+    private tokenNegativeP2 = new Image();
+    private tokenReverseP1 = new Image();
+    private tokenReverseP2 = new Image();
+    private tokenBomb = new Image();
+    private tokenBurn = new Image();
 
     public constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
         this.canvas = canvas;
@@ -48,17 +69,50 @@ class GameCanvas {
 
         this.boardTable.src = BoardTable;
         this.boardFront.src = BoardFront;
+        this.boardShadow.src = BoardShadow;
         this.boardBack.src = BoardBack;
         this.colIndic.src = ColIndic;
+
         this.tokenP1.src = TokenP1;
         this.tokenP2.src = TokenP2;
+        this.tokenAuraP1.src = TokenAuraP1;
+        this.tokenAuraP2.src = TokenAuraP2;
+        this.tokenNegativeP1.src = TokenNegativeP1;
+        this.tokenNegativeP2.src = TokenNegativeP2;
+        this.tokenReverseP1.src = TokenReverseP1;
+        this.tokenReverseP2.src = TokenReverseP2;
+        this.tokenBomb.src = TokenBomb;
+        this.tokenBurn.src = TokenBurn;
     }
 
     // Map of token sources used for token rendering
-    private tokenMap: Map<proto.shared.PlayerIDs, HTMLImageElement | undefined> = new Map([
-        [types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED, undefined],
-        [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenP1],
-        [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenP2],
+    private tokenMap: Map<
+            types.TTokenTypes, 
+            Map<types.TPlayerIDs, HTMLImageElement> | undefined
+        > = new Map([
+        [types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED, undefined],
+        [types.P_TokenTypes.TOKEN_TYPES_STANDARD, new Map<types.TPlayerIDs, HTMLImageElement>([
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenP1],
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenP2],
+        ])],
+        [types.P_TokenTypes.TOKEN_TYPES_AURA, new Map([
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenAuraP1],
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenAuraP2],
+        ])],
+        [types.P_TokenTypes.TOKEN_TYPES_NEGATIVE, new Map([
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenNegativeP1],
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenNegativeP2],
+        ])],
+        [types.P_TokenTypes.TOKEN_TYPES_REVERSE, new Map([
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenReverseP1],
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenReverseP2],
+        ])],
+        [types.P_TokenTypes.TOKEN_TYPES_BOMB, new Map([
+            [types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED, this.tokenBomb],
+        ])],
+        [types.P_TokenTypes.TOKEN_TYPES_BURN, new Map([
+            [types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED, this.tokenBurn],
+        ])],
     ]);
 
     private currentBoardState: proto.shared.IGameBoard = proto.shared.GameBoard.create({
@@ -101,11 +155,8 @@ class GameCanvas {
         this.ctx.drawImage(this.colIndic, this.columnIndicator.column * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH + 4, 20);
     }
 
-    public insertToken(column: number, row: number, player: types.TPlayerIDs) {
+    public placeToken(column: number, row: number, player: types.TPlayerIDs, tokenType: types.TTokenTypes) {
         const x = column * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH;
-
-        // Starting position
-        const startY: number = 0;
 
         const targetY = (GAME_ROWS - 1 - row) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT;
 
@@ -113,9 +164,12 @@ class GameCanvas {
             column,
             targetRow: row,
             player,
+            type: tokenType,
 
             x,
-            y: startY,
+            y: (tokenType === types.P_TokenTypes.TOKEN_TYPES_REVERSE)
+            ? 2 * BOARD_START_HEIGHT + (GAME_ROWS * BOARD_SLOT_DISTANCE)
+            : 0,
             targetY,
 
             velocity: 0,
@@ -123,21 +177,23 @@ class GameCanvas {
     }
 
     private updateFallingTokens(dt: number) {
-        const gravity: number = 5000;
-
         for (let i = this.fallingTokens.length - 1; i >= 0; i--) {
             const token = this.fallingTokens[i];
+            const gravity: number = (token.type === types.P_TokenTypes.TOKEN_TYPES_REVERSE)
+            ? TOKEN_GRAVITY_REVERSE
+            : TOKEN_GRAVITY_NORMAL;
 
             token.velocity += gravity * dt;
             token.y += token.velocity * dt;
 
-            if (token.y >= token.targetY) {
+            if ((token.type !== types.P_TokenTypes.TOKEN_TYPES_REVERSE && token.y >= token.targetY) ||
+                (token.type === types.P_TokenTypes.TOKEN_TYPES_REVERSE && token.y <= token.targetY)) {
                 token.y = token.targetY;
 
                 // Commit token to board state
                 this.currentBoardState.rows![token.targetRow].tokens![token.column] = {
                     playerId: token.player,
-                    tokenType: types.P_TokenTypes.TOKEN_TYPES_STANDARD,
+                    tokenType: token.type,
                 };
 
                 this.fallingTokens.splice(i, 1);
@@ -147,7 +203,8 @@ class GameCanvas {
 
     private drawFallingTokens() {
         for (const token of this.fallingTokens) {
-            const img = this.tokenMap.get(token.player);
+            const type = this.tokenMap.get(token.type);
+            const img = type?.get(token.player);
 
             if (!img) continue;
 
@@ -161,6 +218,7 @@ class GameCanvas {
         this.ctx.beginPath();
 
         this.ctx.drawImage(this.boardTable, 0, 0);
+        this.ctx.drawImage(this.boardShadow, 0, 0);
         this.ctx.drawImage(this.boardBack, 0, 0);
 
         this.drawTokens();
@@ -178,9 +236,12 @@ class GameCanvas {
         for (let i = 0; i < this.currentBoardState.rows!.length; i++) {
             for (let j = 0; j < this.currentBoardState.rows![i].tokens!.length; j++) {
                 const token = this.currentBoardState.rows![i].tokens![j];
-                if (token && token.playerId !== 0) {
+                if (token && token.tokenType !== types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) {
+                    const type = this.tokenMap.get(token.tokenType!);
+                    const img = type!.get(token.playerId!);
+                    
                     this.ctx.drawImage(
-                        this.tokenMap.get(this.currentBoardState.rows![i].tokens![j].playerId!)!,
+                        img!,
                         j * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH,
                         (this.currentBoardState.rows!.length - 1 - i) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT
                     );

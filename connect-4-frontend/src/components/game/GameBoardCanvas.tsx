@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, useCallback, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_ROWS, GAME_COLUMNS } from '@/lib/config.js';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { getGameState, leaveLobby } from '@/lib/api';
+import { useMutation } from '@tanstack/react-query';
+import { leaveLobby } from '@/lib/api';
 import { langContext } from '@/lib/contexts';
 import { toast } from 'sonner';
 import { GameWebSocket } from '@/lib/websockets.js';
@@ -12,18 +12,10 @@ import * as proto from '@/lib/proto.js';
 import * as types from '@/lib/types.js';
 import { Button } from '@/components/ui/button';
 
-function Game() {
+function Game({ queryData, lobbyCode }: { queryData: proto.routes.GetGameResponse, lobbyCode: string }) {
     const navigate = useNavigate();
-    const { lobbyCode } = useParams();
     const animationRef = useRef<number | null>(null);
     const gameCanvasRef = useRef<GameCanvas | null>(null);
-
-    const { data: queryData, isLoading, error } = useQuery({
-        queryKey: ['lobby', lobbyCode],
-        queryFn: () => getGameState(lobbyCode!),
-        refetchOnWindowFocus: false,
-        retry: 1,
-    });
 
     const [currentBoardState, setCurrentBoardState] = useState(queryData?.game?.board ??
         proto.shared.GameBoard.create({
