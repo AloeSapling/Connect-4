@@ -1,6 +1,14 @@
 import GameBoardCanvas from '@/components/game/GameBoardCanvas';
 import { getGameState, leaveLobby } from '@/lib/api';
-import { P_ErrorCodes, P_PlayerIDs, P_TokenTypes, type TPlayerIDs, type TTokenTypes } from '@/lib/types';
+import {
+    P_ErrorCodes,
+    P_PlayerIDs,
+    P_TokenQueueModes,
+    P_TokenTypes,
+    type TPlayerIDs,
+    type TTokenQueueModes,
+    type TTokenTypes,
+} from '@/lib/types';
 import { GameWebSocket } from '@/lib/websockets';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback, useContext, useEffect, useRef, useState, type RefObject } from 'react';
@@ -238,10 +246,12 @@ function setUpGameWebsocket(
     wsRef: RefObject<GameWebSocket | null>,
     userPlayerID: RefObject<TPlayerIDs | null>,
     gameCanvasRef: RefObject<GameCanvas | null>,
-    currentTurn: RefObject<TPlayerIDs | null>,
+    currentTurn: RefObject<TPlayerIDs>,
     cancelled: RefObject<boolean>,
+    tokenQueueMode: RefObject<TTokenQueueModes>,
     setUserPlayerID: (pid: TPlayerIDs) => void,
     setGameResults: (res: string) => void,
+    setSelectedTokenType: (type: TTokenTypes) => void,
     texts: PageTexts['game']
 ) {
     GameWebSocket.create(lobbyCode, (packet) => {
@@ -278,6 +288,17 @@ function setUpGameWebsocket(
                     packet.move.tile?.token?.tokenType!
                 );
 
+                if (
+                    tokenQueueMode.current !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
+                    tokenQueueMode.current !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
+                ) {
+                    if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
+                        setSelectedTokenType(packet.move.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                    } else if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER2) {
+                        setSelectedTokenType(packet.move.currentTokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                    }
+                }
+
                 break;
             case p_ws.GameResponses.GAME_RESPONSES_END:
                 console.log(packet.toJSON());
@@ -290,6 +311,17 @@ function setUpGameWebsocket(
                         packet.end.tile.token?.playerId!,
                         packet.end.tile?.token?.tokenType!
                     );
+
+                if (
+                    tokenQueueMode.current !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
+                    tokenQueueMode.current !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
+                ) {
+                    if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
+                        setSelectedTokenType(packet.end.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                    } else if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER2) {
+                        setSelectedTokenType(packet.end.currentTokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                    }
+                }
 
                 setGameResults(getResults(packet, texts));
 

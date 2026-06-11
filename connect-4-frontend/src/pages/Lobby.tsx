@@ -13,6 +13,7 @@ import MemberTable from '@/components/lobby/MemberTable.js';
 import { Copy } from 'lucide-react';
 import * as proto from '@/lib/proto.js';
 import * as types from '@/lib/types.js';
+import GameSettings from '@/components/lobby/GameSettings';
 
 function Lobby() {
     const navigate = useNavigate();
@@ -130,7 +131,6 @@ function Lobby() {
                     types.P_TokenTypes.TOKEN_TYPES_NEGATIVE,
                     types.P_TokenTypes.TOKEN_TYPES_AURA,
                     types.P_TokenTypes.TOKEN_TYPES_BOMB,
-                    types.P_TokenTypes.TOKEN_TYPES_SPLIT,
                     types.P_TokenTypes.TOKEN_TYPES_FREEZE,
                     types.P_TokenTypes.TOKEN_TYPES_BURN,
                     types.P_TokenTypes.TOKEN_TYPES_REVERSE,
@@ -186,7 +186,10 @@ function Lobby() {
                 <MemberTable membersData={lobbyMembersData} />
 
                 {lobbyMembersData.some((member) => member.userId === user?.id && member.host) && (
-                    <HostControls lobbyCode={lobbyCode!} membersData={lobbyMembersData} />
+                    <>
+                        <HostControls lobbyCode={lobbyCode!} membersData={lobbyMembersData} />
+                        <GameSettings lobbyCode={lobbyCode!} settings={queryData.lobbyDetails?.settings ?? {}} />
+                    </>
                 )}
             </div>
 
