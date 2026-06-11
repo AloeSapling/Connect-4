@@ -40,7 +40,7 @@ export class BurnToken extends Token {
     }
 
     tickTurn(gameBoard: GameBoard) {
-        if (this.isFrozen || this.row >= gameBoard.tokens.length) return;
+        if (gameBoard.frozenColumns[this.column] || this.row >= gameBoard.tokens.length) return;
 
         if (this.row <= 0) {
             gameBoard.deletedTiles.push({

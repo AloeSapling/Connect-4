@@ -1,3 +1,4 @@
+import { GAME_COLUMNS } from '../../../config.ts';
 import {
     CodedError,
     P_ErrorCodes,
@@ -56,8 +57,6 @@ export default abstract class Token {
 
     public row: number = -1;
     public column: number = -1;
-
-    public isFrozen: boolean = false;
 
     // ** Private properties
 
@@ -175,6 +174,11 @@ export default abstract class Token {
     remove(gameBoard: GameBoard): void {
         // Replace this token with an empty one
         const emptyToken = new EmptyToken();
+
+        if (this.column >= 0 && this.column < gameBoard.frozenColumns.length && gameBoard.frozenColumns[this.column]) {
+            emptyToken.type = P_TokenTypes.TOKEN_TYPES_FROZEN;
+        }
+
         emptyToken.place(gameBoard, this.row, this.column);
 
         // Unset this token's position

@@ -13,9 +13,9 @@ import * as gameRedis from './game.ts';
 export default async function onRedisExpire(key: string) {
     // Handle game expiration
     if (key.startsWith('GameData_') && key.endsWith('turnTime')) {
-        const lobbyCode = key.slice(10, 10 + CODE_LENGTH); // "GameState_" is 10 characters long, this extracts the lobby code that is directly after the 'GameState_' prefix
+        const lobbyCode = key.slice(9, 9 + CODE_LENGTH); // "GameData_" is 9 characters long, this extracts the lobby code that is directly after the 'GameData_' prefix
 
-        const turn = await redis.get(`GameState_${lobbyCode}:turn`);
+        const turn = await redis.get(`GameData_${lobbyCode}:turn`);
         if (!turn) return; // Early return if the turn is null
 
         const turnData = Number(turn) as TPlayerIDs; // Convert the value into the numeric enumerated playerID

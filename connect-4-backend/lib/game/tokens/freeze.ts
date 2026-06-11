@@ -53,7 +53,7 @@ export class FreezeToken extends Token {
             const token = tokenRow![this.column];
             if (!token) continue;
 
-            token.isFrozen = true;
+            gameBoard.frozenColumns[this.column] = true;
 
             // Makes the empty tokens count as filled
             if (token.type === P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) token.type = P_TokenTypes.TOKEN_TYPES_FROZEN;
@@ -72,7 +72,7 @@ export class FreezeToken extends Token {
             const token = tokenRow![this.column];
             if (!token) continue;
 
-            token.isFrozen = false;
+            gameBoard.frozenColumns[this.column] = false;
 
             // Makes the empty tokens count as empty again
             if (token.type === P_TokenTypes.TOKEN_TYPES_FROZEN) token.type = P_TokenTypes.TOKEN_TYPES_UNSPECIFIED;

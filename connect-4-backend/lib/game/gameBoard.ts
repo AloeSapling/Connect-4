@@ -1,3 +1,4 @@
+import { GAME_COLUMNS } from '../../config.ts';
 import type { models, ws } from '../proto.js';
 import { LineObj } from './lineObj.ts';
 import Token from './tokens/base.ts';
@@ -12,6 +13,7 @@ export class GameBoard {
     public activeInstances: Record<number, Coordinate[]> = {};
     public instanceCounters: Record<string, number> = {};
     public deletedTiles: { action: models.ChangeTokenActions; tile: models.ITile }[] = [];
+    public frozenColumns: boolean[] = Array.from({ length: GAME_COLUMNS }, () => false);
 
     constructor(_tokens?: Token[][], _lines?: LineObj[]) {
         if (_tokens) this.tokens = _tokens;

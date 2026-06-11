@@ -207,6 +207,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                         decks: decks,
                                         fallingTokens: fallingTokens,
                                         deletedTiles: deletedTiles,
+                                        frozenColumns: gameData.board.frozenColumns,
                                     },
                                 })
                             );
@@ -238,6 +239,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                         decks: decks,
                                         fallingTokens: fallingTokens,
                                         deletedTiles: deletedTiles,
+                                        frozenColumns: gameData.board.frozenColumns,
                                     },
                                 })
                             );
@@ -266,6 +268,7 @@ export function setupGameWSServer(WSServer: WebSocketServer) {
                                     decks: decks,
                                     fallingTokens: fallingTokens,
                                     deletedTiles: deletedTiles,
+                                    frozenColumns: gameData.board.frozenColumns,
                                 },
                             })
                         );

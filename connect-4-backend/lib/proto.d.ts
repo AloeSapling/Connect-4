@@ -1303,6 +1303,9 @@ export namespace models {
 
         /** Game decks */
         decks?: (models.IDecks|null);
+
+        /** Game frozenColumns */
+        frozenColumns?: (boolean[]|null);
     }
 
     /** Represents a Game. */
@@ -1328,6 +1331,9 @@ export namespace models {
 
         /** Game decks. */
         public decks?: (models.IDecks|null);
+
+        /** Game frozenColumns. */
+        public frozenColumns: boolean[];
 
         /**
          * Creates a new Game instance using the specified properties.
@@ -3475,6 +3481,9 @@ export namespace ws {
 
         /** GameMove deletedTiles */
         deletedTiles?: (ws.IChangeTile[]|null);
+
+        /** GameMove frozenColumns */
+        frozenColumns?: (boolean[]|null);
     }
 
     /** Represents a GameMove. */
@@ -3509,6 +3518,9 @@ export namespace ws {
 
         /** GameMove deletedTiles. */
         public deletedTiles: ws.IChangeTile[];
+
+        /** GameMove frozenColumns. */
+        public frozenColumns: boolean[];
 
         /**
          * Creates a new GameMove instance using the specified properties.
@@ -3723,6 +3735,9 @@ export namespace ws {
 
         /** GameEnd deletedTiles */
         deletedTiles?: (ws.IChangeTile[]|null);
+
+        /** GameEnd frozenColumns */
+        frozenColumns?: (boolean[]|null);
     }
 
     /** Represents a GameEnd. */
@@ -3763,6 +3778,9 @@ export namespace ws {
 
         /** GameEnd deletedTiles. */
         public deletedTiles: ws.IChangeTile[];
+
+        /** GameEnd frozenColumns. */
+        public frozenColumns: boolean[];
 
         /**
          * Creates a new GameEnd instance using the specified properties.
