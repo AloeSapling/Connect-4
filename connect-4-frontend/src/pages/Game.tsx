@@ -145,6 +145,7 @@ export default function Game() {
             <GameBoardCanvas
                 queryData={queryData}
                 wsRef={wsRef}
+                gameCanvasRef={gameCanvasRef}
                 userPlayerID={userPlayerID}
                 userPlayerIDRef={userPlayerIDRef}
                 currentTurn={currentTurn}
@@ -281,6 +282,12 @@ function setUpGameWebsocket(
                 console.log(userPlayerID.current);
                 // if (packet.move.turn === userPlayerID.current) setCanMove(true);
 
+                console.log(
+                    'placeToken',
+                    gameCanvasRef.current,
+                    packet.move?.tile?.column,
+                    packet.move?.tile?.row
+                );
                 gameCanvasRef.current?.placeToken(
                     packet.move?.tile?.column!,
                     packet.move?.tile?.row!,
