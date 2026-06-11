@@ -1,4 +1,4 @@
-import { BOARD_START_HEIGHT, BOARD_START_WIDTH, BOARD_SLOT_DISTANCE, GAME_ROWS, GAME_COLUMNS, TOKEN_GRAVITY_REVERSE, TOKEN_GRAVITY_NORMAL, STEP } from './config.js';
+import { BOARD_START_HEIGHT, BOARD_START_WIDTH, BOARD_SLOT_DISTANCE, GAME_ROWS, GAME_COLUMNS, TOKEN_GRAVITY_REVERSE, TOKEN_GRAVITY_NORMAL, ANIMATION_EXPLOSION_FPS, ANIMATION_EXPLOSION_FRAMES, FPS, STEP } from './config.js';
 import * as types from '@/lib/types.js';
 import * as proto from './proto.js';
 
@@ -16,8 +16,13 @@ import TokenNegativeP1 from '@/assets/board_token_negative1.png';
 import TokenNegativeP2 from '@/assets/board_token_negative2.png';
 import TokenReverseP1 from '@/assets/board_token_reverse1.png';
 import TokenReverseP2 from '@/assets/board_token_reverse2.png';
+import TokenFreezeP1 from '@/assets/board_token_freeze1.png';
+import TokenFreezeP2 from '@/assets/board_token_freeze2.png';
 import TokenBomb from '@/assets/board_token_bomb.png';
 import TokenBurn from '@/assets/board_token_burn.png';
+
+import FrozenOverlay from '@/assets/board_frozen.png';
+import ExplosionSheet from '@/assets/board_token_bomb_explosion.png';
 
 type FallingToken = {
     column: number;
@@ -32,6 +37,21 @@ type FallingToken = {
     velocity: number;
 };
 
+type SpriteSheetAnim = {
+    x: number;
+    y: number;
+
+    spritesheet: HTMLImageElement;
+    height: number;
+    width: number;
+
+    totalFrames: number;
+    currentFrame: number;
+
+    FPS: number;
+    FPSStep: number;
+}
+
 type ColumnIndicator = {
     display: boolean;
     column: number;
@@ -41,6 +61,8 @@ class GameCanvas {
     private readonly canvas: HTMLCanvasElement;
     private readonly ctx: CanvasRenderingContext2D;
     private fallingTokens: FallingToken[] = [];
+    private spriteSheetAnims: SpriteSheetAnim[] = [];
+    private frozenOverlays: boolean[] = Array(7).fill(false);
     private columnIndicator: ColumnIndicator = {
         display: false,
         column: 0,
@@ -60,8 +82,13 @@ class GameCanvas {
     private tokenNegativeP2 = new Image();
     private tokenReverseP1 = new Image();
     private tokenReverseP2 = new Image();
+    private tokenFreezeP1 = new Image();
+    private tokenFreezeP2 = new Image();
     private tokenBomb = new Image();
     private tokenBurn = new Image();
+
+    private frozenOverlay = new Image();
+    private explosionSheet = new Image();
 
     public constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
         this.canvas = canvas;
@@ -81,8 +108,13 @@ class GameCanvas {
         this.tokenNegativeP2.src = TokenNegativeP2;
         this.tokenReverseP1.src = TokenReverseP1;
         this.tokenReverseP2.src = TokenReverseP2;
+        this.tokenFreezeP1.src = TokenFreezeP1;
+        this.tokenFreezeP2.src = TokenFreezeP2;
         this.tokenBomb.src = TokenBomb;
         this.tokenBurn.src = TokenBurn;
+
+        this.frozenOverlay.src = FrozenOverlay;
+        this.explosionSheet.src = ExplosionSheet;
     }
 
     // Map of token sources used for token rendering
@@ -91,6 +123,7 @@ class GameCanvas {
             Map<types.TPlayerIDs, HTMLImageElement> | undefined
         > = new Map([
         [types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED, undefined],
+        [types.P_TokenTypes.TOKEN_TYPES_FROZEN, undefined],
         [types.P_TokenTypes.TOKEN_TYPES_STANDARD, new Map<types.TPlayerIDs, HTMLImageElement>([
             [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenP1],
             [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenP2],
@@ -107,11 +140,19 @@ class GameCanvas {
             [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenReverseP1],
             [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenReverseP2],
         ])],
+        [types.P_TokenTypes.TOKEN_TYPES_FREEZE, new Map([
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenFreezeP1],
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenFreezeP2],
+        ])],
         [types.P_TokenTypes.TOKEN_TYPES_BOMB, new Map([
             [types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED, this.tokenBomb],
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenBomb], // temp
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenBomb], // temp
         ])],
         [types.P_TokenTypes.TOKEN_TYPES_BURN, new Map([
             [types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED, this.tokenBurn],
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER1, this.tokenBurn], // temp
+            [types.P_PlayerIDs.PLAYER_IDS_PLAYER2, this.tokenBurn], // temp
         ])],
     ]);
 
@@ -155,22 +196,35 @@ class GameCanvas {
         this.ctx.drawImage(this.colIndic, this.columnIndicator.column * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH + 4, 20);
     }
 
-    public placeToken(column: number, row: number, player: types.TPlayerIDs, tokenType: types.TTokenTypes) {
-        const x = column * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH;
-
-        const targetY = (GAME_ROWS - 1 - row) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT;
-
+    public placeToken(column: number, targetRow: number, player: types.TPlayerIDs, tokenType: types.TTokenTypes) {
         this.fallingTokens.push({
-            column,
-            targetRow: row,
-            player,
+            column: column,
+            targetRow: targetRow,
+            player: player,
             type: tokenType,
 
-            x,
+            x: column * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH,
             y: (tokenType === types.P_TokenTypes.TOKEN_TYPES_REVERSE)
-            ? 2 * BOARD_START_HEIGHT + (GAME_ROWS * BOARD_SLOT_DISTANCE)
+            ? BOARD_START_HEIGHT + (GAME_ROWS * BOARD_SLOT_DISTANCE)
             : 0,
-            targetY,
+            targetY: (GAME_ROWS - 1 - targetRow) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT,
+
+            velocity: 0,
+        });
+    }
+
+    private fallToken(column: number, targetRow: number, startRow: number, player: types.TPlayerIDs, tokenType: types.TTokenTypes) {
+        this.fallingTokens.push({
+            column: column,
+            targetRow: targetRow,
+            player: player,
+            type: tokenType,
+
+            x: (GAME_ROWS - 1 - startRow) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT,
+            y: (tokenType === types.P_TokenTypes.TOKEN_TYPES_REVERSE)
+            ? BOARD_START_HEIGHT + (GAME_ROWS * BOARD_SLOT_DISTANCE)
+            : 0,
+            targetY: (GAME_ROWS - 1 - targetRow) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT,
 
             velocity: 0,
         });
@@ -190,11 +244,29 @@ class GameCanvas {
                 (token.type === types.P_TokenTypes.TOKEN_TYPES_REVERSE && token.y <= token.targetY)) {
                 token.y = token.targetY;
 
-                // Commit token to board state
-                this.currentBoardState.rows![token.targetRow].tokens![token.column] = {
-                    playerId: token.player,
-                    tokenType: token.type,
-                };
+                if (token.type === types.P_TokenTypes.TOKEN_TYPES_BOMB) {
+                    this.spriteSheetAnims.push({
+                        x: token.x - BOARD_SLOT_DISTANCE,
+                        y: token.targetY - BOARD_SLOT_DISTANCE,
+
+                        spritesheet: this.explosionSheet,
+                        height: this.explosionSheet.height,
+                        width: this.explosionSheet.width / ANIMATION_EXPLOSION_FRAMES,
+
+                        totalFrames: ANIMATION_EXPLOSION_FRAMES,
+                        currentFrame: 0,
+
+                        FPS: Math.floor(FPS / ANIMATION_EXPLOSION_FPS),
+                        FPSStep: 0,
+                    });
+                }
+                else {
+                    // Commit token to board state
+                    this.currentBoardState.rows![token.targetRow].tokens![token.column] = {
+                        playerId: token.player,
+                        tokenType: token.type,
+                    };
+                }
 
                 this.fallingTokens.splice(i, 1);
             }
@@ -212,6 +284,60 @@ class GameCanvas {
         }
     }
 
+    private updateSpriteSheetAnims() {
+        for (let i = 0; i < this.spriteSheetAnims.length; i++) {
+            const anim = this.spriteSheetAnims[i];
+            anim.FPSStep++;
+            if (anim.FPSStep >= anim.FPS) {
+                anim.currentFrame++;
+                if (anim.currentFrame >= anim.totalFrames) {
+                    this.spriteSheetAnims.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    private drawSpriteSheetAnims() {
+        for (const anim of this.spriteSheetAnims) {
+            this.ctx.drawImage(anim.spritesheet,
+                anim.width * anim.currentFrame, 0,
+                anim.width, anim.height,
+                anim.x, anim.y,
+                anim.width, anim.height
+            );
+        }
+    }
+
+    private drawFrozenOverlays() {
+        for (let i = 0; i < this.frozenOverlays.length; i++) {
+            if (this.frozenOverlays[i]) {
+                this.ctx.drawImage(this.frozenOverlay,
+                    i * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH,
+                    BOARD_START_HEIGHT
+                );
+            }
+        }
+    }
+
+    private drawTokens = () => {
+        for (let i = 0; i < this.currentBoardState.rows!.length; i++) {
+            for (let j = 0; j < this.currentBoardState.rows![i].tokens!.length; j++) {
+                const token = this.currentBoardState.rows![i].tokens![j];
+                if (token && (token.tokenType !== types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) &&
+                    token.tokenType !== types.P_TokenTypes.TOKEN_TYPES_FROZEN) {
+                    const type = this.tokenMap.get(token.tokenType!);
+                    const img = type!.get(token.playerId!);
+                    
+                    this.ctx.drawImage(
+                        img!,
+                        j * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH,
+                        (this.currentBoardState.rows!.length - 1 - i) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT
+                    );
+                }
+            }
+        }
+    };
+
     private drawGame = () => {
         // Clear canvas before drawing
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -227,27 +353,12 @@ class GameCanvas {
 
         this.ctx.drawImage(this.boardFront, 0, 0);
 
+        this.drawFrozenOverlays();
+        this.drawSpriteSheetAnims();
+
         // square anim
         // this.ctx.fillStyle = "blue";
         // this.ctx.fillRect(this.x, 50, 50, 50);
-    };
-
-    private drawTokens = () => {
-        for (let i = 0; i < this.currentBoardState.rows!.length; i++) {
-            for (let j = 0; j < this.currentBoardState.rows![i].tokens!.length; j++) {
-                const token = this.currentBoardState.rows![i].tokens![j];
-                if (token && token.tokenType !== types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED) {
-                    const type = this.tokenMap.get(token.tokenType!);
-                    const img = type!.get(token.playerId!);
-                    
-                    this.ctx.drawImage(
-                        img!,
-                        j * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH,
-                        (this.currentBoardState.rows!.length - 1 - i) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT
-                    );
-                }
-            }
-        }
     };
 
     // time - current time of loop update
@@ -269,6 +380,7 @@ class GameCanvas {
             // square anim
             // this.updateSquare(STEP / 1000);
             this.updateFallingTokens(STEP / 1000);
+            this.updateSpriteSheetAnims();
 
             this.accumulator -= STEP;
         }

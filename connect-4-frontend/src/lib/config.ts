@@ -17,6 +17,9 @@ export const GAME_COLUMNS: number = 7;
 // Token properties
 export const TOKEN_GRAVITY_NORMAL: number = 5000;
 export const TOKEN_GRAVITY_REVERSE: number = -5000;
+// Spritesheet animation properties
+export const ANIMATION_EXPLOSION_FPS: number = 15;
+export const ANIMATION_EXPLOSION_FRAMES: number = 5;
 
 export const FPS: number = 30;
 // ms per game state update; ~16.666666(...)ms at 60 FPS
