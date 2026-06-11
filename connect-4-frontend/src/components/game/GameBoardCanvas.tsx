@@ -1,9 +1,8 @@
-
 import { useEffect, useRef, useState, useCallback, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_ROWS, GAME_COLUMNS } from '@/lib/config.js';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { getGameState, leaveLobby } from '@/lib/api';
+import { useMutation } from '@tanstack/react-query';
+import { leaveLobby } from '@/lib/api';
 import { langContext } from '@/lib/contexts';
 import { toast } from 'sonner';
 import { GameWebSocket } from '@/lib/websockets.js';
@@ -13,7 +12,7 @@ import * as proto from '@/lib/proto.js';
 import * as types from '@/lib/types.js';
 import { Button } from '@/components/ui/button';
 
-function GameBoardCanvas({ queryData, lobbyCode }: { queryData: proto.models.IGame, lobbyCode: string }) {
+function Game({ queryData, lobbyCode }: { queryData: proto.routes.GetGameResponse, lobbyCode: string }) {
     const navigate = useNavigate();
     const animationRef = useRef<number | null>(null);
     const gameCanvasRef = useRef<GameCanvas | null>(null);
@@ -122,14 +121,14 @@ function GameBoardCanvas({ queryData, lobbyCode }: { queryData: proto.models.IGa
                     console.log(userPlayerIDRef.current);
                     if (packet.move.turn === userPlayerIDRef.current) setCanMove(true);
 
-                    gameCanvasRef.current?.insertToken(packet.move?.tile?.column!, packet.move?.tile?.row!, packet.move.tile.token?.playerId!);
+                    gameCanvasRef.current?.placeToken(packet.move?.tile?.column!, packet.move?.tile?.row!, packet.move.tile!.token?.playerId!, packet.move.tile?.token?.tokenType!);
 
                     break;
                 case proto.ws.GameResponses.GAME_RESPONSES_END:
                     console.log(packet.toJSON());
                     if (!packet.end) return;
 
-                    if (packet.end.tile?.token) gameCanvasRef.current?.insertToken(packet.end?.tile?.column!, packet.end?.tile?.row!, packet.end.tile.token?.playerId!);
+                    if (packet.end.tile?.token) gameCanvasRef.current?.placeToken(packet.end?.tile?.column!, packet.end?.tile?.row!, packet.end.tile.token?.playerId!, packet.end.tile?.token?.tokenType!);
 
                     switch (packet.end.endType) {
                         case proto.ws.GameEndTypes.GAME_END_TYPES_DRAW:
@@ -286,4 +285,4 @@ function GameBoardCanvas({ queryData, lobbyCode }: { queryData: proto.models.IGa
     );
 }
 
-export default GameBoardCanvas;
+export default Game;
