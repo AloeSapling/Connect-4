@@ -1,4 +1,7 @@
 {
+    "general": {
+        "loading": "Ładowanie..."
+    },
     "header": {
         "home": "Strona Główna",
         "settings": "Ustawienia",
@@ -8,10 +11,15 @@
         "play": "Graj",
         "settings": "Ustawienia"
     },
+    "error": {
+        "notFound": "Błąd 404: Strona nie znaleziona",
+        "home": "Strona Główna"
+    },
     "username": {
         "chooseYourUsername": "Wybierz nazwę użytkownika",
         "name": "Nazwa",
-        "hint": "nazwa użytkownika"
+        "hint": "nazwa użytkownika",
+        "ok": "OK"
     },
     "lobbyList": {
         "listHeader": "Lista Pokoi",
@@ -27,6 +35,9 @@
         "tableYes": "Tak",
 
         "formCancel": "Anuluj",
+        "formOk": "OK",
+        "noLobbiesFound": "Nie znaleziono pokoi",
+        "defaultLobbyName": "Pokój {username}",
 
         "lobbyFormHint": "kod pokoju",
         "lobbyFormButton": "Dołącz do Pokoju Kodem",
@@ -59,9 +70,39 @@
         "changePlayerIDFormPlayer1": "Gracz 1",
         "changePlayerIDFormPlayer2": "Gracz 2",
         "changePlayerIDFormButton": "Zmień ID Gracza",
-        "changePlayerIDToast": "Zmieniono ID gracza!"
+        "changePlayerIDToast": "Zmieniono ID gracza!",
+
+        "selectUser": "Wybierz użytkownika",
+        "cancel": "Anuluj",
+        "p1": "G1: ",
+        "p2": "G2: ",
+        "host": "(gospodarz)",
+        "changePlayerId": "Zmień ID gracza",
+        "tempban": "Tempban",
+        "userTempbanned": "Użytkownik zbany tymczasowo",
+        "loading": "Ładowanie..."
+    },
+    "lobbySettings": {
+        "heading": "Ustawienia pokoju",
+        "enableExtraGamemode": "włączyć dodatkowy tryb?",
+        "tokenQueueMode": "Tryb kolejki żetonów",
+        "fullRandom": "Pełny Losowy",
+        "every": "Co Kolejny",
+        "deck": "Talii",
+        "allowedTokens": "Dozwolone Żetony",
+        "saveSettings": "Zapisz Ustawienia",
+        "settingsChanged": "Ustawienia zmienione!"
+    },
+    "playerSelect": {
+        "player1": "GRACZ 1",
+        "playAsPlayer1": "Graj jako gracz 1",
+        "player2": "GRACZ 2",
+        "playAsPlayer2": "Graj jako gracz 2",
+        "spectator": "WIDZ",
+        "watchGame": "Obserwuj grę"
     },
     "game": {
+        "loading": "Ładowanie",
         "forfeitButton": "Poddaj się",
 
         "resultsWinText": "wygrał/a!",
@@ -70,6 +111,14 @@
         "resultsLeaveButton": "Wróć do Listy Pokoi",
         "resultsBackToLobbyButton": "Wróć do Pokoju",
 
-        "leaveToast": "Opuszczanie pokoju..."
+        "leaveToast": "Opuszczanie pokoju...",
+
+        "player1Turn": "Tura Gracza 1",
+        "player2Turn": "Tura Gracza 2",
+        "player1Tokens": "Żetony Gracza 1",
+        "player2Tokens": "Żetony Gracza 2",
+        "canvasUnsupported": "Twoja przeglądarka nie wspiera canvas. Przepraszamy! :(",
+        "endUnspecified": "nieokreślony",
+        "endDefault": "domyślny"
     }
 }

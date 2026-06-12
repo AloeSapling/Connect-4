@@ -24,6 +24,8 @@ const SPECIAL_TOKEN_TYPES = [
 ];
 
 export default function GameSettings({ lobbyCode, settings }: { lobbyCode: string; settings: models.ILobbySettings }) {
+    const langCtx = useContext(langContext);
+
     const queryClient = useQueryClient();
 
     const form = useForm<Z_TChangeLobbySettings>({
@@ -39,10 +41,12 @@ export default function GameSettings({ lobbyCode, settings }: { lobbyCode: strin
     const specialGameMode = form.watch('special_gameMode');
     const tokenQueueMode = form.watch('token_queue_mode');
 
+    const settingsTexts = langCtx?.texts.lobbySettings;
+
     const changeSettings_m = useMutation({
         mutationFn: changeLobbySettings,
         onSuccess: () => {
-            toast.success('Settings changed!');
+            toast.success(settingsTexts?.settingsChanged ?? 'Settings changed!');
             queryClient.invalidateQueries({
                 queryKey: [lobbyCode],
             });
@@ -62,8 +66,6 @@ export default function GameSettings({ lobbyCode, settings }: { lobbyCode: strin
         });
     };
 
-    const langCtx = useContext(langContext);
-
     if (!langCtx) return <p>Missing language context!</p>;
 
     return (
@@ -72,7 +74,7 @@ export default function GameSettings({ lobbyCode, settings }: { lobbyCode: strin
                 {/* Special game mode switch */}
                 <div className="flex items-center gap-2 w-full">
                     <Switch checked={specialGameMode} onCheckedChange={(checked) => form.setValue('special_gameMode', checked)} />
-                    <Label>Special Game Mode</Label>
+                    <Label>{settingsTexts?.enableExtraGamemode ?? 'Special Game Mode'}</Label>
                 </div>
 
                 {/* Token queue mode select */}
@@ -86,19 +88,19 @@ export default function GameSettings({ lobbyCode, settings }: { lobbyCode: strin
                             disabled={!specialGameMode}
                         >
                             <SelectTrigger className="bg-yellow-950 border-none">
-                                <SelectValue placeholder="Token queue mode" />
+                                <SelectValue placeholder={settingsTexts?.tokenQueueMode ?? 'Token queue mode'} />
                             </SelectTrigger>
 
                             <SelectContent position="popper">
                                 <SelectItem value={String(P_TokenQueueModes.TOKEN_QUEUE_MODES_FULL_RANDOM)}>
-                                    Full Random
+                                    {settingsTexts?.fullRandom ?? 'Full Random'}
                                 </SelectItem>
 
                                 <SelectItem value={String(P_TokenQueueModes.TOKEN_QUEUE_MODES_SPECIAL_EVERY)}>
-                                    Special Every
+                                    {settingsTexts?.every ?? 'Special Every'}
                                 </SelectItem>
 
-                                <SelectItem value={String(P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK)}>Deck</SelectItem>
+                                <SelectItem value={String(P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK)}>{settingsTexts?.deck ?? 'Deck'}</SelectItem>
                             </SelectContent>
                         </Select>
                     )}
@@ -116,7 +118,7 @@ export default function GameSettings({ lobbyCode, settings }: { lobbyCode: strin
                             value={field.value ?? ''}
                             onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                             disabled={!specialGameMode || tokenQueueMode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_SPECIAL_EVERY}
-                            placeholder="Every"
+                            placeholder={settingsTexts?.every ?? 'Every'}
                         />
                     )}
                 />
@@ -154,7 +156,7 @@ export default function GameSettings({ lobbyCode, settings }: { lobbyCode: strin
                     type="submit"
                     className="bg-amber-900 hover:bg-amber-950 border-2 border-amber-950 cursor-pointer rounded-lg"
                 >
-                    Save Settings
+                    {settingsTexts?.saveSettings ?? 'Save Settings'}
                 </Button>
             </form>
         </div>

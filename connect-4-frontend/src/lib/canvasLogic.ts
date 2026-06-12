@@ -36,6 +36,7 @@ type FallingToken = {
     targetY: number;
 
     velocity: number;
+    gravity: number;
 
     deletedTiles: proto.ws.IChangeTile[] | undefined;
     fallingTokens: proto.ws.IFallingToken[] | undefined;
@@ -163,9 +164,9 @@ class GameCanvas {
 
     // Map of token sources used for token rendering
     private tokenMap: Map<
-            types.TTokenTypes, 
-            Map<types.TPlayerIDs, HTMLImageElement> | undefined
-        > = new Map([
+        types.TTokenTypes,
+        Map<types.TPlayerIDs, HTMLImageElement> | undefined
+    > = new Map([
         [types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED, undefined],
         [types.P_TokenTypes.TOKEN_TYPES_FROZEN, undefined],
         [types.P_TokenTypes.TOKEN_TYPES_STANDARD, new Map<types.TPlayerIDs, HTMLImageElement>([
@@ -249,11 +250,13 @@ class GameCanvas {
 
             x: column * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH,
             y: (tokenType === types.P_TokenTypes.TOKEN_TYPES_REVERSE)
-            ? BOARD_START_HEIGHT + (GAME_ROWS * BOARD_SLOT_DISTANCE)
-            : 0,
+                ? BOARD_START_HEIGHT + (GAME_ROWS * BOARD_SLOT_DISTANCE)
+                : 0,
             targetY: (GAME_ROWS - 1 - targetRow) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT,
 
             velocity: 0,
+            gravity: tokenType === types.P_TokenTypes.TOKEN_TYPES_REVERSE
+                ? TOKEN_GRAVITY_REVERSE : TOKEN_GRAVITY_NORMAL,
             deletedTiles: deletedTiles,
             fallingTokens: fallingTokens,
             frozenColumns: frozenColumns
@@ -267,14 +270,14 @@ class GameCanvas {
             player: player,
             type: tokenType,
 
-            x: (GAME_ROWS - 1 - startRow) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT,
-            y: (tokenType === types.P_TokenTypes.TOKEN_TYPES_REVERSE)
-            ? BOARD_START_HEIGHT + (GAME_ROWS * BOARD_SLOT_DISTANCE)
-            : 0,
+            x: column * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH,
+            y: (GAME_ROWS - 1 - startRow) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT,
             targetY: (GAME_ROWS - 1 - targetRow) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT,
 
             velocity: 0,
-            
+            gravity: startRow < targetRow
+                ? TOKEN_GRAVITY_REVERSE : TOKEN_GRAVITY_NORMAL,
+
             deletedTiles: undefined,
             fallingTokens: undefined,
             frozenColumns: undefined
@@ -284,15 +287,12 @@ class GameCanvas {
     private updateFallingTokens(dt: number) {
         for (let i = this.fallingTokens.length - 1; i >= 0; i--) {
             const token = this.fallingTokens[i];
-            const gravity: number = (token.type === types.P_TokenTypes.TOKEN_TYPES_REVERSE)
-            ? TOKEN_GRAVITY_REVERSE
-            : TOKEN_GRAVITY_NORMAL;
 
-            token.velocity += gravity * dt;
+            token.velocity += token.gravity * dt;
             token.y += token.velocity * dt;
 
-            if ((token.type !== types.P_TokenTypes.TOKEN_TYPES_REVERSE && token.y >= token.targetY) ||
-                (token.type === types.P_TokenTypes.TOKEN_TYPES_REVERSE && token.y <= token.targetY)) {
+            if ((token.gravity === TOKEN_GRAVITY_NORMAL && token.y >= token.targetY) ||
+                (token.gravity === TOKEN_GRAVITY_REVERSE && token.y <= token.targetY)) {
                 token.y = token.targetY;
 
                 if (token.type === types.P_TokenTypes.TOKEN_TYPES_BOMB) {
@@ -318,7 +318,7 @@ class GameCanvas {
                         tokenType: token.type,
                     };
                 }
-                
+
                 if (token.deletedTiles !== undefined) {
                     token.deletedTiles.forEach(tile => {
                         const row = tile.tile?.row;
@@ -349,10 +349,17 @@ class GameCanvas {
                         }
                     })
                 }
-                
+
                 if (token.fallingTokens !== undefined) {
+
                     token.fallingTokens.forEach(token => {
                         this.fallToken(token.fromCol!, token.tile?.row!, token.fromRow!, token.tile?.token?.playerId!, token.tile?.token?.tokenType!);
+
+                        if (token.fromRow !== undefined && token.fromRow !== null && token.fromCol !== undefined && token.fromCol !== null)
+                            this.currentBoardState.rows![token.fromRow].tokens![token.fromCol] = {
+                                playerId: types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
+                                tokenType: types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
+                            }
                     })
                 }
 
@@ -419,7 +426,7 @@ class GameCanvas {
                     token.tokenType !== types.P_TokenTypes.TOKEN_TYPES_FROZEN) {
                     const type = this.tokenMap.get(token.tokenType!);
                     const img = type!.get(token.playerId!);
-                    
+
                     this.ctx.drawImage(
                         img!,
                         j * BOARD_SLOT_DISTANCE + BOARD_START_WIDTH,

@@ -71,7 +71,7 @@ export default function LobbyTable({
                         {lobbyData.length === 0 ? (
                             <tr>
                                 <td colSpan={3} className="p-4 text-center text-amber-300 italic">
-                                    No lobbies found
+                                    {texts.noLobbiesFound}
                                 </td>
                             </tr>
                         ) : (

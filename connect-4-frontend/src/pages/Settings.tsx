@@ -1,9 +1,14 @@
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { langContext } from '@/lib/contexts';
 
 function Settings() {
+    const langCtx = useContext(langContext);
+    const texts = langCtx?.texts.header;
+
     return (
         <Link to="/">
-            <button>Home</button>
+            <button>{texts?.home}</button>
         </Link>
     );
 }

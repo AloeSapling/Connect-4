@@ -9,6 +9,7 @@ import type { GameData } from '../lib/game/types.ts';
 import { GameBoard } from '../lib/game/gameBoard.ts';
 import { TokenFactory } from '../lib/game/tokens/tokenFactory.ts';
 import { createNextTokenQueueObj, getTokenForFullRandom, getTokensForDeck } from '../lib/game/tokenQueue.ts';
+import { lobbyExists } from '../database-sqllite/lobby.ts';
 
 /** The list of tokens used to instantiate the initial game board */
 const initialTokens: Token[][] = [];
@@ -121,8 +122,12 @@ export async function endGame(lobbyCode: string) {
  * @returns A tuple containing partial user data of the winner and loser. In that order
  * */
 export async function forfeitGame(lobbyCode: string, playerID: TPlayerIDs): Promise<[models.IPartialUser, models.IPartialUser]> {
-    const winner = await getPartialUserDataByPlayerID(lobbyCode, getNextPlayer(playerID));
-    const loser = await getPartialUserDataByPlayerID(lobbyCode, playerID);
+    let winner = {};
+    let loser = {}
+    if (await lobbyExists(lobbyCode)) {
+        winner = await getPartialUserDataByPlayerID(lobbyCode, getNextPlayer(playerID));
+        loser = await getPartialUserDataByPlayerID(lobbyCode, playerID);
+    }
 
     await endGame(lobbyCode);
 
@@ -188,9 +193,14 @@ async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPl
      * The list is comprised in the order that the effects are meant to trigger
      * */
     const tokenTypesWithTurnTick = [P_TokenTypes.TOKEN_TYPES_BOMB, P_TokenTypes.TOKEN_TYPES_FREEZE, P_TokenTypes.TOKEN_TYPES_BURN, P_TokenTypes.TOKEN_TYPES_NEGATIVE, P_TokenTypes.TOKEN_TYPES_AURA];
-    const tokenIndexesWithTurnTick = tokenTypesWithTurnTick.map((type) => gameBoard.activeInstances[type] ?? []);
+    const tokenIndexesWithTurnTick = tokenTypesWithTurnTick.map((type) => [...(gameBoard.activeInstances[type] ?? [])]);
 
-    tokenIndexesWithTurnTick.forEach((instanceIndexes) => {
+    const processedTokens = new Set<Token>();
+
+    tokenIndexesWithTurnTick.forEach((instanceIndexes, idx) => {
+        const type = tokenTypesWithTurnTick[idx];
+        if (type === undefined) return;
+
         const sortedCoords = Token.sortTokensSequentially(instanceIndexes);
 
         for (const coord of sortedCoords) {
@@ -198,7 +208,9 @@ async function endTurn(lobbyCode: string, gameBoard: GameBoard, currentTurn: TPl
             if (!tokenRow) continue;
 
             const token = tokenRow[coord[0]];
-            if (!token) continue;
+            if (!token || token.type !== type) continue;
+            if (processedTokens.has(token)) continue;
+            processedTokens.add(token);
 
             token.tickTurn(gameBoard);
         }

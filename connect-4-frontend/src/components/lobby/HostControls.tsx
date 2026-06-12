@@ -92,7 +92,7 @@ export default function HostControls({ lobbyCode, membersData }: { lobbyCode: st
                             }
                         >
                             <SelectTrigger className="bg-yellow-950 border-none">
-                                <SelectValue placeholder="Select user" />
+                                <SelectValue placeholder={texts.selectUser} />
                             </SelectTrigger>
 
                             <SelectContent position="popper">

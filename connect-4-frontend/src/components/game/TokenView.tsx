@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+import { langContext } from '@/lib/contexts';
 import type { models } from '@/lib/proto';
 import {
     P_PlayerIDs,
@@ -21,6 +23,9 @@ export default function TokenView({
     selectedToken: SelectedToken;
     onTokenSelect?: (info: SelectedToken) => void;
 }) {
+    const langCtx = useContext(langContext);
+    const texts = langCtx?.texts.game;
+
     console.log(tokenQueueData);
     if (
         tokenQueueData.mode === P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED ||
@@ -33,7 +38,7 @@ export default function TokenView({
             <div
                 className={`bg-yellow-700 p-5 rounded-md flex-1 flex flex-col gap-3 ${playerID === P_PlayerIDs.PLAYER_IDS_PLAYER1 && 'border-4 border-sky-100'} `}
             >
-                <h2 className="font-bold text-lg text-white text-center">Player 1 tokens</h2>
+                <h2 className="font-bold text-lg text-white text-center">{texts?.player1Tokens}</h2>
                 <div className="flex flex-row gap-3 justify-center">
                     {tokenQueueData.mode === P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
                         tokenQueueData.decks?.player1?.map((tokenType, i) => (
@@ -63,7 +68,7 @@ export default function TokenView({
             <div
                 className={`bg-yellow-700 p-5 rounded-md flex-1 flex flex-col gap-3 ${playerID === P_PlayerIDs.PLAYER_IDS_PLAYER2 && 'border-4 border-sky-100'} `}
             >
-                <h2 className="font-bold text-lg text-white text-center">Player 2 tokens</h2>
+                <h2 className="font-bold text-lg text-white text-center">{texts?.player2Tokens}</h2>
                 <div className="flex flex-row gap-3 justify-center">
                     {tokenQueueData.mode === P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
                         tokenQueueData.decks?.player2?.map((tokenType, i) => (

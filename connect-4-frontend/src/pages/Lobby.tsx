@@ -132,7 +132,7 @@ function Lobby() {
     const texts = langCtx.texts.lobby;
 
     if (isLoading || !queryData || lobbyMembersData.length === 0) {
-        return <div>Loading...</div>;
+        return <div>{langCtx.texts.lobby.loading}</div>;
     }
 
     return (

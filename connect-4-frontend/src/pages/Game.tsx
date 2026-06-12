@@ -27,7 +27,7 @@ export default function Game() {
     const navigate = useNavigate();
     const { lobbyCode } = useParams();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     const {
         data: queryData,
         isLoading,
@@ -168,7 +168,7 @@ export default function Game() {
             setPlayerID,
             setGameResults,
             setTokenQueueDataObject,
-            setSelectedToken,
+            setSelectedTokenType,
             setTurn,
             texts
         );
@@ -197,10 +197,10 @@ export default function Game() {
     const forfeitGameButton = () => wsRef.current?.forfeit();
 
     // Wait for everything to load properly
-    if (isLoading || !queryData || !lobbyCode || !texts) return <p>Loading</p>;
+    if (isLoading || !queryData || !lobbyCode || !texts) return <p>{texts?.loading ?? 'Loading'}</p>;
 
     return (
-        <div>
+        <div className='flex flex-col flex-1 gap-2 pb-4'>
             {/* The game's board canvas element, handles all of the on-board game playing logic */}
             <GameBoardCanvas
                 queryData={queryData}
@@ -211,7 +211,7 @@ export default function Game() {
                 currentTurn={currentTurn}
                 selectedTokenRef={selectedTokenRef}
             />
-            <div className="flex flex-row justify-evenly items-center p-5 gap-8 rounded-lg mt-2 bg-yellow-800">
+            <div className="flex flex-row justify-evenly items-center p-5 gap-8 rounded-lg bg-yellow-800">
                 <div className="flex flex-col items-center gap-5">
                     {userPlayerID !== P_PlayerIDs.PLAYER_IDS_UNSPECIFIED ? (
                         <Button
@@ -230,7 +230,7 @@ export default function Game() {
                         </Button>
                     )}
                     <p className="text-white text-xl font-semibold italic">
-                        {currentTurnState === P_PlayerIDs.PLAYER_IDS_PLAYER1 ? "Player 1's Turn" : "Player 2's Turn"}
+                        {currentTurnState === P_PlayerIDs.PLAYER_IDS_PLAYER1 ? texts.player1Turn : texts.player2Turn}
                     </p>
                 </div>
                 <TokenView
@@ -295,9 +295,9 @@ function getResults(packet: p_ws.GameResponsePacket, texts: PageTexts['game']): 
         case p_ws.GameEndTypes.GAME_END_TYPES_FORFEITED:
             return `${packet.end.loser?.username} ${texts.resultsForfeitText} ${packet.end.winner?.username} ${texts.resultsWinText}`;
         case p_ws.GameEndTypes.GAME_END_TYPES_UNSPECIFIED:
-            return `unspecified`;
+            return texts.endUnspecified;
         default:
-            return `default`;
+            return texts.endDefault;
     }
 }
 

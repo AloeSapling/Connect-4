@@ -39,7 +39,7 @@ export default function LobbySettingsCard({
     const queryClient = useQueryClient();
     const langCtx = useContext(langContext);
     if (!langCtx) return <p>Missing language context!</p>;
-    const texts = langCtx.texts.lobby;
+    const settingsTexts = langCtx.texts.lobbySettings;
 
     const settingsForm = useForm<Z_TChangeLobbySettings>({
         resolver: zodResolver(Z_ChangeLobbySettings),
@@ -66,7 +66,7 @@ export default function LobbySettingsCard({
     const changeSettings_m = useMutation({
         mutationFn: changeLobbySettings,
         onSuccess: () => {
-            toast.success('Settings changed!');
+            toast.success(settingsTexts.settingsChanged);
             queryClient.invalidateQueries({ queryKey: [lobbyCode] });
         },
         onError: (err) => toast.error(err.message),
@@ -87,11 +87,11 @@ export default function LobbySettingsCard({
     return (
         <div className="bg-yellow-900 flex flex-col p-3 rounded-lg min-h-80 w-72">
             {/* Connect-4+ Gamemode */}
-            <p className="font-semibold mb-2 text-xl">Lobby settings</p>
+            <p className="font-semibold mb-2 text-xl">{settingsTexts.heading}</p>
 
             <form onSubmit={settingsForm.handleSubmit(onSettingsSubmit)} className="flex-1 flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                    <Label className="text-md">enable extra gamemode?</Label>
+                    <Label className="text-md">{settingsTexts.enableExtraGamemode}</Label>
                     <Switch
                         checked={specialGameMode}
                         onCheckedChange={(checked) => settingsForm.setValue('special_gameMode', checked)}
@@ -110,16 +110,16 @@ export default function LobbySettingsCard({
                                 disabled={!isHost || !specialGameMode}
                             >
                                 <SelectTrigger className="bg-yellow-950 border-none flex-1">
-                                    <SelectValue placeholder="Token queue mode" />
+                                    <SelectValue placeholder={settingsTexts.tokenQueueMode} />
                                 </SelectTrigger>
                                 <SelectContent position="popper">
                                     <SelectItem value={String(P_TokenQueueModes.TOKEN_QUEUE_MODES_FULL_RANDOM)}>
-                                        Full Random
+                                        {settingsTexts.fullRandom}
                                     </SelectItem>
                                     <SelectItem value={String(P_TokenQueueModes.TOKEN_QUEUE_MODES_SPECIAL_EVERY)}>
-                                        Every
+                                        {settingsTexts.every}
                                     </SelectItem>
-                                    <SelectItem value={String(P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK)}>Deck</SelectItem>
+                                    <SelectItem value={String(P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK)}>{settingsTexts.deck}</SelectItem>
                                 </SelectContent>
                             </Select>
                         )}
@@ -140,7 +140,7 @@ export default function LobbySettingsCard({
                                     !specialGameMode ||
                                     tokenQueueMode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_SPECIAL_EVERY
                                 }
-                                placeholder="Every"
+                                placeholder={settingsTexts.every}
                                 className="w-25 placeholder:text-sky-100"
                             />
                         )}
@@ -148,7 +148,7 @@ export default function LobbySettingsCard({
                 </div>
 
                 <details className="mt-1">
-                    <summary className="cursor-pointer text-lg select-none">Allowed Tokens</summary>
+                    <summary className="cursor-pointer text-lg select-none">{settingsTexts.allowedTokens}</summary>
                     <div className="grid grid-cols-2 gap-x-3 gap-y-1 items-end mt-2">
                         {SPECIAL_TOKEN_TYPES.map((tokenType) => (
                             <div key={tokenType} className="w-full flex justify-between items-center gap-1">
@@ -185,7 +185,7 @@ export default function LobbySettingsCard({
                     disabled={!isHost}
                     className="bg-amber-900 hover:bg-amber-950 border-2 border-amber-950 cursor-pointer rounded-lg disabled:opacity-50 mt-1"
                 >
-                    Save Settings
+                    {settingsTexts.saveSettings}
                 </Button>
             </form>
         </div>

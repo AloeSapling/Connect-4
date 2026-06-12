@@ -66,7 +66,7 @@ export default function PlayerSelectDialog({
                     className="border-2 border-rose-500 text-rose-300 bg-rose-950/60 rounded-lg py-2 px-8 hover:border-rose-400 hover:text-rose-200 hover:bg-rose-900/70 transition-colors text-base font-bold cursor-pointer"
                     style={{ width: '35%' }}
                 >
-                    Cancel
+                    {texts?.cancel ?? 'Cancel'}
                 </button>
             </div>
         </div>

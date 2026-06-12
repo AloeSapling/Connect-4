@@ -19,17 +19,17 @@ export default function MemberTable({
     const user = useContext(UserContext);
     const [editUserId, setEditUserId] = useState<number | null>(null);
 
-    const tempBan_m = useMutation({
-        mutationFn: (userId: number) => tempBanUser(lobbyCode!, userId),
-        onSuccess: () => toast.success('User tempbanned'),
-        onError: (err) => toast.error(err.message),
-    });
-
     const langCtx = useContext(langContext);
 
     if (!langCtx) return <p>Missing language context!</p>;
 
     const texts = langCtx.texts.lobby;
+
+    const tempBan_m = useMutation({
+        mutationFn: (userId: number) => tempBanUser(lobbyCode!, userId),
+        onSuccess: () => toast.success(texts.userTempbanned),
+        onError: (err) => toast.error(err.message),
+    });
 
     const editMember = membersData.find((m) => m.userId === editUserId);
 
@@ -65,9 +65,9 @@ export default function MemberTable({
                                 <td
                                     className={`p-3 truncate text-base ${member.playerId === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1 ? 'text-red-500' : member.playerId === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER2 ? 'text-yellow-300' : 'text-gray-400'}`}
                                 >
-                                    {member.playerId === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1 && 'P1: '}
-                                    {member.playerId === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER2 && 'P2: '}
-                                    {member.username} {member.host && <span className="text-sky-400 font-bold">(host)</span>}{' '}
+                                                                        {member.playerId === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1 && texts.p1}
+                                    {member.playerId === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER2 && texts.p2}
+                                    {member.username} {member.host && <span className="text-sky-400 font-bold">{texts.host}</span>} {' '}
                                     {member.userId === user?.id && (
                                         <span className="text-sky-400 font-bold">{texts.labelYou}</span>
                                     )}
@@ -77,7 +77,7 @@ export default function MemberTable({
                                         <span className="inline-flex gap-2">
                                             <button
                                                 onClick={() => setEditUserId(member.userId!)}
-                                                title="Change player ID"
+                                                title={texts.changePlayerId}
                                                 className="cursor-pointer"
                                             >
                                                 <Pencil
@@ -88,7 +88,7 @@ export default function MemberTable({
                                             {member.userId !== user?.id && !member.host && (
                                                 <button
                                                     onClick={() => tempBan_m.mutate(member.userId!)}
-                                                    title="Tempban"
+                                                    title={texts.tempban}
                                                     className="cursor-pointer"
                                                 >
                                                     <ShieldBan
