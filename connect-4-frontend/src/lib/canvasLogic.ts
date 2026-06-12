@@ -319,7 +319,9 @@ class GameCanvas {
                     // Commit token to board state
                     this.currentBoardState.rows![token.targetRow].tokens![token.column] = {
                         playerId: token.player,
-                        tokenType: token.type,
+                        tokenType: token.type === types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
+                            ? types.P_TokenTypes.TOKEN_TYPES_STANDARD
+                            : token.type,
                     };
                 }
 

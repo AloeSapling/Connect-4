@@ -17,9 +17,8 @@ export const TEMP_BAN_TIME = 300 as const; // 5 minutes (60 seconds * 5)
 export const ALL_CODE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789' as const;
 export const CODE_LENGTH = 8 as const;
 
-export const SERVER_PORT: string = process.env.SERVER_PORT ?? ('8080' as const);
-export const CLIENT_URL: string = process.env.CLIENT_URL ?? ('http://localhost:5173' as const);
-export const REDIS_HOST: string = process.env.REDIS_HOST ?? ('redis' as const);
-export const REDIS_PORT: string = process.env.REDIS_PORT ?? ('6379' as const);
+export const SERVER_PORT: string = process.env.PORT ?? process.env.SERVER_PORT ?? ('8080' as const);
+export const ALLOWED_ORIGINS: string = process.env.ALLOWED_ORIGINS ?? ('http://localhost:5173' as const);
+export const REDIS_URL: string = process.env.REDIS_URL ?? `redis://${process.env.REDIS_HOST ?? 'redis'}:${ process.env.REDIS_PORT ?? '6379'}`;
 
 export const SILENT_SEQUELIZE: boolean = true as const;

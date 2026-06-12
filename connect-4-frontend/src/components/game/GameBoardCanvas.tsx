@@ -59,7 +59,10 @@ function GameBoardCanvas({
         console.log(userPlayerID, currentTurn.current);
         if (userPlayerIDRef.current !== currentTurn.current) return;
 
-        wsRef.current?.insertToken(column, selectedTokenRef.current ?? P_TokenTypes.TOKEN_TYPES_STANDARD);
+        const tokenType = selectedTokenRef.current !== P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
+            ? selectedTokenRef.current
+            : P_TokenTypes.TOKEN_TYPES_STANDARD;
+        wsRef.current?.insertToken(column, tokenType);
     };
 
     const handleColumnEnter = (column: number) => {

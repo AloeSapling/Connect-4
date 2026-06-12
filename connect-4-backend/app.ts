@@ -13,7 +13,7 @@ import lobbyRouter from './routes/lobby.ts';
 import { createClient } from 'redis';
 import { authUser, wsIsLobbyMember } from './lib/auth.ts';
 import { setupDatabase } from './database-sqllite/database.ts';
-import { CLIENT_URL, REDIS_HOST, REDIS_PORT, SERVER_PORT } from './config.ts';
+import { ALLOWED_ORIGINS, REDIS_URL, SERVER_PORT } from './config.ts';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { setupGameWSServer } from './routes/ws/game.ts';
@@ -24,7 +24,7 @@ import onRedisExpire from './database-redis/expired.ts';
 
 // Set up Redis database
 export const redis = createClient({
-    url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
+    url: REDIS_URL,
 });
 
 redis.on('error', (err) => console.error('Redis error:', err));
@@ -33,7 +33,7 @@ await redis.connect();
 
 // Listen and handle key expiration
 const subscriber = createClient({
-    url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
+    url: REDIS_URL,
 });
 await subscriber.connect();
 
@@ -63,9 +63,16 @@ export const sessionMiddleware = session({
 });
 
 // Middlewares
+const allowedOrigins = ALLOWED_ORIGINS.split(',');
 app.use(
     cors({
-        origin: CLIENT_URL,
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(null, false);
+            }
+        },
         credentials: true,
     })
 );
