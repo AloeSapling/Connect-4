@@ -1,8 +1,7 @@
-import 'dotenv';
 import type { Languages } from './lang';
 
-export const SERVER_URL = import.meta.env.SERVER_URL ?? 'http://localhost:8080/';
-export const SERVER_URL_WS = import.meta.env.SERVER_URL_WS ?? 'ws://localhost:8080';
+export const SERVER_URL = import.meta.env.VITE_SERVER_URL ?? 'http://localhost:8080/';
+export const SERVER_URL_WS = import.meta.env.VITE_SERVER_URL_WS ?? 'ws://localhost:8080';
 
 export const DEFAULT_LANGUAGE: Languages = 'en_UK';
 
