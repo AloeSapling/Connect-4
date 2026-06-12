@@ -19,7 +19,9 @@ export namespace shared {
         ERROR_CODES_GAME_ALREADY_EXISTS = 11,
         ERROR_CODES_DOESNT_EXIST = 12,
         ERROR_CODES_USER_ALREADY_EXISTS = 13,
-        ERROR_CODES_BAD_SETUP = 14
+        ERROR_CODES_BAD_SETUP = 14,
+        ERROR_CODES_USER_BANNED = 15,
+        ERROR_CODES_BAD_TOKEN = 16
     }
 
     /** Properties of a CodedError. */
@@ -142,8 +144,8 @@ export namespace shared {
     /** Properties of a GameRow. */
     interface IGameRow {
 
-        /** GameRow columns */
-        columns?: (shared.PlayerIDs[]|null);
+        /** GameRow tokens */
+        tokens?: (models.IToken[]|null);
     }
 
     /** Represents a GameRow. */
@@ -155,8 +157,8 @@ export namespace shared {
          */
         constructor(properties?: shared.IGameRow);
 
-        /** GameRow columns. */
-        public columns: shared.PlayerIDs[];
+        /** GameRow tokens. */
+        public tokens: models.IToken[];
 
         /**
          * Creates a new GameRow instance using the specified properties.
@@ -344,7 +346,9 @@ export namespace ws {
         LOBBY_RESPONSES_JOIN = 2,
         LOBBY_RESPONSES_LEAVE = 3,
         LOBBY_RESPONSES_CHANGE_PLAYER = 4,
-        LOBBY_RESPONSES_START_GAME = 5
+        LOBBY_RESPONSES_START_GAME = 5,
+        LOBBY_RESPONSES_HOST_LEFT = 6,
+        LOBBY_RESPONSES_SETTINGS_CHANGED = 7
     }
 
     /** Properties of a LobbyJoin. */
@@ -655,6 +659,9 @@ export namespace ws {
 
         /** LobbyResponsePacket changePlayer */
         changePlayer?: (ws.ILobbyChangePlayer|null);
+
+        /** LobbyResponsePacket settings */
+        settings?: (models.ILobbySettings|null);
     }
 
     /** Represents a LobbyResponsePacket. */
@@ -681,8 +688,11 @@ export namespace ws {
         /** LobbyResponsePacket changePlayer. */
         public changePlayer?: (ws.ILobbyChangePlayer|null);
 
+        /** LobbyResponsePacket settings. */
+        public settings?: (models.ILobbySettings|null);
+
         /** LobbyResponsePacket data. */
-        public data?: ("error"|"join"|"leave"|"changePlayer");
+        public data?: ("error"|"join"|"leave"|"changePlayer"|"settings");
 
         /**
          * Creates a new LobbyResponsePacket instance using the specified properties.
@@ -762,97 +772,103 @@ export namespace ws {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a GameInsertTile. */
-    interface IGameInsertTile {
+    /** Properties of a GameInsertToken. */
+    interface IGameInsertToken {
 
-        /** GameInsertTile column */
+        /** GameInsertToken column */
         column?: (number|null);
+
+        /** GameInsertToken tokenType */
+        tokenType?: (models.TokenTypes|null);
     }
 
-    /** Represents a GameInsertTile. */
-    class GameInsertTile implements IGameInsertTile {
+    /** Represents a GameInsertToken. */
+    class GameInsertToken implements IGameInsertToken {
 
         /**
-         * Constructs a new GameInsertTile.
+         * Constructs a new GameInsertToken.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IGameInsertTile);
+        constructor(properties?: ws.IGameInsertToken);
 
-        /** GameInsertTile column. */
+        /** GameInsertToken column. */
         public column: number;
 
+        /** GameInsertToken tokenType. */
+        public tokenType: models.TokenTypes;
+
         /**
-         * Creates a new GameInsertTile instance using the specified properties.
+         * Creates a new GameInsertToken instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GameInsertTile instance
+         * @returns GameInsertToken instance
          */
-        public static create(properties?: ws.IGameInsertTile): ws.GameInsertTile;
+        public static create(properties?: ws.IGameInsertToken): ws.GameInsertToken;
 
         /**
-         * Encodes the specified GameInsertTile message. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
-         * @param message GameInsertTile message or plain object to encode
+         * Encodes the specified GameInsertToken message. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
+         * @param message GameInsertToken message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IGameInsertTile, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameInsertToken, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GameInsertTile message, length delimited. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
-         * @param message GameInsertTile message or plain object to encode
+         * Encodes the specified GameInsertToken message, length delimited. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
+         * @param message GameInsertToken message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IGameInsertTile, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameInsertToken, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GameInsertTile message from the specified reader or buffer.
+         * Decodes a GameInsertToken message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GameInsertTile
+         * @returns GameInsertToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameInsertTile;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameInsertToken;
 
         /**
-         * Decodes a GameInsertTile message from the specified reader or buffer, length delimited.
+         * Decodes a GameInsertToken message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GameInsertTile
+         * @returns GameInsertToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameInsertTile;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameInsertToken;
 
         /**
-         * Verifies a GameInsertTile message.
+         * Verifies a GameInsertToken message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GameInsertTile message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameInsertToken message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GameInsertTile
+         * @returns GameInsertToken
          */
-        public static fromObject(object: { [k: string]: any }): ws.GameInsertTile;
+        public static fromObject(object: { [k: string]: any }): ws.GameInsertToken;
 
         /**
-         * Creates a plain object from a GameInsertTile message. Also converts values to other types if specified.
-         * @param message GameInsertTile
+         * Creates a plain object from a GameInsertToken message. Also converts values to other types if specified.
+         * @param message GameInsertToken
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.GameInsertTile, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameInsertToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GameInsertTile to JSON.
+         * Converts this GameInsertToken to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GameInsertTile
+         * Gets the default type url for GameInsertToken
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -862,7 +878,7 @@ export namespace ws {
     /** GameActions enum. */
     enum GameActions {
         GAME_ACTIONS_UNSPECIFIED = 0,
-        GAME_ACTIONS_INSERT_TILE = 1,
+        GAME_ACTIONS_INSERT_TOKEN = 1,
         GAME_ACTIONS_FORFEIT = 2
     }
 
@@ -872,8 +888,8 @@ export namespace ws {
         /** GamePacket action */
         action?: (ws.GameActions|null);
 
-        /** GamePacket insertTile */
-        insertTile?: (ws.IGameInsertTile|null);
+        /** GamePacket insertToken */
+        insertToken?: (ws.IGameInsertToken|null);
     }
 
     /** Represents a GamePacket. */
@@ -888,11 +904,11 @@ export namespace ws {
         /** GamePacket action. */
         public action: ws.GameActions;
 
-        /** GamePacket insertTile. */
-        public insertTile?: (ws.IGameInsertTile|null);
+        /** GamePacket insertToken. */
+        public insertToken?: (ws.IGameInsertToken|null);
 
         /** GamePacket data. */
-        public data?: "insertTile";
+        public data?: "insertToken";
 
         /**
          * Creates a new GamePacket instance using the specified properties.
@@ -980,224 +996,206 @@ export namespace ws {
         GAME_END_TYPES_DRAW = 3
     }
 
-    /** Properties of a Token. */
-    interface IToken {
+    /** Properties of a GameInit. */
+    interface IGameInit {
 
-        /** Token row */
-        row?: (number|null);
-
-        /** Token column */
-        column?: (number|null);
-
-        /** Token playerID */
-        playerID?: (shared.PlayerIDs|null);
+        /** GameInit playerId */
+        playerId?: (shared.PlayerIDs|null);
     }
 
-    /** Represents a Token. */
-    class Token implements IToken {
+    /** Represents a GameInit. */
+    class GameInit implements IGameInit {
 
         /**
-         * Constructs a new Token.
+         * Constructs a new GameInit.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IToken);
+        constructor(properties?: ws.IGameInit);
 
-        /** Token row. */
-        public row: number;
-
-        /** Token column. */
-        public column: number;
-
-        /** Token playerID. */
-        public playerID: shared.PlayerIDs;
+        /** GameInit playerId. */
+        public playerId: shared.PlayerIDs;
 
         /**
-         * Creates a new Token instance using the specified properties.
+         * Creates a new GameInit instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns Token instance
+         * @returns GameInit instance
          */
-        public static create(properties?: ws.IToken): ws.Token;
+        public static create(properties?: ws.IGameInit): ws.GameInit;
 
         /**
-         * Encodes the specified Token message. Does not implicitly {@link ws.Token.verify|verify} messages.
-         * @param message Token message or plain object to encode
+         * Encodes the specified GameInit message. Does not implicitly {@link ws.GameInit.verify|verify} messages.
+         * @param message GameInit message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IGameInit, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified Token message, length delimited. Does not implicitly {@link ws.Token.verify|verify} messages.
-         * @param message Token message or plain object to encode
+         * Encodes the specified GameInit message, length delimited. Does not implicitly {@link ws.GameInit.verify|verify} messages.
+         * @param message GameInit message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IGameInit, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a Token message from the specified reader or buffer.
+         * Decodes a GameInit message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns Token
+         * @returns GameInit
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.Token;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameInit;
 
         /**
-         * Decodes a Token message from the specified reader or buffer, length delimited.
+         * Decodes a GameInit message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns Token
+         * @returns GameInit
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.Token;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameInit;
 
         /**
-         * Verifies a Token message.
+         * Verifies a GameInit message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a Token message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameInit message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns Token
+         * @returns GameInit
          */
-        public static fromObject(object: { [k: string]: any }): ws.Token;
+        public static fromObject(object: { [k: string]: any }): ws.GameInit;
 
         /**
-         * Creates a plain object from a Token message. Also converts values to other types if specified.
-         * @param message Token
+         * Creates a plain object from a GameInit message. Also converts values to other types if specified.
+         * @param message GameInit
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.Token, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.GameInit, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this Token to JSON.
+         * Converts this GameInit to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for Token
+         * Gets the default type url for GameInit
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a GameEnd. */
-    interface IGameEnd {
+    /** Properties of a FallingToken. */
+    interface IFallingToken {
 
-        /** GameEnd endType */
-        endType?: (ws.GameEndTypes|null);
+        /** FallingToken fromCol */
+        fromCol?: (number|null);
 
-        /** GameEnd token */
-        token?: (ws.IToken|null);
+        /** FallingToken fromRow */
+        fromRow?: (number|null);
 
-        /** GameEnd winner */
-        winner?: (models.IPartialUser|null);
-
-        /** GameEnd loser */
-        loser?: (models.IPartialUser|null);
+        /** FallingToken tile */
+        tile?: (models.ITile|null);
     }
 
-    /** Represents a GameEnd. */
-    class GameEnd implements IGameEnd {
+    /** Represents a FallingToken. */
+    class FallingToken implements IFallingToken {
 
         /**
-         * Constructs a new GameEnd.
+         * Constructs a new FallingToken.
          * @param [properties] Properties to set
          */
-        constructor(properties?: ws.IGameEnd);
+        constructor(properties?: ws.IFallingToken);
 
-        /** GameEnd endType. */
-        public endType: ws.GameEndTypes;
+        /** FallingToken fromCol. */
+        public fromCol: number;
 
-        /** GameEnd token. */
-        public token?: (ws.IToken|null);
+        /** FallingToken fromRow. */
+        public fromRow: number;
 
-        /** GameEnd winner. */
-        public winner?: (models.IPartialUser|null);
-
-        /** GameEnd loser. */
-        public loser?: (models.IPartialUser|null);
+        /** FallingToken tile. */
+        public tile?: (models.ITile|null);
 
         /**
-         * Creates a new GameEnd instance using the specified properties.
+         * Creates a new FallingToken instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns GameEnd instance
+         * @returns FallingToken instance
          */
-        public static create(properties?: ws.IGameEnd): ws.GameEnd;
+        public static create(properties?: ws.IFallingToken): ws.FallingToken;
 
         /**
-         * Encodes the specified GameEnd message. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
-         * @param message GameEnd message or plain object to encode
+         * Encodes the specified FallingToken message. Does not implicitly {@link ws.FallingToken.verify|verify} messages.
+         * @param message FallingToken message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: ws.IGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: ws.IFallingToken, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified GameEnd message, length delimited. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
-         * @param message GameEnd message or plain object to encode
+         * Encodes the specified FallingToken message, length delimited. Does not implicitly {@link ws.FallingToken.verify|verify} messages.
+         * @param message FallingToken message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: ws.IGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: ws.IFallingToken, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a GameEnd message from the specified reader or buffer.
+         * Decodes a FallingToken message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns GameEnd
+         * @returns FallingToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameEnd;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.FallingToken;
 
         /**
-         * Decodes a GameEnd message from the specified reader or buffer, length delimited.
+         * Decodes a FallingToken message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns GameEnd
+         * @returns FallingToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameEnd;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.FallingToken;
 
         /**
-         * Verifies a GameEnd message.
+         * Verifies a FallingToken message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a GameEnd message from a plain object. Also converts values to their respective internal types.
+         * Creates a FallingToken message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns GameEnd
+         * @returns FallingToken
          */
-        public static fromObject(object: { [k: string]: any }): ws.GameEnd;
+        public static fromObject(object: { [k: string]: any }): ws.FallingToken;
 
         /**
-         * Creates a plain object from a GameEnd message. Also converts values to other types if specified.
-         * @param message GameEnd
+         * Creates a plain object from a FallingToken message. Also converts values to other types if specified.
+         * @param message FallingToken
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: ws.GameEnd, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: ws.FallingToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this GameEnd to JSON.
+         * Converts this FallingToken to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for GameEnd
+         * Gets the default type url for FallingToken
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -1207,14 +1205,32 @@ export namespace ws {
     /** Properties of a GameMove. */
     interface IGameMove {
 
-        /** GameMove token */
-        token?: (ws.IToken|null);
+        /** GameMove tile */
+        tile?: (models.ITile|null);
 
         /** GameMove board */
         board?: (shared.IGameBoard|null);
 
         /** GameMove turn */
         turn?: (shared.PlayerIDs|null);
+
+        /** GameMove changeTiles */
+        changeTiles?: (ws.IChangeTile[]|null);
+
+        /** GameMove currentTokens */
+        currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameMove decks */
+        decks?: (models.IDecks|null);
+
+        /** GameMove fallingTokens */
+        fallingTokens?: (ws.IFallingToken[]|null);
+
+        /** GameMove deletedTiles */
+        deletedTiles?: (ws.IChangeTile[]|null);
+
+        /** GameMove frozenColumns */
+        frozenColumns?: (boolean[]|null);
     }
 
     /** Represents a GameMove. */
@@ -1226,14 +1242,32 @@ export namespace ws {
          */
         constructor(properties?: ws.IGameMove);
 
-        /** GameMove token. */
-        public token?: (ws.IToken|null);
+        /** GameMove tile. */
+        public tile?: (models.ITile|null);
 
         /** GameMove board. */
         public board?: (shared.IGameBoard|null);
 
         /** GameMove turn. */
         public turn: shared.PlayerIDs;
+
+        /** GameMove changeTiles. */
+        public changeTiles: ws.IChangeTile[];
+
+        /** GameMove currentTokens. */
+        public currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameMove decks. */
+        public decks?: (models.IDecks|null);
+
+        /** GameMove fallingTokens. */
+        public fallingTokens: ws.IFallingToken[];
+
+        /** GameMove deletedTiles. */
+        public deletedTiles: ws.IChangeTile[];
+
+        /** GameMove frozenColumns. */
+        public frozenColumns: boolean[];
 
         /**
          * Creates a new GameMove instance using the specified properties.
@@ -1313,12 +1347,273 @@ export namespace ws {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a ChangeTile. */
+    interface IChangeTile {
+
+        /** ChangeTile action */
+        action?: (models.ChangeTokenActions|null);
+
+        /** ChangeTile tile */
+        tile?: (models.ITile|null);
+    }
+
+    /** Represents a ChangeTile. */
+    class ChangeTile implements IChangeTile {
+
+        /**
+         * Constructs a new ChangeTile.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.IChangeTile);
+
+        /** ChangeTile action. */
+        public action: models.ChangeTokenActions;
+
+        /** ChangeTile tile. */
+        public tile?: (models.ITile|null);
+
+        /**
+         * Creates a new ChangeTile instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns ChangeTile instance
+         */
+        public static create(properties?: ws.IChangeTile): ws.ChangeTile;
+
+        /**
+         * Encodes the specified ChangeTile message. Does not implicitly {@link ws.ChangeTile.verify|verify} messages.
+         * @param message ChangeTile message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.IChangeTile, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified ChangeTile message, length delimited. Does not implicitly {@link ws.ChangeTile.verify|verify} messages.
+         * @param message ChangeTile message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.IChangeTile, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a ChangeTile message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns ChangeTile
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.ChangeTile;
+
+        /**
+         * Decodes a ChangeTile message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns ChangeTile
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.ChangeTile;
+
+        /**
+         * Verifies a ChangeTile message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a ChangeTile message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns ChangeTile
+         */
+        public static fromObject(object: { [k: string]: any }): ws.ChangeTile;
+
+        /**
+         * Creates a plain object from a ChangeTile message. Also converts values to other types if specified.
+         * @param message ChangeTile
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.ChangeTile, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this ChangeTile to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for ChangeTile
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GameEnd. */
+    interface IGameEnd {
+
+        /** GameEnd endType */
+        endType?: (ws.GameEndTypes|null);
+
+        /** GameEnd tile */
+        tile?: (models.ITile|null);
+
+        /** GameEnd winner */
+        winner?: (models.IPartialUser|null);
+
+        /** GameEnd loser */
+        loser?: (models.IPartialUser|null);
+
+        /** GameEnd board */
+        board?: (shared.IGameBoard|null);
+
+        /** GameEnd changeTiles */
+        changeTiles?: (ws.IChangeTile[]|null);
+
+        /** GameEnd currentTokens */
+        currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameEnd decks */
+        decks?: (models.IDecks|null);
+
+        /** GameEnd fallingTokens */
+        fallingTokens?: (ws.IFallingToken[]|null);
+
+        /** GameEnd deletedTiles */
+        deletedTiles?: (ws.IChangeTile[]|null);
+
+        /** GameEnd frozenColumns */
+        frozenColumns?: (boolean[]|null);
+    }
+
+    /** Represents a GameEnd. */
+    class GameEnd implements IGameEnd {
+
+        /**
+         * Constructs a new GameEnd.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: ws.IGameEnd);
+
+        /** GameEnd endType. */
+        public endType: ws.GameEndTypes;
+
+        /** GameEnd tile. */
+        public tile?: (models.ITile|null);
+
+        /** GameEnd winner. */
+        public winner?: (models.IPartialUser|null);
+
+        /** GameEnd loser. */
+        public loser?: (models.IPartialUser|null);
+
+        /** GameEnd board. */
+        public board?: (shared.IGameBoard|null);
+
+        /** GameEnd changeTiles. */
+        public changeTiles: ws.IChangeTile[];
+
+        /** GameEnd currentTokens. */
+        public currentTokens?: (models.ICurrentTokens|null);
+
+        /** GameEnd decks. */
+        public decks?: (models.IDecks|null);
+
+        /** GameEnd fallingTokens. */
+        public fallingTokens: ws.IFallingToken[];
+
+        /** GameEnd deletedTiles. */
+        public deletedTiles: ws.IChangeTile[];
+
+        /** GameEnd frozenColumns. */
+        public frozenColumns: boolean[];
+
+        /**
+         * Creates a new GameEnd instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns GameEnd instance
+         */
+        public static create(properties?: ws.IGameEnd): ws.GameEnd;
+
+        /**
+         * Encodes the specified GameEnd message. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
+         * @param message GameEnd message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: ws.IGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified GameEnd message, length delimited. Does not implicitly {@link ws.GameEnd.verify|verify} messages.
+         * @param message GameEnd message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: ws.IGameEnd, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a GameEnd message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns GameEnd
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ws.GameEnd;
+
+        /**
+         * Decodes a GameEnd message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns GameEnd
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ws.GameEnd;
+
+        /**
+         * Verifies a GameEnd message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a GameEnd message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns GameEnd
+         */
+        public static fromObject(object: { [k: string]: any }): ws.GameEnd;
+
+        /**
+         * Creates a plain object from a GameEnd message. Also converts values to other types if specified.
+         * @param message GameEnd
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: ws.GameEnd, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this GameEnd to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for GameEnd
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** GameResponses enum. */
     enum GameResponses {
         GAME_RESPONSES_UNSPECIFIED = 0,
         GAME_RESPONSES_ERROR = 1,
-        GAME_RESPONSES_MOVE = 2,
-        GAME_RESPONSES_END = 3
+        GAME_RESPONSES_INIT = 2,
+        GAME_RESPONSES_MOVE = 3,
+        GAME_RESPONSES_END = 4
     }
 
     /** Properties of a GameResponsePacket. */
@@ -1329,6 +1624,9 @@ export namespace ws {
 
         /** GameResponsePacket error */
         error?: (shared.ICodedError|null);
+
+        /** GameResponsePacket init */
+        init?: (ws.IGameInit|null);
 
         /** GameResponsePacket move */
         move?: (ws.IGameMove|null);
@@ -1352,6 +1650,9 @@ export namespace ws {
         /** GameResponsePacket error. */
         public error?: (shared.ICodedError|null);
 
+        /** GameResponsePacket init. */
+        public init?: (ws.IGameInit|null);
+
         /** GameResponsePacket move. */
         public move?: (ws.IGameMove|null);
 
@@ -1359,7 +1660,7 @@ export namespace ws {
         public end?: (ws.IGameEnd|null);
 
         /** GameResponsePacket data. */
-        public data?: ("error"|"move"|"end");
+        public data?: ("error"|"init"|"move"|"end");
 
         /**
          * Creates a new GameResponsePacket instance using the specified properties.
@@ -1560,6 +1861,18 @@ export namespace models {
 
         /** Game board */
         board?: (shared.IGameBoard|null);
+
+        /** Game tokenQueueMode */
+        tokenQueueMode?: (models.TokenQueueModes|null);
+
+        /** Game currentTokens */
+        currentTokens?: (models.ICurrentTokens|null);
+
+        /** Game decks */
+        decks?: (models.IDecks|null);
+
+        /** Game frozenColumns */
+        frozenColumns?: (boolean[]|null);
     }
 
     /** Represents a Game. */
@@ -1576,6 +1889,18 @@ export namespace models {
 
         /** Game board. */
         public board?: (shared.IGameBoard|null);
+
+        /** Game tokenQueueMode. */
+        public tokenQueueMode: models.TokenQueueModes;
+
+        /** Game currentTokens. */
+        public currentTokens?: (models.ICurrentTokens|null);
+
+        /** Game decks. */
+        public decks?: (models.IDecks|null);
+
+        /** Game frozenColumns. */
+        public frozenColumns: boolean[];
 
         /**
          * Creates a new Game instance using the specified properties.
@@ -1649,6 +1974,455 @@ export namespace models {
 
         /**
          * Gets the default type url for Game
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** TokenQueueModes enum. */
+    enum TokenQueueModes {
+        TOKEN_QUEUE_MODES_UNSPECIFIED = 0,
+        TOKEN_QUEUE_MODES_FULL_RANDOM = 1,
+        TOKEN_QUEUE_MODES_SPECIAL_EVERY = 2,
+        TOKEN_QUEUE_MODES_DECK = 3
+    }
+
+    /** TokenTypes enum. */
+    enum TokenTypes {
+        TOKEN_TYPES_UNSPECIFIED = 0,
+        TOKEN_TYPES_STANDARD = 1,
+        TOKEN_TYPES_NEGATIVE = 2,
+        TOKEN_TYPES_AURA = 3,
+        TOKEN_TYPES_BOMB = 4,
+        TOKEN_TYPES_FREEZE = 6,
+        TOKEN_TYPES_BURN = 7,
+        TOKEN_TYPES_REVERSE = 8,
+        TOKEN_TYPES_FROZEN = 9
+    }
+
+    /** ChangeTokenActions enum. */
+    enum ChangeTokenActions {
+        CHANGE_TOKEN_ACTIONS_UNSPECIFIED = 0,
+        CHANGE_TOKEN_ACTIONS_BURN_DESTROY = 1,
+        CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP = 2,
+        CHANGE_TOKENS_ACTIONS_FREEZE_FROZE = 3,
+        CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE = 4,
+        CHANGE_TOKENS_ACTIONS_BOMB_EXPLODED = 5
+    }
+
+    /** Properties of a Token. */
+    interface IToken {
+
+        /** Token playerId */
+        playerId?: (shared.PlayerIDs|null);
+
+        /** Token tokenType */
+        tokenType?: (models.TokenTypes|null);
+    }
+
+    /** Represents a Token. */
+    class Token implements IToken {
+
+        /**
+         * Constructs a new Token.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.IToken);
+
+        /** Token playerId. */
+        public playerId: shared.PlayerIDs;
+
+        /** Token tokenType. */
+        public tokenType: models.TokenTypes;
+
+        /**
+         * Creates a new Token instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Token instance
+         */
+        public static create(properties?: models.IToken): models.Token;
+
+        /**
+         * Encodes the specified Token message. Does not implicitly {@link models.Token.verify|verify} messages.
+         * @param message Token message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Token message, length delimited. Does not implicitly {@link models.Token.verify|verify} messages.
+         * @param message Token message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Token message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.Token;
+
+        /**
+         * Decodes a Token message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.Token;
+
+        /**
+         * Verifies a Token message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Token message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Token
+         */
+        public static fromObject(object: { [k: string]: any }): models.Token;
+
+        /**
+         * Creates a plain object from a Token message. Also converts values to other types if specified.
+         * @param message Token
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.Token, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Token to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Token
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a Tile. */
+    interface ITile {
+
+        /** Tile row */
+        row?: (number|null);
+
+        /** Tile column */
+        column?: (number|null);
+
+        /** Tile token */
+        token?: (models.IToken|null);
+    }
+
+    /** Represents a Tile. */
+    class Tile implements ITile {
+
+        /**
+         * Constructs a new Tile.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.ITile);
+
+        /** Tile row. */
+        public row: number;
+
+        /** Tile column. */
+        public column: number;
+
+        /** Tile token. */
+        public token?: (models.IToken|null);
+
+        /**
+         * Creates a new Tile instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Tile instance
+         */
+        public static create(properties?: models.ITile): models.Tile;
+
+        /**
+         * Encodes the specified Tile message. Does not implicitly {@link models.Tile.verify|verify} messages.
+         * @param message Tile message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.ITile, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Tile message, length delimited. Does not implicitly {@link models.Tile.verify|verify} messages.
+         * @param message Tile message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.ITile, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Tile message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Tile
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.Tile;
+
+        /**
+         * Decodes a Tile message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Tile
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.Tile;
+
+        /**
+         * Verifies a Tile message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Tile message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Tile
+         */
+        public static fromObject(object: { [k: string]: any }): models.Tile;
+
+        /**
+         * Creates a plain object from a Tile message. Also converts values to other types if specified.
+         * @param message Tile
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.Tile, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Tile to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Tile
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a CurrentTokens. */
+    interface ICurrentTokens {
+
+        /** CurrentTokens player1 */
+        player1?: (models.TokenTypes|null);
+
+        /** CurrentTokens player2 */
+        player2?: (models.TokenTypes|null);
+    }
+
+    /** Represents a CurrentTokens. */
+    class CurrentTokens implements ICurrentTokens {
+
+        /**
+         * Constructs a new CurrentTokens.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.ICurrentTokens);
+
+        /** CurrentTokens player1. */
+        public player1?: (models.TokenTypes|null);
+
+        /** CurrentTokens player2. */
+        public player2?: (models.TokenTypes|null);
+
+        /**
+         * Creates a new CurrentTokens instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns CurrentTokens instance
+         */
+        public static create(properties?: models.ICurrentTokens): models.CurrentTokens;
+
+        /**
+         * Encodes the specified CurrentTokens message. Does not implicitly {@link models.CurrentTokens.verify|verify} messages.
+         * @param message CurrentTokens message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.ICurrentTokens, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified CurrentTokens message, length delimited. Does not implicitly {@link models.CurrentTokens.verify|verify} messages.
+         * @param message CurrentTokens message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.ICurrentTokens, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a CurrentTokens message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns CurrentTokens
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.CurrentTokens;
+
+        /**
+         * Decodes a CurrentTokens message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns CurrentTokens
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.CurrentTokens;
+
+        /**
+         * Verifies a CurrentTokens message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a CurrentTokens message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns CurrentTokens
+         */
+        public static fromObject(object: { [k: string]: any }): models.CurrentTokens;
+
+        /**
+         * Creates a plain object from a CurrentTokens message. Also converts values to other types if specified.
+         * @param message CurrentTokens
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.CurrentTokens, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this CurrentTokens to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for CurrentTokens
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a Decks. */
+    interface IDecks {
+
+        /** Decks player1 */
+        player1?: (models.TokenTypes[]|null);
+
+        /** Decks player2 */
+        player2?: (models.TokenTypes[]|null);
+    }
+
+    /** Represents a Decks. */
+    class Decks implements IDecks {
+
+        /**
+         * Constructs a new Decks.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.IDecks);
+
+        /** Decks player1. */
+        public player1: models.TokenTypes[];
+
+        /** Decks player2. */
+        public player2: models.TokenTypes[];
+
+        /**
+         * Creates a new Decks instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Decks instance
+         */
+        public static create(properties?: models.IDecks): models.Decks;
+
+        /**
+         * Encodes the specified Decks message. Does not implicitly {@link models.Decks.verify|verify} messages.
+         * @param message Decks message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.IDecks, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Decks message, length delimited. Does not implicitly {@link models.Decks.verify|verify} messages.
+         * @param message Decks message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.IDecks, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Decks message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Decks
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.Decks;
+
+        /**
+         * Decodes a Decks message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Decks
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.Decks;
+
+        /**
+         * Verifies a Decks message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Decks message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Decks
+         */
+        public static fromObject(object: { [k: string]: any }): models.Decks;
+
+        /**
+         * Creates a plain object from a Decks message. Also converts values to other types if specified.
+         * @param message Decks
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.Decks, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Decks to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Decks
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -1976,6 +2750,133 @@ export namespace models {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a LobbySettings. */
+    interface ILobbySettings {
+
+        /** LobbySettings turnTime */
+        turnTime?: (number|null);
+
+        /** LobbySettings tokenQueueMode */
+        tokenQueueMode?: (models.TokenQueueModes|null);
+
+        /** LobbySettings allowedTokens */
+        allowedTokens?: (models.TokenTypes[]|null);
+
+        /** LobbySettings specialGamemode */
+        specialGamemode?: (boolean|null);
+
+        /** LobbySettings every */
+        every?: (number|null);
+
+        /** LobbySettings specialTokenChance */
+        specialTokenChance?: (number|null);
+    }
+
+    /** Represents a LobbySettings. */
+    class LobbySettings implements ILobbySettings {
+
+        /**
+         * Constructs a new LobbySettings.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: models.ILobbySettings);
+
+        /** LobbySettings turnTime. */
+        public turnTime?: (number|null);
+
+        /** LobbySettings tokenQueueMode. */
+        public tokenQueueMode?: (models.TokenQueueModes|null);
+
+        /** LobbySettings allowedTokens. */
+        public allowedTokens: models.TokenTypes[];
+
+        /** LobbySettings specialGamemode. */
+        public specialGamemode?: (boolean|null);
+
+        /** LobbySettings every. */
+        public every?: (number|null);
+
+        /** LobbySettings specialTokenChance. */
+        public specialTokenChance?: (number|null);
+
+        /**
+         * Creates a new LobbySettings instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LobbySettings instance
+         */
+        public static create(properties?: models.ILobbySettings): models.LobbySettings;
+
+        /**
+         * Encodes the specified LobbySettings message. Does not implicitly {@link models.LobbySettings.verify|verify} messages.
+         * @param message LobbySettings message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: models.ILobbySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LobbySettings message, length delimited. Does not implicitly {@link models.LobbySettings.verify|verify} messages.
+         * @param message LobbySettings message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: models.ILobbySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LobbySettings message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LobbySettings
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): models.LobbySettings;
+
+        /**
+         * Decodes a LobbySettings message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LobbySettings
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): models.LobbySettings;
+
+        /**
+         * Verifies a LobbySettings message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LobbySettings message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LobbySettings
+         */
+        public static fromObject(object: { [k: string]: any }): models.LobbySettings;
+
+        /**
+         * Creates a plain object from a LobbySettings message. Also converts values to other types if specified.
+         * @param message LobbySettings
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: models.LobbySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LobbySettings to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LobbySettings
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a DetailedLobbyData. */
     interface IDetailedLobbyData {
 
@@ -1996,6 +2897,9 @@ export namespace models {
 
         /** DetailedLobbyData lobbyMembers */
         lobbyMembers?: (models.IDetailedLobbyMemberData[]|null);
+
+        /** DetailedLobbyData settings */
+        settings?: (models.ILobbySettings|null);
     }
 
     /** Represents a DetailedLobbyData. */
@@ -2024,6 +2928,9 @@ export namespace models {
 
         /** DetailedLobbyData lobbyMembers. */
         public lobbyMembers: models.IDetailedLobbyMemberData[];
+
+        /** DetailedLobbyData settings. */
+        public settings?: (models.ILobbySettings|null);
 
         /**
          * Creates a new DetailedLobbyData instance using the specified properties.
@@ -2358,8 +3265,11 @@ export namespace routes {
     /** Properties of a GetLobbiesResponse. */
     interface IGetLobbiesResponse {
 
-        /** GetLobbiesResponse lobbies */
-        lobbies?: (models.ILobbyData[]|null);
+        /** GetLobbiesResponse myLobbies */
+        myLobbies?: (models.ILobbyData[]|null);
+
+        /** GetLobbiesResponse otherLobbies */
+        otherLobbies?: (models.ILobbyData[]|null);
     }
 
     /** Represents a GetLobbiesResponse. */
@@ -2371,8 +3281,11 @@ export namespace routes {
          */
         constructor(properties?: routes.IGetLobbiesResponse);
 
-        /** GetLobbiesResponse lobbies. */
-        public lobbies: models.ILobbyData[];
+        /** GetLobbiesResponse myLobbies. */
+        public myLobbies: models.ILobbyData[];
+
+        /** GetLobbiesResponse otherLobbies. */
+        public otherLobbies: models.ILobbyData[];
 
         /**
          * Creates a new GetLobbiesResponse instance using the specified properties.
@@ -2834,6 +3747,200 @@ export namespace routes {
 
         /**
          * Gets the default type url for GetLobbyDetailsResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a ChangeLobbySettingsRequest. */
+    interface IChangeLobbySettingsRequest {
+
+        /** ChangeLobbySettingsRequest settings */
+        settings?: (models.ILobbySettings|null);
+    }
+
+    /** Represents a ChangeLobbySettingsRequest. */
+    class ChangeLobbySettingsRequest implements IChangeLobbySettingsRequest {
+
+        /**
+         * Constructs a new ChangeLobbySettingsRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: routes.IChangeLobbySettingsRequest);
+
+        /** ChangeLobbySettingsRequest settings. */
+        public settings?: (models.ILobbySettings|null);
+
+        /**
+         * Creates a new ChangeLobbySettingsRequest instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns ChangeLobbySettingsRequest instance
+         */
+        public static create(properties?: routes.IChangeLobbySettingsRequest): routes.ChangeLobbySettingsRequest;
+
+        /**
+         * Encodes the specified ChangeLobbySettingsRequest message. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
+         * @param message ChangeLobbySettingsRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: routes.IChangeLobbySettingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified ChangeLobbySettingsRequest message, length delimited. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
+         * @param message ChangeLobbySettingsRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: routes.IChangeLobbySettingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns ChangeLobbySettingsRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.ChangeLobbySettingsRequest;
+
+        /**
+         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns ChangeLobbySettingsRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.ChangeLobbySettingsRequest;
+
+        /**
+         * Verifies a ChangeLobbySettingsRequest message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a ChangeLobbySettingsRequest message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns ChangeLobbySettingsRequest
+         */
+        public static fromObject(object: { [k: string]: any }): routes.ChangeLobbySettingsRequest;
+
+        /**
+         * Creates a plain object from a ChangeLobbySettingsRequest message. Also converts values to other types if specified.
+         * @param message ChangeLobbySettingsRequest
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: routes.ChangeLobbySettingsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this ChangeLobbySettingsRequest to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for ChangeLobbySettingsRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a KickPlayerRequest. */
+    interface IKickPlayerRequest {
+
+        /** KickPlayerRequest userId */
+        userId?: (number|null);
+    }
+
+    /** Represents a KickPlayerRequest. */
+    class KickPlayerRequest implements IKickPlayerRequest {
+
+        /**
+         * Constructs a new KickPlayerRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: routes.IKickPlayerRequest);
+
+        /** KickPlayerRequest userId. */
+        public userId: number;
+
+        /**
+         * Creates a new KickPlayerRequest instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns KickPlayerRequest instance
+         */
+        public static create(properties?: routes.IKickPlayerRequest): routes.KickPlayerRequest;
+
+        /**
+         * Encodes the specified KickPlayerRequest message. Does not implicitly {@link routes.KickPlayerRequest.verify|verify} messages.
+         * @param message KickPlayerRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: routes.IKickPlayerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified KickPlayerRequest message, length delimited. Does not implicitly {@link routes.KickPlayerRequest.verify|verify} messages.
+         * @param message KickPlayerRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: routes.IKickPlayerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a KickPlayerRequest message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns KickPlayerRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): routes.KickPlayerRequest;
+
+        /**
+         * Decodes a KickPlayerRequest message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns KickPlayerRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): routes.KickPlayerRequest;
+
+        /**
+         * Verifies a KickPlayerRequest message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a KickPlayerRequest message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns KickPlayerRequest
+         */
+        public static fromObject(object: { [k: string]: any }): routes.KickPlayerRequest;
+
+        /**
+         * Creates a plain object from a KickPlayerRequest message. Also converts values to other types if specified.
+         * @param message KickPlayerRequest
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: routes.KickPlayerRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this KickPlayerRequest to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for KickPlayerRequest
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */

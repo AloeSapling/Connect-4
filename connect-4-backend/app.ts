@@ -11,15 +11,16 @@ import usersRouter from './routes/users.ts';
 import lobbyRouter from './routes/lobby.ts';
 
 import { createClient } from 'redis';
-import { authUser, wsAuthUser, wsIsLobbyMember } from './lib/auth.ts';
+import { authUser, wsIsLobbyMember } from './lib/auth.ts';
 import { setupDatabase } from './database-sqllite/database.ts';
 import { CLIENT_URL, REDIS_HOST, REDIS_PORT, SERVER_PORT } from './config.ts';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { setupGameWSServer } from './routes/ws/game.ts';
-import { P_CodedError, P_ErrorCodes, type WsArgs, type WsAuthArgs } from './lib/types.ts';
+import { P_CodedError, P_ErrorCodes, type WsArgs } from './lib/types.ts';
 
 import { setupLobbyWSServer } from './routes/ws/lobby.ts';
+import onRedisExpire from './database-redis/expired.ts';
 
 // Set up Redis database
 export const redis = createClient({
@@ -29,6 +30,18 @@ export const redis = createClient({
 redis.on('error', (err) => console.error('Redis error:', err));
 
 await redis.connect();
+
+// Listen and handle key expiration
+const subscriber = createClient({
+    url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
+});
+await subscriber.connect();
+
+// Subscribe to the key expiration event (listens for all keys)
+await subscriber.subscribe('__keyevent@0__:expired', (key) => {
+    console.log(`Key expired: ${key}`);
+    onRedisExpire(key);
+});
 
 // Set up SQL database
 await setupDatabase();
@@ -50,6 +63,12 @@ export const sessionMiddleware = session({
 });
 
 // Middlewares
+app.use(
+    cors({
+        origin: CLIENT_URL,
+        credentials: true,
+    })
+);
 app.use(logger('dev'));
 app.use(express.raw({ type: 'application/octet-stream' }));
 app.use(express.json());
@@ -57,12 +76,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static('./public'));
 app.use(sessionMiddleware);
-app.use(
-    cors({
-        origin: CLIENT_URL,
-        credentials: true,
-    })
-);
 
 // Most endpoints return a protobuf encoded binary stream
 // This sets the content type for all responses to a binary stream

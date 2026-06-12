@@ -1,5 +1,13 @@
 import { Router } from 'express';
-import { createLobby, getAllLobbiesData, getDetailedLobbyData, lobbyExists } from '../database-sqllite/lobby.ts';
+import {
+    changeLobbySettings,
+    createLobby,
+    deleteLobby,
+    getDetailedLobbyData,
+    getMyLobbiesData,
+    getOtherLobbiesData,
+    lobbyExists,
+} from '../database-sqllite/lobby.ts';
 import { P_CodedError, P_ErrorCodes, P_PlayerIDs, P_PlayerTypes, type UserRequest } from '../lib/types.ts';
 import { addRouteWithMethods } from '../lib/lib.ts';
 import {
@@ -11,10 +19,13 @@ import {
     joinLobby,
     leaveLobby,
     unsetPlayerIDAndType,
+    isLobbyHost as lm_isLobbyHost,
 } from '../database-sqllite/lobbyMembers.ts';
 import { routes, ws } from '../lib/proto.js';
-import { isLobbyMember } from '../lib/auth.ts';
+import { isLobbyHost, isLobbyMember } from '../lib/auth.ts';
 import { broadcastToLobbyRoom } from './ws/lobby.ts';
+import { isUserBanned, preventLobbyExpiry, tempBanUser } from '../database-redis/lobby.ts';
+import { TEMP_BAN_TIME } from '../config.ts';
 
 const router = Router();
 
@@ -25,8 +36,12 @@ addRouteWithMethods(
         // Gets a list of lobbies
         // Search params can include filters for the list of lobbies
         try {
-            const lobbies = await getAllLobbiesData();
-            res.status(200).send(routes.GetLobbiesResponse.encode({ lobbies: lobbies }).finish());
+            const user = (req as UserRequest).user;
+            const [myLobbies, otherLobbies] = await Promise.all([
+                getMyLobbiesData(user.id),
+                getOtherLobbiesData(user.id),
+            ]);
+            res.status(200).send(routes.GetLobbiesResponse.encode({ myLobbies, otherLobbies }).finish());
         } catch {
             res.status(500).send(
                 P_CodedError.encode({
@@ -87,6 +102,64 @@ addRouteWithMethods(
 
 addRouteWithMethods(
     router,
+    '/:code/changeSettings',
+    async (req, res) => {
+        const code = req.params.code as string;
+
+        let body: routes.ChangeLobbySettingsRequest;
+        try {
+            body = routes.ChangeLobbySettingsRequest.decode(req.body);
+        } catch {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
+                }).finish()
+            );
+            return;
+        }
+
+        if (!body.settings) {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
+                }).finish()
+            );
+            return;
+        }
+
+        const settings = body.settings;
+
+        try {
+            if (!(await lobbyExists(code))) {
+                res.status(400).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_DOESNT_EXIST,
+                    }).finish()
+                );
+                return;
+            }
+
+            await changeLobbySettings(code, settings);
+
+            broadcastToLobbyRoom(code, {
+                response: ws.LobbyResponses.LOBBY_RESPONSES_SETTINGS_CHANGED,
+                settings: settings,
+            });
+            res.status(200).send();
+        } catch {
+            res.status(500).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_SERVER_ERROR,
+                }).finish()
+            );
+        }
+    },
+    ['POST', 'PATCH'],
+    [isLobbyHost]
+);
+
+addRouteWithMethods(
+    router,
     '/:code/join',
     async (req, res) => {
         const code = req.params.code as string;
@@ -97,6 +170,16 @@ addRouteWithMethods(
                 res.status(400).send(
                     P_CodedError.encode({
                         code: P_ErrorCodes.ERROR_CODES_DOESNT_EXIST,
+                    }).finish()
+                );
+                return;
+            }
+
+            // While a user is banned, they are not allowed to rejoin the lobby
+            if (await isUserBanned(code, user.id)) {
+                res.status(403).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_USER_BANNED,
                     }).finish()
                 );
                 return;
@@ -139,6 +222,18 @@ addRouteWithMethods(
                 return;
             }
 
+            // If the host leaves the lobby, the lobby gets deleted
+            if (await lm_isLobbyHost(code, (req as UserRequest).user.id)) {
+                await deleteLobby(code);
+
+                broadcastToLobbyRoom(code, {
+                    response: ws.LobbyResponses.LOBBY_RESPONSES_HOST_LEFT,
+                });
+
+                res.status(204).send();
+                return; // Return early to not send more data to the websocket
+            }
+
             await leaveLobby(code, user.id);
 
             broadcastToLobbyRoom(code, {
@@ -158,6 +253,72 @@ addRouteWithMethods(
     },
     ['POST', 'PUT', 'DELETE'],
     [isLobbyMember]
+);
+
+addRouteWithMethods(
+    router,
+    '/:code/tempBanUser',
+    async (req, res) => {
+        // Temporarilly bans a player from joining the lobby
+        const code = req.params.code as string;
+
+        const user = (req as UserRequest).user;
+
+        let body: routes.KickPlayerRequest;
+        try {
+            body = routes.KickPlayerRequest.decode(req.body);
+        } catch {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_DATA,
+                }).finish()
+            );
+            return;
+        }
+
+        // Prevent the host from kicking themselves from the lobby
+        if (body.userId === user.id) {
+            res.status(400).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_BAD_USER,
+                }).finish()
+            );
+            return;
+        }
+
+        try {
+            if (!(await lobbyExists(code))) {
+                res.status(400).send(
+                    P_CodedError.encode({
+                        code: P_ErrorCodes.ERROR_CODES_DOESNT_EXIST,
+                    }).finish()
+                );
+                return;
+            }
+
+            // Remove the user from the lobby
+            await leaveLobby(code, body.userId);
+
+            // Ban the user from rejoining
+            tempBanUser(code, body.userId, TEMP_BAN_TIME);
+
+            broadcastToLobbyRoom(code, {
+                response: ws.LobbyResponses.LOBBY_RESPONSES_LEAVE,
+                leave: {
+                    users: await getDetailedLobbyMembersData(code),
+                },
+            });
+            res.status(204).send();
+        } catch {
+            res.status(500).send(
+                P_CodedError.encode({
+                    code: P_ErrorCodes.ERROR_CODES_SERVER_ERROR,
+                }).finish()
+            );
+        }
+    },
+    ['POST', 'PUT', 'DELETE'],
+    [isLobbyHost]
 );
 
 addRouteWithMethods(
@@ -217,7 +378,7 @@ addRouteWithMethods(
 
             // Assign the appropriate player type
             if (playerID === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED)
-                await assignPlayerType(code, userID, P_PlayerTypes.PLAYER_TYPES_SPECTATOR);
+                await assignPlayerType(code, userID, P_PlayerTypes.PLAYER_TYPES_SPECTATOR); // Spectator is the default player type
             else await assignPlayerType(code, userID, P_PlayerTypes.PLAYER_TYPES_PLAYER);
 
             broadcastToLobbyRoom(code, {
@@ -244,6 +405,7 @@ addRouteWithMethods(
     async (req, res) => {
         // Get lobby details
         const code = req.params.code as string;
+        const user = (req as UserRequest).user;
 
         try {
             if (!(await lobbyExists(code))) {
@@ -253,6 +415,11 @@ addRouteWithMethods(
                     }).finish()
                 );
                 return;
+            }
+
+            // Lobbies are prevented from expiring if the host goes back to the lobby's details page
+            if (await lm_isLobbyHost(code, user.id)) {
+                preventLobbyExpiry(code);
             }
 
             const lobbyDetails = await getDetailedLobbyData(code);

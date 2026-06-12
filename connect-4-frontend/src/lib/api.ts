@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { SERVER_URL } from './config';
-import { routes } from './proto.js';
+import { models, routes } from './proto.js';
 import { P_CodedError, type ResponseError, type TPlayerIDs } from './types.js';
 
 /** An axios instance shared between all backend fetches */
 const api = axios.create({
     baseURL: SERVER_URL,
-    timeout: 1000,
+    timeout: 5000,
     withCredentials: true,
     responseType: 'arraybuffer',
     headers: {
@@ -23,6 +23,9 @@ api.interceptors.response.use(
         return response;
     },
     function (error) {
+        if (!error.response) {
+            return Promise.reject(error);
+        }
         const decodedErr = P_CodedError.decode(new Uint8Array(error.response.data));
         const responseErr: ResponseError = { ...decodedErr, status: error.status };
         return Promise.reject(responseErr);
@@ -100,6 +103,16 @@ export async function changePlayerID(lobbyCode: string, uid: number, playerID: T
     );
 }
 
+/** Changes the settings of the lobby with the given code */
+export async function changeLobbySettings({ lobbyCode, settings }: { lobbyCode: string; settings: models.ILobbySettings }) {
+    await api.post<ArrayBuffer>(
+        `/lobby/${lobbyCode}/changeSettings`,
+        routes.ChangeLobbySettingsRequest.encode({
+            settings: settings,
+        }).finish()
+    );
+}
+
 /** Leaves the lobby associated with the provided code */
 export async function leaveLobby(lobbyCode: string) {
     await api.post<ArrayBuffer>(`/lobby/${lobbyCode}/leave`);
@@ -117,6 +130,14 @@ export async function getLobbies(): Promise<routes.GetLobbiesResponse> {
     const response = await api.get<ArrayBuffer>('/lobby');
 
     return routes.GetLobbiesResponse.decode(new Uint8Array(response.data));
+}
+
+/** Tempbans a user from the lobby */
+export async function tempBanUser(lobbyCode: string, userId: number) {
+    await api.post<ArrayBuffer>(
+        `/lobby/${lobbyCode}/tempBanUser`,
+        routes.KickPlayerRequest.encode({ userId }).finish()
+    );
 }
 
 /** @returns The user data of the currently logged in user */

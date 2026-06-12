@@ -1,36 +1,61 @@
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { useNavigate } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getLobbyDetails } from '@/lib/api';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { changeLobbySettings, getLobbyDetails } from '@/lib/api';
 import { UserContext, langContext } from '@/lib/contexts';
 import { leaveLobby, createGame } from '@/lib/api';
 import { LobbyWebSocket } from '@/lib/websockets';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import HostControls from '@/components/lobby/HostControls.js';
 import MemberTable from '@/components/lobby/MemberTable.js';
-import { Copy } from "lucide-react";
+import LobbySettingsCard from '@/components/lobby/LobbySettingsCard.js';
+import { Copy } from 'lucide-react';
 import * as proto from '@/lib/proto.js';
+import * as types from '@/lib/types.js';
 
 function Lobby() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { lobbyCode } = useParams();
     const user = useContext(UserContext);
     const queryClient = useQueryClient();
+    const fromGame = (location.state as { fromGame?: boolean } | null)?.fromGame;
 
-    const { data: queryData, isLoading } = useQuery({
+    const {
+        data: queryData,
+        isLoading,
+        error,
+    } = useQuery({
         queryKey: ['lobby', lobbyCode],
         queryFn: () => getLobbyDetails(lobbyCode!),
+        retry: 1,
     });
 
     const [lobbyMembersData, setLobbyMembersData] = useState(queryData?.lobbyDetails?.lobbyMembers ?? []);
+    const [lobbySettings, setLobbySettings] = useState(queryData?.lobbyDetails?.settings ?? {});
 
     useEffect(() => {
         if (queryData?.lobbyDetails?.lobbyMembers) {
             setLobbyMembersData(queryData.lobbyDetails.lobbyMembers);
         }
+        if (queryData?.lobbyDetails?.settings) {
+            setLobbySettings(queryData.lobbyDetails.settings);
+        }
     }, [queryData]);
+
+    useEffect(() => {
+        if (!error) return;
+
+        const err = error as any;
+
+        if (
+            err.code === types.P_ErrorCodes.ERROR_CODES_UNAUTHORISED ||
+            err.code === types.P_ErrorCodes.ERROR_CODES_DOESNT_EXIST
+        ) {
+            navigate(`/lobbylist`);
+        }
+    }, [error, navigate]);
 
     useEffect(() => {
         if (!lobbyCode) return;
@@ -48,6 +73,9 @@ function Lobby() {
                     break;
                 case proto.ws.LobbyResponses.LOBBY_RESPONSES_CHANGE_PLAYER:
                     setLobbyMembersData(packet.changePlayer?.users!);
+                    break;
+                case proto.ws.LobbyResponses.LOBBY_RESPONSES_SETTINGS_CHANGED:
+                    setLobbySettings(packet.settings!);
                     break;
                 case proto.ws.LobbyResponses.LOBBY_RESPONSES_START_GAME:
                     navigate(`/game/${lobbyCode}`);
@@ -70,11 +98,10 @@ function Lobby() {
             toast.success(`${texts.leaveToast}`);
             navigate('/lobbylist');
         },
-        onError: (err) => toast.error(err.message)
+        onError: (err) => toast.error(err.message),
     });
 
-    const leaveLobbyButton = () =>
-        leaveLobby_m.mutate(lobbyCode!);
+    const leaveLobbyButton = () => leaveLobby_m.mutate(lobbyCode!);
 
     const createGame_m = useMutation({
         mutationFn: createGame,
@@ -82,22 +109,21 @@ function Lobby() {
             toast.success(`${texts.createGameToast}`);
 
             queryClient.invalidateQueries({
-                queryKey: ['lobby', lobbyCode]
+                queryKey: ['lobby', lobbyCode],
             });
         },
-        onError: (err) => toast.error(err.message)
-    })
+        onError: (err) => toast.error(err.message),
+    });
 
-    const createGameButton = (lobbyCode: string) =>
-        createGame_m.mutate(lobbyCode);
+    const createGameButton = (lobbyCode: string) => createGame_m.mutate(lobbyCode);
 
     const copyLobbyCode = (lobbyCode: string) => {
         navigator.clipboard.writeText(lobbyCode);
-    }
+    };
 
     useEffect(() => {
-        if (queryData?.lobbyDetails?.hasGame) navigate(`/game/${lobbyCode}`);
-    }, [queryData?.lobbyDetails?.hasGame, navigate])
+        if (queryData?.lobbyDetails?.hasGame && !fromGame) navigate(`/game/${lobbyCode}`);
+    }, [queryData?.lobbyDetails?.hasGame, fromGame, navigate]);
 
     const langCtx = useContext(langContext);
 
@@ -106,58 +132,56 @@ function Lobby() {
     const texts = langCtx.texts.lobby;
 
     if (isLoading || !queryData || lobbyMembersData.length === 0) {
-        return <div>Loading...</div>;
+        return <div>{langCtx.texts.lobby.loading}</div>;
     }
 
     return (
-        <div
-            className="
-            absolute top-1/2 left-1/2
-            -translate-x-1/2 -translate-y-1/2
-            w-[75vw] sm:w-[70vw] md:w-[65vw] lg:w-[60vw] max-w-[1000px]
-            h-[80%]
-            bg-yellow-800 text-white
-            rounded-lg p-4
-            flex flex-col
-            overflow-hidden
-        "
-        >
-            <div className="mb-3 border-b-[2px] border-amber-950 pb-2 flex justify-between">
-                <p>{texts.lobby} {queryData?.lobbyDetails?.lobbyName}</p>
-                <p>
+        <div className="w-11/12 max-w-6xl p-4 flex flex-col bg-yellow-800/80 text-white rounded-lg">
+            <div className="mb-3 border-b-[2px] border-amber-950 pb-3 flex justify-between items-center text-lg">
+                <p className="font-semibold">
+                    {texts.lobby} {queryData?.lobbyDetails?.lobbyName}
+                </p>
+                <p className="font-semibold">
                     {texts.lobbyCode}
-                    <span onClick={() => copyLobbyCode(queryData.lobbyDetails?.code!)}
-                        className="cursor-pointer"
-                    >
-                        {queryData?.lobbyDetails?.code} <Copy size={16} className='inline-block' />
+                    <span onClick={() => copyLobbyCode(queryData.lobbyDetails?.code!)} className="cursor-pointer ml-1">
+                        {queryData?.lobbyDetails?.code} <Copy size={22} className="inline-block ml-0.5" />
                     </span>
                 </p>
             </div>
 
             {/* Top */}
-            <div className="flex flex-row flex-1 gap-4 min-h-0 max-h-[80%] min-w-0 select-none">
-                <MemberTable membersData={lobbyMembersData} />
+            <div className="flex flex-row flex-1 gap-6 min-h-0 max-h-[80%] min-w-0 select-none">
+                <MemberTable
+                    membersData={lobbyMembersData}
+                    lobbyCode={lobbyCode}
+                    isHost={lobbyMembersData.some((member) => member.userId === user?.id && member.host)}
+                />
 
-                {lobbyMembersData.some(
-                    (member) => member.userId === user?.id && member.host
-                ) && (
-                        <HostControls lobbyCode={lobbyCode!} membersData={lobbyMembersData} />
-                    )}
+                <LobbySettingsCard
+                    lobbyCode={lobbyCode!}
+                    membersData={lobbyMembersData}
+                    settings={lobbySettings}
+                    isHost={lobbyMembersData.some((member) => member.userId === user?.id && member.host)}
+                />
             </div>
 
             {/* Bottom */}
-            <div className="flex flex-row justify-between mt-auto">
-                <Button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={leaveLobbyButton}>
+            <div className="flex flex-row justify-between mt-4">
+                <Button
+                    className="w-[17%] py-5 text-base bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg"
+                    onClick={leaveLobbyButton}
+                >
                     {texts.leaveButton}
                 </Button>
-                {lobbyMembersData?.some(
-                    (member) => member.userId === user?.id && member.host
-                ) ? (
-                    <Button className="w-[15%] bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg" onClick={() => createGameButton(lobbyCode!)}>
+                {lobbyMembersData?.some((member) => member.userId === user?.id && member.host) ? (
+                    <Button
+                        className="w-[17%] py-5 text-base bg-amber-900 hover:bg-amber-950 cursor-pointer rounded-lg"
+                        onClick={() => createGameButton(lobbyCode!)}
+                    >
                         {texts.createGameButton}
                     </Button>
                 ) : (
-                    <Button className="w-[15%] text-gray-400 bg-yellow-900 rounded-lg" disabled>
+                    <Button className="w-[17%] py-5 text-base text-gray-400 bg-yellow-900 rounded-lg" disabled>
                         {texts.createGameButton}
                     </Button>
                 )}

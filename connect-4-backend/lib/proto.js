@@ -35,6 +35,8 @@ export const shared = $root.shared = (() => {
      * @property {number} ERROR_CODES_DOESNT_EXIST=12 ERROR_CODES_DOESNT_EXIST value
      * @property {number} ERROR_CODES_USER_ALREADY_EXISTS=13 ERROR_CODES_USER_ALREADY_EXISTS value
      * @property {number} ERROR_CODES_BAD_SETUP=14 ERROR_CODES_BAD_SETUP value
+     * @property {number} ERROR_CODES_USER_BANNED=15 ERROR_CODES_USER_BANNED value
+     * @property {number} ERROR_CODES_BAD_TOKEN=16 ERROR_CODES_BAD_TOKEN value
      */
     shared.ErrorCodes = (function() {
         const valuesById = {}, values = Object.create(valuesById);
@@ -53,6 +55,8 @@ export const shared = $root.shared = (() => {
         values[valuesById[12] = "ERROR_CODES_DOESNT_EXIST"] = 12;
         values[valuesById[13] = "ERROR_CODES_USER_ALREADY_EXISTS"] = 13;
         values[valuesById[14] = "ERROR_CODES_BAD_SETUP"] = 14;
+        values[valuesById[15] = "ERROR_CODES_USER_BANNED"] = 15;
+        values[valuesById[16] = "ERROR_CODES_BAD_TOKEN"] = 16;
         return values;
     })();
 
@@ -241,6 +245,8 @@ export const shared = $root.shared = (() => {
                 case 12:
                 case 13:
                 case 14:
+                case 15:
+                case 16:
                     break;
                 }
             if (message.error != null && message.hasOwnProperty("error")) {
@@ -333,6 +339,14 @@ export const shared = $root.shared = (() => {
             case "ERROR_CODES_BAD_SETUP":
             case 14:
                 message.code = 14;
+                break;
+            case "ERROR_CODES_USER_BANNED":
+            case 15:
+                message.code = 15;
+                break;
+            case "ERROR_CODES_BAD_TOKEN":
+            case 16:
+                message.code = 16;
                 break;
             }
             if (object.error != null)
@@ -432,7 +446,7 @@ export const shared = $root.shared = (() => {
          * Properties of a GameRow.
          * @memberof shared
          * @interface IGameRow
-         * @property {Array.<shared.PlayerIDs>|null} [columns] GameRow columns
+         * @property {Array.<models.IToken>|null} [tokens] GameRow tokens
          */
 
         /**
@@ -444,7 +458,7 @@ export const shared = $root.shared = (() => {
          * @param {shared.IGameRow=} [properties] Properties to set
          */
         function GameRow(properties) {
-            this.columns = [];
+            this.tokens = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -452,12 +466,12 @@ export const shared = $root.shared = (() => {
         }
 
         /**
-         * GameRow columns.
-         * @member {Array.<shared.PlayerIDs>} columns
+         * GameRow tokens.
+         * @member {Array.<models.IToken>} tokens
          * @memberof shared.GameRow
          * @instance
          */
-        GameRow.prototype.columns = $util.emptyArray;
+        GameRow.prototype.tokens = $util.emptyArray;
 
         /**
          * Creates a new GameRow instance using the specified properties.
@@ -483,12 +497,9 @@ export const shared = $root.shared = (() => {
         GameRow.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.columns != null && message.columns.length) {
-                writer.uint32(/* id 1, wireType 2 =*/10).fork();
-                for (let i = 0; i < message.columns.length; ++i)
-                    writer.int32(message.columns[i]);
-                writer.ldelim();
-            }
+            if (message.tokens != null && message.tokens.length)
+                for (let i = 0; i < message.tokens.length; ++i)
+                    $root.models.Token.encode(message.tokens[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             return writer;
         };
 
@@ -530,14 +541,9 @@ export const shared = $root.shared = (() => {
                     break;
                 switch (tag >>> 3) {
                 case 1: {
-                        if (!(message.columns && message.columns.length))
-                            message.columns = [];
-                        if ((tag & 7) === 2) {
-                            let end2 = reader.uint32() + reader.pos;
-                            while (reader.pos < end2)
-                                message.columns.push(reader.int32());
-                        } else
-                            message.columns.push(reader.int32());
+                        if (!(message.tokens && message.tokens.length))
+                            message.tokens = [];
+                        message.tokens.push($root.models.Token.decode(reader, reader.uint32(), undefined, long + 1));
                         break;
                     }
                 default:
@@ -579,18 +585,14 @@ export const shared = $root.shared = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            if (message.columns != null && message.hasOwnProperty("columns")) {
-                if (!Array.isArray(message.columns))
-                    return "columns: array expected";
-                for (let i = 0; i < message.columns.length; ++i)
-                    switch (message.columns[i]) {
-                    default:
-                        return "columns: enum value[] expected";
-                    case 0:
-                    case 1:
-                    case 2:
-                        break;
-                    }
+            if (message.tokens != null && message.hasOwnProperty("tokens")) {
+                if (!Array.isArray(message.tokens))
+                    return "tokens: array expected";
+                for (let i = 0; i < message.tokens.length; ++i) {
+                    let error = $root.models.Token.verify(message.tokens[i], long + 1);
+                    if (error)
+                        return "tokens." + error;
+                }
             }
             return null;
         };
@@ -611,30 +613,15 @@ export const shared = $root.shared = (() => {
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
             let message = new $root.shared.GameRow();
-            if (object.columns) {
-                if (!Array.isArray(object.columns))
-                    throw TypeError(".shared.GameRow.columns: array expected");
-                message.columns = [];
-                for (let i = 0; i < object.columns.length; ++i)
-                    switch (object.columns[i]) {
-                    default:
-                        if (typeof object.columns[i] === "number") {
-                            message.columns[i] = object.columns[i];
-                            break;
-                        }
-                    case "PLAYER_IDS_UNSPECIFIED":
-                    case 0:
-                        message.columns[i] = 0;
-                        break;
-                    case "PLAYER_IDS_PLAYER1":
-                    case 1:
-                        message.columns[i] = 1;
-                        break;
-                    case "PLAYER_IDS_PLAYER2":
-                    case 2:
-                        message.columns[i] = 2;
-                        break;
-                    }
+            if (object.tokens) {
+                if (!Array.isArray(object.tokens))
+                    throw TypeError(".shared.GameRow.tokens: array expected");
+                message.tokens = [];
+                for (let i = 0; i < object.tokens.length; ++i) {
+                    if (typeof object.tokens[i] !== "object")
+                        throw TypeError(".shared.GameRow.tokens: object expected");
+                    message.tokens[i] = $root.models.Token.fromObject(object.tokens[i], long + 1);
+                }
             }
             return message;
         };
@@ -653,11 +640,11 @@ export const shared = $root.shared = (() => {
                 options = {};
             let object = {};
             if (options.arrays || options.defaults)
-                object.columns = [];
-            if (message.columns && message.columns.length) {
-                object.columns = [];
-                for (let j = 0; j < message.columns.length; ++j)
-                    object.columns[j] = options.enums === String ? $root.shared.PlayerIDs[message.columns[j]] === undefined ? message.columns[j] : $root.shared.PlayerIDs[message.columns[j]] : message.columns[j];
+                object.tokens = [];
+            if (message.tokens && message.tokens.length) {
+                object.tokens = [];
+                for (let j = 0; j < message.tokens.length; ++j)
+                    object.tokens[j] = $root.models.Token.toObject(message.tokens[j], options);
             }
             return object;
         };
@@ -951,6 +938,8 @@ export const ws = $root.ws = (() => {
      * @property {number} LOBBY_RESPONSES_LEAVE=3 LOBBY_RESPONSES_LEAVE value
      * @property {number} LOBBY_RESPONSES_CHANGE_PLAYER=4 LOBBY_RESPONSES_CHANGE_PLAYER value
      * @property {number} LOBBY_RESPONSES_START_GAME=5 LOBBY_RESPONSES_START_GAME value
+     * @property {number} LOBBY_RESPONSES_HOST_LEFT=6 LOBBY_RESPONSES_HOST_LEFT value
+     * @property {number} LOBBY_RESPONSES_SETTINGS_CHANGED=7 LOBBY_RESPONSES_SETTINGS_CHANGED value
      */
     ws.LobbyResponses = (function() {
         const valuesById = {}, values = Object.create(valuesById);
@@ -960,6 +949,8 @@ export const ws = $root.ws = (() => {
         values[valuesById[3] = "LOBBY_RESPONSES_LEAVE"] = 3;
         values[valuesById[4] = "LOBBY_RESPONSES_CHANGE_PLAYER"] = 4;
         values[valuesById[5] = "LOBBY_RESPONSES_START_GAME"] = 5;
+        values[valuesById[6] = "LOBBY_RESPONSES_HOST_LEFT"] = 6;
+        values[valuesById[7] = "LOBBY_RESPONSES_SETTINGS_CHANGED"] = 7;
         return values;
     })();
 
@@ -1688,6 +1679,7 @@ export const ws = $root.ws = (() => {
          * @property {ws.ILobbyJoin|null} [join] LobbyResponsePacket join
          * @property {ws.ILobbyLeave|null} [leave] LobbyResponsePacket leave
          * @property {ws.ILobbyChangePlayer|null} [changePlayer] LobbyResponsePacket changePlayer
+         * @property {models.ILobbySettings|null} [settings] LobbyResponsePacket settings
          */
 
         /**
@@ -1745,17 +1737,25 @@ export const ws = $root.ws = (() => {
          */
         LobbyResponsePacket.prototype.changePlayer = null;
 
+        /**
+         * LobbyResponsePacket settings.
+         * @member {models.ILobbySettings|null|undefined} settings
+         * @memberof ws.LobbyResponsePacket
+         * @instance
+         */
+        LobbyResponsePacket.prototype.settings = null;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
          * LobbyResponsePacket data.
-         * @member {"error"|"join"|"leave"|"changePlayer"|undefined} data
+         * @member {"error"|"join"|"leave"|"changePlayer"|"settings"|undefined} data
          * @memberof ws.LobbyResponsePacket
          * @instance
          */
         Object.defineProperty(LobbyResponsePacket.prototype, "data", {
-            get: $util.oneOfGetter($oneOfFields = ["error", "join", "leave", "changePlayer"]),
+            get: $util.oneOfGetter($oneOfFields = ["error", "join", "leave", "changePlayer", "settings"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -1793,6 +1793,8 @@ export const ws = $root.ws = (() => {
                 $root.ws.LobbyLeave.encode(message.leave, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             if (message.changePlayer != null && Object.hasOwnProperty.call(message, "changePlayer"))
                 $root.ws.LobbyChangePlayer.encode(message.changePlayer, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.settings != null && Object.hasOwnProperty.call(message, "settings"))
+                $root.models.LobbySettings.encode(message.settings, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
             return writer;
         };
 
@@ -1853,6 +1855,10 @@ export const ws = $root.ws = (() => {
                         message.changePlayer = $root.ws.LobbyChangePlayer.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
+                case 6: {
+                        message.settings = $root.models.LobbySettings.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7, long);
                     break;
@@ -1903,6 +1909,8 @@ export const ws = $root.ws = (() => {
                 case 3:
                 case 4:
                 case 5:
+                case 6:
+                case 7:
                     break;
                 }
             if (message.error != null && message.hasOwnProperty("error")) {
@@ -1941,6 +1949,16 @@ export const ws = $root.ws = (() => {
                     let error = $root.ws.LobbyChangePlayer.verify(message.changePlayer, long + 1);
                     if (error)
                         return "changePlayer." + error;
+                }
+            }
+            if (message.settings != null && message.hasOwnProperty("settings")) {
+                if (properties.data === 1)
+                    return "data: multiple values";
+                properties.data = 1;
+                {
+                    let error = $root.models.LobbySettings.verify(message.settings, long + 1);
+                    if (error)
+                        return "settings." + error;
                 }
             }
             return null;
@@ -1993,6 +2011,14 @@ export const ws = $root.ws = (() => {
             case 5:
                 message.response = 5;
                 break;
+            case "LOBBY_RESPONSES_HOST_LEFT":
+            case 6:
+                message.response = 6;
+                break;
+            case "LOBBY_RESPONSES_SETTINGS_CHANGED":
+            case 7:
+                message.response = 7;
+                break;
             }
             if (object.error != null) {
                 if (typeof object.error !== "object")
@@ -2013,6 +2039,11 @@ export const ws = $root.ws = (() => {
                 if (typeof object.changePlayer !== "object")
                     throw TypeError(".ws.LobbyResponsePacket.changePlayer: object expected");
                 message.changePlayer = $root.ws.LobbyChangePlayer.fromObject(object.changePlayer, long + 1);
+            }
+            if (object.settings != null) {
+                if (typeof object.settings !== "object")
+                    throw TypeError(".ws.LobbyResponsePacket.settings: object expected");
+                message.settings = $root.models.LobbySettings.fromObject(object.settings, long + 1);
             }
             return message;
         };
@@ -2054,6 +2085,11 @@ export const ws = $root.ws = (() => {
                 if (options.oneofs)
                     object.data = "changePlayer";
             }
+            if (message.settings != null && message.hasOwnProperty("settings")) {
+                object.settings = $root.models.LobbySettings.toObject(message.settings, options);
+                if (options.oneofs)
+                    object.data = "settings";
+            }
             return object;
         };
 
@@ -2086,24 +2122,25 @@ export const ws = $root.ws = (() => {
         return LobbyResponsePacket;
     })();
 
-    ws.GameInsertTile = (function() {
+    ws.GameInsertToken = (function() {
 
         /**
-         * Properties of a GameInsertTile.
+         * Properties of a GameInsertToken.
          * @memberof ws
-         * @interface IGameInsertTile
-         * @property {number|null} [column] GameInsertTile column
+         * @interface IGameInsertToken
+         * @property {number|null} [column] GameInsertToken column
+         * @property {models.TokenTypes|null} [tokenType] GameInsertToken tokenType
          */
 
         /**
-         * Constructs a new GameInsertTile.
+         * Constructs a new GameInsertToken.
          * @memberof ws
-         * @classdesc Represents a GameInsertTile.
-         * @implements IGameInsertTile
+         * @classdesc Represents a GameInsertToken.
+         * @implements IGameInsertToken
          * @constructor
-         * @param {ws.IGameInsertTile=} [properties] Properties to set
+         * @param {ws.IGameInsertToken=} [properties] Properties to set
          */
-        function GameInsertTile(properties) {
+        function GameInsertToken(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -2111,74 +2148,84 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * GameInsertTile column.
+         * GameInsertToken column.
          * @member {number} column
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @instance
          */
-        GameInsertTile.prototype.column = 0;
+        GameInsertToken.prototype.column = 0;
 
         /**
-         * Creates a new GameInsertTile instance using the specified properties.
-         * @function create
-         * @memberof ws.GameInsertTile
-         * @static
-         * @param {ws.IGameInsertTile=} [properties] Properties to set
-         * @returns {ws.GameInsertTile} GameInsertTile instance
+         * GameInsertToken tokenType.
+         * @member {models.TokenTypes} tokenType
+         * @memberof ws.GameInsertToken
+         * @instance
          */
-        GameInsertTile.create = function create(properties) {
-            return new GameInsertTile(properties);
+        GameInsertToken.prototype.tokenType = 0;
+
+        /**
+         * Creates a new GameInsertToken instance using the specified properties.
+         * @function create
+         * @memberof ws.GameInsertToken
+         * @static
+         * @param {ws.IGameInsertToken=} [properties] Properties to set
+         * @returns {ws.GameInsertToken} GameInsertToken instance
+         */
+        GameInsertToken.create = function create(properties) {
+            return new GameInsertToken(properties);
         };
 
         /**
-         * Encodes the specified GameInsertTile message. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
+         * Encodes the specified GameInsertToken message. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
          * @function encode
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
-         * @param {ws.IGameInsertTile} message GameInsertTile message or plain object to encode
+         * @param {ws.IGameInsertToken} message GameInsertToken message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        GameInsertTile.encode = function encode(message, writer) {
+        GameInsertToken.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.column != null && Object.hasOwnProperty.call(message, "column"))
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.column);
+            if (message.tokenType != null && Object.hasOwnProperty.call(message, "tokenType"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.tokenType);
             return writer;
         };
 
         /**
-         * Encodes the specified GameInsertTile message, length delimited. Does not implicitly {@link ws.GameInsertTile.verify|verify} messages.
+         * Encodes the specified GameInsertToken message, length delimited. Does not implicitly {@link ws.GameInsertToken.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
-         * @param {ws.IGameInsertTile} message GameInsertTile message or plain object to encode
+         * @param {ws.IGameInsertToken} message GameInsertToken message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        GameInsertTile.encodeDelimited = function encodeDelimited(message, writer) {
+        GameInsertToken.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a GameInsertTile message from the specified reader or buffer.
+         * Decodes a GameInsertToken message from the specified reader or buffer.
          * @function decode
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {ws.GameInsertTile} GameInsertTile
+         * @returns {ws.GameInsertToken} GameInsertToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        GameInsertTile.decode = function decode(reader, length, error, long) {
+        GameInsertToken.decode = function decode(reader, length, error, long) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             if (long === undefined)
                 long = 0;
             if (long > $Reader.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameInsertTile();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameInsertToken();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 if (tag === error)
@@ -2186,6 +2233,10 @@ export const ws = $root.ws = (() => {
                 switch (tag >>> 3) {
                 case 1: {
                         message.column = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.tokenType = reader.int32();
                         break;
                     }
                 default:
@@ -2197,30 +2248,30 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Decodes a GameInsertTile message from the specified reader or buffer, length delimited.
+         * Decodes a GameInsertToken message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.GameInsertTile} GameInsertTile
+         * @returns {ws.GameInsertToken} GameInsertToken
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        GameInsertTile.decodeDelimited = function decodeDelimited(reader) {
+        GameInsertToken.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a GameInsertTile message.
+         * Verifies a GameInsertToken message.
          * @function verify
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        GameInsertTile.verify = function verify(message, long) {
+        GameInsertToken.verify = function verify(message, long) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (long === undefined)
@@ -2230,77 +2281,140 @@ export const ws = $root.ws = (() => {
             if (message.column != null && message.hasOwnProperty("column"))
                 if (!$util.isInteger(message.column))
                     return "column: integer expected";
+            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
+                switch (message.tokenType) {
+                default:
+                    return "tokenType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    break;
+                }
             return null;
         };
 
         /**
-         * Creates a GameInsertTile message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameInsertToken message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {ws.GameInsertTile} GameInsertTile
+         * @returns {ws.GameInsertToken} GameInsertToken
          */
-        GameInsertTile.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.GameInsertTile)
+        GameInsertToken.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.GameInsertToken)
                 return object;
             if (long === undefined)
                 long = 0;
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.GameInsertTile();
+            let message = new $root.ws.GameInsertToken();
             if (object.column != null)
                 message.column = object.column | 0;
+            switch (object.tokenType) {
+            default:
+                if (typeof object.tokenType === "number") {
+                    message.tokenType = object.tokenType;
+                    break;
+                }
+                break;
+            case "TOKEN_TYPES_UNSPECIFIED":
+            case 0:
+                message.tokenType = 0;
+                break;
+            case "TOKEN_TYPES_STANDARD":
+            case 1:
+                message.tokenType = 1;
+                break;
+            case "TOKEN_TYPES_NEGATIVE":
+            case 2:
+                message.tokenType = 2;
+                break;
+            case "TOKEN_TYPES_AURA":
+            case 3:
+                message.tokenType = 3;
+                break;
+            case "TOKEN_TYPES_BOMB":
+            case 4:
+                message.tokenType = 4;
+                break;
+            case "TOKEN_TYPES_FREEZE":
+            case 6:
+                message.tokenType = 6;
+                break;
+            case "TOKEN_TYPES_BURN":
+            case 7:
+                message.tokenType = 7;
+                break;
+            case "TOKEN_TYPES_REVERSE":
+            case 8:
+                message.tokenType = 8;
+                break;
+            case "TOKEN_TYPES_FROZEN":
+            case 9:
+                message.tokenType = 9;
+                break;
+            }
             return message;
         };
 
         /**
-         * Creates a plain object from a GameInsertTile message. Also converts values to other types if specified.
+         * Creates a plain object from a GameInsertToken message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
-         * @param {ws.GameInsertTile} message GameInsertTile
+         * @param {ws.GameInsertToken} message GameInsertToken
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        GameInsertTile.toObject = function toObject(message, options) {
+        GameInsertToken.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults)
+            if (options.defaults) {
                 object.column = 0;
+                object.tokenType = options.enums === String ? "TOKEN_TYPES_UNSPECIFIED" : 0;
+            }
             if (message.column != null && message.hasOwnProperty("column"))
                 object.column = message.column;
+            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
+                object.tokenType = options.enums === String ? $root.models.TokenTypes[message.tokenType] === undefined ? message.tokenType : $root.models.TokenTypes[message.tokenType] : message.tokenType;
             return object;
         };
 
         /**
-         * Converts this GameInsertTile to JSON.
+         * Converts this GameInsertToken to JSON.
          * @function toJSON
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        GameInsertTile.prototype.toJSON = function toJSON() {
+        GameInsertToken.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for GameInsertTile
+         * Gets the default type url for GameInsertToken
          * @function getTypeUrl
-         * @memberof ws.GameInsertTile
+         * @memberof ws.GameInsertToken
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        GameInsertTile.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        GameInsertToken.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/ws.GameInsertTile";
+            return typeUrlPrefix + "/ws.GameInsertToken";
         };
 
-        return GameInsertTile;
+        return GameInsertToken;
     })();
 
     /**
@@ -2308,13 +2422,13 @@ export const ws = $root.ws = (() => {
      * @name ws.GameActions
      * @enum {number}
      * @property {number} GAME_ACTIONS_UNSPECIFIED=0 GAME_ACTIONS_UNSPECIFIED value
-     * @property {number} GAME_ACTIONS_INSERT_TILE=1 GAME_ACTIONS_INSERT_TILE value
+     * @property {number} GAME_ACTIONS_INSERT_TOKEN=1 GAME_ACTIONS_INSERT_TOKEN value
      * @property {number} GAME_ACTIONS_FORFEIT=2 GAME_ACTIONS_FORFEIT value
      */
     ws.GameActions = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "GAME_ACTIONS_UNSPECIFIED"] = 0;
-        values[valuesById[1] = "GAME_ACTIONS_INSERT_TILE"] = 1;
+        values[valuesById[1] = "GAME_ACTIONS_INSERT_TOKEN"] = 1;
         values[valuesById[2] = "GAME_ACTIONS_FORFEIT"] = 2;
         return values;
     })();
@@ -2326,7 +2440,7 @@ export const ws = $root.ws = (() => {
          * @memberof ws
          * @interface IGamePacket
          * @property {ws.GameActions|null} [action] GamePacket action
-         * @property {ws.IGameInsertTile|null} [insertTile] GamePacket insertTile
+         * @property {ws.IGameInsertToken|null} [insertToken] GamePacket insertToken
          */
 
         /**
@@ -2353,24 +2467,24 @@ export const ws = $root.ws = (() => {
         GamePacket.prototype.action = 0;
 
         /**
-         * GamePacket insertTile.
-         * @member {ws.IGameInsertTile|null|undefined} insertTile
+         * GamePacket insertToken.
+         * @member {ws.IGameInsertToken|null|undefined} insertToken
          * @memberof ws.GamePacket
          * @instance
          */
-        GamePacket.prototype.insertTile = null;
+        GamePacket.prototype.insertToken = null;
 
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
          * GamePacket data.
-         * @member {"insertTile"|undefined} data
+         * @member {"insertToken"|undefined} data
          * @memberof ws.GamePacket
          * @instance
          */
         Object.defineProperty(GamePacket.prototype, "data", {
-            get: $util.oneOfGetter($oneOfFields = ["insertTile"]),
+            get: $util.oneOfGetter($oneOfFields = ["insertToken"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -2400,8 +2514,8 @@ export const ws = $root.ws = (() => {
                 writer = $Writer.create();
             if (message.action != null && Object.hasOwnProperty.call(message, "action"))
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.action);
-            if (message.insertTile != null && Object.hasOwnProperty.call(message, "insertTile"))
-                $root.ws.GameInsertTile.encode(message.insertTile, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.insertToken != null && Object.hasOwnProperty.call(message, "insertToken"))
+                $root.ws.GameInsertToken.encode(message.insertToken, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             return writer;
         };
 
@@ -2447,7 +2561,7 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 2: {
-                        message.insertTile = $root.ws.GameInsertTile.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.insertToken = $root.ws.GameInsertToken.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 default:
@@ -2499,12 +2613,12 @@ export const ws = $root.ws = (() => {
                 case 2:
                     break;
                 }
-            if (message.insertTile != null && message.hasOwnProperty("insertTile")) {
+            if (message.insertToken != null && message.hasOwnProperty("insertToken")) {
                 properties.data = 1;
                 {
-                    let error = $root.ws.GameInsertTile.verify(message.insertTile, long + 1);
+                    let error = $root.ws.GameInsertToken.verify(message.insertToken, long + 1);
                     if (error)
-                        return "insertTile." + error;
+                        return "insertToken." + error;
                 }
             }
             return null;
@@ -2537,7 +2651,7 @@ export const ws = $root.ws = (() => {
             case 0:
                 message.action = 0;
                 break;
-            case "GAME_ACTIONS_INSERT_TILE":
+            case "GAME_ACTIONS_INSERT_TOKEN":
             case 1:
                 message.action = 1;
                 break;
@@ -2546,10 +2660,10 @@ export const ws = $root.ws = (() => {
                 message.action = 2;
                 break;
             }
-            if (object.insertTile != null) {
-                if (typeof object.insertTile !== "object")
-                    throw TypeError(".ws.GamePacket.insertTile: object expected");
-                message.insertTile = $root.ws.GameInsertTile.fromObject(object.insertTile, long + 1);
+            if (object.insertToken != null) {
+                if (typeof object.insertToken !== "object")
+                    throw TypeError(".ws.GamePacket.insertToken: object expected");
+                message.insertToken = $root.ws.GameInsertToken.fromObject(object.insertToken, long + 1);
             }
             return message;
         };
@@ -2571,10 +2685,10 @@ export const ws = $root.ws = (() => {
                 object.action = options.enums === String ? "GAME_ACTIONS_UNSPECIFIED" : 0;
             if (message.action != null && message.hasOwnProperty("action"))
                 object.action = options.enums === String ? $root.ws.GameActions[message.action] === undefined ? message.action : $root.ws.GameActions[message.action] : message.action;
-            if (message.insertTile != null && message.hasOwnProperty("insertTile")) {
-                object.insertTile = $root.ws.GameInsertTile.toObject(message.insertTile, options);
+            if (message.insertToken != null && message.hasOwnProperty("insertToken")) {
+                object.insertToken = $root.ws.GameInsertToken.toObject(message.insertToken, options);
                 if (options.oneofs)
-                    object.data = "insertTile";
+                    object.data = "insertToken";
             }
             return object;
         };
@@ -2626,26 +2740,24 @@ export const ws = $root.ws = (() => {
         return values;
     })();
 
-    ws.Token = (function() {
+    ws.GameInit = (function() {
 
         /**
-         * Properties of a Token.
+         * Properties of a GameInit.
          * @memberof ws
-         * @interface IToken
-         * @property {number|null} [row] Token row
-         * @property {number|null} [column] Token column
-         * @property {shared.PlayerIDs|null} [playerID] Token playerID
+         * @interface IGameInit
+         * @property {shared.PlayerIDs|null} [playerId] GameInit playerId
          */
 
         /**
-         * Constructs a new Token.
+         * Constructs a new GameInit.
          * @memberof ws
-         * @classdesc Represents a Token.
-         * @implements IToken
+         * @classdesc Represents a GameInit.
+         * @implements IGameInit
          * @constructor
-         * @param {ws.IToken=} [properties] Properties to set
+         * @param {ws.IGameInit=} [properties] Properties to set
          */
-        function Token(properties) {
+        function GameInit(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -2653,109 +2765,81 @@ export const ws = $root.ws = (() => {
         }
 
         /**
-         * Token row.
-         * @member {number} row
-         * @memberof ws.Token
+         * GameInit playerId.
+         * @member {shared.PlayerIDs} playerId
+         * @memberof ws.GameInit
          * @instance
          */
-        Token.prototype.row = 0;
+        GameInit.prototype.playerId = 0;
 
         /**
-         * Token column.
-         * @member {number} column
-         * @memberof ws.Token
-         * @instance
-         */
-        Token.prototype.column = 0;
-
-        /**
-         * Token playerID.
-         * @member {shared.PlayerIDs} playerID
-         * @memberof ws.Token
-         * @instance
-         */
-        Token.prototype.playerID = 0;
-
-        /**
-         * Creates a new Token instance using the specified properties.
+         * Creates a new GameInit instance using the specified properties.
          * @function create
-         * @memberof ws.Token
+         * @memberof ws.GameInit
          * @static
-         * @param {ws.IToken=} [properties] Properties to set
-         * @returns {ws.Token} Token instance
+         * @param {ws.IGameInit=} [properties] Properties to set
+         * @returns {ws.GameInit} GameInit instance
          */
-        Token.create = function create(properties) {
-            return new Token(properties);
+        GameInit.create = function create(properties) {
+            return new GameInit(properties);
         };
 
         /**
-         * Encodes the specified Token message. Does not implicitly {@link ws.Token.verify|verify} messages.
+         * Encodes the specified GameInit message. Does not implicitly {@link ws.GameInit.verify|verify} messages.
          * @function encode
-         * @memberof ws.Token
+         * @memberof ws.GameInit
          * @static
-         * @param {ws.IToken} message Token message or plain object to encode
+         * @param {ws.IGameInit} message GameInit message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        Token.encode = function encode(message, writer) {
+        GameInit.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.row != null && Object.hasOwnProperty.call(message, "row"))
-                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.row);
-            if (message.column != null && Object.hasOwnProperty.call(message, "column"))
-                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.column);
-            if (message.playerID != null && Object.hasOwnProperty.call(message, "playerID"))
-                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.playerID);
+            if (message.playerId != null && Object.hasOwnProperty.call(message, "playerId"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.playerId);
             return writer;
         };
 
         /**
-         * Encodes the specified Token message, length delimited. Does not implicitly {@link ws.Token.verify|verify} messages.
+         * Encodes the specified GameInit message, length delimited. Does not implicitly {@link ws.GameInit.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof ws.Token
+         * @memberof ws.GameInit
          * @static
-         * @param {ws.IToken} message Token message or plain object to encode
+         * @param {ws.IGameInit} message GameInit message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        Token.encodeDelimited = function encodeDelimited(message, writer) {
+        GameInit.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a Token message from the specified reader or buffer.
+         * Decodes a GameInit message from the specified reader or buffer.
          * @function decode
-         * @memberof ws.Token
+         * @memberof ws.GameInit
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {ws.Token} Token
+         * @returns {ws.GameInit} GameInit
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        Token.decode = function decode(reader, length, error, long) {
+        GameInit.decode = function decode(reader, length, error, long) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             if (long === undefined)
                 long = 0;
             if (long > $Reader.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.Token();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameInit();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 if (tag === error)
                     break;
                 switch (tag >>> 3) {
                 case 1: {
-                        message.row = reader.int32();
-                        break;
-                    }
-                case 2: {
-                        message.column = reader.int32();
-                        break;
-                    }
-                case 3: {
-                        message.playerID = reader.int32();
+                        message.playerId = reader.int32();
                         break;
                     }
                 default:
@@ -2767,46 +2851,40 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Decodes a Token message from the specified reader or buffer, length delimited.
+         * Decodes a GameInit message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof ws.Token
+         * @memberof ws.GameInit
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.Token} Token
+         * @returns {ws.GameInit} GameInit
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        Token.decodeDelimited = function decodeDelimited(reader) {
+        GameInit.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a Token message.
+         * Verifies a GameInit message.
          * @function verify
-         * @memberof ws.Token
+         * @memberof ws.GameInit
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        Token.verify = function verify(message, long) {
+        GameInit.verify = function verify(message, long) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (long === undefined)
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            if (message.row != null && message.hasOwnProperty("row"))
-                if (!$util.isInteger(message.row))
-                    return "row: integer expected";
-            if (message.column != null && message.hasOwnProperty("column"))
-                if (!$util.isInteger(message.column))
-                    return "column: integer expected";
-            if (message.playerID != null && message.hasOwnProperty("playerID"))
-                switch (message.playerID) {
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                switch (message.playerId) {
                 default:
-                    return "playerID: enum value expected";
+                    return "playerId: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -2816,102 +2894,1206 @@ export const ws = $root.ws = (() => {
         };
 
         /**
-         * Creates a Token message from a plain object. Also converts values to their respective internal types.
+         * Creates a GameInit message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof ws.Token
+         * @memberof ws.GameInit
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {ws.Token} Token
+         * @returns {ws.GameInit} GameInit
          */
-        Token.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.Token)
+        GameInit.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.GameInit)
                 return object;
             if (long === undefined)
                 long = 0;
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.Token();
-            if (object.row != null)
-                message.row = object.row | 0;
-            if (object.column != null)
-                message.column = object.column | 0;
-            switch (object.playerID) {
+            let message = new $root.ws.GameInit();
+            switch (object.playerId) {
             default:
-                if (typeof object.playerID === "number") {
-                    message.playerID = object.playerID;
+                if (typeof object.playerId === "number") {
+                    message.playerId = object.playerId;
                     break;
                 }
                 break;
             case "PLAYER_IDS_UNSPECIFIED":
             case 0:
-                message.playerID = 0;
+                message.playerId = 0;
                 break;
             case "PLAYER_IDS_PLAYER1":
             case 1:
-                message.playerID = 1;
+                message.playerId = 1;
                 break;
             case "PLAYER_IDS_PLAYER2":
             case 2:
-                message.playerID = 2;
+                message.playerId = 2;
                 break;
             }
             return message;
         };
 
         /**
-         * Creates a plain object from a Token message. Also converts values to other types if specified.
+         * Creates a plain object from a GameInit message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof ws.Token
+         * @memberof ws.GameInit
          * @static
-         * @param {ws.Token} message Token
+         * @param {ws.GameInit} message GameInit
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        Token.toObject = function toObject(message, options) {
+        GameInit.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults) {
-                object.row = 0;
-                object.column = 0;
-                object.playerID = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
-            }
-            if (message.row != null && message.hasOwnProperty("row"))
-                object.row = message.row;
-            if (message.column != null && message.hasOwnProperty("column"))
-                object.column = message.column;
-            if (message.playerID != null && message.hasOwnProperty("playerID"))
-                object.playerID = options.enums === String ? $root.shared.PlayerIDs[message.playerID] === undefined ? message.playerID : $root.shared.PlayerIDs[message.playerID] : message.playerID;
+            if (options.defaults)
+                object.playerId = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                object.playerId = options.enums === String ? $root.shared.PlayerIDs[message.playerId] === undefined ? message.playerId : $root.shared.PlayerIDs[message.playerId] : message.playerId;
             return object;
         };
 
         /**
-         * Converts this Token to JSON.
+         * Converts this GameInit to JSON.
          * @function toJSON
-         * @memberof ws.Token
+         * @memberof ws.GameInit
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        Token.prototype.toJSON = function toJSON() {
+        GameInit.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for Token
+         * Gets the default type url for GameInit
          * @function getTypeUrl
-         * @memberof ws.Token
+         * @memberof ws.GameInit
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        Token.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        GameInit.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/ws.Token";
+            return typeUrlPrefix + "/ws.GameInit";
         };
 
-        return Token;
+        return GameInit;
+    })();
+
+    ws.FallingToken = (function() {
+
+        /**
+         * Properties of a FallingToken.
+         * @memberof ws
+         * @interface IFallingToken
+         * @property {number|null} [fromCol] FallingToken fromCol
+         * @property {number|null} [fromRow] FallingToken fromRow
+         * @property {models.ITile|null} [tile] FallingToken tile
+         */
+
+        /**
+         * Constructs a new FallingToken.
+         * @memberof ws
+         * @classdesc Represents a FallingToken.
+         * @implements IFallingToken
+         * @constructor
+         * @param {ws.IFallingToken=} [properties] Properties to set
+         */
+        function FallingToken(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * FallingToken fromCol.
+         * @member {number} fromCol
+         * @memberof ws.FallingToken
+         * @instance
+         */
+        FallingToken.prototype.fromCol = 0;
+
+        /**
+         * FallingToken fromRow.
+         * @member {number} fromRow
+         * @memberof ws.FallingToken
+         * @instance
+         */
+        FallingToken.prototype.fromRow = 0;
+
+        /**
+         * FallingToken tile.
+         * @member {models.ITile|null|undefined} tile
+         * @memberof ws.FallingToken
+         * @instance
+         */
+        FallingToken.prototype.tile = null;
+
+        /**
+         * Creates a new FallingToken instance using the specified properties.
+         * @function create
+         * @memberof ws.FallingToken
+         * @static
+         * @param {ws.IFallingToken=} [properties] Properties to set
+         * @returns {ws.FallingToken} FallingToken instance
+         */
+        FallingToken.create = function create(properties) {
+            return new FallingToken(properties);
+        };
+
+        /**
+         * Encodes the specified FallingToken message. Does not implicitly {@link ws.FallingToken.verify|verify} messages.
+         * @function encode
+         * @memberof ws.FallingToken
+         * @static
+         * @param {ws.IFallingToken} message FallingToken message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        FallingToken.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.fromCol != null && Object.hasOwnProperty.call(message, "fromCol"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.fromCol);
+            if (message.fromRow != null && Object.hasOwnProperty.call(message, "fromRow"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.fromRow);
+            if (message.tile != null && Object.hasOwnProperty.call(message, "tile"))
+                $root.models.Tile.encode(message.tile, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified FallingToken message, length delimited. Does not implicitly {@link ws.FallingToken.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof ws.FallingToken
+         * @static
+         * @param {ws.IFallingToken} message FallingToken message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        FallingToken.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a FallingToken message from the specified reader or buffer.
+         * @function decode
+         * @memberof ws.FallingToken
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {ws.FallingToken} FallingToken
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        FallingToken.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.FallingToken();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.fromCol = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.fromRow = reader.int32();
+                        break;
+                    }
+                case 3: {
+                        message.tile = $root.models.Tile.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a FallingToken message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof ws.FallingToken
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {ws.FallingToken} FallingToken
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        FallingToken.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a FallingToken message.
+         * @function verify
+         * @memberof ws.FallingToken
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        FallingToken.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.fromCol != null && message.hasOwnProperty("fromCol"))
+                if (!$util.isInteger(message.fromCol))
+                    return "fromCol: integer expected";
+            if (message.fromRow != null && message.hasOwnProperty("fromRow"))
+                if (!$util.isInteger(message.fromRow))
+                    return "fromRow: integer expected";
+            if (message.tile != null && message.hasOwnProperty("tile")) {
+                let error = $root.models.Tile.verify(message.tile, long + 1);
+                if (error)
+                    return "tile." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates a FallingToken message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof ws.FallingToken
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {ws.FallingToken} FallingToken
+         */
+        FallingToken.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.FallingToken)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.ws.FallingToken();
+            if (object.fromCol != null)
+                message.fromCol = object.fromCol | 0;
+            if (object.fromRow != null)
+                message.fromRow = object.fromRow | 0;
+            if (object.tile != null) {
+                if (typeof object.tile !== "object")
+                    throw TypeError(".ws.FallingToken.tile: object expected");
+                message.tile = $root.models.Tile.fromObject(object.tile, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a FallingToken message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof ws.FallingToken
+         * @static
+         * @param {ws.FallingToken} message FallingToken
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        FallingToken.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.fromCol = 0;
+                object.fromRow = 0;
+                object.tile = null;
+            }
+            if (message.fromCol != null && message.hasOwnProperty("fromCol"))
+                object.fromCol = message.fromCol;
+            if (message.fromRow != null && message.hasOwnProperty("fromRow"))
+                object.fromRow = message.fromRow;
+            if (message.tile != null && message.hasOwnProperty("tile"))
+                object.tile = $root.models.Tile.toObject(message.tile, options);
+            return object;
+        };
+
+        /**
+         * Converts this FallingToken to JSON.
+         * @function toJSON
+         * @memberof ws.FallingToken
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        FallingToken.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for FallingToken
+         * @function getTypeUrl
+         * @memberof ws.FallingToken
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        FallingToken.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/ws.FallingToken";
+        };
+
+        return FallingToken;
+    })();
+
+    ws.GameMove = (function() {
+
+        /**
+         * Properties of a GameMove.
+         * @memberof ws
+         * @interface IGameMove
+         * @property {models.ITile|null} [tile] GameMove tile
+         * @property {shared.IGameBoard|null} [board] GameMove board
+         * @property {shared.PlayerIDs|null} [turn] GameMove turn
+         * @property {Array.<ws.IChangeTile>|null} [changeTiles] GameMove changeTiles
+         * @property {models.ICurrentTokens|null} [currentTokens] GameMove currentTokens
+         * @property {models.IDecks|null} [decks] GameMove decks
+         * @property {Array.<ws.IFallingToken>|null} [fallingTokens] GameMove fallingTokens
+         * @property {Array.<ws.IChangeTile>|null} [deletedTiles] GameMove deletedTiles
+         * @property {Array.<boolean>|null} [frozenColumns] GameMove frozenColumns
+         */
+
+        /**
+         * Constructs a new GameMove.
+         * @memberof ws
+         * @classdesc Represents a GameMove.
+         * @implements IGameMove
+         * @constructor
+         * @param {ws.IGameMove=} [properties] Properties to set
+         */
+        function GameMove(properties) {
+            this.changeTiles = [];
+            this.fallingTokens = [];
+            this.deletedTiles = [];
+            this.frozenColumns = [];
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * GameMove tile.
+         * @member {models.ITile|null|undefined} tile
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.tile = null;
+
+        /**
+         * GameMove board.
+         * @member {shared.IGameBoard|null|undefined} board
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.board = null;
+
+        /**
+         * GameMove turn.
+         * @member {shared.PlayerIDs} turn
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.turn = 0;
+
+        /**
+         * GameMove changeTiles.
+         * @member {Array.<ws.IChangeTile>} changeTiles
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.changeTiles = $util.emptyArray;
+
+        /**
+         * GameMove currentTokens.
+         * @member {models.ICurrentTokens|null|undefined} currentTokens
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.currentTokens = null;
+
+        /**
+         * GameMove decks.
+         * @member {models.IDecks|null|undefined} decks
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.decks = null;
+
+        /**
+         * GameMove fallingTokens.
+         * @member {Array.<ws.IFallingToken>} fallingTokens
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.fallingTokens = $util.emptyArray;
+
+        /**
+         * GameMove deletedTiles.
+         * @member {Array.<ws.IChangeTile>} deletedTiles
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.deletedTiles = $util.emptyArray;
+
+        /**
+         * GameMove frozenColumns.
+         * @member {Array.<boolean>} frozenColumns
+         * @memberof ws.GameMove
+         * @instance
+         */
+        GameMove.prototype.frozenColumns = $util.emptyArray;
+
+        // OneOf field names bound to virtual getters and setters
+        let $oneOfFields;
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(GameMove.prototype, "_currentTokens", {
+            get: $util.oneOfGetter($oneOfFields = ["currentTokens"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(GameMove.prototype, "_decks", {
+            get: $util.oneOfGetter($oneOfFields = ["decks"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new GameMove instance using the specified properties.
+         * @function create
+         * @memberof ws.GameMove
+         * @static
+         * @param {ws.IGameMove=} [properties] Properties to set
+         * @returns {ws.GameMove} GameMove instance
+         */
+        GameMove.create = function create(properties) {
+            return new GameMove(properties);
+        };
+
+        /**
+         * Encodes the specified GameMove message. Does not implicitly {@link ws.GameMove.verify|verify} messages.
+         * @function encode
+         * @memberof ws.GameMove
+         * @static
+         * @param {ws.IGameMove} message GameMove message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GameMove.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.tile != null && Object.hasOwnProperty.call(message, "tile"))
+                $root.models.Tile.encode(message.tile, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.board != null && Object.hasOwnProperty.call(message, "board"))
+                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.turn != null && Object.hasOwnProperty.call(message, "turn"))
+                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.turn);
+            if (message.changeTiles != null && message.changeTiles.length)
+                for (let i = 0; i < message.changeTiles.length; ++i)
+                    $root.ws.ChangeTile.encode(message.changeTiles[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            if (message.currentTokens != null && Object.hasOwnProperty.call(message, "currentTokens"))
+                $root.models.CurrentTokens.encode(message.currentTokens, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.decks != null && Object.hasOwnProperty.call(message, "decks"))
+                $root.models.Decks.encode(message.decks, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+            if (message.fallingTokens != null && message.fallingTokens.length)
+                for (let i = 0; i < message.fallingTokens.length; ++i)
+                    $root.ws.FallingToken.encode(message.fallingTokens[i], writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+            if (message.deletedTiles != null && message.deletedTiles.length)
+                for (let i = 0; i < message.deletedTiles.length; ++i)
+                    $root.ws.ChangeTile.encode(message.deletedTiles[i], writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+            if (message.frozenColumns != null && message.frozenColumns.length) {
+                writer.uint32(/* id 9, wireType 2 =*/74).fork();
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    writer.bool(message.frozenColumns[i]);
+                writer.ldelim();
+            }
+            return writer;
+        };
+
+        /**
+         * Encodes the specified GameMove message, length delimited. Does not implicitly {@link ws.GameMove.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof ws.GameMove
+         * @static
+         * @param {ws.IGameMove} message GameMove message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GameMove.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a GameMove message from the specified reader or buffer.
+         * @function decode
+         * @memberof ws.GameMove
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {ws.GameMove} GameMove
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GameMove.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameMove();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.tile = $root.models.Tile.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 2: {
+                        message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 3: {
+                        message.turn = reader.int32();
+                        break;
+                    }
+                case 4: {
+                        if (!(message.changeTiles && message.changeTiles.length))
+                            message.changeTiles = [];
+                        message.changeTiles.push($root.ws.ChangeTile.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 5: {
+                        message.currentTokens = $root.models.CurrentTokens.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 6: {
+                        message.decks = $root.models.Decks.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 7: {
+                        if (!(message.fallingTokens && message.fallingTokens.length))
+                            message.fallingTokens = [];
+                        message.fallingTokens.push($root.ws.FallingToken.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 8: {
+                        if (!(message.deletedTiles && message.deletedTiles.length))
+                            message.deletedTiles = [];
+                        message.deletedTiles.push($root.ws.ChangeTile.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 9: {
+                        if (!(message.frozenColumns && message.frozenColumns.length))
+                            message.frozenColumns = [];
+                        if ((tag & 7) === 2) {
+                            let end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.frozenColumns.push(reader.bool());
+                        } else
+                            message.frozenColumns.push(reader.bool());
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a GameMove message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof ws.GameMove
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {ws.GameMove} GameMove
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GameMove.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a GameMove message.
+         * @function verify
+         * @memberof ws.GameMove
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        GameMove.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            let properties = {};
+            if (message.tile != null && message.hasOwnProperty("tile")) {
+                let error = $root.models.Tile.verify(message.tile, long + 1);
+                if (error)
+                    return "tile." + error;
+            }
+            if (message.board != null && message.hasOwnProperty("board")) {
+                let error = $root.shared.GameBoard.verify(message.board, long + 1);
+                if (error)
+                    return "board." + error;
+            }
+            if (message.turn != null && message.hasOwnProperty("turn"))
+                switch (message.turn) {
+                default:
+                    return "turn: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                    break;
+                }
+            if (message.changeTiles != null && message.hasOwnProperty("changeTiles")) {
+                if (!Array.isArray(message.changeTiles))
+                    return "changeTiles: array expected";
+                for (let i = 0; i < message.changeTiles.length; ++i) {
+                    let error = $root.ws.ChangeTile.verify(message.changeTiles[i], long + 1);
+                    if (error)
+                        return "changeTiles." + error;
+                }
+            }
+            if (message.currentTokens != null && message.hasOwnProperty("currentTokens")) {
+                properties._currentTokens = 1;
+                {
+                    let error = $root.models.CurrentTokens.verify(message.currentTokens, long + 1);
+                    if (error)
+                        return "currentTokens." + error;
+                }
+            }
+            if (message.decks != null && message.hasOwnProperty("decks")) {
+                properties._decks = 1;
+                {
+                    let error = $root.models.Decks.verify(message.decks, long + 1);
+                    if (error)
+                        return "decks." + error;
+                }
+            }
+            if (message.fallingTokens != null && message.hasOwnProperty("fallingTokens")) {
+                if (!Array.isArray(message.fallingTokens))
+                    return "fallingTokens: array expected";
+                for (let i = 0; i < message.fallingTokens.length; ++i) {
+                    let error = $root.ws.FallingToken.verify(message.fallingTokens[i], long + 1);
+                    if (error)
+                        return "fallingTokens." + error;
+                }
+            }
+            if (message.deletedTiles != null && message.hasOwnProperty("deletedTiles")) {
+                if (!Array.isArray(message.deletedTiles))
+                    return "deletedTiles: array expected";
+                for (let i = 0; i < message.deletedTiles.length; ++i) {
+                    let error = $root.ws.ChangeTile.verify(message.deletedTiles[i], long + 1);
+                    if (error)
+                        return "deletedTiles." + error;
+                }
+            }
+            if (message.frozenColumns != null && message.hasOwnProperty("frozenColumns")) {
+                if (!Array.isArray(message.frozenColumns))
+                    return "frozenColumns: array expected";
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    if (typeof message.frozenColumns[i] !== "boolean")
+                        return "frozenColumns: boolean[] expected";
+            }
+            return null;
+        };
+
+        /**
+         * Creates a GameMove message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof ws.GameMove
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {ws.GameMove} GameMove
+         */
+        GameMove.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.GameMove)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.ws.GameMove();
+            if (object.tile != null) {
+                if (typeof object.tile !== "object")
+                    throw TypeError(".ws.GameMove.tile: object expected");
+                message.tile = $root.models.Tile.fromObject(object.tile, long + 1);
+            }
+            if (object.board != null) {
+                if (typeof object.board !== "object")
+                    throw TypeError(".ws.GameMove.board: object expected");
+                message.board = $root.shared.GameBoard.fromObject(object.board, long + 1);
+            }
+            switch (object.turn) {
+            default:
+                if (typeof object.turn === "number") {
+                    message.turn = object.turn;
+                    break;
+                }
+                break;
+            case "PLAYER_IDS_UNSPECIFIED":
+            case 0:
+                message.turn = 0;
+                break;
+            case "PLAYER_IDS_PLAYER1":
+            case 1:
+                message.turn = 1;
+                break;
+            case "PLAYER_IDS_PLAYER2":
+            case 2:
+                message.turn = 2;
+                break;
+            }
+            if (object.changeTiles) {
+                if (!Array.isArray(object.changeTiles))
+                    throw TypeError(".ws.GameMove.changeTiles: array expected");
+                message.changeTiles = [];
+                for (let i = 0; i < object.changeTiles.length; ++i) {
+                    if (typeof object.changeTiles[i] !== "object")
+                        throw TypeError(".ws.GameMove.changeTiles: object expected");
+                    message.changeTiles[i] = $root.ws.ChangeTile.fromObject(object.changeTiles[i], long + 1);
+                }
+            }
+            if (object.currentTokens != null) {
+                if (typeof object.currentTokens !== "object")
+                    throw TypeError(".ws.GameMove.currentTokens: object expected");
+                message.currentTokens = $root.models.CurrentTokens.fromObject(object.currentTokens, long + 1);
+            }
+            if (object.decks != null) {
+                if (typeof object.decks !== "object")
+                    throw TypeError(".ws.GameMove.decks: object expected");
+                message.decks = $root.models.Decks.fromObject(object.decks, long + 1);
+            }
+            if (object.fallingTokens) {
+                if (!Array.isArray(object.fallingTokens))
+                    throw TypeError(".ws.GameMove.fallingTokens: array expected");
+                message.fallingTokens = [];
+                for (let i = 0; i < object.fallingTokens.length; ++i) {
+                    if (typeof object.fallingTokens[i] !== "object")
+                        throw TypeError(".ws.GameMove.fallingTokens: object expected");
+                    message.fallingTokens[i] = $root.ws.FallingToken.fromObject(object.fallingTokens[i], long + 1);
+                }
+            }
+            if (object.deletedTiles) {
+                if (!Array.isArray(object.deletedTiles))
+                    throw TypeError(".ws.GameMove.deletedTiles: array expected");
+                message.deletedTiles = [];
+                for (let i = 0; i < object.deletedTiles.length; ++i) {
+                    if (typeof object.deletedTiles[i] !== "object")
+                        throw TypeError(".ws.GameMove.deletedTiles: object expected");
+                    message.deletedTiles[i] = $root.ws.ChangeTile.fromObject(object.deletedTiles[i], long + 1);
+                }
+            }
+            if (object.frozenColumns) {
+                if (!Array.isArray(object.frozenColumns))
+                    throw TypeError(".ws.GameMove.frozenColumns: array expected");
+                message.frozenColumns = [];
+                for (let i = 0; i < object.frozenColumns.length; ++i)
+                    message.frozenColumns[i] = Boolean(object.frozenColumns[i]);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a GameMove message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof ws.GameMove
+         * @static
+         * @param {ws.GameMove} message GameMove
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        GameMove.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.arrays || options.defaults) {
+                object.changeTiles = [];
+                object.fallingTokens = [];
+                object.deletedTiles = [];
+                object.frozenColumns = [];
+            }
+            if (options.defaults) {
+                object.tile = null;
+                object.board = null;
+                object.turn = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
+            }
+            if (message.tile != null && message.hasOwnProperty("tile"))
+                object.tile = $root.models.Tile.toObject(message.tile, options);
+            if (message.board != null && message.hasOwnProperty("board"))
+                object.board = $root.shared.GameBoard.toObject(message.board, options);
+            if (message.turn != null && message.hasOwnProperty("turn"))
+                object.turn = options.enums === String ? $root.shared.PlayerIDs[message.turn] === undefined ? message.turn : $root.shared.PlayerIDs[message.turn] : message.turn;
+            if (message.changeTiles && message.changeTiles.length) {
+                object.changeTiles = [];
+                for (let j = 0; j < message.changeTiles.length; ++j)
+                    object.changeTiles[j] = $root.ws.ChangeTile.toObject(message.changeTiles[j], options);
+            }
+            if (message.currentTokens != null && message.hasOwnProperty("currentTokens")) {
+                object.currentTokens = $root.models.CurrentTokens.toObject(message.currentTokens, options);
+                if (options.oneofs)
+                    object._currentTokens = "currentTokens";
+            }
+            if (message.decks != null && message.hasOwnProperty("decks")) {
+                object.decks = $root.models.Decks.toObject(message.decks, options);
+                if (options.oneofs)
+                    object._decks = "decks";
+            }
+            if (message.fallingTokens && message.fallingTokens.length) {
+                object.fallingTokens = [];
+                for (let j = 0; j < message.fallingTokens.length; ++j)
+                    object.fallingTokens[j] = $root.ws.FallingToken.toObject(message.fallingTokens[j], options);
+            }
+            if (message.deletedTiles && message.deletedTiles.length) {
+                object.deletedTiles = [];
+                for (let j = 0; j < message.deletedTiles.length; ++j)
+                    object.deletedTiles[j] = $root.ws.ChangeTile.toObject(message.deletedTiles[j], options);
+            }
+            if (message.frozenColumns && message.frozenColumns.length) {
+                object.frozenColumns = [];
+                for (let j = 0; j < message.frozenColumns.length; ++j)
+                    object.frozenColumns[j] = message.frozenColumns[j];
+            }
+            return object;
+        };
+
+        /**
+         * Converts this GameMove to JSON.
+         * @function toJSON
+         * @memberof ws.GameMove
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        GameMove.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for GameMove
+         * @function getTypeUrl
+         * @memberof ws.GameMove
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        GameMove.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/ws.GameMove";
+        };
+
+        return GameMove;
+    })();
+
+    ws.ChangeTile = (function() {
+
+        /**
+         * Properties of a ChangeTile.
+         * @memberof ws
+         * @interface IChangeTile
+         * @property {models.ChangeTokenActions|null} [action] ChangeTile action
+         * @property {models.ITile|null} [tile] ChangeTile tile
+         */
+
+        /**
+         * Constructs a new ChangeTile.
+         * @memberof ws
+         * @classdesc Represents a ChangeTile.
+         * @implements IChangeTile
+         * @constructor
+         * @param {ws.IChangeTile=} [properties] Properties to set
+         */
+        function ChangeTile(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * ChangeTile action.
+         * @member {models.ChangeTokenActions} action
+         * @memberof ws.ChangeTile
+         * @instance
+         */
+        ChangeTile.prototype.action = 0;
+
+        /**
+         * ChangeTile tile.
+         * @member {models.ITile|null|undefined} tile
+         * @memberof ws.ChangeTile
+         * @instance
+         */
+        ChangeTile.prototype.tile = null;
+
+        /**
+         * Creates a new ChangeTile instance using the specified properties.
+         * @function create
+         * @memberof ws.ChangeTile
+         * @static
+         * @param {ws.IChangeTile=} [properties] Properties to set
+         * @returns {ws.ChangeTile} ChangeTile instance
+         */
+        ChangeTile.create = function create(properties) {
+            return new ChangeTile(properties);
+        };
+
+        /**
+         * Encodes the specified ChangeTile message. Does not implicitly {@link ws.ChangeTile.verify|verify} messages.
+         * @function encode
+         * @memberof ws.ChangeTile
+         * @static
+         * @param {ws.IChangeTile} message ChangeTile message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ChangeTile.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.action != null && Object.hasOwnProperty.call(message, "action"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.action);
+            if (message.tile != null && Object.hasOwnProperty.call(message, "tile"))
+                $root.models.Tile.encode(message.tile, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified ChangeTile message, length delimited. Does not implicitly {@link ws.ChangeTile.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof ws.ChangeTile
+         * @static
+         * @param {ws.IChangeTile} message ChangeTile message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ChangeTile.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a ChangeTile message from the specified reader or buffer.
+         * @function decode
+         * @memberof ws.ChangeTile
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {ws.ChangeTile} ChangeTile
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ChangeTile.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.ChangeTile();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.action = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.tile = $root.models.Tile.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a ChangeTile message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof ws.ChangeTile
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {ws.ChangeTile} ChangeTile
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ChangeTile.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a ChangeTile message.
+         * @function verify
+         * @memberof ws.ChangeTile
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        ChangeTile.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.action != null && message.hasOwnProperty("action"))
+                switch (message.action) {
+                default:
+                    return "action: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    break;
+                }
+            if (message.tile != null && message.hasOwnProperty("tile")) {
+                let error = $root.models.Tile.verify(message.tile, long + 1);
+                if (error)
+                    return "tile." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates a ChangeTile message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof ws.ChangeTile
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {ws.ChangeTile} ChangeTile
+         */
+        ChangeTile.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.ws.ChangeTile)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.ws.ChangeTile();
+            switch (object.action) {
+            default:
+                if (typeof object.action === "number") {
+                    message.action = object.action;
+                    break;
+                }
+                break;
+            case "CHANGE_TOKEN_ACTIONS_UNSPECIFIED":
+            case 0:
+                message.action = 0;
+                break;
+            case "CHANGE_TOKEN_ACTIONS_BURN_DESTROY":
+            case 1:
+                message.action = 1;
+                break;
+            case "CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP":
+            case 2:
+                message.action = 2;
+                break;
+            case "CHANGE_TOKENS_ACTIONS_FREEZE_FROZE":
+            case 3:
+                message.action = 3;
+                break;
+            case "CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE":
+            case 4:
+                message.action = 4;
+                break;
+            case "CHANGE_TOKENS_ACTIONS_BOMB_EXPLODED":
+            case 5:
+                message.action = 5;
+                break;
+            }
+            if (object.tile != null) {
+                if (typeof object.tile !== "object")
+                    throw TypeError(".ws.ChangeTile.tile: object expected");
+                message.tile = $root.models.Tile.fromObject(object.tile, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a ChangeTile message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof ws.ChangeTile
+         * @static
+         * @param {ws.ChangeTile} message ChangeTile
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        ChangeTile.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.action = options.enums === String ? "CHANGE_TOKEN_ACTIONS_UNSPECIFIED" : 0;
+                object.tile = null;
+            }
+            if (message.action != null && message.hasOwnProperty("action"))
+                object.action = options.enums === String ? $root.models.ChangeTokenActions[message.action] === undefined ? message.action : $root.models.ChangeTokenActions[message.action] : message.action;
+            if (message.tile != null && message.hasOwnProperty("tile"))
+                object.tile = $root.models.Tile.toObject(message.tile, options);
+            return object;
+        };
+
+        /**
+         * Converts this ChangeTile to JSON.
+         * @function toJSON
+         * @memberof ws.ChangeTile
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        ChangeTile.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for ChangeTile
+         * @function getTypeUrl
+         * @memberof ws.ChangeTile
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        ChangeTile.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/ws.ChangeTile";
+        };
+
+        return ChangeTile;
     })();
 
     ws.GameEnd = (function() {
@@ -2921,9 +4103,16 @@ export const ws = $root.ws = (() => {
          * @memberof ws
          * @interface IGameEnd
          * @property {ws.GameEndTypes|null} [endType] GameEnd endType
-         * @property {ws.IToken|null} [token] GameEnd token
+         * @property {models.ITile|null} [tile] GameEnd tile
          * @property {models.IPartialUser|null} [winner] GameEnd winner
          * @property {models.IPartialUser|null} [loser] GameEnd loser
+         * @property {shared.IGameBoard|null} [board] GameEnd board
+         * @property {Array.<ws.IChangeTile>|null} [changeTiles] GameEnd changeTiles
+         * @property {models.ICurrentTokens|null} [currentTokens] GameEnd currentTokens
+         * @property {models.IDecks|null} [decks] GameEnd decks
+         * @property {Array.<ws.IFallingToken>|null} [fallingTokens] GameEnd fallingTokens
+         * @property {Array.<ws.IChangeTile>|null} [deletedTiles] GameEnd deletedTiles
+         * @property {Array.<boolean>|null} [frozenColumns] GameEnd frozenColumns
          */
 
         /**
@@ -2935,6 +4124,10 @@ export const ws = $root.ws = (() => {
          * @param {ws.IGameEnd=} [properties] Properties to set
          */
         function GameEnd(properties) {
+            this.changeTiles = [];
+            this.fallingTokens = [];
+            this.deletedTiles = [];
+            this.frozenColumns = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -2950,12 +4143,12 @@ export const ws = $root.ws = (() => {
         GameEnd.prototype.endType = 0;
 
         /**
-         * GameEnd token.
-         * @member {ws.IToken|null|undefined} token
+         * GameEnd tile.
+         * @member {models.ITile|null|undefined} tile
          * @memberof ws.GameEnd
          * @instance
          */
-        GameEnd.prototype.token = null;
+        GameEnd.prototype.tile = null;
 
         /**
          * GameEnd winner.
@@ -2973,12 +4166,68 @@ export const ws = $root.ws = (() => {
          */
         GameEnd.prototype.loser = null;
 
+        /**
+         * GameEnd board.
+         * @member {shared.IGameBoard|null|undefined} board
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.board = null;
+
+        /**
+         * GameEnd changeTiles.
+         * @member {Array.<ws.IChangeTile>} changeTiles
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.changeTiles = $util.emptyArray;
+
+        /**
+         * GameEnd currentTokens.
+         * @member {models.ICurrentTokens|null|undefined} currentTokens
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.currentTokens = null;
+
+        /**
+         * GameEnd decks.
+         * @member {models.IDecks|null|undefined} decks
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.decks = null;
+
+        /**
+         * GameEnd fallingTokens.
+         * @member {Array.<ws.IFallingToken>} fallingTokens
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.fallingTokens = $util.emptyArray;
+
+        /**
+         * GameEnd deletedTiles.
+         * @member {Array.<ws.IChangeTile>} deletedTiles
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.deletedTiles = $util.emptyArray;
+
+        /**
+         * GameEnd frozenColumns.
+         * @member {Array.<boolean>} frozenColumns
+         * @memberof ws.GameEnd
+         * @instance
+         */
+        GameEnd.prototype.frozenColumns = $util.emptyArray;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         // Virtual OneOf for proto3 optional field
-        Object.defineProperty(GameEnd.prototype, "_token", {
-            get: $util.oneOfGetter($oneOfFields = ["token"]),
+        Object.defineProperty(GameEnd.prototype, "_tile", {
+            get: $util.oneOfGetter($oneOfFields = ["tile"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -2991,6 +4240,18 @@ export const ws = $root.ws = (() => {
         // Virtual OneOf for proto3 optional field
         Object.defineProperty(GameEnd.prototype, "_loser", {
             get: $util.oneOfGetter($oneOfFields = ["loser"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(GameEnd.prototype, "_currentTokens", {
+            get: $util.oneOfGetter($oneOfFields = ["currentTokens"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(GameEnd.prototype, "_decks", {
+            get: $util.oneOfGetter($oneOfFields = ["decks"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -3020,12 +4281,33 @@ export const ws = $root.ws = (() => {
                 writer = $Writer.create();
             if (message.endType != null && Object.hasOwnProperty.call(message, "endType"))
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.endType);
-            if (message.token != null && Object.hasOwnProperty.call(message, "token"))
-                $root.ws.Token.encode(message.token, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.tile != null && Object.hasOwnProperty.call(message, "tile"))
+                $root.models.Tile.encode(message.tile, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.winner != null && Object.hasOwnProperty.call(message, "winner"))
                 $root.models.PartialUser.encode(message.winner, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.loser != null && Object.hasOwnProperty.call(message, "loser"))
                 $root.models.PartialUser.encode(message.loser, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            if (message.board != null && Object.hasOwnProperty.call(message, "board"))
+                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.changeTiles != null && message.changeTiles.length)
+                for (let i = 0; i < message.changeTiles.length; ++i)
+                    $root.ws.ChangeTile.encode(message.changeTiles[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+            if (message.currentTokens != null && Object.hasOwnProperty.call(message, "currentTokens"))
+                $root.models.CurrentTokens.encode(message.currentTokens, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+            if (message.decks != null && Object.hasOwnProperty.call(message, "decks"))
+                $root.models.Decks.encode(message.decks, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+            if (message.fallingTokens != null && message.fallingTokens.length)
+                for (let i = 0; i < message.fallingTokens.length; ++i)
+                    $root.ws.FallingToken.encode(message.fallingTokens[i], writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+            if (message.deletedTiles != null && message.deletedTiles.length)
+                for (let i = 0; i < message.deletedTiles.length; ++i)
+                    $root.ws.ChangeTile.encode(message.deletedTiles[i], writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+            if (message.frozenColumns != null && message.frozenColumns.length) {
+                writer.uint32(/* id 11, wireType 2 =*/90).fork();
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    writer.bool(message.frozenColumns[i]);
+                writer.ldelim();
+            }
             return writer;
         };
 
@@ -3071,7 +4353,7 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 2: {
-                        message.token = $root.ws.Token.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.tile = $root.models.Tile.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 case 3: {
@@ -3080,6 +4362,47 @@ export const ws = $root.ws = (() => {
                     }
                 case 4: {
                         message.loser = $root.models.PartialUser.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 5: {
+                        message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 6: {
+                        if (!(message.changeTiles && message.changeTiles.length))
+                            message.changeTiles = [];
+                        message.changeTiles.push($root.ws.ChangeTile.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 7: {
+                        message.currentTokens = $root.models.CurrentTokens.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 8: {
+                        message.decks = $root.models.Decks.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 9: {
+                        if (!(message.fallingTokens && message.fallingTokens.length))
+                            message.fallingTokens = [];
+                        message.fallingTokens.push($root.ws.FallingToken.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 10: {
+                        if (!(message.deletedTiles && message.deletedTiles.length))
+                            message.deletedTiles = [];
+                        message.deletedTiles.push($root.ws.ChangeTile.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 11: {
+                        if (!(message.frozenColumns && message.frozenColumns.length))
+                            message.frozenColumns = [];
+                        if ((tag & 7) === 2) {
+                            let end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.frozenColumns.push(reader.bool());
+                        } else
+                            message.frozenColumns.push(reader.bool());
                         break;
                     }
                 default:
@@ -3132,12 +4455,12 @@ export const ws = $root.ws = (() => {
                 case 3:
                     break;
                 }
-            if (message.token != null && message.hasOwnProperty("token")) {
-                properties._token = 1;
+            if (message.tile != null && message.hasOwnProperty("tile")) {
+                properties._tile = 1;
                 {
-                    let error = $root.ws.Token.verify(message.token, long + 1);
+                    let error = $root.models.Tile.verify(message.tile, long + 1);
                     if (error)
-                        return "token." + error;
+                        return "tile." + error;
                 }
             }
             if (message.winner != null && message.hasOwnProperty("winner")) {
@@ -3155,6 +4478,61 @@ export const ws = $root.ws = (() => {
                     if (error)
                         return "loser." + error;
                 }
+            }
+            if (message.board != null && message.hasOwnProperty("board")) {
+                let error = $root.shared.GameBoard.verify(message.board, long + 1);
+                if (error)
+                    return "board." + error;
+            }
+            if (message.changeTiles != null && message.hasOwnProperty("changeTiles")) {
+                if (!Array.isArray(message.changeTiles))
+                    return "changeTiles: array expected";
+                for (let i = 0; i < message.changeTiles.length; ++i) {
+                    let error = $root.ws.ChangeTile.verify(message.changeTiles[i], long + 1);
+                    if (error)
+                        return "changeTiles." + error;
+                }
+            }
+            if (message.currentTokens != null && message.hasOwnProperty("currentTokens")) {
+                properties._currentTokens = 1;
+                {
+                    let error = $root.models.CurrentTokens.verify(message.currentTokens, long + 1);
+                    if (error)
+                        return "currentTokens." + error;
+                }
+            }
+            if (message.decks != null && message.hasOwnProperty("decks")) {
+                properties._decks = 1;
+                {
+                    let error = $root.models.Decks.verify(message.decks, long + 1);
+                    if (error)
+                        return "decks." + error;
+                }
+            }
+            if (message.fallingTokens != null && message.hasOwnProperty("fallingTokens")) {
+                if (!Array.isArray(message.fallingTokens))
+                    return "fallingTokens: array expected";
+                for (let i = 0; i < message.fallingTokens.length; ++i) {
+                    let error = $root.ws.FallingToken.verify(message.fallingTokens[i], long + 1);
+                    if (error)
+                        return "fallingTokens." + error;
+                }
+            }
+            if (message.deletedTiles != null && message.hasOwnProperty("deletedTiles")) {
+                if (!Array.isArray(message.deletedTiles))
+                    return "deletedTiles: array expected";
+                for (let i = 0; i < message.deletedTiles.length; ++i) {
+                    let error = $root.ws.ChangeTile.verify(message.deletedTiles[i], long + 1);
+                    if (error)
+                        return "deletedTiles." + error;
+                }
+            }
+            if (message.frozenColumns != null && message.hasOwnProperty("frozenColumns")) {
+                if (!Array.isArray(message.frozenColumns))
+                    return "frozenColumns: array expected";
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    if (typeof message.frozenColumns[i] !== "boolean")
+                        return "frozenColumns: boolean[] expected";
             }
             return null;
         };
@@ -3199,10 +4577,10 @@ export const ws = $root.ws = (() => {
                 message.endType = 3;
                 break;
             }
-            if (object.token != null) {
-                if (typeof object.token !== "object")
-                    throw TypeError(".ws.GameEnd.token: object expected");
-                message.token = $root.ws.Token.fromObject(object.token, long + 1);
+            if (object.tile != null) {
+                if (typeof object.tile !== "object")
+                    throw TypeError(".ws.GameEnd.tile: object expected");
+                message.tile = $root.models.Tile.fromObject(object.tile, long + 1);
             }
             if (object.winner != null) {
                 if (typeof object.winner !== "object")
@@ -3213,6 +4591,58 @@ export const ws = $root.ws = (() => {
                 if (typeof object.loser !== "object")
                     throw TypeError(".ws.GameEnd.loser: object expected");
                 message.loser = $root.models.PartialUser.fromObject(object.loser, long + 1);
+            }
+            if (object.board != null) {
+                if (typeof object.board !== "object")
+                    throw TypeError(".ws.GameEnd.board: object expected");
+                message.board = $root.shared.GameBoard.fromObject(object.board, long + 1);
+            }
+            if (object.changeTiles) {
+                if (!Array.isArray(object.changeTiles))
+                    throw TypeError(".ws.GameEnd.changeTiles: array expected");
+                message.changeTiles = [];
+                for (let i = 0; i < object.changeTiles.length; ++i) {
+                    if (typeof object.changeTiles[i] !== "object")
+                        throw TypeError(".ws.GameEnd.changeTiles: object expected");
+                    message.changeTiles[i] = $root.ws.ChangeTile.fromObject(object.changeTiles[i], long + 1);
+                }
+            }
+            if (object.currentTokens != null) {
+                if (typeof object.currentTokens !== "object")
+                    throw TypeError(".ws.GameEnd.currentTokens: object expected");
+                message.currentTokens = $root.models.CurrentTokens.fromObject(object.currentTokens, long + 1);
+            }
+            if (object.decks != null) {
+                if (typeof object.decks !== "object")
+                    throw TypeError(".ws.GameEnd.decks: object expected");
+                message.decks = $root.models.Decks.fromObject(object.decks, long + 1);
+            }
+            if (object.fallingTokens) {
+                if (!Array.isArray(object.fallingTokens))
+                    throw TypeError(".ws.GameEnd.fallingTokens: array expected");
+                message.fallingTokens = [];
+                for (let i = 0; i < object.fallingTokens.length; ++i) {
+                    if (typeof object.fallingTokens[i] !== "object")
+                        throw TypeError(".ws.GameEnd.fallingTokens: object expected");
+                    message.fallingTokens[i] = $root.ws.FallingToken.fromObject(object.fallingTokens[i], long + 1);
+                }
+            }
+            if (object.deletedTiles) {
+                if (!Array.isArray(object.deletedTiles))
+                    throw TypeError(".ws.GameEnd.deletedTiles: array expected");
+                message.deletedTiles = [];
+                for (let i = 0; i < object.deletedTiles.length; ++i) {
+                    if (typeof object.deletedTiles[i] !== "object")
+                        throw TypeError(".ws.GameEnd.deletedTiles: object expected");
+                    message.deletedTiles[i] = $root.ws.ChangeTile.fromObject(object.deletedTiles[i], long + 1);
+                }
+            }
+            if (object.frozenColumns) {
+                if (!Array.isArray(object.frozenColumns))
+                    throw TypeError(".ws.GameEnd.frozenColumns: array expected");
+                message.frozenColumns = [];
+                for (let i = 0; i < object.frozenColumns.length; ++i)
+                    message.frozenColumns[i] = Boolean(object.frozenColumns[i]);
             }
             return message;
         };
@@ -3230,14 +4660,22 @@ export const ws = $root.ws = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults)
+            if (options.arrays || options.defaults) {
+                object.changeTiles = [];
+                object.fallingTokens = [];
+                object.deletedTiles = [];
+                object.frozenColumns = [];
+            }
+            if (options.defaults) {
                 object.endType = options.enums === String ? "GAME_END_TYPES_UNSPECIFIED" : 0;
+                object.board = null;
+            }
             if (message.endType != null && message.hasOwnProperty("endType"))
                 object.endType = options.enums === String ? $root.ws.GameEndTypes[message.endType] === undefined ? message.endType : $root.ws.GameEndTypes[message.endType] : message.endType;
-            if (message.token != null && message.hasOwnProperty("token")) {
-                object.token = $root.ws.Token.toObject(message.token, options);
+            if (message.tile != null && message.hasOwnProperty("tile")) {
+                object.tile = $root.models.Tile.toObject(message.tile, options);
                 if (options.oneofs)
-                    object._token = "token";
+                    object._tile = "tile";
             }
             if (message.winner != null && message.hasOwnProperty("winner")) {
                 object.winner = $root.models.PartialUser.toObject(message.winner, options);
@@ -3248,6 +4686,38 @@ export const ws = $root.ws = (() => {
                 object.loser = $root.models.PartialUser.toObject(message.loser, options);
                 if (options.oneofs)
                     object._loser = "loser";
+            }
+            if (message.board != null && message.hasOwnProperty("board"))
+                object.board = $root.shared.GameBoard.toObject(message.board, options);
+            if (message.changeTiles && message.changeTiles.length) {
+                object.changeTiles = [];
+                for (let j = 0; j < message.changeTiles.length; ++j)
+                    object.changeTiles[j] = $root.ws.ChangeTile.toObject(message.changeTiles[j], options);
+            }
+            if (message.currentTokens != null && message.hasOwnProperty("currentTokens")) {
+                object.currentTokens = $root.models.CurrentTokens.toObject(message.currentTokens, options);
+                if (options.oneofs)
+                    object._currentTokens = "currentTokens";
+            }
+            if (message.decks != null && message.hasOwnProperty("decks")) {
+                object.decks = $root.models.Decks.toObject(message.decks, options);
+                if (options.oneofs)
+                    object._decks = "decks";
+            }
+            if (message.fallingTokens && message.fallingTokens.length) {
+                object.fallingTokens = [];
+                for (let j = 0; j < message.fallingTokens.length; ++j)
+                    object.fallingTokens[j] = $root.ws.FallingToken.toObject(message.fallingTokens[j], options);
+            }
+            if (message.deletedTiles && message.deletedTiles.length) {
+                object.deletedTiles = [];
+                for (let j = 0; j < message.deletedTiles.length; ++j)
+                    object.deletedTiles[j] = $root.ws.ChangeTile.toObject(message.deletedTiles[j], options);
+            }
+            if (message.frozenColumns && message.frozenColumns.length) {
+                object.frozenColumns = [];
+                for (let j = 0; j < message.frozenColumns.length; ++j)
+                    object.frozenColumns[j] = message.frozenColumns[j];
             }
             return object;
         };
@@ -3281,319 +4751,23 @@ export const ws = $root.ws = (() => {
         return GameEnd;
     })();
 
-    ws.GameMove = (function() {
-
-        /**
-         * Properties of a GameMove.
-         * @memberof ws
-         * @interface IGameMove
-         * @property {ws.IToken|null} [token] GameMove token
-         * @property {shared.IGameBoard|null} [board] GameMove board
-         * @property {shared.PlayerIDs|null} [turn] GameMove turn
-         */
-
-        /**
-         * Constructs a new GameMove.
-         * @memberof ws
-         * @classdesc Represents a GameMove.
-         * @implements IGameMove
-         * @constructor
-         * @param {ws.IGameMove=} [properties] Properties to set
-         */
-        function GameMove(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * GameMove token.
-         * @member {ws.IToken|null|undefined} token
-         * @memberof ws.GameMove
-         * @instance
-         */
-        GameMove.prototype.token = null;
-
-        /**
-         * GameMove board.
-         * @member {shared.IGameBoard|null|undefined} board
-         * @memberof ws.GameMove
-         * @instance
-         */
-        GameMove.prototype.board = null;
-
-        /**
-         * GameMove turn.
-         * @member {shared.PlayerIDs} turn
-         * @memberof ws.GameMove
-         * @instance
-         */
-        GameMove.prototype.turn = 0;
-
-        /**
-         * Creates a new GameMove instance using the specified properties.
-         * @function create
-         * @memberof ws.GameMove
-         * @static
-         * @param {ws.IGameMove=} [properties] Properties to set
-         * @returns {ws.GameMove} GameMove instance
-         */
-        GameMove.create = function create(properties) {
-            return new GameMove(properties);
-        };
-
-        /**
-         * Encodes the specified GameMove message. Does not implicitly {@link ws.GameMove.verify|verify} messages.
-         * @function encode
-         * @memberof ws.GameMove
-         * @static
-         * @param {ws.IGameMove} message GameMove message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GameMove.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.token != null && Object.hasOwnProperty.call(message, "token"))
-                $root.ws.Token.encode(message.token, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            if (message.board != null && Object.hasOwnProperty.call(message, "board"))
-                $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-            if (message.turn != null && Object.hasOwnProperty.call(message, "turn"))
-                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.turn);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified GameMove message, length delimited. Does not implicitly {@link ws.GameMove.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof ws.GameMove
-         * @static
-         * @param {ws.IGameMove} message GameMove message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        GameMove.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a GameMove message from the specified reader or buffer.
-         * @function decode
-         * @memberof ws.GameMove
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {ws.GameMove} GameMove
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GameMove.decode = function decode(reader, length, error, long) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            if (long === undefined)
-                long = 0;
-            if (long > $Reader.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.ws.GameMove();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                if (tag === error)
-                    break;
-                switch (tag >>> 3) {
-                case 1: {
-                        message.token = $root.ws.Token.decode(reader, reader.uint32(), undefined, long + 1);
-                        break;
-                    }
-                case 2: {
-                        message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
-                        break;
-                    }
-                case 3: {
-                        message.turn = reader.int32();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7, long);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a GameMove message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof ws.GameMove
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {ws.GameMove} GameMove
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        GameMove.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a GameMove message.
-         * @function verify
-         * @memberof ws.GameMove
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        GameMove.verify = function verify(message, long) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                return "maximum nesting depth exceeded";
-            if (message.token != null && message.hasOwnProperty("token")) {
-                let error = $root.ws.Token.verify(message.token, long + 1);
-                if (error)
-                    return "token." + error;
-            }
-            if (message.board != null && message.hasOwnProperty("board")) {
-                let error = $root.shared.GameBoard.verify(message.board, long + 1);
-                if (error)
-                    return "board." + error;
-            }
-            if (message.turn != null && message.hasOwnProperty("turn"))
-                switch (message.turn) {
-                default:
-                    return "turn: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                    break;
-                }
-            return null;
-        };
-
-        /**
-         * Creates a GameMove message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof ws.GameMove
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {ws.GameMove} GameMove
-         */
-        GameMove.fromObject = function fromObject(object, long) {
-            if (object instanceof $root.ws.GameMove)
-                return object;
-            if (long === undefined)
-                long = 0;
-            if (long > $util.recursionLimit)
-                throw Error("maximum nesting depth exceeded");
-            let message = new $root.ws.GameMove();
-            if (object.token != null) {
-                if (typeof object.token !== "object")
-                    throw TypeError(".ws.GameMove.token: object expected");
-                message.token = $root.ws.Token.fromObject(object.token, long + 1);
-            }
-            if (object.board != null) {
-                if (typeof object.board !== "object")
-                    throw TypeError(".ws.GameMove.board: object expected");
-                message.board = $root.shared.GameBoard.fromObject(object.board, long + 1);
-            }
-            switch (object.turn) {
-            default:
-                if (typeof object.turn === "number") {
-                    message.turn = object.turn;
-                    break;
-                }
-                break;
-            case "PLAYER_IDS_UNSPECIFIED":
-            case 0:
-                message.turn = 0;
-                break;
-            case "PLAYER_IDS_PLAYER1":
-            case 1:
-                message.turn = 1;
-                break;
-            case "PLAYER_IDS_PLAYER2":
-            case 2:
-                message.turn = 2;
-                break;
-            }
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a GameMove message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof ws.GameMove
-         * @static
-         * @param {ws.GameMove} message GameMove
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        GameMove.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults) {
-                object.token = null;
-                object.board = null;
-                object.turn = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
-            }
-            if (message.token != null && message.hasOwnProperty("token"))
-                object.token = $root.ws.Token.toObject(message.token, options);
-            if (message.board != null && message.hasOwnProperty("board"))
-                object.board = $root.shared.GameBoard.toObject(message.board, options);
-            if (message.turn != null && message.hasOwnProperty("turn"))
-                object.turn = options.enums === String ? $root.shared.PlayerIDs[message.turn] === undefined ? message.turn : $root.shared.PlayerIDs[message.turn] : message.turn;
-            return object;
-        };
-
-        /**
-         * Converts this GameMove to JSON.
-         * @function toJSON
-         * @memberof ws.GameMove
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        GameMove.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for GameMove
-         * @function getTypeUrl
-         * @memberof ws.GameMove
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        GameMove.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/ws.GameMove";
-        };
-
-        return GameMove;
-    })();
-
     /**
      * GameResponses enum.
      * @name ws.GameResponses
      * @enum {number}
      * @property {number} GAME_RESPONSES_UNSPECIFIED=0 GAME_RESPONSES_UNSPECIFIED value
      * @property {number} GAME_RESPONSES_ERROR=1 GAME_RESPONSES_ERROR value
-     * @property {number} GAME_RESPONSES_MOVE=2 GAME_RESPONSES_MOVE value
-     * @property {number} GAME_RESPONSES_END=3 GAME_RESPONSES_END value
+     * @property {number} GAME_RESPONSES_INIT=2 GAME_RESPONSES_INIT value
+     * @property {number} GAME_RESPONSES_MOVE=3 GAME_RESPONSES_MOVE value
+     * @property {number} GAME_RESPONSES_END=4 GAME_RESPONSES_END value
      */
     ws.GameResponses = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "GAME_RESPONSES_UNSPECIFIED"] = 0;
         values[valuesById[1] = "GAME_RESPONSES_ERROR"] = 1;
-        values[valuesById[2] = "GAME_RESPONSES_MOVE"] = 2;
-        values[valuesById[3] = "GAME_RESPONSES_END"] = 3;
+        values[valuesById[2] = "GAME_RESPONSES_INIT"] = 2;
+        values[valuesById[3] = "GAME_RESPONSES_MOVE"] = 3;
+        values[valuesById[4] = "GAME_RESPONSES_END"] = 4;
         return values;
     })();
 
@@ -3605,6 +4779,7 @@ export const ws = $root.ws = (() => {
          * @interface IGameResponsePacket
          * @property {ws.GameResponses|null} [response] GameResponsePacket response
          * @property {shared.ICodedError|null} [error] GameResponsePacket error
+         * @property {ws.IGameInit|null} [init] GameResponsePacket init
          * @property {ws.IGameMove|null} [move] GameResponsePacket move
          * @property {ws.IGameEnd|null} [end] GameResponsePacket end
          */
@@ -3641,6 +4816,14 @@ export const ws = $root.ws = (() => {
         GameResponsePacket.prototype.error = null;
 
         /**
+         * GameResponsePacket init.
+         * @member {ws.IGameInit|null|undefined} init
+         * @memberof ws.GameResponsePacket
+         * @instance
+         */
+        GameResponsePacket.prototype.init = null;
+
+        /**
          * GameResponsePacket move.
          * @member {ws.IGameMove|null|undefined} move
          * @memberof ws.GameResponsePacket
@@ -3661,12 +4844,12 @@ export const ws = $root.ws = (() => {
 
         /**
          * GameResponsePacket data.
-         * @member {"error"|"move"|"end"|undefined} data
+         * @member {"error"|"init"|"move"|"end"|undefined} data
          * @memberof ws.GameResponsePacket
          * @instance
          */
         Object.defineProperty(GameResponsePacket.prototype, "data", {
-            get: $util.oneOfGetter($oneOfFields = ["error", "move", "end"]),
+            get: $util.oneOfGetter($oneOfFields = ["error", "init", "move", "end"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -3698,10 +4881,12 @@ export const ws = $root.ws = (() => {
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.response);
             if (message.error != null && Object.hasOwnProperty.call(message, "error"))
                 $root.shared.CodedError.encode(message.error, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.init != null && Object.hasOwnProperty.call(message, "init"))
+                $root.ws.GameInit.encode(message.init, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.move != null && Object.hasOwnProperty.call(message, "move"))
-                $root.ws.GameMove.encode(message.move, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                $root.ws.GameMove.encode(message.move, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             if (message.end != null && Object.hasOwnProperty.call(message, "end"))
-                $root.ws.GameEnd.encode(message.end, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                $root.ws.GameEnd.encode(message.end, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
             return writer;
         };
 
@@ -3751,10 +4936,14 @@ export const ws = $root.ws = (() => {
                         break;
                     }
                 case 3: {
-                        message.move = $root.ws.GameMove.decode(reader, reader.uint32(), undefined, long + 1);
+                        message.init = $root.ws.GameInit.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 case 4: {
+                        message.move = $root.ws.GameMove.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 5: {
                         message.end = $root.ws.GameEnd.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
@@ -3806,6 +4995,7 @@ export const ws = $root.ws = (() => {
                 case 1:
                 case 2:
                 case 3:
+                case 4:
                     break;
                 }
             if (message.error != null && message.hasOwnProperty("error")) {
@@ -3814,6 +5004,16 @@ export const ws = $root.ws = (() => {
                     let error = $root.shared.CodedError.verify(message.error, long + 1);
                     if (error)
                         return "error." + error;
+                }
+            }
+            if (message.init != null && message.hasOwnProperty("init")) {
+                if (properties.data === 1)
+                    return "data: multiple values";
+                properties.data = 1;
+                {
+                    let error = $root.ws.GameInit.verify(message.init, long + 1);
+                    if (error)
+                        return "init." + error;
                 }
             }
             if (message.move != null && message.hasOwnProperty("move")) {
@@ -3870,19 +5070,28 @@ export const ws = $root.ws = (() => {
             case 1:
                 message.response = 1;
                 break;
-            case "GAME_RESPONSES_MOVE":
+            case "GAME_RESPONSES_INIT":
             case 2:
                 message.response = 2;
                 break;
-            case "GAME_RESPONSES_END":
+            case "GAME_RESPONSES_MOVE":
             case 3:
                 message.response = 3;
+                break;
+            case "GAME_RESPONSES_END":
+            case 4:
+                message.response = 4;
                 break;
             }
             if (object.error != null) {
                 if (typeof object.error !== "object")
                     throw TypeError(".ws.GameResponsePacket.error: object expected");
                 message.error = $root.shared.CodedError.fromObject(object.error, long + 1);
+            }
+            if (object.init != null) {
+                if (typeof object.init !== "object")
+                    throw TypeError(".ws.GameResponsePacket.init: object expected");
+                message.init = $root.ws.GameInit.fromObject(object.init, long + 1);
             }
             if (object.move != null) {
                 if (typeof object.move !== "object")
@@ -3918,6 +5127,11 @@ export const ws = $root.ws = (() => {
                 object.error = $root.shared.CodedError.toObject(message.error, options);
                 if (options.oneofs)
                     object.data = "error";
+            }
+            if (message.init != null && message.hasOwnProperty("init")) {
+                object.init = $root.ws.GameInit.toObject(message.init, options);
+                if (options.oneofs)
+                    object.data = "init";
             }
             if (message.move != null && message.hasOwnProperty("move")) {
                 object.move = $root.ws.GameMove.toObject(message.move, options);
@@ -4245,6 +5459,10 @@ export const models = $root.models = (() => {
          * @interface IGame
          * @property {shared.PlayerIDs|null} [turn] Game turn
          * @property {shared.IGameBoard|null} [board] Game board
+         * @property {models.TokenQueueModes|null} [tokenQueueMode] Game tokenQueueMode
+         * @property {models.ICurrentTokens|null} [currentTokens] Game currentTokens
+         * @property {models.IDecks|null} [decks] Game decks
+         * @property {Array.<boolean>|null} [frozenColumns] Game frozenColumns
          */
 
         /**
@@ -4256,6 +5474,7 @@ export const models = $root.models = (() => {
          * @param {models.IGame=} [properties] Properties to set
          */
         function Game(properties) {
+            this.frozenColumns = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -4277,6 +5496,53 @@ export const models = $root.models = (() => {
          * @instance
          */
         Game.prototype.board = null;
+
+        /**
+         * Game tokenQueueMode.
+         * @member {models.TokenQueueModes} tokenQueueMode
+         * @memberof models.Game
+         * @instance
+         */
+        Game.prototype.tokenQueueMode = 0;
+
+        /**
+         * Game currentTokens.
+         * @member {models.ICurrentTokens|null|undefined} currentTokens
+         * @memberof models.Game
+         * @instance
+         */
+        Game.prototype.currentTokens = null;
+
+        /**
+         * Game decks.
+         * @member {models.IDecks|null|undefined} decks
+         * @memberof models.Game
+         * @instance
+         */
+        Game.prototype.decks = null;
+
+        /**
+         * Game frozenColumns.
+         * @member {Array.<boolean>} frozenColumns
+         * @memberof models.Game
+         * @instance
+         */
+        Game.prototype.frozenColumns = $util.emptyArray;
+
+        // OneOf field names bound to virtual getters and setters
+        let $oneOfFields;
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(Game.prototype, "_currentTokens", {
+            get: $util.oneOfGetter($oneOfFields = ["currentTokens"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(Game.prototype, "_decks", {
+            get: $util.oneOfGetter($oneOfFields = ["decks"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
 
         /**
          * Creates a new Game instance using the specified properties.
@@ -4306,6 +5572,18 @@ export const models = $root.models = (() => {
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.turn);
             if (message.board != null && Object.hasOwnProperty.call(message, "board"))
                 $root.shared.GameBoard.encode(message.board, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            if (message.tokenQueueMode != null && Object.hasOwnProperty.call(message, "tokenQueueMode"))
+                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.tokenQueueMode);
+            if (message.currentTokens != null && Object.hasOwnProperty.call(message, "currentTokens"))
+                $root.models.CurrentTokens.encode(message.currentTokens, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            if (message.decks != null && Object.hasOwnProperty.call(message, "decks"))
+                $root.models.Decks.encode(message.decks, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.frozenColumns != null && message.frozenColumns.length) {
+                writer.uint32(/* id 6, wireType 2 =*/50).fork();
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    writer.bool(message.frozenColumns[i]);
+                writer.ldelim();
+            }
             return writer;
         };
 
@@ -4354,6 +5632,29 @@ export const models = $root.models = (() => {
                         message.board = $root.shared.GameBoard.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
+                case 3: {
+                        message.tokenQueueMode = reader.int32();
+                        break;
+                    }
+                case 4: {
+                        message.currentTokens = $root.models.CurrentTokens.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 5: {
+                        message.decks = $root.models.Decks.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                case 6: {
+                        if (!(message.frozenColumns && message.frozenColumns.length))
+                            message.frozenColumns = [];
+                        if ((tag & 7) === 2) {
+                            let end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.frozenColumns.push(reader.bool());
+                        } else
+                            message.frozenColumns.push(reader.bool());
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7, long);
                     break;
@@ -4393,6 +5694,7 @@ export const models = $root.models = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
+            let properties = {};
             if (message.turn != null && message.hasOwnProperty("turn"))
                 switch (message.turn) {
                 default:
@@ -4406,6 +5708,39 @@ export const models = $root.models = (() => {
                 let error = $root.shared.GameBoard.verify(message.board, long + 1);
                 if (error)
                     return "board." + error;
+            }
+            if (message.tokenQueueMode != null && message.hasOwnProperty("tokenQueueMode"))
+                switch (message.tokenQueueMode) {
+                default:
+                    return "tokenQueueMode: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    break;
+                }
+            if (message.currentTokens != null && message.hasOwnProperty("currentTokens")) {
+                properties._currentTokens = 1;
+                {
+                    let error = $root.models.CurrentTokens.verify(message.currentTokens, long + 1);
+                    if (error)
+                        return "currentTokens." + error;
+                }
+            }
+            if (message.decks != null && message.hasOwnProperty("decks")) {
+                properties._decks = 1;
+                {
+                    let error = $root.models.Decks.verify(message.decks, long + 1);
+                    if (error)
+                        return "decks." + error;
+                }
+            }
+            if (message.frozenColumns != null && message.hasOwnProperty("frozenColumns")) {
+                if (!Array.isArray(message.frozenColumns))
+                    return "frozenColumns: array expected";
+                for (let i = 0; i < message.frozenColumns.length; ++i)
+                    if (typeof message.frozenColumns[i] !== "boolean")
+                        return "frozenColumns: boolean[] expected";
             }
             return null;
         };
@@ -4451,6 +5786,47 @@ export const models = $root.models = (() => {
                     throw TypeError(".models.Game.board: object expected");
                 message.board = $root.shared.GameBoard.fromObject(object.board, long + 1);
             }
+            switch (object.tokenQueueMode) {
+            default:
+                if (typeof object.tokenQueueMode === "number") {
+                    message.tokenQueueMode = object.tokenQueueMode;
+                    break;
+                }
+                break;
+            case "TOKEN_QUEUE_MODES_UNSPECIFIED":
+            case 0:
+                message.tokenQueueMode = 0;
+                break;
+            case "TOKEN_QUEUE_MODES_FULL_RANDOM":
+            case 1:
+                message.tokenQueueMode = 1;
+                break;
+            case "TOKEN_QUEUE_MODES_SPECIAL_EVERY":
+            case 2:
+                message.tokenQueueMode = 2;
+                break;
+            case "TOKEN_QUEUE_MODES_DECK":
+            case 3:
+                message.tokenQueueMode = 3;
+                break;
+            }
+            if (object.currentTokens != null) {
+                if (typeof object.currentTokens !== "object")
+                    throw TypeError(".models.Game.currentTokens: object expected");
+                message.currentTokens = $root.models.CurrentTokens.fromObject(object.currentTokens, long + 1);
+            }
+            if (object.decks != null) {
+                if (typeof object.decks !== "object")
+                    throw TypeError(".models.Game.decks: object expected");
+                message.decks = $root.models.Decks.fromObject(object.decks, long + 1);
+            }
+            if (object.frozenColumns) {
+                if (!Array.isArray(object.frozenColumns))
+                    throw TypeError(".models.Game.frozenColumns: array expected");
+                message.frozenColumns = [];
+                for (let i = 0; i < object.frozenColumns.length; ++i)
+                    message.frozenColumns[i] = Boolean(object.frozenColumns[i]);
+            }
             return message;
         };
 
@@ -4467,14 +5843,34 @@ export const models = $root.models = (() => {
             if (!options)
                 options = {};
             let object = {};
+            if (options.arrays || options.defaults)
+                object.frozenColumns = [];
             if (options.defaults) {
                 object.turn = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
                 object.board = null;
+                object.tokenQueueMode = options.enums === String ? "TOKEN_QUEUE_MODES_UNSPECIFIED" : 0;
             }
             if (message.turn != null && message.hasOwnProperty("turn"))
                 object.turn = options.enums === String ? $root.shared.PlayerIDs[message.turn] === undefined ? message.turn : $root.shared.PlayerIDs[message.turn] : message.turn;
             if (message.board != null && message.hasOwnProperty("board"))
                 object.board = $root.shared.GameBoard.toObject(message.board, options);
+            if (message.tokenQueueMode != null && message.hasOwnProperty("tokenQueueMode"))
+                object.tokenQueueMode = options.enums === String ? $root.models.TokenQueueModes[message.tokenQueueMode] === undefined ? message.tokenQueueMode : $root.models.TokenQueueModes[message.tokenQueueMode] : message.tokenQueueMode;
+            if (message.currentTokens != null && message.hasOwnProperty("currentTokens")) {
+                object.currentTokens = $root.models.CurrentTokens.toObject(message.currentTokens, options);
+                if (options.oneofs)
+                    object._currentTokens = "currentTokens";
+            }
+            if (message.decks != null && message.hasOwnProperty("decks")) {
+                object.decks = $root.models.Decks.toObject(message.decks, options);
+                if (options.oneofs)
+                    object._decks = "decks";
+            }
+            if (message.frozenColumns && message.frozenColumns.length) {
+                object.frozenColumns = [];
+                for (let j = 0; j < message.frozenColumns.length; ++j)
+                    object.frozenColumns[j] = message.frozenColumns[j];
+            }
             return object;
         };
 
@@ -4505,6 +5901,1445 @@ export const models = $root.models = (() => {
         };
 
         return Game;
+    })();
+
+    /**
+     * TokenQueueModes enum.
+     * @name models.TokenQueueModes
+     * @enum {number}
+     * @property {number} TOKEN_QUEUE_MODES_UNSPECIFIED=0 TOKEN_QUEUE_MODES_UNSPECIFIED value
+     * @property {number} TOKEN_QUEUE_MODES_FULL_RANDOM=1 TOKEN_QUEUE_MODES_FULL_RANDOM value
+     * @property {number} TOKEN_QUEUE_MODES_SPECIAL_EVERY=2 TOKEN_QUEUE_MODES_SPECIAL_EVERY value
+     * @property {number} TOKEN_QUEUE_MODES_DECK=3 TOKEN_QUEUE_MODES_DECK value
+     */
+    models.TokenQueueModes = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "TOKEN_QUEUE_MODES_UNSPECIFIED"] = 0;
+        values[valuesById[1] = "TOKEN_QUEUE_MODES_FULL_RANDOM"] = 1;
+        values[valuesById[2] = "TOKEN_QUEUE_MODES_SPECIAL_EVERY"] = 2;
+        values[valuesById[3] = "TOKEN_QUEUE_MODES_DECK"] = 3;
+        return values;
+    })();
+
+    /**
+     * TokenTypes enum.
+     * @name models.TokenTypes
+     * @enum {number}
+     * @property {number} TOKEN_TYPES_UNSPECIFIED=0 TOKEN_TYPES_UNSPECIFIED value
+     * @property {number} TOKEN_TYPES_STANDARD=1 TOKEN_TYPES_STANDARD value
+     * @property {number} TOKEN_TYPES_NEGATIVE=2 TOKEN_TYPES_NEGATIVE value
+     * @property {number} TOKEN_TYPES_AURA=3 TOKEN_TYPES_AURA value
+     * @property {number} TOKEN_TYPES_BOMB=4 TOKEN_TYPES_BOMB value
+     * @property {number} TOKEN_TYPES_FREEZE=6 TOKEN_TYPES_FREEZE value
+     * @property {number} TOKEN_TYPES_BURN=7 TOKEN_TYPES_BURN value
+     * @property {number} TOKEN_TYPES_REVERSE=8 TOKEN_TYPES_REVERSE value
+     * @property {number} TOKEN_TYPES_FROZEN=9 TOKEN_TYPES_FROZEN value
+     */
+    models.TokenTypes = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "TOKEN_TYPES_UNSPECIFIED"] = 0;
+        values[valuesById[1] = "TOKEN_TYPES_STANDARD"] = 1;
+        values[valuesById[2] = "TOKEN_TYPES_NEGATIVE"] = 2;
+        values[valuesById[3] = "TOKEN_TYPES_AURA"] = 3;
+        values[valuesById[4] = "TOKEN_TYPES_BOMB"] = 4;
+        values[valuesById[6] = "TOKEN_TYPES_FREEZE"] = 6;
+        values[valuesById[7] = "TOKEN_TYPES_BURN"] = 7;
+        values[valuesById[8] = "TOKEN_TYPES_REVERSE"] = 8;
+        values[valuesById[9] = "TOKEN_TYPES_FROZEN"] = 9;
+        return values;
+    })();
+
+    /**
+     * ChangeTokenActions enum.
+     * @name models.ChangeTokenActions
+     * @enum {number}
+     * @property {number} CHANGE_TOKEN_ACTIONS_UNSPECIFIED=0 CHANGE_TOKEN_ACTIONS_UNSPECIFIED value
+     * @property {number} CHANGE_TOKEN_ACTIONS_BURN_DESTROY=1 CHANGE_TOKEN_ACTIONS_BURN_DESTROY value
+     * @property {number} CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP=2 CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP value
+     * @property {number} CHANGE_TOKENS_ACTIONS_FREEZE_FROZE=3 CHANGE_TOKENS_ACTIONS_FREEZE_FROZE value
+     * @property {number} CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE=4 CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE value
+     * @property {number} CHANGE_TOKENS_ACTIONS_BOMB_EXPLODED=5 CHANGE_TOKENS_ACTIONS_BOMB_EXPLODED value
+     */
+    models.ChangeTokenActions = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "CHANGE_TOKEN_ACTIONS_UNSPECIFIED"] = 0;
+        values[valuesById[1] = "CHANGE_TOKEN_ACTIONS_BURN_DESTROY"] = 1;
+        values[valuesById[2] = "CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP"] = 2;
+        values[valuesById[3] = "CHANGE_TOKENS_ACTIONS_FREEZE_FROZE"] = 3;
+        values[valuesById[4] = "CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE"] = 4;
+        values[valuesById[5] = "CHANGE_TOKENS_ACTIONS_BOMB_EXPLODED"] = 5;
+        return values;
+    })();
+
+    models.Token = (function() {
+
+        /**
+         * Properties of a Token.
+         * @memberof models
+         * @interface IToken
+         * @property {shared.PlayerIDs|null} [playerId] Token playerId
+         * @property {models.TokenTypes|null} [tokenType] Token tokenType
+         */
+
+        /**
+         * Constructs a new Token.
+         * @memberof models
+         * @classdesc Represents a Token.
+         * @implements IToken
+         * @constructor
+         * @param {models.IToken=} [properties] Properties to set
+         */
+        function Token(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * Token playerId.
+         * @member {shared.PlayerIDs} playerId
+         * @memberof models.Token
+         * @instance
+         */
+        Token.prototype.playerId = 0;
+
+        /**
+         * Token tokenType.
+         * @member {models.TokenTypes} tokenType
+         * @memberof models.Token
+         * @instance
+         */
+        Token.prototype.tokenType = 0;
+
+        /**
+         * Creates a new Token instance using the specified properties.
+         * @function create
+         * @memberof models.Token
+         * @static
+         * @param {models.IToken=} [properties] Properties to set
+         * @returns {models.Token} Token instance
+         */
+        Token.create = function create(properties) {
+            return new Token(properties);
+        };
+
+        /**
+         * Encodes the specified Token message. Does not implicitly {@link models.Token.verify|verify} messages.
+         * @function encode
+         * @memberof models.Token
+         * @static
+         * @param {models.IToken} message Token message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Token.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.playerId != null && Object.hasOwnProperty.call(message, "playerId"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.playerId);
+            if (message.tokenType != null && Object.hasOwnProperty.call(message, "tokenType"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.tokenType);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified Token message, length delimited. Does not implicitly {@link models.Token.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.Token
+         * @static
+         * @param {models.IToken} message Token message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Token.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a Token message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.Token
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.Token} Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Token.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.Token();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.playerId = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.tokenType = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a Token message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.Token
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.Token} Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Token.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a Token message.
+         * @function verify
+         * @memberof models.Token
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        Token.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                switch (message.playerId) {
+                default:
+                    return "playerId: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                    break;
+                }
+            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
+                switch (message.tokenType) {
+                default:
+                    return "tokenType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    break;
+                }
+            return null;
+        };
+
+        /**
+         * Creates a Token message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.Token
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.Token} Token
+         */
+        Token.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.Token)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.Token();
+            switch (object.playerId) {
+            default:
+                if (typeof object.playerId === "number") {
+                    message.playerId = object.playerId;
+                    break;
+                }
+                break;
+            case "PLAYER_IDS_UNSPECIFIED":
+            case 0:
+                message.playerId = 0;
+                break;
+            case "PLAYER_IDS_PLAYER1":
+            case 1:
+                message.playerId = 1;
+                break;
+            case "PLAYER_IDS_PLAYER2":
+            case 2:
+                message.playerId = 2;
+                break;
+            }
+            switch (object.tokenType) {
+            default:
+                if (typeof object.tokenType === "number") {
+                    message.tokenType = object.tokenType;
+                    break;
+                }
+                break;
+            case "TOKEN_TYPES_UNSPECIFIED":
+            case 0:
+                message.tokenType = 0;
+                break;
+            case "TOKEN_TYPES_STANDARD":
+            case 1:
+                message.tokenType = 1;
+                break;
+            case "TOKEN_TYPES_NEGATIVE":
+            case 2:
+                message.tokenType = 2;
+                break;
+            case "TOKEN_TYPES_AURA":
+            case 3:
+                message.tokenType = 3;
+                break;
+            case "TOKEN_TYPES_BOMB":
+            case 4:
+                message.tokenType = 4;
+                break;
+            case "TOKEN_TYPES_FREEZE":
+            case 6:
+                message.tokenType = 6;
+                break;
+            case "TOKEN_TYPES_BURN":
+            case 7:
+                message.tokenType = 7;
+                break;
+            case "TOKEN_TYPES_REVERSE":
+            case 8:
+                message.tokenType = 8;
+                break;
+            case "TOKEN_TYPES_FROZEN":
+            case 9:
+                message.tokenType = 9;
+                break;
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a Token message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.Token
+         * @static
+         * @param {models.Token} message Token
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        Token.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.playerId = options.enums === String ? "PLAYER_IDS_UNSPECIFIED" : 0;
+                object.tokenType = options.enums === String ? "TOKEN_TYPES_UNSPECIFIED" : 0;
+            }
+            if (message.playerId != null && message.hasOwnProperty("playerId"))
+                object.playerId = options.enums === String ? $root.shared.PlayerIDs[message.playerId] === undefined ? message.playerId : $root.shared.PlayerIDs[message.playerId] : message.playerId;
+            if (message.tokenType != null && message.hasOwnProperty("tokenType"))
+                object.tokenType = options.enums === String ? $root.models.TokenTypes[message.tokenType] === undefined ? message.tokenType : $root.models.TokenTypes[message.tokenType] : message.tokenType;
+            return object;
+        };
+
+        /**
+         * Converts this Token to JSON.
+         * @function toJSON
+         * @memberof models.Token
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        Token.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Token
+         * @function getTypeUrl
+         * @memberof models.Token
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Token.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.Token";
+        };
+
+        return Token;
+    })();
+
+    models.Tile = (function() {
+
+        /**
+         * Properties of a Tile.
+         * @memberof models
+         * @interface ITile
+         * @property {number|null} [row] Tile row
+         * @property {number|null} [column] Tile column
+         * @property {models.IToken|null} [token] Tile token
+         */
+
+        /**
+         * Constructs a new Tile.
+         * @memberof models
+         * @classdesc Represents a Tile.
+         * @implements ITile
+         * @constructor
+         * @param {models.ITile=} [properties] Properties to set
+         */
+        function Tile(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * Tile row.
+         * @member {number} row
+         * @memberof models.Tile
+         * @instance
+         */
+        Tile.prototype.row = 0;
+
+        /**
+         * Tile column.
+         * @member {number} column
+         * @memberof models.Tile
+         * @instance
+         */
+        Tile.prototype.column = 0;
+
+        /**
+         * Tile token.
+         * @member {models.IToken|null|undefined} token
+         * @memberof models.Tile
+         * @instance
+         */
+        Tile.prototype.token = null;
+
+        // OneOf field names bound to virtual getters and setters
+        let $oneOfFields;
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(Tile.prototype, "_token", {
+            get: $util.oneOfGetter($oneOfFields = ["token"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new Tile instance using the specified properties.
+         * @function create
+         * @memberof models.Tile
+         * @static
+         * @param {models.ITile=} [properties] Properties to set
+         * @returns {models.Tile} Tile instance
+         */
+        Tile.create = function create(properties) {
+            return new Tile(properties);
+        };
+
+        /**
+         * Encodes the specified Tile message. Does not implicitly {@link models.Tile.verify|verify} messages.
+         * @function encode
+         * @memberof models.Tile
+         * @static
+         * @param {models.ITile} message Tile message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Tile.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.row != null && Object.hasOwnProperty.call(message, "row"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.row);
+            if (message.column != null && Object.hasOwnProperty.call(message, "column"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.column);
+            if (message.token != null && Object.hasOwnProperty.call(message, "token"))
+                $root.models.Token.encode(message.token, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified Tile message, length delimited. Does not implicitly {@link models.Tile.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.Tile
+         * @static
+         * @param {models.ITile} message Tile message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Tile.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a Tile message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.Tile
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.Tile} Tile
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Tile.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.Tile();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.row = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.column = reader.int32();
+                        break;
+                    }
+                case 3: {
+                        message.token = $root.models.Token.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a Tile message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.Tile
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.Tile} Tile
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Tile.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a Tile message.
+         * @function verify
+         * @memberof models.Tile
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        Tile.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            let properties = {};
+            if (message.row != null && message.hasOwnProperty("row"))
+                if (!$util.isInteger(message.row))
+                    return "row: integer expected";
+            if (message.column != null && message.hasOwnProperty("column"))
+                if (!$util.isInteger(message.column))
+                    return "column: integer expected";
+            if (message.token != null && message.hasOwnProperty("token")) {
+                properties._token = 1;
+                {
+                    let error = $root.models.Token.verify(message.token, long + 1);
+                    if (error)
+                        return "token." + error;
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a Tile message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.Tile
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.Tile} Tile
+         */
+        Tile.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.Tile)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.Tile();
+            if (object.row != null)
+                message.row = object.row | 0;
+            if (object.column != null)
+                message.column = object.column | 0;
+            if (object.token != null) {
+                if (typeof object.token !== "object")
+                    throw TypeError(".models.Tile.token: object expected");
+                message.token = $root.models.Token.fromObject(object.token, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a Tile message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.Tile
+         * @static
+         * @param {models.Tile} message Tile
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        Tile.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.row = 0;
+                object.column = 0;
+            }
+            if (message.row != null && message.hasOwnProperty("row"))
+                object.row = message.row;
+            if (message.column != null && message.hasOwnProperty("column"))
+                object.column = message.column;
+            if (message.token != null && message.hasOwnProperty("token")) {
+                object.token = $root.models.Token.toObject(message.token, options);
+                if (options.oneofs)
+                    object._token = "token";
+            }
+            return object;
+        };
+
+        /**
+         * Converts this Tile to JSON.
+         * @function toJSON
+         * @memberof models.Tile
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        Tile.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Tile
+         * @function getTypeUrl
+         * @memberof models.Tile
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Tile.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.Tile";
+        };
+
+        return Tile;
+    })();
+
+    models.CurrentTokens = (function() {
+
+        /**
+         * Properties of a CurrentTokens.
+         * @memberof models
+         * @interface ICurrentTokens
+         * @property {models.TokenTypes|null} [player1] CurrentTokens player1
+         * @property {models.TokenTypes|null} [player2] CurrentTokens player2
+         */
+
+        /**
+         * Constructs a new CurrentTokens.
+         * @memberof models
+         * @classdesc Represents a CurrentTokens.
+         * @implements ICurrentTokens
+         * @constructor
+         * @param {models.ICurrentTokens=} [properties] Properties to set
+         */
+        function CurrentTokens(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * CurrentTokens player1.
+         * @member {models.TokenTypes|null|undefined} player1
+         * @memberof models.CurrentTokens
+         * @instance
+         */
+        CurrentTokens.prototype.player1 = null;
+
+        /**
+         * CurrentTokens player2.
+         * @member {models.TokenTypes|null|undefined} player2
+         * @memberof models.CurrentTokens
+         * @instance
+         */
+        CurrentTokens.prototype.player2 = null;
+
+        // OneOf field names bound to virtual getters and setters
+        let $oneOfFields;
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(CurrentTokens.prototype, "_player1", {
+            get: $util.oneOfGetter($oneOfFields = ["player1"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(CurrentTokens.prototype, "_player2", {
+            get: $util.oneOfGetter($oneOfFields = ["player2"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new CurrentTokens instance using the specified properties.
+         * @function create
+         * @memberof models.CurrentTokens
+         * @static
+         * @param {models.ICurrentTokens=} [properties] Properties to set
+         * @returns {models.CurrentTokens} CurrentTokens instance
+         */
+        CurrentTokens.create = function create(properties) {
+            return new CurrentTokens(properties);
+        };
+
+        /**
+         * Encodes the specified CurrentTokens message. Does not implicitly {@link models.CurrentTokens.verify|verify} messages.
+         * @function encode
+         * @memberof models.CurrentTokens
+         * @static
+         * @param {models.ICurrentTokens} message CurrentTokens message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        CurrentTokens.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.player1 != null && Object.hasOwnProperty.call(message, "player1"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.player1);
+            if (message.player2 != null && Object.hasOwnProperty.call(message, "player2"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.player2);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified CurrentTokens message, length delimited. Does not implicitly {@link models.CurrentTokens.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.CurrentTokens
+         * @static
+         * @param {models.ICurrentTokens} message CurrentTokens message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        CurrentTokens.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a CurrentTokens message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.CurrentTokens
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.CurrentTokens} CurrentTokens
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        CurrentTokens.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.CurrentTokens();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.player1 = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.player2 = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a CurrentTokens message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.CurrentTokens
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.CurrentTokens} CurrentTokens
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        CurrentTokens.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a CurrentTokens message.
+         * @function verify
+         * @memberof models.CurrentTokens
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        CurrentTokens.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            let properties = {};
+            if (message.player1 != null && message.hasOwnProperty("player1")) {
+                properties._player1 = 1;
+                switch (message.player1) {
+                default:
+                    return "player1: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    break;
+                }
+            }
+            if (message.player2 != null && message.hasOwnProperty("player2")) {
+                properties._player2 = 1;
+                switch (message.player2) {
+                default:
+                    return "player2: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    break;
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a CurrentTokens message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.CurrentTokens
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.CurrentTokens} CurrentTokens
+         */
+        CurrentTokens.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.CurrentTokens)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.CurrentTokens();
+            switch (object.player1) {
+            default:
+                if (typeof object.player1 === "number") {
+                    message.player1 = object.player1;
+                    break;
+                }
+                break;
+            case "TOKEN_TYPES_UNSPECIFIED":
+            case 0:
+                message.player1 = 0;
+                break;
+            case "TOKEN_TYPES_STANDARD":
+            case 1:
+                message.player1 = 1;
+                break;
+            case "TOKEN_TYPES_NEGATIVE":
+            case 2:
+                message.player1 = 2;
+                break;
+            case "TOKEN_TYPES_AURA":
+            case 3:
+                message.player1 = 3;
+                break;
+            case "TOKEN_TYPES_BOMB":
+            case 4:
+                message.player1 = 4;
+                break;
+            case "TOKEN_TYPES_FREEZE":
+            case 6:
+                message.player1 = 6;
+                break;
+            case "TOKEN_TYPES_BURN":
+            case 7:
+                message.player1 = 7;
+                break;
+            case "TOKEN_TYPES_REVERSE":
+            case 8:
+                message.player1 = 8;
+                break;
+            case "TOKEN_TYPES_FROZEN":
+            case 9:
+                message.player1 = 9;
+                break;
+            }
+            switch (object.player2) {
+            default:
+                if (typeof object.player2 === "number") {
+                    message.player2 = object.player2;
+                    break;
+                }
+                break;
+            case "TOKEN_TYPES_UNSPECIFIED":
+            case 0:
+                message.player2 = 0;
+                break;
+            case "TOKEN_TYPES_STANDARD":
+            case 1:
+                message.player2 = 1;
+                break;
+            case "TOKEN_TYPES_NEGATIVE":
+            case 2:
+                message.player2 = 2;
+                break;
+            case "TOKEN_TYPES_AURA":
+            case 3:
+                message.player2 = 3;
+                break;
+            case "TOKEN_TYPES_BOMB":
+            case 4:
+                message.player2 = 4;
+                break;
+            case "TOKEN_TYPES_FREEZE":
+            case 6:
+                message.player2 = 6;
+                break;
+            case "TOKEN_TYPES_BURN":
+            case 7:
+                message.player2 = 7;
+                break;
+            case "TOKEN_TYPES_REVERSE":
+            case 8:
+                message.player2 = 8;
+                break;
+            case "TOKEN_TYPES_FROZEN":
+            case 9:
+                message.player2 = 9;
+                break;
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a CurrentTokens message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.CurrentTokens
+         * @static
+         * @param {models.CurrentTokens} message CurrentTokens
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        CurrentTokens.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (message.player1 != null && message.hasOwnProperty("player1")) {
+                object.player1 = options.enums === String ? $root.models.TokenTypes[message.player1] === undefined ? message.player1 : $root.models.TokenTypes[message.player1] : message.player1;
+                if (options.oneofs)
+                    object._player1 = "player1";
+            }
+            if (message.player2 != null && message.hasOwnProperty("player2")) {
+                object.player2 = options.enums === String ? $root.models.TokenTypes[message.player2] === undefined ? message.player2 : $root.models.TokenTypes[message.player2] : message.player2;
+                if (options.oneofs)
+                    object._player2 = "player2";
+            }
+            return object;
+        };
+
+        /**
+         * Converts this CurrentTokens to JSON.
+         * @function toJSON
+         * @memberof models.CurrentTokens
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        CurrentTokens.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for CurrentTokens
+         * @function getTypeUrl
+         * @memberof models.CurrentTokens
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        CurrentTokens.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.CurrentTokens";
+        };
+
+        return CurrentTokens;
+    })();
+
+    models.Decks = (function() {
+
+        /**
+         * Properties of a Decks.
+         * @memberof models
+         * @interface IDecks
+         * @property {Array.<models.TokenTypes>|null} [player1] Decks player1
+         * @property {Array.<models.TokenTypes>|null} [player2] Decks player2
+         */
+
+        /**
+         * Constructs a new Decks.
+         * @memberof models
+         * @classdesc Represents a Decks.
+         * @implements IDecks
+         * @constructor
+         * @param {models.IDecks=} [properties] Properties to set
+         */
+        function Decks(properties) {
+            this.player1 = [];
+            this.player2 = [];
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * Decks player1.
+         * @member {Array.<models.TokenTypes>} player1
+         * @memberof models.Decks
+         * @instance
+         */
+        Decks.prototype.player1 = $util.emptyArray;
+
+        /**
+         * Decks player2.
+         * @member {Array.<models.TokenTypes>} player2
+         * @memberof models.Decks
+         * @instance
+         */
+        Decks.prototype.player2 = $util.emptyArray;
+
+        /**
+         * Creates a new Decks instance using the specified properties.
+         * @function create
+         * @memberof models.Decks
+         * @static
+         * @param {models.IDecks=} [properties] Properties to set
+         * @returns {models.Decks} Decks instance
+         */
+        Decks.create = function create(properties) {
+            return new Decks(properties);
+        };
+
+        /**
+         * Encodes the specified Decks message. Does not implicitly {@link models.Decks.verify|verify} messages.
+         * @function encode
+         * @memberof models.Decks
+         * @static
+         * @param {models.IDecks} message Decks message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Decks.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.player1 != null && message.player1.length) {
+                writer.uint32(/* id 1, wireType 2 =*/10).fork();
+                for (let i = 0; i < message.player1.length; ++i)
+                    writer.int32(message.player1[i]);
+                writer.ldelim();
+            }
+            if (message.player2 != null && message.player2.length) {
+                writer.uint32(/* id 2, wireType 2 =*/18).fork();
+                for (let i = 0; i < message.player2.length; ++i)
+                    writer.int32(message.player2[i]);
+                writer.ldelim();
+            }
+            return writer;
+        };
+
+        /**
+         * Encodes the specified Decks message, length delimited. Does not implicitly {@link models.Decks.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.Decks
+         * @static
+         * @param {models.IDecks} message Decks message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Decks.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a Decks message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.Decks
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.Decks} Decks
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Decks.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.Decks();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        if (!(message.player1 && message.player1.length))
+                            message.player1 = [];
+                        if ((tag & 7) === 2) {
+                            let end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.player1.push(reader.int32());
+                        } else
+                            message.player1.push(reader.int32());
+                        break;
+                    }
+                case 2: {
+                        if (!(message.player2 && message.player2.length))
+                            message.player2 = [];
+                        if ((tag & 7) === 2) {
+                            let end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.player2.push(reader.int32());
+                        } else
+                            message.player2.push(reader.int32());
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a Decks message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.Decks
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.Decks} Decks
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Decks.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a Decks message.
+         * @function verify
+         * @memberof models.Decks
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        Decks.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.player1 != null && message.hasOwnProperty("player1")) {
+                if (!Array.isArray(message.player1))
+                    return "player1: array expected";
+                for (let i = 0; i < message.player1.length; ++i)
+                    switch (message.player1[i]) {
+                    default:
+                        return "player1: enum value[] expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                        break;
+                    }
+            }
+            if (message.player2 != null && message.hasOwnProperty("player2")) {
+                if (!Array.isArray(message.player2))
+                    return "player2: array expected";
+                for (let i = 0; i < message.player2.length; ++i)
+                    switch (message.player2[i]) {
+                    default:
+                        return "player2: enum value[] expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                        break;
+                    }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a Decks message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.Decks
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.Decks} Decks
+         */
+        Decks.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.Decks)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.Decks();
+            if (object.player1) {
+                if (!Array.isArray(object.player1))
+                    throw TypeError(".models.Decks.player1: array expected");
+                message.player1 = [];
+                for (let i = 0; i < object.player1.length; ++i)
+                    switch (object.player1[i]) {
+                    default:
+                        if (typeof object.player1[i] === "number") {
+                            message.player1[i] = object.player1[i];
+                            break;
+                        }
+                    case "TOKEN_TYPES_UNSPECIFIED":
+                    case 0:
+                        message.player1[i] = 0;
+                        break;
+                    case "TOKEN_TYPES_STANDARD":
+                    case 1:
+                        message.player1[i] = 1;
+                        break;
+                    case "TOKEN_TYPES_NEGATIVE":
+                    case 2:
+                        message.player1[i] = 2;
+                        break;
+                    case "TOKEN_TYPES_AURA":
+                    case 3:
+                        message.player1[i] = 3;
+                        break;
+                    case "TOKEN_TYPES_BOMB":
+                    case 4:
+                        message.player1[i] = 4;
+                        break;
+                    case "TOKEN_TYPES_FREEZE":
+                    case 6:
+                        message.player1[i] = 6;
+                        break;
+                    case "TOKEN_TYPES_BURN":
+                    case 7:
+                        message.player1[i] = 7;
+                        break;
+                    case "TOKEN_TYPES_REVERSE":
+                    case 8:
+                        message.player1[i] = 8;
+                        break;
+                    case "TOKEN_TYPES_FROZEN":
+                    case 9:
+                        message.player1[i] = 9;
+                        break;
+                    }
+            }
+            if (object.player2) {
+                if (!Array.isArray(object.player2))
+                    throw TypeError(".models.Decks.player2: array expected");
+                message.player2 = [];
+                for (let i = 0; i < object.player2.length; ++i)
+                    switch (object.player2[i]) {
+                    default:
+                        if (typeof object.player2[i] === "number") {
+                            message.player2[i] = object.player2[i];
+                            break;
+                        }
+                    case "TOKEN_TYPES_UNSPECIFIED":
+                    case 0:
+                        message.player2[i] = 0;
+                        break;
+                    case "TOKEN_TYPES_STANDARD":
+                    case 1:
+                        message.player2[i] = 1;
+                        break;
+                    case "TOKEN_TYPES_NEGATIVE":
+                    case 2:
+                        message.player2[i] = 2;
+                        break;
+                    case "TOKEN_TYPES_AURA":
+                    case 3:
+                        message.player2[i] = 3;
+                        break;
+                    case "TOKEN_TYPES_BOMB":
+                    case 4:
+                        message.player2[i] = 4;
+                        break;
+                    case "TOKEN_TYPES_FREEZE":
+                    case 6:
+                        message.player2[i] = 6;
+                        break;
+                    case "TOKEN_TYPES_BURN":
+                    case 7:
+                        message.player2[i] = 7;
+                        break;
+                    case "TOKEN_TYPES_REVERSE":
+                    case 8:
+                        message.player2[i] = 8;
+                        break;
+                    case "TOKEN_TYPES_FROZEN":
+                    case 9:
+                        message.player2[i] = 9;
+                        break;
+                    }
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a Decks message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.Decks
+         * @static
+         * @param {models.Decks} message Decks
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        Decks.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.arrays || options.defaults) {
+                object.player1 = [];
+                object.player2 = [];
+            }
+            if (message.player1 && message.player1.length) {
+                object.player1 = [];
+                for (let j = 0; j < message.player1.length; ++j)
+                    object.player1[j] = options.enums === String ? $root.models.TokenTypes[message.player1[j]] === undefined ? message.player1[j] : $root.models.TokenTypes[message.player1[j]] : message.player1[j];
+            }
+            if (message.player2 && message.player2.length) {
+                object.player2 = [];
+                for (let j = 0; j < message.player2.length; ++j)
+                    object.player2[j] = options.enums === String ? $root.models.TokenTypes[message.player2[j]] === undefined ? message.player2[j] : $root.models.TokenTypes[message.player2[j]] : message.player2[j];
+            }
+            return object;
+        };
+
+        /**
+         * Converts this Decks to JSON.
+         * @function toJSON
+         * @memberof models.Decks
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        Decks.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Decks
+         * @function getTypeUrl
+         * @memberof models.Decks
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Decks.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.Decks";
+        };
+
+        return Decks;
     })();
 
     models.PartialUser = (function() {
@@ -5276,6 +8111,499 @@ export const models = $root.models = (() => {
         return LobbyData;
     })();
 
+    models.LobbySettings = (function() {
+
+        /**
+         * Properties of a LobbySettings.
+         * @memberof models
+         * @interface ILobbySettings
+         * @property {number|null} [turnTime] LobbySettings turnTime
+         * @property {models.TokenQueueModes|null} [tokenQueueMode] LobbySettings tokenQueueMode
+         * @property {Array.<models.TokenTypes>|null} [allowedTokens] LobbySettings allowedTokens
+         * @property {boolean|null} [specialGamemode] LobbySettings specialGamemode
+         * @property {number|null} [every] LobbySettings every
+         * @property {number|null} [specialTokenChance] LobbySettings specialTokenChance
+         */
+
+        /**
+         * Constructs a new LobbySettings.
+         * @memberof models
+         * @classdesc Represents a LobbySettings.
+         * @implements ILobbySettings
+         * @constructor
+         * @param {models.ILobbySettings=} [properties] Properties to set
+         */
+        function LobbySettings(properties) {
+            this.allowedTokens = [];
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * LobbySettings turnTime.
+         * @member {number|null|undefined} turnTime
+         * @memberof models.LobbySettings
+         * @instance
+         */
+        LobbySettings.prototype.turnTime = null;
+
+        /**
+         * LobbySettings tokenQueueMode.
+         * @member {models.TokenQueueModes|null|undefined} tokenQueueMode
+         * @memberof models.LobbySettings
+         * @instance
+         */
+        LobbySettings.prototype.tokenQueueMode = null;
+
+        /**
+         * LobbySettings allowedTokens.
+         * @member {Array.<models.TokenTypes>} allowedTokens
+         * @memberof models.LobbySettings
+         * @instance
+         */
+        LobbySettings.prototype.allowedTokens = $util.emptyArray;
+
+        /**
+         * LobbySettings specialGamemode.
+         * @member {boolean|null|undefined} specialGamemode
+         * @memberof models.LobbySettings
+         * @instance
+         */
+        LobbySettings.prototype.specialGamemode = null;
+
+        /**
+         * LobbySettings every.
+         * @member {number|null|undefined} every
+         * @memberof models.LobbySettings
+         * @instance
+         */
+        LobbySettings.prototype.every = null;
+
+        /**
+         * LobbySettings specialTokenChance.
+         * @member {number|null|undefined} specialTokenChance
+         * @memberof models.LobbySettings
+         * @instance
+         */
+        LobbySettings.prototype.specialTokenChance = null;
+
+        // OneOf field names bound to virtual getters and setters
+        let $oneOfFields;
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(LobbySettings.prototype, "_turnTime", {
+            get: $util.oneOfGetter($oneOfFields = ["turnTime"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(LobbySettings.prototype, "_tokenQueueMode", {
+            get: $util.oneOfGetter($oneOfFields = ["tokenQueueMode"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(LobbySettings.prototype, "_specialGamemode", {
+            get: $util.oneOfGetter($oneOfFields = ["specialGamemode"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(LobbySettings.prototype, "_every", {
+            get: $util.oneOfGetter($oneOfFields = ["every"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(LobbySettings.prototype, "_specialTokenChance", {
+            get: $util.oneOfGetter($oneOfFields = ["specialTokenChance"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new LobbySettings instance using the specified properties.
+         * @function create
+         * @memberof models.LobbySettings
+         * @static
+         * @param {models.ILobbySettings=} [properties] Properties to set
+         * @returns {models.LobbySettings} LobbySettings instance
+         */
+        LobbySettings.create = function create(properties) {
+            return new LobbySettings(properties);
+        };
+
+        /**
+         * Encodes the specified LobbySettings message. Does not implicitly {@link models.LobbySettings.verify|verify} messages.
+         * @function encode
+         * @memberof models.LobbySettings
+         * @static
+         * @param {models.ILobbySettings} message LobbySettings message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbySettings.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.turnTime != null && Object.hasOwnProperty.call(message, "turnTime"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.turnTime);
+            if (message.tokenQueueMode != null && Object.hasOwnProperty.call(message, "tokenQueueMode"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.tokenQueueMode);
+            if (message.allowedTokens != null && message.allowedTokens.length) {
+                writer.uint32(/* id 3, wireType 2 =*/26).fork();
+                for (let i = 0; i < message.allowedTokens.length; ++i)
+                    writer.int32(message.allowedTokens[i]);
+                writer.ldelim();
+            }
+            if (message.specialGamemode != null && Object.hasOwnProperty.call(message, "specialGamemode"))
+                writer.uint32(/* id 4, wireType 0 =*/32).bool(message.specialGamemode);
+            if (message.every != null && Object.hasOwnProperty.call(message, "every"))
+                writer.uint32(/* id 5, wireType 0 =*/40).int32(message.every);
+            if (message.specialTokenChance != null && Object.hasOwnProperty.call(message, "specialTokenChance"))
+                writer.uint32(/* id 6, wireType 0 =*/48).int32(message.specialTokenChance);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified LobbySettings message, length delimited. Does not implicitly {@link models.LobbySettings.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof models.LobbySettings
+         * @static
+         * @param {models.ILobbySettings} message LobbySettings message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LobbySettings.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a LobbySettings message from the specified reader or buffer.
+         * @function decode
+         * @memberof models.LobbySettings
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {models.LobbySettings} LobbySettings
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbySettings.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.models.LobbySettings();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.turnTime = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.tokenQueueMode = reader.int32();
+                        break;
+                    }
+                case 3: {
+                        if (!(message.allowedTokens && message.allowedTokens.length))
+                            message.allowedTokens = [];
+                        if ((tag & 7) === 2) {
+                            let end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.allowedTokens.push(reader.int32());
+                        } else
+                            message.allowedTokens.push(reader.int32());
+                        break;
+                    }
+                case 4: {
+                        message.specialGamemode = reader.bool();
+                        break;
+                    }
+                case 5: {
+                        message.every = reader.int32();
+                        break;
+                    }
+                case 6: {
+                        message.specialTokenChance = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a LobbySettings message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof models.LobbySettings
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {models.LobbySettings} LobbySettings
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LobbySettings.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a LobbySettings message.
+         * @function verify
+         * @memberof models.LobbySettings
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        LobbySettings.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            let properties = {};
+            if (message.turnTime != null && message.hasOwnProperty("turnTime")) {
+                properties._turnTime = 1;
+                if (!$util.isInteger(message.turnTime))
+                    return "turnTime: integer expected";
+            }
+            if (message.tokenQueueMode != null && message.hasOwnProperty("tokenQueueMode")) {
+                properties._tokenQueueMode = 1;
+                switch (message.tokenQueueMode) {
+                default:
+                    return "tokenQueueMode: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    break;
+                }
+            }
+            if (message.allowedTokens != null && message.hasOwnProperty("allowedTokens")) {
+                if (!Array.isArray(message.allowedTokens))
+                    return "allowedTokens: array expected";
+                for (let i = 0; i < message.allowedTokens.length; ++i)
+                    switch (message.allowedTokens[i]) {
+                    default:
+                        return "allowedTokens: enum value[] expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                        break;
+                    }
+            }
+            if (message.specialGamemode != null && message.hasOwnProperty("specialGamemode")) {
+                properties._specialGamemode = 1;
+                if (typeof message.specialGamemode !== "boolean")
+                    return "specialGamemode: boolean expected";
+            }
+            if (message.every != null && message.hasOwnProperty("every")) {
+                properties._every = 1;
+                if (!$util.isInteger(message.every))
+                    return "every: integer expected";
+            }
+            if (message.specialTokenChance != null && message.hasOwnProperty("specialTokenChance")) {
+                properties._specialTokenChance = 1;
+                if (!$util.isInteger(message.specialTokenChance))
+                    return "specialTokenChance: integer expected";
+            }
+            return null;
+        };
+
+        /**
+         * Creates a LobbySettings message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof models.LobbySettings
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {models.LobbySettings} LobbySettings
+         */
+        LobbySettings.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.models.LobbySettings)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.models.LobbySettings();
+            if (object.turnTime != null)
+                message.turnTime = object.turnTime | 0;
+            switch (object.tokenQueueMode) {
+            default:
+                if (typeof object.tokenQueueMode === "number") {
+                    message.tokenQueueMode = object.tokenQueueMode;
+                    break;
+                }
+                break;
+            case "TOKEN_QUEUE_MODES_UNSPECIFIED":
+            case 0:
+                message.tokenQueueMode = 0;
+                break;
+            case "TOKEN_QUEUE_MODES_FULL_RANDOM":
+            case 1:
+                message.tokenQueueMode = 1;
+                break;
+            case "TOKEN_QUEUE_MODES_SPECIAL_EVERY":
+            case 2:
+                message.tokenQueueMode = 2;
+                break;
+            case "TOKEN_QUEUE_MODES_DECK":
+            case 3:
+                message.tokenQueueMode = 3;
+                break;
+            }
+            if (object.allowedTokens) {
+                if (!Array.isArray(object.allowedTokens))
+                    throw TypeError(".models.LobbySettings.allowedTokens: array expected");
+                message.allowedTokens = [];
+                for (let i = 0; i < object.allowedTokens.length; ++i)
+                    switch (object.allowedTokens[i]) {
+                    default:
+                        if (typeof object.allowedTokens[i] === "number") {
+                            message.allowedTokens[i] = object.allowedTokens[i];
+                            break;
+                        }
+                    case "TOKEN_TYPES_UNSPECIFIED":
+                    case 0:
+                        message.allowedTokens[i] = 0;
+                        break;
+                    case "TOKEN_TYPES_STANDARD":
+                    case 1:
+                        message.allowedTokens[i] = 1;
+                        break;
+                    case "TOKEN_TYPES_NEGATIVE":
+                    case 2:
+                        message.allowedTokens[i] = 2;
+                        break;
+                    case "TOKEN_TYPES_AURA":
+                    case 3:
+                        message.allowedTokens[i] = 3;
+                        break;
+                    case "TOKEN_TYPES_BOMB":
+                    case 4:
+                        message.allowedTokens[i] = 4;
+                        break;
+                    case "TOKEN_TYPES_FREEZE":
+                    case 6:
+                        message.allowedTokens[i] = 6;
+                        break;
+                    case "TOKEN_TYPES_BURN":
+                    case 7:
+                        message.allowedTokens[i] = 7;
+                        break;
+                    case "TOKEN_TYPES_REVERSE":
+                    case 8:
+                        message.allowedTokens[i] = 8;
+                        break;
+                    case "TOKEN_TYPES_FROZEN":
+                    case 9:
+                        message.allowedTokens[i] = 9;
+                        break;
+                    }
+            }
+            if (object.specialGamemode != null)
+                message.specialGamemode = Boolean(object.specialGamemode);
+            if (object.every != null)
+                message.every = object.every | 0;
+            if (object.specialTokenChance != null)
+                message.specialTokenChance = object.specialTokenChance | 0;
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a LobbySettings message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof models.LobbySettings
+         * @static
+         * @param {models.LobbySettings} message LobbySettings
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        LobbySettings.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.arrays || options.defaults)
+                object.allowedTokens = [];
+            if (message.turnTime != null && message.hasOwnProperty("turnTime")) {
+                object.turnTime = message.turnTime;
+                if (options.oneofs)
+                    object._turnTime = "turnTime";
+            }
+            if (message.tokenQueueMode != null && message.hasOwnProperty("tokenQueueMode")) {
+                object.tokenQueueMode = options.enums === String ? $root.models.TokenQueueModes[message.tokenQueueMode] === undefined ? message.tokenQueueMode : $root.models.TokenQueueModes[message.tokenQueueMode] : message.tokenQueueMode;
+                if (options.oneofs)
+                    object._tokenQueueMode = "tokenQueueMode";
+            }
+            if (message.allowedTokens && message.allowedTokens.length) {
+                object.allowedTokens = [];
+                for (let j = 0; j < message.allowedTokens.length; ++j)
+                    object.allowedTokens[j] = options.enums === String ? $root.models.TokenTypes[message.allowedTokens[j]] === undefined ? message.allowedTokens[j] : $root.models.TokenTypes[message.allowedTokens[j]] : message.allowedTokens[j];
+            }
+            if (message.specialGamemode != null && message.hasOwnProperty("specialGamemode")) {
+                object.specialGamemode = message.specialGamemode;
+                if (options.oneofs)
+                    object._specialGamemode = "specialGamemode";
+            }
+            if (message.every != null && message.hasOwnProperty("every")) {
+                object.every = message.every;
+                if (options.oneofs)
+                    object._every = "every";
+            }
+            if (message.specialTokenChance != null && message.hasOwnProperty("specialTokenChance")) {
+                object.specialTokenChance = message.specialTokenChance;
+                if (options.oneofs)
+                    object._specialTokenChance = "specialTokenChance";
+            }
+            return object;
+        };
+
+        /**
+         * Converts this LobbySettings to JSON.
+         * @function toJSON
+         * @memberof models.LobbySettings
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        LobbySettings.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for LobbySettings
+         * @function getTypeUrl
+         * @memberof models.LobbySettings
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        LobbySettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/models.LobbySettings";
+        };
+
+        return LobbySettings;
+    })();
+
     models.DetailedLobbyData = (function() {
 
         /**
@@ -5288,6 +8616,7 @@ export const models = $root.models = (() => {
          * @property {boolean|null} [hasGame] DetailedLobbyData hasGame
          * @property {models.IDetailedLobbyMemberData|null} [host] DetailedLobbyData host
          * @property {Array.<models.IDetailedLobbyMemberData>|null} [lobbyMembers] DetailedLobbyData lobbyMembers
+         * @property {models.ILobbySettings|null} [settings] DetailedLobbyData settings
          */
 
         /**
@@ -5355,6 +8684,14 @@ export const models = $root.models = (() => {
         DetailedLobbyData.prototype.lobbyMembers = $util.emptyArray;
 
         /**
+         * DetailedLobbyData settings.
+         * @member {models.ILobbySettings|null|undefined} settings
+         * @memberof models.DetailedLobbyData
+         * @instance
+         */
+        DetailedLobbyData.prototype.settings = null;
+
+        /**
          * Creates a new DetailedLobbyData instance using the specified properties.
          * @function create
          * @memberof models.DetailedLobbyData
@@ -5391,6 +8728,8 @@ export const models = $root.models = (() => {
             if (message.lobbyMembers != null && message.lobbyMembers.length)
                 for (let i = 0; i < message.lobbyMembers.length; ++i)
                     $root.models.DetailedLobbyMemberData.encode(message.lobbyMembers[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+            if (message.settings != null && Object.hasOwnProperty.call(message, "settings"))
+                $root.models.LobbySettings.encode(message.settings, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
             return writer;
         };
 
@@ -5455,6 +8794,10 @@ export const models = $root.models = (() => {
                         if (!(message.lobbyMembers && message.lobbyMembers.length))
                             message.lobbyMembers = [];
                         message.lobbyMembers.push($root.models.DetailedLobbyMemberData.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 7: {
+                        message.settings = $root.models.LobbySettings.decode(reader, reader.uint32(), undefined, long + 1);
                         break;
                     }
                 default:
@@ -5522,6 +8865,11 @@ export const models = $root.models = (() => {
                         return "lobbyMembers." + error;
                 }
             }
+            if (message.settings != null && message.hasOwnProperty("settings")) {
+                let error = $root.models.LobbySettings.verify(message.settings, long + 1);
+                if (error)
+                    return "settings." + error;
+            }
             return null;
         };
 
@@ -5564,6 +8912,11 @@ export const models = $root.models = (() => {
                     message.lobbyMembers[i] = $root.models.DetailedLobbyMemberData.fromObject(object.lobbyMembers[i], long + 1);
                 }
             }
+            if (object.settings != null) {
+                if (typeof object.settings !== "object")
+                    throw TypeError(".models.DetailedLobbyData.settings: object expected");
+                message.settings = $root.models.LobbySettings.fromObject(object.settings, long + 1);
+            }
             return message;
         };
 
@@ -5588,6 +8941,7 @@ export const models = $root.models = (() => {
                 object.memberCount = 0;
                 object.hasGame = false;
                 object.host = null;
+                object.settings = null;
             }
             if (message.code != null && message.hasOwnProperty("code"))
                 object.code = message.code;
@@ -5604,6 +8958,8 @@ export const models = $root.models = (() => {
                 for (let j = 0; j < message.lobbyMembers.length; ++j)
                     object.lobbyMembers[j] = $root.models.DetailedLobbyMemberData.toObject(message.lobbyMembers[j], options);
             }
+            if (message.settings != null && message.hasOwnProperty("settings"))
+                object.settings = $root.models.LobbySettings.toObject(message.settings, options);
             return object;
         };
 
@@ -6393,7 +9749,8 @@ export const routes = $root.routes = (() => {
          * Properties of a GetLobbiesResponse.
          * @memberof routes
          * @interface IGetLobbiesResponse
-         * @property {Array.<models.ILobbyData>|null} [lobbies] GetLobbiesResponse lobbies
+         * @property {Array.<models.ILobbyData>|null} [myLobbies] GetLobbiesResponse myLobbies
+         * @property {Array.<models.ILobbyData>|null} [otherLobbies] GetLobbiesResponse otherLobbies
          */
 
         /**
@@ -6405,7 +9762,8 @@ export const routes = $root.routes = (() => {
          * @param {routes.IGetLobbiesResponse=} [properties] Properties to set
          */
         function GetLobbiesResponse(properties) {
-            this.lobbies = [];
+            this.myLobbies = [];
+            this.otherLobbies = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -6413,12 +9771,20 @@ export const routes = $root.routes = (() => {
         }
 
         /**
-         * GetLobbiesResponse lobbies.
-         * @member {Array.<models.ILobbyData>} lobbies
+         * GetLobbiesResponse myLobbies.
+         * @member {Array.<models.ILobbyData>} myLobbies
          * @memberof routes.GetLobbiesResponse
          * @instance
          */
-        GetLobbiesResponse.prototype.lobbies = $util.emptyArray;
+        GetLobbiesResponse.prototype.myLobbies = $util.emptyArray;
+
+        /**
+         * GetLobbiesResponse otherLobbies.
+         * @member {Array.<models.ILobbyData>} otherLobbies
+         * @memberof routes.GetLobbiesResponse
+         * @instance
+         */
+        GetLobbiesResponse.prototype.otherLobbies = $util.emptyArray;
 
         /**
          * Creates a new GetLobbiesResponse instance using the specified properties.
@@ -6444,9 +9810,12 @@ export const routes = $root.routes = (() => {
         GetLobbiesResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.lobbies != null && message.lobbies.length)
-                for (let i = 0; i < message.lobbies.length; ++i)
-                    $root.models.LobbyData.encode(message.lobbies[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.myLobbies != null && message.myLobbies.length)
+                for (let i = 0; i < message.myLobbies.length; ++i)
+                    $root.models.LobbyData.encode(message.myLobbies[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.otherLobbies != null && message.otherLobbies.length)
+                for (let i = 0; i < message.otherLobbies.length; ++i)
+                    $root.models.LobbyData.encode(message.otherLobbies[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             return writer;
         };
 
@@ -6488,9 +9857,15 @@ export const routes = $root.routes = (() => {
                     break;
                 switch (tag >>> 3) {
                 case 1: {
-                        if (!(message.lobbies && message.lobbies.length))
-                            message.lobbies = [];
-                        message.lobbies.push($root.models.LobbyData.decode(reader, reader.uint32(), undefined, long + 1));
+                        if (!(message.myLobbies && message.myLobbies.length))
+                            message.myLobbies = [];
+                        message.myLobbies.push($root.models.LobbyData.decode(reader, reader.uint32(), undefined, long + 1));
+                        break;
+                    }
+                case 2: {
+                        if (!(message.otherLobbies && message.otherLobbies.length))
+                            message.otherLobbies = [];
+                        message.otherLobbies.push($root.models.LobbyData.decode(reader, reader.uint32(), undefined, long + 1));
                         break;
                     }
                 default:
@@ -6532,13 +9907,22 @@ export const routes = $root.routes = (() => {
                 long = 0;
             if (long > $util.recursionLimit)
                 return "maximum nesting depth exceeded";
-            if (message.lobbies != null && message.hasOwnProperty("lobbies")) {
-                if (!Array.isArray(message.lobbies))
-                    return "lobbies: array expected";
-                for (let i = 0; i < message.lobbies.length; ++i) {
-                    let error = $root.models.LobbyData.verify(message.lobbies[i], long + 1);
+            if (message.myLobbies != null && message.hasOwnProperty("myLobbies")) {
+                if (!Array.isArray(message.myLobbies))
+                    return "myLobbies: array expected";
+                for (let i = 0; i < message.myLobbies.length; ++i) {
+                    let error = $root.models.LobbyData.verify(message.myLobbies[i], long + 1);
                     if (error)
-                        return "lobbies." + error;
+                        return "myLobbies." + error;
+                }
+            }
+            if (message.otherLobbies != null && message.hasOwnProperty("otherLobbies")) {
+                if (!Array.isArray(message.otherLobbies))
+                    return "otherLobbies: array expected";
+                for (let i = 0; i < message.otherLobbies.length; ++i) {
+                    let error = $root.models.LobbyData.verify(message.otherLobbies[i], long + 1);
+                    if (error)
+                        return "otherLobbies." + error;
                 }
             }
             return null;
@@ -6560,14 +9944,24 @@ export const routes = $root.routes = (() => {
             if (long > $util.recursionLimit)
                 throw Error("maximum nesting depth exceeded");
             let message = new $root.routes.GetLobbiesResponse();
-            if (object.lobbies) {
-                if (!Array.isArray(object.lobbies))
-                    throw TypeError(".routes.GetLobbiesResponse.lobbies: array expected");
-                message.lobbies = [];
-                for (let i = 0; i < object.lobbies.length; ++i) {
-                    if (typeof object.lobbies[i] !== "object")
-                        throw TypeError(".routes.GetLobbiesResponse.lobbies: object expected");
-                    message.lobbies[i] = $root.models.LobbyData.fromObject(object.lobbies[i], long + 1);
+            if (object.myLobbies) {
+                if (!Array.isArray(object.myLobbies))
+                    throw TypeError(".routes.GetLobbiesResponse.myLobbies: array expected");
+                message.myLobbies = [];
+                for (let i = 0; i < object.myLobbies.length; ++i) {
+                    if (typeof object.myLobbies[i] !== "object")
+                        throw TypeError(".routes.GetLobbiesResponse.myLobbies: object expected");
+                    message.myLobbies[i] = $root.models.LobbyData.fromObject(object.myLobbies[i], long + 1);
+                }
+            }
+            if (object.otherLobbies) {
+                if (!Array.isArray(object.otherLobbies))
+                    throw TypeError(".routes.GetLobbiesResponse.otherLobbies: array expected");
+                message.otherLobbies = [];
+                for (let i = 0; i < object.otherLobbies.length; ++i) {
+                    if (typeof object.otherLobbies[i] !== "object")
+                        throw TypeError(".routes.GetLobbiesResponse.otherLobbies: object expected");
+                    message.otherLobbies[i] = $root.models.LobbyData.fromObject(object.otherLobbies[i], long + 1);
                 }
             }
             return message;
@@ -6586,12 +9980,19 @@ export const routes = $root.routes = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.arrays || options.defaults)
-                object.lobbies = [];
-            if (message.lobbies && message.lobbies.length) {
-                object.lobbies = [];
-                for (let j = 0; j < message.lobbies.length; ++j)
-                    object.lobbies[j] = $root.models.LobbyData.toObject(message.lobbies[j], options);
+            if (options.arrays || options.defaults) {
+                object.myLobbies = [];
+                object.otherLobbies = [];
+            }
+            if (message.myLobbies && message.myLobbies.length) {
+                object.myLobbies = [];
+                for (let j = 0; j < message.myLobbies.length; ++j)
+                    object.myLobbies[j] = $root.models.LobbyData.toObject(message.myLobbies[j], options);
+            }
+            if (message.otherLobbies && message.otherLobbies.length) {
+                object.otherLobbies = [];
+                for (let j = 0; j < message.otherLobbies.length; ++j)
+                    object.otherLobbies[j] = $root.models.LobbyData.toObject(message.otherLobbies[j], options);
             }
             return object;
         };
@@ -7529,6 +10930,445 @@ export const routes = $root.routes = (() => {
         };
 
         return GetLobbyDetailsResponse;
+    })();
+
+    routes.ChangeLobbySettingsRequest = (function() {
+
+        /**
+         * Properties of a ChangeLobbySettingsRequest.
+         * @memberof routes
+         * @interface IChangeLobbySettingsRequest
+         * @property {models.ILobbySettings|null} [settings] ChangeLobbySettingsRequest settings
+         */
+
+        /**
+         * Constructs a new ChangeLobbySettingsRequest.
+         * @memberof routes
+         * @classdesc Represents a ChangeLobbySettingsRequest.
+         * @implements IChangeLobbySettingsRequest
+         * @constructor
+         * @param {routes.IChangeLobbySettingsRequest=} [properties] Properties to set
+         */
+        function ChangeLobbySettingsRequest(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * ChangeLobbySettingsRequest settings.
+         * @member {models.ILobbySettings|null|undefined} settings
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @instance
+         */
+        ChangeLobbySettingsRequest.prototype.settings = null;
+
+        /**
+         * Creates a new ChangeLobbySettingsRequest instance using the specified properties.
+         * @function create
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {routes.IChangeLobbySettingsRequest=} [properties] Properties to set
+         * @returns {routes.ChangeLobbySettingsRequest} ChangeLobbySettingsRequest instance
+         */
+        ChangeLobbySettingsRequest.create = function create(properties) {
+            return new ChangeLobbySettingsRequest(properties);
+        };
+
+        /**
+         * Encodes the specified ChangeLobbySettingsRequest message. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
+         * @function encode
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {routes.IChangeLobbySettingsRequest} message ChangeLobbySettingsRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ChangeLobbySettingsRequest.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.settings != null && Object.hasOwnProperty.call(message, "settings"))
+                $root.models.LobbySettings.encode(message.settings, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified ChangeLobbySettingsRequest message, length delimited. Does not implicitly {@link routes.ChangeLobbySettingsRequest.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {routes.IChangeLobbySettingsRequest} message ChangeLobbySettingsRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ChangeLobbySettingsRequest.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.ChangeLobbySettingsRequest} ChangeLobbySettingsRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ChangeLobbySettingsRequest.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.ChangeLobbySettingsRequest();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.settings = $root.models.LobbySettings.decode(reader, reader.uint32(), undefined, long + 1);
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a ChangeLobbySettingsRequest message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.ChangeLobbySettingsRequest} ChangeLobbySettingsRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ChangeLobbySettingsRequest.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a ChangeLobbySettingsRequest message.
+         * @function verify
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        ChangeLobbySettingsRequest.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.settings != null && message.hasOwnProperty("settings")) {
+                let error = $root.models.LobbySettings.verify(message.settings, long + 1);
+                if (error)
+                    return "settings." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates a ChangeLobbySettingsRequest message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.ChangeLobbySettingsRequest} ChangeLobbySettingsRequest
+         */
+        ChangeLobbySettingsRequest.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.ChangeLobbySettingsRequest)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.ChangeLobbySettingsRequest();
+            if (object.settings != null) {
+                if (typeof object.settings !== "object")
+                    throw TypeError(".routes.ChangeLobbySettingsRequest.settings: object expected");
+                message.settings = $root.models.LobbySettings.fromObject(object.settings, long + 1);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a ChangeLobbySettingsRequest message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {routes.ChangeLobbySettingsRequest} message ChangeLobbySettingsRequest
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        ChangeLobbySettingsRequest.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.settings = null;
+            if (message.settings != null && message.hasOwnProperty("settings"))
+                object.settings = $root.models.LobbySettings.toObject(message.settings, options);
+            return object;
+        };
+
+        /**
+         * Converts this ChangeLobbySettingsRequest to JSON.
+         * @function toJSON
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        ChangeLobbySettingsRequest.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for ChangeLobbySettingsRequest
+         * @function getTypeUrl
+         * @memberof routes.ChangeLobbySettingsRequest
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        ChangeLobbySettingsRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.ChangeLobbySettingsRequest";
+        };
+
+        return ChangeLobbySettingsRequest;
+    })();
+
+    routes.KickPlayerRequest = (function() {
+
+        /**
+         * Properties of a KickPlayerRequest.
+         * @memberof routes
+         * @interface IKickPlayerRequest
+         * @property {number|null} [userId] KickPlayerRequest userId
+         */
+
+        /**
+         * Constructs a new KickPlayerRequest.
+         * @memberof routes
+         * @classdesc Represents a KickPlayerRequest.
+         * @implements IKickPlayerRequest
+         * @constructor
+         * @param {routes.IKickPlayerRequest=} [properties] Properties to set
+         */
+        function KickPlayerRequest(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * KickPlayerRequest userId.
+         * @member {number} userId
+         * @memberof routes.KickPlayerRequest
+         * @instance
+         */
+        KickPlayerRequest.prototype.userId = 0;
+
+        /**
+         * Creates a new KickPlayerRequest instance using the specified properties.
+         * @function create
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {routes.IKickPlayerRequest=} [properties] Properties to set
+         * @returns {routes.KickPlayerRequest} KickPlayerRequest instance
+         */
+        KickPlayerRequest.create = function create(properties) {
+            return new KickPlayerRequest(properties);
+        };
+
+        /**
+         * Encodes the specified KickPlayerRequest message. Does not implicitly {@link routes.KickPlayerRequest.verify|verify} messages.
+         * @function encode
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {routes.IKickPlayerRequest} message KickPlayerRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        KickPlayerRequest.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.userId);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified KickPlayerRequest message, length delimited. Does not implicitly {@link routes.KickPlayerRequest.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {routes.IKickPlayerRequest} message KickPlayerRequest message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        KickPlayerRequest.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a KickPlayerRequest message from the specified reader or buffer.
+         * @function decode
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {routes.KickPlayerRequest} KickPlayerRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        KickPlayerRequest.decode = function decode(reader, length, error, long) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            if (long === undefined)
+                long = 0;
+            if (long > $Reader.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.routes.KickPlayerRequest();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.userId = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7, long);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a KickPlayerRequest message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {routes.KickPlayerRequest} KickPlayerRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        KickPlayerRequest.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a KickPlayerRequest message.
+         * @function verify
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        KickPlayerRequest.verify = function verify(message, long) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                return "maximum nesting depth exceeded";
+            if (message.userId != null && message.hasOwnProperty("userId"))
+                if (!$util.isInteger(message.userId))
+                    return "userId: integer expected";
+            return null;
+        };
+
+        /**
+         * Creates a KickPlayerRequest message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {routes.KickPlayerRequest} KickPlayerRequest
+         */
+        KickPlayerRequest.fromObject = function fromObject(object, long) {
+            if (object instanceof $root.routes.KickPlayerRequest)
+                return object;
+            if (long === undefined)
+                long = 0;
+            if (long > $util.recursionLimit)
+                throw Error("maximum nesting depth exceeded");
+            let message = new $root.routes.KickPlayerRequest();
+            if (object.userId != null)
+                message.userId = object.userId | 0;
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a KickPlayerRequest message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {routes.KickPlayerRequest} message KickPlayerRequest
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        KickPlayerRequest.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.userId = 0;
+            if (message.userId != null && message.hasOwnProperty("userId"))
+                object.userId = message.userId;
+            return object;
+        };
+
+        /**
+         * Converts this KickPlayerRequest to JSON.
+         * @function toJSON
+         * @memberof routes.KickPlayerRequest
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        KickPlayerRequest.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for KickPlayerRequest
+         * @function getTypeUrl
+         * @memberof routes.KickPlayerRequest
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        KickPlayerRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/routes.KickPlayerRequest";
+        };
+
+        return KickPlayerRequest;
     })();
 
     routes.ChangePlayerIDRequest = (function() {

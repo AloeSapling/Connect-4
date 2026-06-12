@@ -48,9 +48,4 @@ function broadcastToRoom(room: Room, message: string | Uint8Array) {
     });
 }
 
-/** @returns The playerID that will play after this player */
-function getNextPlayer(currentPlayer: TPlayerIDs): TPlayerIDs {
-    return (currentPlayer % 2) + 1;
-}
-
-export { createLobbyCode, addRouteWithMethods, broadcastToRoom, getNextPlayer };
+export { createLobbyCode, addRouteWithMethods, broadcastToRoom };

@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from './database.ts';
 import { P_PlayerIDs, P_PlayerTypes, type TPlayerIDs, type TPlayerTypes } from '../lib/types.ts';
+import { DEFAULT_TURN_TIME, DEFAULT_SPECIAL_TOKEN_CHANCE } from '../config.ts';
 
 export class User extends Model {
     declare id: number;
@@ -36,6 +37,12 @@ User.init(
 export class Lobby extends Model {
     declare code: string;
     declare name: string;
+    declare turnTime: number;
+    declare tokenQueueMode: number;
+    declare allowedTokens: string;
+    declare specialGamemode: boolean;
+    declare every: number | null;
+    declare specialTokenChance: number;
 }
 
 Lobby.init(
@@ -46,6 +53,32 @@ Lobby.init(
         },
         name: {
             type: DataTypes.STRING,
+        },
+        turnTime: {
+            type: DataTypes.INTEGER,
+            defaultValue: DEFAULT_TURN_TIME,
+        },
+        tokenQueueMode: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+        },
+        // Json stringified list
+        allowedTokens: {
+            type: DataTypes.TEXT,
+            defaultValue: '[]',
+        },
+        specialGamemode: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
+        every: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue: null,
+        },
+        specialTokenChance: {
+            type: DataTypes.INTEGER,
+            defaultValue: DEFAULT_SPECIAL_TOKEN_CHANCE,
         },
     },
     {

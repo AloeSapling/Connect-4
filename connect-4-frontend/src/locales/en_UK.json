@@ -1,4 +1,7 @@
 {
+    "general": {
+        "loading": "Loading..."
+    },
     "header": {
         "home": "Home",
         "settings": "Settings",
@@ -8,14 +11,22 @@
         "play": "Play",
         "settings": "Settings"
     },
+    "error": {
+        "notFound": "Error 404: Page Not Found",
+        "home": "Home"
+    },
     "username": {
         "chooseYourUsername": "Choose your username",
         "name": "Name",
-        "hint": "username"
+        "hint": "username",
+        "ok": "OK"
     },
     "lobbyList": {
         "listHeader": "Lobby List",
         "refresh": "Refresh Lobbies",
+
+        "myLobbies": "My Lobbies",
+        "otherLobbies": "Other Lobbies",
 
         "tableName": "Name",
         "tablePlayers": "Players",
@@ -24,6 +35,9 @@
         "tableYes": "Yes",
 
         "formCancel": "Cancel",
+        "formOk": "OK",
+        "noLobbiesFound": "No lobbies found",
+        "defaultLobbyName": "{username}'s lobby",
 
         "lobbyFormHint": "lobby code",
         "lobbyFormButton": "Join Lobby with Code",
@@ -56,14 +70,57 @@
         "changePlayerIDFormPlayer1": "Player 1",
         "changePlayerIDFormPlayer2": "Player 2",
         "changePlayerIDFormButton": "Change Player's ID",
-        "changePlayerIDToast": "Player ID changed successfully!"
+        "changePlayerIDToast": "Player ID changed successfully!",
+
+        "selectUser": "Select user",
+        "cancel": "Cancel",
+        "p1": "P1: ",
+        "p2": "P2: ",
+        "host": "(host)",
+        "changePlayerId": "Change player ID",
+        "tempban": "Tempban",
+        "userTempbanned": "User tempbanned",
+        "loading": "Loading..."
+    },
+    "lobbySettings": {
+        "heading": "Lobby settings",
+        "enableExtraGamemode": "enable extra gamemode?",
+        "turnTime": "Turn time (s)",
+        "specialTokenChance": "Special token chance (%)",
+        "tokenQueueMode": "Token queue mode",
+        "fullRandom": "Full Random",
+        "every": "Every",
+        "deck": "Deck",
+        "allowedTokens": "Allowed Tokens",
+        "saveSettings": "Save Settings",
+        "settingsChanged": "Settings changed!"
+    },
+    "playerSelect": {
+        "player1": "PLAYER 1",
+        "playAsPlayer1": "Play as player 1",
+        "player2": "PLAYER 2",
+        "playAsPlayer2": "Play as player 2",
+        "spectator": "SPECTATOR",
+        "watchGame": "Watch the game"
     },
     "game": {
-        "resultsWinText": "Won!",
+        "loading": "Loading",
+        "forfeitButton": "Forfeit",
+
+        "resultsWinText": "won!",
         "resultsDrawText": "Draw!",
+        "resultsForfeitText": "forfeited!",
         "resultsLeaveButton": "Back to Lobby List",
         "resultsBackToLobbyButton": "Back to Lobby",
 
-        "leaveToast": "Leaving lobby..."
+        "leaveToast": "Leaving lobby...",
+
+        "player1Turn": "Player 1's Turn",
+        "player2Turn": "Player 2's Turn",
+        "player1Tokens": "Player 1 tokens",
+        "player2Tokens": "Player 2 tokens",
+        "canvasUnsupported": "Your browser does not support canvas. Sorry! :(",
+        "endUnspecified": "unspecified",
+        "endDefault": "default"
     }
 }

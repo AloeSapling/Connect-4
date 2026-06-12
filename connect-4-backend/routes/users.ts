@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from 'express';
 import { User } from '../database-sqllite/models.ts';
 import { addRouteWithMethods } from '../lib/lib.ts';
-import { changeUsername, createUser, getUserBySessionID, userExists } from '../database-sqllite/user.ts';
+import { changeUsername, createUser, userExists } from '../database-sqllite/user.ts';
 import { routes } from '../lib/proto.js';
 import { P_CodedError, P_ErrorCodes, type UserRequest } from '../lib/types.ts';
 import { authUser } from '../lib/auth.ts';
@@ -120,7 +120,7 @@ addRouteWithMethods(
 
         res.status(200).send(
             routes.GetLoggedInData.encode({
-                user: user,
+                user: user.dataValues,
             }).finish()
         );
     },

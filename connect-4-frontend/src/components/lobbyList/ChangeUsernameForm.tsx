@@ -70,7 +70,7 @@ export default function ChangeForm() {
             <div className="flex flex-row justify-between">
                 <Button type="submit"
                     className="bg-amber-900 hover:bg-amber-950 rounded-lg p-3 font-semibold cursor-pointer">
-                    OK
+                    {texts.formOk}
                 </Button>
                 <Button onClick={onCancel}
                     className="bg-amber-900 hover:bg-amber-950 rounded-lg p-3 font-semibold cursor-pointer">

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { User } from '../database-sqllite/models.ts';
-import { P_CodedError, P_ErrorCodes, type UserRequest, type WsAuthArgs } from './types.ts';
+import { P_CodedError, P_ErrorCodes, type UserRequest, type WsArgs } from './types.ts';
 import { sessionMiddleware } from '../app.ts';
 import { getUserBySessionID } from '../database-sqllite/user.ts';
 import * as lobbyFn from '../database-sqllite/lobbyMembers.ts';
@@ -39,7 +39,7 @@ export function authUser(req: Request, res: Response, next: NextFunction) {
  *
  * Used for websockets (fakes a http request)
  * */
-export function wsAuthUser({ req }: WsAuthArgs): Promise<boolean> {
+export function wsAuthUser({ req }: WsArgs): Promise<boolean> {
     return new Promise((resolve) => {
         const fakeRes = {
             status: () => fakeRes,
@@ -83,7 +83,7 @@ export async function isLobbyMember(req: Request, res: Response, next: NextFunct
  *
  * Used for websockets (fakes a http request)
  * */
-export function wsIsLobbyMember({ req, lobbyCode }: WsAuthArgs): Promise<boolean> {
+export function wsIsLobbyMember({ req, lobbyCode }: WsArgs): Promise<boolean> {
     return new Promise((resolve) => {
         const fakeRes = {
             status: () => fakeRes,
