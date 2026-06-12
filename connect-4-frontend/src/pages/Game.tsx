@@ -103,11 +103,11 @@ function Game() {
 
                     gameCanvasRef.current?.insertToken(packet.end?.token?.column!, packet.end?.token?.row!, packet.end.token?.playerID!);
 
-                    if (packet.end?.draw) {
+                    if (packet.end?.endType === proto.ws.GameEndTypes.GAME_END_TYPES_DRAW) {
                         setResults(texts.resultsDrawText);
                     }
                     else {
-                        setResults(`${packet.end?.user?.username} ${texts.resultsWinText}`);
+                        setResults(`${packet.end?.winner?.username} ${texts.resultsWinText}`);
                     }
                     break;
             }

@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import HostControls from '@/components/lobby/HostControls.js';
 import MemberTable from '@/components/lobby/MemberTable.js';
-import { Copy, Check } from "lucide-react";
+import { Copy } from "lucide-react";
 import * as proto from '@/lib/proto.js';
 
 function Lobby() {
