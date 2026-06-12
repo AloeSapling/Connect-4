@@ -1,12 +1,10 @@
 import { useContext } from 'react';
 import { langContext } from '@/lib/contexts';
-import type { models } from '@/lib/proto';
 import {
     P_PlayerIDs,
     P_TokenQueueModes,
     type TPlayerIDs,
     type TTokenQueueData,
-    type TTokenQueueModes,
     type TTokenTypes,
 } from '@/lib/types';
 import { tokenImageMap } from '@/lib/canvasLogic';

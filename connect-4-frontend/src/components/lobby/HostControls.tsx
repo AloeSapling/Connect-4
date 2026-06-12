@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { langContext } from '@/lib/contexts';
 import * as proto from '@/lib/proto.js';
 import { Controller, useForm } from "react-hook-form";
-import { changeLobbySettings, changePlayerID } from '@/lib/api';
+import { changePlayerID } from '@/lib/api';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,18 +47,6 @@ export default function HostControls({ lobbyCode, membersData }: { lobbyCode: st
 
         onError: (err) => toast.error(err.message)
     });
-
-    const changeSettings_m = useMutation({
-        mutationFn: changeLobbySettings,
-        onSuccess: () => {
-            toast.success(`${texts.changePlayerIDToast}`);
-            queryClient.invalidateQueries({
-                queryKey: [lobbyCode],
-            });
-        },
-
-        onError: (err) => toast.error(err.message)
-    })
 
     const onSubmit = (formData: Z_TChangePlayerID) => {
         changePlayerID_m.mutate({

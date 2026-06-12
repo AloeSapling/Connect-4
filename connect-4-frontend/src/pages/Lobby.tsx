@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { changeLobbySettings, getLobbyDetails } from '@/lib/api';
+import { getLobbyDetails } from '@/lib/api';
 import { UserContext, langContext } from '@/lib/contexts';
 import { leaveLobby, createGame } from '@/lib/api';
 import { LobbyWebSocket } from '@/lib/websockets';

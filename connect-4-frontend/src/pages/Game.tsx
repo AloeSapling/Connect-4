@@ -8,7 +8,6 @@ import {
     type SelectedToken,
     type TPlayerIDs,
     type TTokenQueueData,
-    type TTokenQueueModes,
     type TTokenTypes,
 } from '@/lib/types';
 import { GameWebSocket } from '@/lib/websockets';
@@ -113,10 +112,7 @@ export default function Game() {
         if (userPlayerID === P_PlayerIDs.PLAYER_IDS_UNSPECIFIED) return;
         if (!tokenQueueData.mode) return;
 
-        if (
-            tokenQueueData.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
-            tokenQueueData.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
-        ) {
+        if (tokenQueueData.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK) {
             if (userPlayerID === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
                 setSelectedTokenType({ type: tokenQueueData.tokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED, key: '1' });
             } else if (userPlayerID === P_PlayerIDs.PLAYER_IDS_PLAYER2) {
@@ -306,13 +302,13 @@ function setUpGameWebsocket(
     wsRef: RefObject<GameWebSocket | null>,
     userPlayerID: RefObject<TPlayerIDs | null>,
     gameCanvasRef: RefObject<GameCanvas | null>,
-    currentTurn: RefObject<TPlayerIDs>,
+    _currentTurn: RefObject<TPlayerIDs>,
     cancelled: RefObject<boolean>,
     tokenQueueDataRef: RefObject<TTokenQueueData>,
     setUserPlayerID: (pid: TPlayerIDs) => void,
     setGameResults: (res: string) => void,
     setTokenQueueDataObject: (tokenQueueData: TTokenQueueData) => void,
-    setSelectedTokenType: (type: TTokenTypes) => void,
+    setSelectedTokenType: (info: SelectedToken) => void,
     setTurn: (turn: TPlayerIDs) => void,
     texts: PageTexts['game']
 ) {
@@ -333,14 +329,11 @@ function setUpGameWebsocket(
                 userPlayerID.current = packet.init?.playerId || P_PlayerIDs.PLAYER_IDS_UNSPECIFIED;
                 setUserPlayerID(userPlayerID.current);
 
-                if (
-                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
-                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
-                ) {
+                if (tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK) {
                     if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
-                        setSelectedTokenType(tokenQueueDataRef.current.tokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                        setSelectedTokenType({ type: tokenQueueDataRef.current.tokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED, key: '' });
                     } else if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER2) {
-                        setSelectedTokenType(tokenQueueDataRef.current.tokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED);
+                        setSelectedTokenType({ type: tokenQueueDataRef.current.tokens?.player2 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED, key: '' });
                     }
                 }
 
@@ -371,10 +364,7 @@ function setUpGameWebsocket(
                     decks: packet.move.decks,
                 });
 
-                if (
-                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
-                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
-                ) {
+                if (tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK) {
                     if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
                         setSelectedTokenType({
                             type: packet.move.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED,
@@ -410,10 +400,7 @@ function setUpGameWebsocket(
                     decks: packet.end.decks,
                 });
 
-                if (
-                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK &&
-                    tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_UNSPECIFIED
-                ) {
+                if (tokenQueueDataRef.current.mode !== P_TokenQueueModes.TOKEN_QUEUE_MODES_DECK) {
                     if (userPlayerID.current === P_PlayerIDs.PLAYER_IDS_PLAYER1) {
                         setSelectedTokenType({
                             type: packet.end.currentTokens?.player1 ?? P_TokenTypes.TOKEN_TYPES_UNSPECIFIED,

@@ -27,7 +27,7 @@ api.interceptors.response.use(
             return Promise.reject(error);
         }
         const decodedErr = P_CodedError.decode(new Uint8Array(error.response.data));
-        const responseErr: ResponseError = { ...decodedErr, status: error.status };
+        const responseErr = Object.assign(decodedErr, { status: error.status }) as ResponseError;
         return Promise.reject(responseErr);
     }
 );

@@ -1,6 +1,6 @@
 import { SERVER_URL_WS } from './config.js';
-import { models, ws as p_ws } from './proto.js';
-import { P_CodedError, P_ErrorCodes, P_TokenTypes, type TTokenTypes } from './types.js';
+import { ws as p_ws } from './proto.js';
+import { P_CodedError, P_ErrorCodes, type TTokenTypes } from './types.js';
 
 /** Helper functions that initialises a websocket connection
  *

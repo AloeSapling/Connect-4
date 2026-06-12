@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { langContext } from '@/lib/contexts';
 import * as proto from '@/lib/proto.js';
 import { Controller, useForm } from 'react-hook-form';
-import { changeLobbySettings, changePlayerID } from '@/lib/api';
+import { changeLobbySettings } from '@/lib/api';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Z_ChangePlayerID, type Z_TChangePlayerID } from '@/lib/zod';
 import { Z_ChangeLobbySettings, type Z_TChangeLobbySettings } from '@/lib/zod';
 import { P_TokenQueueModes, P_TokenTypes } from '@/lib/types';
 import type { models } from '@/lib/proto';
@@ -27,7 +26,6 @@ const SPECIAL_TOKEN_TYPES = [
 
 export default function LobbySettingsCard({
     lobbyCode,
-    membersData,
     settings,
     isHost,
 }: {

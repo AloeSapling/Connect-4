@@ -24,8 +24,9 @@ export function makeMove(
     let placed = false;
 
     for (let row = 0; row < newBoard.rows.length; row++) {
-        if (newBoard.rows[row].tokens![column] === proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED) {
-            newBoard.rows[row].tokens![column] = userPlayerID;
+        const token = newBoard.rows[row].tokens![column];
+        if (!token || token.playerId === proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED) {
+            newBoard.rows[row].tokens![column] = { playerId: userPlayerID };
             placed = true;
             break;
         }
