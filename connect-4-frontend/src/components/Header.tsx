@@ -11,7 +11,7 @@ function Header() {
     const texts = langCtx.texts.header;
 
     return (
-        <header className='flex items-center justify-between bg-olive-600 text-white h-10 mb-5 px-5 text-lg'>
+        <header className='flex items-center justify-between bg-olive-600 text-white h-10 px-5 text-lg'>
             <a href='#' className='flex items-center font-bold'>
             </a>
             <nav className='flex items-center'>

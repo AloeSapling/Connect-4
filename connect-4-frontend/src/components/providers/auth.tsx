@@ -10,11 +10,13 @@ Auth.UserDoesNotExist = UserDoesNotExist;
 /** Authentication that checks if the user is logged in */
 function LoggedIn() {
     const user = useContext(UserContext);
+    const navigate = useNavigate();
 
-    if (user === null) { // User isn't logged in
-        return <div>Błąd autentykacji</div>
-    }
-
+    useEffect(() => {
+        if (user === null) { // User isn't logged in
+            navigate('/username');
+        }
+    }, [user, navigate])
     return <Outlet />;
 }
 
@@ -27,7 +29,7 @@ function UserDoesNotExist() {
         if (user !== null) { // User already exists
             navigate('/lobbylist');
         }
-    }, [])
+    }, [user, navigate])
 
     return <Outlet />;
 }

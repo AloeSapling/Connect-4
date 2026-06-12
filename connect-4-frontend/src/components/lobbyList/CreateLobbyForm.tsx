@@ -18,10 +18,16 @@ export default function ChangeForm() {
 
     const [formOpen, setFormOpen] = useState(false);
 
+    const langCtx = useContext(langContext);
+        
+    if (!langCtx) return <p>Missing language context!</p>;
+        
+    const texts = langCtx.texts.lobbyList;
+
     const form = useForm<Z_TLobbyName>({
         resolver: zodResolver(Z_LobbyName),
         defaultValues: {
-            lobby_name: `${user?.username}'s lobby`,
+            lobby_name: texts.defaultLobbyName.replace('{username}', user?.username ?? ''),
         }
     });
     const createLobby_m = useMutation({
@@ -42,12 +48,6 @@ export default function ChangeForm() {
 
     const onCancel = () =>
         setFormOpen(false);
-
-    const langCtx = useContext(langContext);
-        
-    if (!langCtx) return <p>Missing language context!</p>;
-        
-    const texts = langCtx.texts.lobbyList;
 
     return formOpen ? (
         <form onSubmit={form.handleSubmit(onSubmit)}
@@ -71,7 +71,7 @@ export default function ChangeForm() {
             <div className="flex flex-row justify-between">
                 <Button type="submit"
                     className="bg-amber-900 hover:bg-amber-950 rounded-lg p-3 font-semibold cursor-pointer">
-                    OK
+                    {texts.formOk}
                 </Button>
                 <Button onClick={onCancel}
                     className="bg-amber-900 hover:bg-amber-950 rounded-lg p-3 font-semibold cursor-pointer">

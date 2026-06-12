@@ -63,6 +63,12 @@ export const sessionMiddleware = session({
 });
 
 // Middlewares
+app.use(
+    cors({
+        origin: CLIENT_URL,
+        credentials: true,
+    })
+);
 app.use(logger('dev'));
 app.use(express.raw({ type: 'application/octet-stream' }));
 app.use(express.json());
@@ -70,12 +76,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static('./public'));
 app.use(sessionMiddleware);
-app.use(
-    cors({
-        origin: CLIENT_URL,
-        credentials: true,
-    })
-);
 
 // Most endpoints return a protobuf encoded binary stream
 // This sets the content type for all responses to a binary stream

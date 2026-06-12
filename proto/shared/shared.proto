@@ -15,7 +15,7 @@ enum PlayerIDs {
 }
 
 message GameRow {
-  repeated PlayerIDs columns = 1;
+  repeated models.Token tokens = 1;
 }
 
 message GameBoard {

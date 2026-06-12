@@ -1,4 +1,4 @@
-import * as proto from "./proto.js";
+import * as proto from './proto.js';
 
 type MoveResult = {
     board: proto.shared.GameBoard;
@@ -23,10 +23,9 @@ export function makeMove(
 
     let placed = false;
 
-
     for (let row = 0; row < newBoard.rows.length; row++) {
-        if (newBoard.rows[row].columns![column] === proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED) {
-            newBoard.rows[row].columns![column] = userPlayerID;
+        if (newBoard.rows[row].tokens![column] === proto.shared.PlayerIDs.PLAYER_IDS_UNSPECIFIED) {
+            newBoard.rows[row].tokens![column] = userPlayerID;
             placed = true;
             break;
         }
@@ -36,16 +35,18 @@ export function makeMove(
     if (!placed) {
         return {
             board,
-            nextTurn: currentTurn
+            nextTurn: currentTurn,
         };
     }
 
-    const nextTurn = currentTurn === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1
-        ? proto.shared.PlayerIDs.PLAYER_IDS_PLAYER2
-        : proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1;
+    const nextTurn =
+        currentTurn === proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1
+            ? proto.shared.PlayerIDs.PLAYER_IDS_PLAYER2
+            : proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1;
 
     return {
         board: newBoard,
-        nextTurn
+        nextTurn,
     };
 }
+

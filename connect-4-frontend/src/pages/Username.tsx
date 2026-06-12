@@ -48,36 +48,35 @@ function Username() {
         <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="
-                bg-yellow-800
+                bg-yellow-800/80
                 text-white
                 text-center
                 justify-center
                 content-center
                 items-center-safe
-                text-xl
+                text-2xl
                 rounded-md
                 flex flex-col
-                gap-y-2
-                absolute w-[300px] md:w-[350px]
-                h-[150px] md:h-[200px]
-                top-[50%] left-[50%]
-                translate-x-[-50%] translate-y-[-50%]
+                gap-y-6
+                w-11/12 max-w-lg
+                py-4
+                px-2
             "
         >
             <FieldSet className="
-                w-[70%]
+                w-[85%] 
             ">
-                <FieldLegend className="text-2xl md:text-3xl justify-self-center-safe">{texts.chooseYourUsername}</FieldLegend>
+                <FieldLegend className="text-3xl! md:text-2xl! font-bold! underline justify-self-center-safe text-center w-full">{texts.chooseYourUsername}</FieldLegend>
                 <FieldGroup>
                     <Controller
                         name="username"
                         control={form.control}
                         render={({ field, fieldState }) => (
-                            <Field className="inline-block bg-amber-900 w-full justify-self-center-safe rounded-md p-[5px]"
+                            <Field className="mt-3 inline-block bg-amber-900 w-full justify-self-center-safe rounded-md p-3"
                                 data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor={field.name} className="mr-[5%]">{texts.name}:</FieldLabel>
+                                <FieldLabel htmlFor={field.name} className="text-base mr-[5%] mb-2">{texts.name}:</FieldLabel>
                                 <Input
-                                    className="w-full rounded-md bg-yellow-950 focus:bg-amber-950"
+                                    className="w-full rounded-md bg-yellow-950 focus:bg-amber-950 p-3"
                                     {...field}
                                     id={field.name}
                                     type="text"
@@ -91,10 +90,10 @@ function Username() {
                 </FieldGroup>
             </FieldSet>
             <Button
-                className="w-[30%] justify-self-center-safe bg-amber-900 h:bg-amber-950 cursor-pointer rounded-lg"
+                className="w-[40%] justify-self-center-safe bg-amber-900 h:bg-amber-950 cursor-pointer rounded-lg p-4 text-lg"
                 type="submit"
             >
-                OK
+                {texts.ok}
             </Button>
         </form>
     );

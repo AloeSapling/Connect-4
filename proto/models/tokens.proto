@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package models;
+
+import 'shared/shared.proto';
+
+enum TokenQueueModes {
+  TOKEN_QUEUE_MODES_UNSPECIFIED = 0;
+  TOKEN_QUEUE_MODES_FULL_RANDOM = 1;
+  TOKEN_QUEUE_MODES_SPECIAL_EVERY = 2;
+  TOKEN_QUEUE_MODES_DECK = 3;
+}
+
+enum TokenTypes {
+  TOKEN_TYPES_UNSPECIFIED = 0;
+  TOKEN_TYPES_STANDARD = 1;
+  TOKEN_TYPES_NEGATIVE = 2;
+  TOKEN_TYPES_AURA = 3;
+  TOKEN_TYPES_BOMB = 4;
+  // TOKEN_TYPES_SPLIT = 5;
+  TOKEN_TYPES_FREEZE = 6;
+  TOKEN_TYPES_BURN = 7;
+  TOKEN_TYPES_REVERSE = 8;
+  TOKEN_TYPES_FROZEN = 9;
+}
+
+enum ChangeTokenActions {
+  CHANGE_TOKEN_ACTIONS_UNSPECIFIED = 0;
+  CHANGE_TOKEN_ACTIONS_BURN_DESTROY = 1;
+  CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP = 2;
+  CHANGE_TOKENS_ACTIONS_FREEZE_FROZE = 3;
+  CHANGE_TOKENS_ACTIONS_FREEZE_UNFROZE = 4;
+  CHANGE_TOKENS_ACTIONS_BOMB_EXPLODED = 5;
+}
+
+message Token {
+  shared.PlayerIDs player_id = 1;
+  TokenTypes token_type = 2;
+}
+
+message Tile {
+  int32 row = 1;
+  int32 column = 2;
+  optional models.Token token = 3;
+}
+
+message CurrentTokens {
+  optional TokenTypes player1 = 1;
+  optional TokenTypes player2 = 2;
+}
+
+message Decks {
+  repeated TokenTypes player1 = 1;
+  repeated TokenTypes player2 = 2;
+}

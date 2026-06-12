@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { langContext } from '@/lib/contexts';
 import * as proto from '@/lib/proto.js';
 import { Controller, useForm } from "react-hook-form";
-import { changePlayerID } from '@/lib/api';
+import { changeLobbySettings, changePlayerID } from '@/lib/api';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,7 +47,19 @@ export default function HostControls({ lobbyCode, membersData }: { lobbyCode: st
 
         onError: (err) => toast.error(err.message)
     });
-    
+
+    const changeSettings_m = useMutation({
+        mutationFn: changeLobbySettings,
+        onSuccess: () => {
+            toast.success(`${texts.changePlayerIDToast}`);
+            queryClient.invalidateQueries({
+                queryKey: [lobbyCode],
+            });
+        },
+
+        onError: (err) => toast.error(err.message)
+    })
+
     const onSubmit = (formData: Z_TChangePlayerID) => {
         changePlayerID_m.mutate({
             lobbyCode,
@@ -57,9 +69,9 @@ export default function HostControls({ lobbyCode, membersData }: { lobbyCode: st
     }
 
     const langCtx = useContext(langContext);
-            
+
     if (!langCtx) return <p>Missing language context!</p>;
-        
+
     const texts = langCtx.texts.lobby;
 
     return (
@@ -80,9 +92,9 @@ export default function HostControls({ lobbyCode, membersData }: { lobbyCode: st
                             }
                         >
                             <SelectTrigger className="bg-yellow-950 border-none">
-                                <SelectValue placeholder="Select user" />
+                                <SelectValue placeholder={texts.selectUser} />
                             </SelectTrigger>
-                        
+
                             <SelectContent position="popper">
                                 {membersData.map((member) => (
                                     <SelectItem
@@ -111,7 +123,7 @@ export default function HostControls({ lobbyCode, membersData }: { lobbyCode: st
                             <SelectTrigger className="bg-yellow-950 border-none">
                                 <SelectValue placeholder={texts.changePlayerIDFormHint} />
                             </SelectTrigger>
-                        
+
                             <SelectContent position="popper">
                                 <SelectItem
                                     value={String(
@@ -120,7 +132,7 @@ export default function HostControls({ lobbyCode, membersData }: { lobbyCode: st
                                 >
                                     {texts.changePlayerIDFormUnspecified}
                                 </SelectItem>
-                                
+
                                 <SelectItem
                                     value={String(
                                         proto.shared.PlayerIDs.PLAYER_IDS_PLAYER1
@@ -128,7 +140,7 @@ export default function HostControls({ lobbyCode, membersData }: { lobbyCode: st
                                 >
                                     {texts.changePlayerIDFormPlayer1}
                                 </SelectItem>
-                                
+
                                 <SelectItem
                                     value={String(
                                         proto.shared.PlayerIDs.PLAYER_IDS_PLAYER2

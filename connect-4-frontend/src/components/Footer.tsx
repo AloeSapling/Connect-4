@@ -1,6 +1,6 @@
 function Footer() {
     return (
-        <footer className="bg-olive-600 text-white w-full align-middle text-center fixed bottom-0 text-lg">
+        <footer className="bg-olive-600 text-white w-full text-center text-lg py-1">
             &copy;2026
         </footer>
     );

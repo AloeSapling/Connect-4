@@ -6,7 +6,8 @@ import "models/models.proto";
 import "shared/shared.proto";
 
 message GetLobbiesResponse {
-  repeated models.LobbyData lobbies = 1;
+  repeated models.LobbyData my_lobbies = 1;
+  repeated models.LobbyData other_lobbies = 2;
 }
 
 message GetLobbyResponse {

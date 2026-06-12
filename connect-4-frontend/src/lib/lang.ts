@@ -2,6 +2,9 @@ import textsPLPL from '../locales/pl_PL.json';
 import textsENUK from '../locales/en_UK.json';
 
 export type PageTexts = {
+    general: {
+        loading: string;
+    };
     header: {
         home: string;
         settings: string;
@@ -11,14 +14,22 @@ export type PageTexts = {
         play: string;
         settings: string;
     };
+    error: {
+        notFound: string;
+        home: string;
+    };
     username: {
         chooseYourUsername: string;
         name: string;
         hint: string;
+        ok: string;
     };
     lobbyList: {
         listHeader: string;
         refresh: string;
+
+        myLobbies: string;
+        otherLobbies: string;
 
         tableName: string;
         tablePlayers: string;
@@ -27,6 +38,9 @@ export type PageTexts = {
         tableYes: string;
 
         formCancel: string;
+        formOk: string;
+        noLobbiesFound: string;
+        defaultLobbyName: string;
 
         lobbyFormHint: string;
         lobbyFormButton: string;
@@ -60,8 +74,40 @@ export type PageTexts = {
         changePlayerIDFormPlayer2: string;
         changePlayerIDFormButton: string;
         changePlayerIDToast: string;
+
+        selectUser: string;
+        cancel: string;
+        p1: string;
+        p2: string;
+        host: string;
+        changePlayerId: string;
+        tempban: string;
+        userTempbanned: string;
+        loading: string;
+    };
+    lobbySettings: {
+        heading: string;
+        enableExtraGamemode: string;
+        turnTime: string;
+        specialTokenChance: string;
+        tokenQueueMode: string;
+        fullRandom: string;
+        every: string;
+        deck: string;
+        allowedTokens: string;
+        saveSettings: string;
+        settingsChanged: string;
+    };
+    playerSelect: {
+        player1: string;
+        playAsPlayer1: string;
+        player2: string;
+        playAsPlayer2: string;
+        spectator: string;
+        watchGame: string;
     };
     game: {
+        loading: string;
         forfeitButton: string;
 
         resultsWinText: string;
@@ -71,6 +117,14 @@ export type PageTexts = {
         resultsBackToLobbyButton: string;
 
         leaveToast: string;
+
+        player1Turn: string;
+        player2Turn: string;
+        player1Tokens: string;
+        player2Tokens: string;
+        canvasUnsupported: string;
+        endUnspecified: string;
+        endDefault: string;
     };
 };
 

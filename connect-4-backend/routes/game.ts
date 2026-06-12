@@ -7,6 +7,7 @@ import { routes, ws } from '../lib/proto.js';
 import { isLobbyHost, isLobbyMember } from '../lib/auth.ts';
 import { lobbyHasPlayerWithID } from '../database-sqllite/lobbyMembers.ts';
 import { broadcastToLobbyRoom } from './ws/lobby.ts';
+import { boardDataToProtobufBoard } from '../lib/game/lib.ts';
 
 const router = Router();
 
@@ -87,9 +88,35 @@ addRouteWithMethods(
             }
 
             try {
+                const gameData = await GameRedis.getGameData(code);
+
+                // Format the game's board to be sent to the client
+                const protoBoard = boardDataToProtobufBoard(gameData.board);
+
+                const currentTokens = gameData.tokenQueue?.tokens
+                    ? {
+                          player1: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? null,
+                          player2: gameData.tokenQueue.tokens[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? null,
+                      }
+                    : null;
+
+                const decks = gameData.tokenQueue?.decks
+                    ? {
+                          player1: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? [],
+                          player2: gameData.tokenQueue.decks[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? [],
+                      }
+                    : null;
+
                 res.status(200).send(
                     routes.GetGameResponse.encode({
-                        game: await GameRedis.getGameState(code),
+                        game: {
+                            board: protoBoard,
+                            turn: gameData.turn,
+                            currentTokens,
+                            decks,
+                            tokenQueueMode: gameData.tokenQueue?.mode ?? null,
+                            frozenColumns: gameData.board.frozenColumns,
+                        },
                     }).finish()
                 );
             } catch (err) {
