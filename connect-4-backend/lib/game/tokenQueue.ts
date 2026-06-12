@@ -36,6 +36,7 @@ export function createNextTokenQueueObj(tokenQueueData: TokenQueueData, newTurn?
         allowedTokens: tokenQueueData.allowedTokens,
         every: tokenQueueData.every,
         turn: newTurn,
+        specialTokenChance: tokenQueueData.specialTokenChance,
     }
 
     switch (tokenQueueData.mode) {

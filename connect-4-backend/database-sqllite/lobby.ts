@@ -6,7 +6,7 @@ import { getDetailedLobbyMembersData } from './lobbyMembers.ts';
 import { gameExists, gamesExist } from '../database-redis/game.ts';
 import { Op, Sequelize } from 'sequelize';
 import { sequelize } from './database.ts';
-import { DEFAULT_TURN_TIME } from '../config.ts';
+import { DEFAULT_TURN_TIME, DEFAULT_SPECIAL_TOKEN_CHANCE } from '../config.ts';
 
 /** Create a new lobby instance in the sql database
  * @returns The code associated with the newly created lobby
@@ -158,7 +158,7 @@ export async function changeLobbySettings(code: string, settings: models.ILobbyS
             allowedTokens: JSON.stringify(settings.allowedTokens ?? []),
             specialGamemode: settings.specialGamemode ?? false,
             every: settings.every ?? null,
-            specialTokenChance: settings.specialTokenChance ?? null,
+            specialTokenChance: settings.specialTokenChance ?? DEFAULT_SPECIAL_TOKEN_CHANCE,
         },
         {
             where: {
@@ -184,8 +184,8 @@ export async function getLobbySettings(code: string): Promise<models.ILobbySetti
         tokenQueueMode: lobby.tokenQueueMode,
         allowedTokens: JSON.parse(lobby.allowedTokens ?? '[]'),
         specialGamemode: lobby.specialGamemode,
-        every: lobby.every ?? undefined,
-        specialTokenChance: lobby.specialTokenChance ?? undefined,
+        every: lobby.every ?? null,
+        specialTokenChance: lobby.specialTokenChance ?? null,
     };
 }
 
@@ -221,8 +221,8 @@ export async function getDetailedLobbyData(code: string): Promise<models.IDetail
             tokenQueueMode: lobby.tokenQueueMode,
             allowedTokens: JSON.parse(lobby.allowedTokens ?? '[]'),
             specialGamemode: lobby.specialGamemode,
-            every: lobby.every ?? undefined,
-            specialTokenChance: lobby.specialTokenChance ?? undefined,
+            every: lobby.every ?? null,
+            specialTokenChance: lobby.specialTokenChance ?? null,
         },
     };
 }
