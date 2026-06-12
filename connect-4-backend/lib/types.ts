@@ -53,6 +53,7 @@ export type TokenQueueData = {
     tokens?: Partial<Record<TPlayerIDs, TTokenTypes>>;
     every?: number | undefined;
     turn?: number | undefined;
+    specialTokenChance?: number | undefined;
 };
 
 /** An error additionally containing an error code */

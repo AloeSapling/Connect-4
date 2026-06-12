@@ -31,6 +31,8 @@ export default function GameSettings({ lobbyCode, settings }: { lobbyCode: strin
     const form = useForm<Z_TChangeLobbySettings>({
         resolver: zodResolver(Z_ChangeLobbySettings),
         defaultValues: {
+            turn_time: settings.turnTime ?? undefined,
+            special_token_chance: settings.specialTokenChance ?? undefined,
             every: settings.every ?? undefined,
             allowed_tokens: settings.allowedTokens ?? [],
             special_gameMode: settings.specialGamemode ?? false,
@@ -59,6 +61,8 @@ export default function GameSettings({ lobbyCode, settings }: { lobbyCode: strin
             lobbyCode,
             settings: {
                 specialGamemode: formData.special_gameMode,
+                turnTime: formData.turn_time,
+                specialTokenChance: formData.special_token_chance,
                 tokenQueueMode: formData.token_queue_mode,
                 every: formData.every,
                 allowedTokens: formData.allowed_tokens,
@@ -76,6 +80,44 @@ export default function GameSettings({ lobbyCode, settings }: { lobbyCode: strin
                     <Switch checked={specialGameMode} onCheckedChange={(checked) => form.setValue('special_gameMode', checked)} />
                     <Label>{settingsTexts?.enableExtraGamemode ?? 'Special Game Mode'}</Label>
                 </div>
+
+                {/* Turn time input */}
+                <Controller
+                    name="turn_time"
+                    control={form.control}
+                    render={({ field }) => (
+                        <div className="flex items-center gap-2 w-full">
+                            <Label>{settingsTexts?.turnTime ?? 'Turn time (s)'}</Label>
+                            <Input
+                                type="number"
+                                min={10}
+                                max={600}
+                                value={field.value ?? ''}
+                                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                                className="w-20"
+                            />
+                        </div>
+                    )}
+                />
+
+                {/* Special token chance input */}
+                <Controller
+                    name="special_token_chance"
+                    control={form.control}
+                    render={({ field }) => (
+                        <div className="flex items-center gap-2 w-full">
+                            <Label>{settingsTexts?.specialTokenChance ?? 'Special token chance (%)'}</Label>
+                            <Input
+                                type="number"
+                                min={0}
+                                max={100}
+                                value={field.value ?? ''}
+                                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                                className="w-20"
+                            />
+                        </div>
+                    )}
+                />
 
                 {/* Token queue mode select */}
                 <Controller

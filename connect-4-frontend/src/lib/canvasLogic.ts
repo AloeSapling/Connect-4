@@ -330,7 +330,7 @@ class GameCanvas {
                             tile.action === proto.models.ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_DESTROY) {
                             this.spriteSheetAnims.push({
                                 x: BOARD_START_WIDTH + (col * BOARD_SLOT_DISTANCE),
-                                y: BOARD_START_HEIGHT + (row * BOARD_SLOT_DISTANCE),
+                                y: (this.currentBoardState.rows!.length - 1 - row) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT,
 
                                 spritesheet: this.incinerationSheet,
                                 height: this.incinerationSheet.height,

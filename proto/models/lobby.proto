@@ -22,6 +22,7 @@ message LobbySettings {
   repeated models.TokenTypes allowed_tokens = 3;
   optional bool special_gamemode = 4;
   optional int32 every = 5;
+  optional int32 special_token_chance = 6;
 }
 
 message DetailedLobbyData {

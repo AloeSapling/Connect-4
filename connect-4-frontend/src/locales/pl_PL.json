@@ -85,6 +85,8 @@
     "lobbySettings": {
         "heading": "Ustawienia pokoju",
         "enableExtraGamemode": "włączyć dodatkowy tryb?",
+        "turnTime": "Czas tury (s)",
+        "specialTokenChance": "Szansa żetonu specjalnego (%)",
         "tokenQueueMode": "Tryb kolejki żetonów",
         "fullRandom": "Pełny Losowy",
         "every": "Co Kolejny",

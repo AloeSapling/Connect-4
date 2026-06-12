@@ -158,6 +158,7 @@ export async function changeLobbySettings(code: string, settings: models.ILobbyS
             allowedTokens: JSON.stringify(settings.allowedTokens ?? []),
             specialGamemode: settings.specialGamemode ?? false,
             every: settings.every ?? null,
+            specialTokenChance: settings.specialTokenChance ?? null,
         },
         {
             where: {
@@ -184,6 +185,7 @@ export async function getLobbySettings(code: string): Promise<models.ILobbySetti
         allowedTokens: JSON.parse(lobby.allowedTokens ?? '[]'),
         specialGamemode: lobby.specialGamemode,
         every: lobby.every ?? undefined,
+        specialTokenChance: lobby.specialTokenChance ?? undefined,
     };
 }
 
@@ -220,6 +222,7 @@ export async function getDetailedLobbyData(code: string): Promise<models.IDetail
             allowedTokens: JSON.parse(lobby.allowedTokens ?? '[]'),
             specialGamemode: lobby.specialGamemode,
             every: lobby.every ?? undefined,
+            specialTokenChance: lobby.specialTokenChance ?? undefined,
         },
     };
 }

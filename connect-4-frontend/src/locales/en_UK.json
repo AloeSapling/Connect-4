@@ -85,6 +85,8 @@
     "lobbySettings": {
         "heading": "Lobby settings",
         "enableExtraGamemode": "enable extra gamemode?",
+        "turnTime": "Turn time (s)",
+        "specialTokenChance": "Special token chance (%)",
         "tokenQueueMode": "Token queue mode",
         "fullRandom": "Full Random",
         "every": "Every",

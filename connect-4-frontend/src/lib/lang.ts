@@ -88,6 +88,8 @@ export type PageTexts = {
     lobbySettings: {
         heading: string;
         enableExtraGamemode: string;
+        turnTime: string;
+        specialTokenChance: string;
         tokenQueueMode: string;
         fullRandom: string;
         every: string;

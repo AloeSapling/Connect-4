@@ -44,6 +44,8 @@ export default function LobbySettingsCard({
     const settingsForm = useForm<Z_TChangeLobbySettings>({
         resolver: zodResolver(Z_ChangeLobbySettings),
         defaultValues: {
+            turn_time: settings.turnTime ?? undefined,
+            special_token_chance: settings.specialTokenChance ?? undefined,
             every: settings.every ?? undefined,
             allowed_tokens: settings.allowedTokens ?? [],
             special_gameMode: settings.specialGamemode ?? false,
@@ -53,6 +55,8 @@ export default function LobbySettingsCard({
 
     useEffect(() => {
         settingsForm.reset({
+            turn_time: settings.turnTime ?? undefined,
+            special_token_chance: settings.specialTokenChance ?? undefined,
             every: settings.every ?? undefined,
             allowed_tokens: settings.allowedTokens ?? [],
             special_gameMode: settings.specialGamemode ?? false,
@@ -77,6 +81,8 @@ export default function LobbySettingsCard({
             lobbyCode,
             settings: {
                 specialGamemode: formData.special_gameMode,
+                turnTime: formData.turn_time,
+                specialTokenChance: formData.special_token_chance,
                 tokenQueueMode: formData.token_queue_mode,
                 every: formData.every,
                 allowedTokens: formData.allowed_tokens,
@@ -98,6 +104,44 @@ export default function LobbySettingsCard({
                         disabled={!isHost}
                     />
                 </div>
+
+                <Controller
+                    name="turn_time"
+                    control={settingsForm.control}
+                    render={({ field }) => (
+                        <div className="flex items-center gap-2">
+                            <Label className="text-md">{settingsTexts.turnTime}</Label>
+                            <Input
+                                type="number"
+                                min={10}
+                                max={600}
+                                value={field.value ?? ''}
+                                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                                disabled={!isHost}
+                                className="w-20"
+                            />
+                        </div>
+                    )}
+                />
+
+                <Controller
+                    name="special_token_chance"
+                    control={settingsForm.control}
+                    render={({ field }) => (
+                        <div className="flex items-center gap-2">
+                            <Label className="text-md">{settingsTexts.specialTokenChance}</Label>
+                            <Input
+                                type="number"
+                                min={0}
+                                max={100}
+                                value={field.value ?? ''}
+                                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                                disabled={!isHost}
+                                className="w-20"
+                            />
+                        </div>
+                    )}
+                />
 
                 <div className="flex flex-row gap-2 items-end">
                     <Controller

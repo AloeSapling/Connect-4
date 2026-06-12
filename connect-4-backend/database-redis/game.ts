@@ -51,7 +51,8 @@ export async function createGame(lobbyCode: string, settings: models.ILobbySetti
         const tokenQueueObj = createNextTokenQueueObj({
             mode: settings.tokenQueueMode,
             allowedTokens: settings.allowedTokens ?? [],
-            every: settings.every ?? undefined
+            every: settings.every ?? undefined,
+            specialTokenChance: settings.specialTokenChance ?? undefined,
         }, 0);
 
         // Holds the data about the tokenQueue - mode, allowed tokens and the tokens playable each turn

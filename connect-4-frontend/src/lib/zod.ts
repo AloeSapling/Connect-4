@@ -25,6 +25,8 @@ export type Z_TChangePlayerID = z.infer<typeof Z_ChangePlayerID>;
 export const Z_ChangeLobbySettings = z.object({
     special_gameMode: z.boolean(),
     token_queue_mode: z.nativeEnum(P_TokenQueueModes),
+    turn_time: z.number().min(10).max(600).optional(),
+    special_token_chance: z.number().min(0).max(100).optional(),
     every: z.number().min(1).max(15).optional(),
     allowed_tokens: z.array(z.nativeEnum(P_TokenTypes)),
 }).refine((obj) => {

@@ -1,6 +1,6 @@
 import { randomInt } from "crypto";
 import { P_PlayerIDs, P_TokenQueueModes, P_TokenTypes, type TokenQueueData, type TTokenTypes } from "../types.ts";
-import { SPECIAL_TOKEN_CHANCE, TOKEN_DECK_LENGTH } from "../../config.ts";
+import { DEFAULT_SPECIAL_TOKEN_CHANCE, TOKEN_DECK_LENGTH } from "../../config.ts";
 import type { models } from "../proto.js";
 
 /** Gets the next token for this player when the mode is SPECIAL_EVERY
@@ -15,15 +15,15 @@ export function getTokenForEvery(allowedTokens: TTokenTypes[], every: number, tu
 }
 
 /** Gets the next token for this player when the mode is FULL_RANDOM */
-export function getTokenForFullRandom(allowedTokens: TTokenTypes[]): TTokenTypes {
-    return generateRandomToken(allowedTokens);
+export function getTokenForFullRandom(allowedTokens: TTokenTypes[], specialTokenChance?: number): TTokenTypes {
+    return generateRandomToken(allowedTokens, specialTokenChance);
 }
 
 /** Generates the tokens missing from the deck of tokens */
-export function getTokensForDeck(allowedTokens: TTokenTypes[], currentDeck: TTokenTypes[]): TTokenTypes[] {
+export function getTokensForDeck(allowedTokens: TTokenTypes[], currentDeck: TTokenTypes[], specialTokenChance?: number): TTokenTypes[] {
     const startingLength = currentDeck.length;
     for (let i = startingLength; i <= TOKEN_DECK_LENGTH; i++) {
-        currentDeck.push(generateRandomToken(allowedTokens));
+        currentDeck.push(generateRandomToken(allowedTokens, specialTokenChance));
     }
 
     return currentDeck;
@@ -43,11 +43,13 @@ export function createNextTokenQueueObj(tokenQueueData: TokenQueueData, newTurn?
             tokenQueueObj.decks = {
                 [P_PlayerIDs.PLAYER_IDS_PLAYER1]: getTokensForDeck(
                     tokenQueueData.allowedTokens,
-                    tokenQueueData.decks?.[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? []
+                    tokenQueueData.decks?.[P_PlayerIDs.PLAYER_IDS_PLAYER1] ?? [],
+                    tokenQueueData.specialTokenChance
                 ),
                 [P_PlayerIDs.PLAYER_IDS_PLAYER2]: getTokensForDeck(
                     tokenQueueData.allowedTokens,
-                    tokenQueueData.decks?.[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? []
+                    tokenQueueData.decks?.[P_PlayerIDs.PLAYER_IDS_PLAYER2] ?? [],
+                    tokenQueueData.specialTokenChance
                 ),
             }
             break;
@@ -66,8 +68,8 @@ export function createNextTokenQueueObj(tokenQueueData: TokenQueueData, newTurn?
             break;
         case P_TokenQueueModes.TOKEN_QUEUE_MODES_FULL_RANDOM:
             tokenQueueObj.tokens = {
-                [P_PlayerIDs.PLAYER_IDS_PLAYER1]: getTokenForFullRandom(tokenQueueData.allowedTokens),
-                [P_PlayerIDs.PLAYER_IDS_PLAYER2]: getTokenForFullRandom(tokenQueueData.allowedTokens),
+                [P_PlayerIDs.PLAYER_IDS_PLAYER1]: getTokenForFullRandom(tokenQueueData.allowedTokens, tokenQueueData.specialTokenChance),
+                [P_PlayerIDs.PLAYER_IDS_PLAYER2]: getTokenForFullRandom(tokenQueueData.allowedTokens, tokenQueueData.specialTokenChance),
             }
             break;
     }
@@ -88,10 +90,11 @@ function generateRandomSpecialToken(allowedTokens: TTokenTypes[]): TTokenTypes {
     return filteredTokenTypes[randomInt(0, filteredTokenTypes.length)]!
 }
 
-function generateRandomToken(allowedTokens: TTokenTypes[]) {
+function generateRandomToken(allowedTokens: TTokenTypes[], specialTokenChance?: number) {
     const tokenChance = randomInt(0, 100);
+    const threshold = specialTokenChance ?? DEFAULT_SPECIAL_TOKEN_CHANCE;
 
-    if (tokenChance < SPECIAL_TOKEN_CHANCE) return generateRandomSpecialToken(allowedTokens);
+    if (tokenChance < threshold) return generateRandomSpecialToken(allowedTokens);
 
     return P_TokenTypes.TOKEN_TYPES_STANDARD;
 }
