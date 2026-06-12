@@ -26,6 +26,8 @@ export class NegativeToken extends Token {
         const col = this.column;
         const row = this.row;
 
+        this.removeSelfFromLines(gameBoard);
+
         this.doAround(gameBoard, (token: Token) => {
             if (token.playerID !== this.playerID) {
                 token.removeCountEffect(gameBoard, this.countEffectName);
@@ -33,8 +35,6 @@ export class NegativeToken extends Token {
         });
 
         super.remove(gameBoard);
-
-        this.removeSelfFromLines(gameBoard);
 
         const instances = gameBoard.activeInstances[P_TokenTypes.TOKEN_TYPES_NEGATIVE];
         if (instances) {

@@ -45,6 +45,12 @@ function GameBoardCanvas({
         gameCanvasRef.current.setBoardState(currentBoardState);
     }, [currentBoardState]);
 
+    // Sync frozen columns to canvas
+    useEffect(() => {
+        if (!gameCanvasRef.current || !queryData?.game?.frozenColumns) return;
+        gameCanvasRef.current.setFrozenColumns(queryData.game.frozenColumns);
+    }, [queryData?.game?.frozenColumns]);
+
     // Which player's turn it is
     console.log(queryData);
     console.log(queryData?.game);

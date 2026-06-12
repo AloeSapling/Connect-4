@@ -214,6 +214,10 @@ class GameCanvas {
         this.currentBoardState = structuredClone(board);
     }
 
+    public setFrozenColumns(columns: boolean[]) {
+        this.frozenOverlays = [...columns];
+    }
+
     // Last time that the loop was called
     private lastTime: number = 0;
     // How many ms have passed since last game state update

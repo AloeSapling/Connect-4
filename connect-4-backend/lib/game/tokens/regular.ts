@@ -12,9 +12,9 @@ export class StandardToken extends Token {
     }
 
     remove(gameBoard: GameBoard) {
-        super.remove(gameBoard);
-
         this.removeSelfFromLines(gameBoard);
+
+        super.remove(gameBoard);
     }
 
     place(gameBoard: GameBoard, newRow: number, newColumn: number): Coordinate {

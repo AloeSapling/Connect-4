@@ -19,9 +19,9 @@ export class FreezeToken extends Token {
         const col = this.column;
         const row = this.row;
 
-        super.remove(gameBoard);
-
         if (this.turnsUntilUnfreeze > 0) this.unfreezeAllTokens(gameBoard);
+
+        super.remove(gameBoard);
 
         const instances = gameBoard.activeInstances[P_TokenTypes.TOKEN_TYPES_FREEZE];
         if (instances) {

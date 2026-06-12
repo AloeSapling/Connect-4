@@ -28,19 +28,18 @@ export class ReverseToken extends Token {
 
             token.move(gameBoard, i + 1, newColumn);
 
-            if (token.type !== P_TokenTypes.TOKEN_TYPES_STANDARD && token.type !== P_TokenTypes.TOKEN_TYPES_FROZEN)
-                gameBoard.fallingTokens.push({
-                    fromCol: tempCol,
-                    fromRow: tempRow,
-                    tile: {
-                        row: token.row,
-                        column: token.column,
-                        token: {
-                            playerId: token.playerID,
-                            tokenType: token.type,
-                        },
+            gameBoard.fallingTokens.push({
+                fromCol: tempCol,
+                fromRow: tempRow,
+                tile: {
+                    row: token.row,
+                    column: token.column,
+                    token: {
+                        playerId: token.playerID,
+                        tokenType: token.type,
                     },
-                });
+                },
+            });
         }
 
         // Place at the bottom

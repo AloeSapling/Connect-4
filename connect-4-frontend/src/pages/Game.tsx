@@ -262,9 +262,9 @@ export default function Game() {
                     translate-x-[-50%] translate-y-[-50%]
                 "
                 >
-                    <h1 className="text-3xl">{results}</h1>
+                    <h1 className="text-3xl font-serif font-semibold">{results}</h1>
 
-                    <div className="flex flex-row justify-between">
+                    <div className="flex flex-row gap-4 justify-between">
                         <Button
                             className="bg-amber-900 hover:bg-amber-950 rounded-lg p-5 font-semibold cursor-pointer"
                             onClick={leaveLobbyButton}
