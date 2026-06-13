@@ -246,6 +246,24 @@ class GameCanvas {
     }
 
     public placeToken(column: number, targetRow: number, player: types.TPlayerIDs, tokenType: types.TTokenTypes, deletedTiles: proto.ws.IChangeTile[], fallingTokens: proto.ws.IFallingToken[], frozenColumns: boolean[]) {
+        if (tokenType === types.P_TokenTypes.TOKEN_TYPES_REVERSE) {
+            for (let i = 0; i < fallingTokens.length; i++) {
+                const token = fallingTokens[i];
+                
+                if (token.fromCol === column) {
+                    this.fallToken(token.fromCol!, token.tile?.row!, token.fromRow!, token.tile?.token?.playerId!, token.tile?.token?.tokenType!);
+
+                    if (token.fromRow !== undefined && token.fromRow !== null && token.fromCol !== undefined && token.fromCol !== null) {
+                        this.currentBoardState.rows![token.fromRow].tokens![token.fromCol] = {
+                            playerId: types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
+                            tokenType: types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
+                        }
+                    }
+                    fallingTokens.splice(i, 1);
+                }
+            }
+        }
+
         this.fallingTokens.push({
             column: column,
             targetRow: targetRow,
@@ -355,15 +373,15 @@ class GameCanvas {
                 }
 
                 if (token.fallingTokens !== undefined) {
-
                     token.fallingTokens.forEach(token => {
                         this.fallToken(token.fromCol!, token.tile?.row!, token.fromRow!, token.tile?.token?.playerId!, token.tile?.token?.tokenType!);
 
-                        if (token.fromRow !== undefined && token.fromRow !== null && token.fromCol !== undefined && token.fromCol !== null)
+                        if (token.fromRow !== undefined && token.fromRow !== null && token.fromCol !== undefined && token.fromCol !== null) {
                             this.currentBoardState.rows![token.fromRow].tokens![token.fromCol] = {
                                 playerId: types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
                                 tokenType: types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
                             }
+                        }
                     })
                 }
 
