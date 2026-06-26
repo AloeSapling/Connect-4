@@ -246,6 +246,26 @@ class GameCanvas {
     }
 
     public placeToken(column: number, targetRow: number, player: types.TPlayerIDs, tokenType: types.TTokenTypes, deletedTiles: proto.ws.IChangeTile[], fallingTokens: proto.ws.IFallingToken[], frozenColumns: boolean[]) {
+        if (tokenType === types.P_TokenTypes.TOKEN_TYPES_REVERSE) {
+            for (let i = 0; i < deletedTiles.length; i++) {
+                const tile = deletedTiles[i];
+
+                if (tile.tile?.column === column) {
+                    this.deleteToken(tile.tile.column, tile.tile.row!, tile.action!);
+                }
+            }
+
+            for (let i = 0; i < fallingTokens.length; i++) {
+                const token = fallingTokens[i];
+                
+                if (token.fromCol === column) {
+                    this.fallToken(token.fromCol!, token.tile?.row!, token.fromRow!, token.tile?.token?.playerId!, token.tile?.token?.tokenType!);
+                    // delete token from placeToken's `fallingTokens` so that it doesn't fall again when the placed token reaches it's destination
+                    fallingTokens.splice(i, 1);
+                }
+            }
+        }
+
         this.fallingTokens.push({
             column: column,
             targetRow: targetRow,
@@ -286,6 +306,41 @@ class GameCanvas {
             fallingTokens: undefined,
             frozenColumns: undefined
         });
+
+        if (startRow !== undefined && startRow !== null && column !== undefined && column !== null) {
+            this.currentBoardState.rows![startRow].tokens![column] = {
+                playerId: types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
+                tokenType: types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
+            }
+        }
+    }
+
+    private deleteToken(column: number, row: number, action: proto.models.ChangeTokenActions) {
+        if (row == null || column == null) return;
+        if (row < 0 || row >= GAME_ROWS || column < 0 || column >= GAME_COLUMNS) return;
+
+        if (action === proto.models.ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP ||
+            action === proto.models.ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_DESTROY) {
+            this.spriteSheetAnims.push({
+                x: BOARD_START_WIDTH + (column * BOARD_SLOT_DISTANCE),
+                y: (this.currentBoardState.rows!.length - 1 - row) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT,
+
+                spritesheet: this.incinerationSheet,
+                height: this.incinerationSheet.height,
+                width: this.incinerationSheet.width / ANIMATION_INCINERATION_FRAMES,
+
+                totalFrames: ANIMATION_INCINERATION_FRAMES,
+                currentFrame: 0,
+
+                FPS: Math.floor(FPS / ANIMATION_DEFAULT_FPS),
+                FPSStep: 0,
+            });
+        }
+
+        this.currentBoardState.rows![row].tokens![column] = {
+            playerId: types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
+            tokenType: types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
+        }
     }
 
     private updateFallingTokens(dt: number) {
@@ -327,45 +382,13 @@ class GameCanvas {
 
                 if (token.deletedTiles !== undefined) {
                     token.deletedTiles.forEach(tile => {
-                        const row = tile.tile?.row;
-                        const col = tile.tile?.column;
-                        if (row == null || col == null) return;
-                        if (row < 0 || row >= GAME_ROWS || col < 0 || col >= GAME_COLUMNS) return;
-
-                        if (tile.action === proto.models.ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_BURNED_UP ||
-                            tile.action === proto.models.ChangeTokenActions.CHANGE_TOKEN_ACTIONS_BURN_DESTROY) {
-                            this.spriteSheetAnims.push({
-                                x: BOARD_START_WIDTH + (col * BOARD_SLOT_DISTANCE),
-                                y: (this.currentBoardState.rows!.length - 1 - row) * BOARD_SLOT_DISTANCE + BOARD_START_HEIGHT,
-
-                                spritesheet: this.incinerationSheet,
-                                height: this.incinerationSheet.height,
-                                width: this.incinerationSheet.width / ANIMATION_INCINERATION_FRAMES,
-
-                                totalFrames: ANIMATION_INCINERATION_FRAMES,
-                                currentFrame: 0,
-
-                                FPS: Math.floor(FPS / ANIMATION_DEFAULT_FPS),
-                                FPSStep: 0,
-                            });
-                        }
-                        this.currentBoardState.rows![row].tokens![col] = {
-                            playerId: types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
-                            tokenType: types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
-                        }
+                        this.deleteToken(tile.tile?.column!, tile.tile?.row!, tile.action!);
                     })
                 }
 
                 if (token.fallingTokens !== undefined) {
-
                     token.fallingTokens.forEach(token => {
                         this.fallToken(token.fromCol!, token.tile?.row!, token.fromRow!, token.tile?.token?.playerId!, token.tile?.token?.tokenType!);
-
-                        if (token.fromRow !== undefined && token.fromRow !== null && token.fromCol !== undefined && token.fromCol !== null)
-                            this.currentBoardState.rows![token.fromRow].tokens![token.fromCol] = {
-                                playerId: types.P_PlayerIDs.PLAYER_IDS_UNSPECIFIED,
-                                tokenType: types.P_TokenTypes.TOKEN_TYPES_UNSPECIFIED
-                            }
                     })
                 }
 
